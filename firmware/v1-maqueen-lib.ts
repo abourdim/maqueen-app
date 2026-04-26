@@ -54,8 +54,8 @@
  *
  * BUILD STAMP — edit these two lines before flashing:
  */
-const BUILD_VERSION = "0.1.14"
-const BUILD_DATE = "2026-04-26 16:27 UTC"
+const BUILD_VERSION = "0.1.15"
+const BUILD_DATE = "2026-04-26 16:36 UTC"
 
 // ---------- state ----------
 let btConnected = false
@@ -265,22 +265,30 @@ function handleDistQuery() {
     if (logLevel >= 3) execlog("DIST cm=" + cm)
 }
 
-// IR? — uses the IR namespace from pxt-maqueen.
-// Per the DFRobot wiki example (rob0148-en-lb/docs/21450), the IR
-// receiver is wired internally to P16 and exposed via a single
-// callback that fires on EVERY IR press with the raw code as `message`.
+// IR? — uses the IR namespace from pxt-dfrobot_newir v0.0.4
+// (pulled in transitively by pxt-maqueen v1.7.16). API surface:
+//   IR.IR_init()                                 — start IR background task on P16
+//   IR.IR_callbackUser(handler: () => void)      — fires on every datagram
+//   IR.IR_read(): number                         — last 2 digits of received code
 let lastIRCode = 0
 function handleIRQuery() {
+    // Refresh from IR.IR_read() in case a press happened since the callback
+    let code = IR.IR_read()
+    if (code != 0) lastIRCode = code
     send("IR:" + lastIRCode)
     if (logLevel >= 3) execlog("IR code=" + lastIRCode)
 }
 
-// Push every received IR code automatically — saves the user from
-// having to click 'Poll IR'. Web-side dedupes consecutive same codes.
-IR.IR_callbackUser(function (message: number) {
-    lastIRCode = message
-    if (btConnected) send("IR:" + message)
-    execlog("IR press code=" + message)
+// Initialize the IR background task once + push every received code.
+// Web-side dedupes consecutive same codes.
+IR.IR_init()
+IR.IR_callbackUser(function () {
+    let code = IR.IR_read()
+    if (code != 0) {
+        lastIRCode = code
+        if (btConnected) send("IR:" + code)
+        execlog("IR press code=" + code)
+    }
 })
 
 // LOG:n
