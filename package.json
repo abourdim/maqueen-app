@@ -1,0 +1,15 @@
+{
+  "name": "bit-playground",
+  "version": "1.2.0",
+  "private": true,
+  "type": "module",
+  "description": "Web-based BLE control panel for the BBC micro:bit V2",
+  "scripts": {
+    "build:etsy": "node etsy-package/build-package.js",
+    "serve": "npx serve ."
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.48.0",
+    "qrcode": "^1.5.4"
+  }
+}

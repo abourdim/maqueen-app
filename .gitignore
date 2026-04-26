@@ -1,0 +1,20 @@
+# macOS
+.DS_Store
+
+# Node / Playwright
+/node_modules/
+
+# Built artifacts (rebuilt from source on demand)
+/dist/
+*.zip
+etsy-package/BitPlayground-v*/
+
+# Track most output/ for reference (screenshots, baseline, generated videos),
+# but skip ffmpeg/Playwright intermediates (regenerated every run).
+etsy-package/output/_tmp/
+# Per-buyer watermarked ZIPs contain order-specific data; don't commit
+etsy-package/output/shared/buyers/
+
+# Track the shipped Etsy ZIP for reference
+!etsy-package/BitPlayground-v*.zip
+etsy-package/output/*/gifs/_rec-*/
