@@ -33,6 +33,31 @@
 
   // -------- DRIVE -----------------------------------------
   let speed = 200;
+  // Track the last direction so the slider can re-issue M: live while moving
+  let lastDir = null;   // { l, r } or null after STOP
+  function setLastVerb(verb) {
+    const el = document.getElementById('mqDriveLastVerb');
+    if (el) {
+      el.textContent = verb;
+      el.style.opacity = '1';
+      // brief flash
+      el.animate([{ opacity: 0.4 }, { opacity: 1 }], { duration: 250 });
+    }
+  }
+  function fireDrive(dataL, dataR) {
+    if (dataL === 0 && dataR === 0) {
+      send('STOP');
+      lastDir = null;
+      setLastVerb('STOP');
+      return;
+    }
+    const ref = 200;
+    const L = Math.round(dataL * (speed / ref));
+    const R = Math.round(dataR * (speed / ref));
+    send(`M:${L},${R}`);
+    lastDir = { l: dataL, r: dataR };
+    setLastVerb(`M:${L},${R}`);
+  }
   function initDrive() {
     const slider = document.getElementById('mqSpeedSlider');
     const readout = document.getElementById('mqSpeedReadout');
@@ -40,15 +65,21 @@
     slider.addEventListener('input', e => {
       speed = +e.target.value;
       readout.textContent = speed;
+      // If a direction is currently active, re-send with new speed (coalesced)
+      if (lastDir) {
+        const ref = 200;
+        const L = Math.round(lastDir.l * (speed / ref));
+        const R = Math.round(lastDir.r * (speed / ref));
+        if (window.bleScheduler) {
+          window.bleScheduler.send(`M:${L},${R}`, { coalesce: true }).catch(() => {});
+        }
+        setLastVerb(`M:${L},${R}`);
+      }
     });
     document.querySelectorAll('.mq-drive-btn').forEach(btn => {
       btn.addEventListener('click', () => {
-        if (btn.dataset.stop === '1') { send('STOP'); return; }
-        // Scale data-l/data-r by current speed (treat 200 as nominal)
-        const ref = 200;
-        const L = Math.round(+btn.dataset.l * (speed / ref));
-        const R = Math.round(+btn.dataset.r * (speed / ref));
-        send(`M:${L},${R}`);
+        if (btn.dataset.stop === '1') { fireDrive(0, 0); return; }
+        fireDrive(+btn.dataset.l, +btn.dataset.r);
       });
     });
   }

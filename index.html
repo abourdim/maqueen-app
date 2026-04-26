@@ -216,14 +216,25 @@ html[dir="rtl"] .hint ol { padding-left: 0; padding-right: 20px; }
                                     </button>
                                 </div>
 
-                                <div class="hint">
-                                    <div class="hint-title" data-i18n="how_to_connect">How to connect</div>
-                                    <ol>
-                                        <li data-i18n="step1_connect">Turn on your micro:bit</li>
-                                        <li data-i18n="step2_connect">Click Connect</li>
-                                        <li data-i18n="step3_connect">Pick your micro:bit from the list</li>
-                                    </ol>
+                                <div class="hint" id="appBuildInfo" style="font-family:'JetBrains Mono', monospace; font-size:12px; line-height:1.7;">
+                                    <div style="font-weight:700; color:#00d4ff; font-size:13px;">🤖 Maqueen Lab</div>
+                                    <div style="opacity:0.7;">version <span style="color:#00d4ff;" id="appVersion">0.1.0</span></div>
+                                    <div style="opacity:0.7;">built <span style="color:#00d4ff;" id="appBuildDate">2026-04-26</span></div>
+                                    <div style="opacity:0.55; margin-top:4px;">commit <span style="color:#00d4ff;" id="appCommit">main</span></div>
                                 </div>
+                                <script>
+                                  // Try to read latest from product.json + a generated build-info.json
+                                  fetch('product.json').then(r => r.json()).then(j => {
+                                    const v = document.getElementById('appVersion');
+                                    if (v && j.VERSION_PLAIN) v.textContent = j.VERSION_PLAIN;
+                                  }).catch(()=>{});
+                                  fetch('build-info.json').then(r => r.json()).then(b => {
+                                    const d = document.getElementById('appBuildDate');
+                                    const c = document.getElementById('appCommit');
+                                    if (d && b.builtAt) d.textContent = b.builtAt;
+                                    if (c && b.commit) c.textContent = b.commit;
+                                  }).catch(()=>{});
+                                </script>
                             </div>
 
                             <div class="connection-details">
@@ -423,6 +434,9 @@ html[dir="rtl"] .hint ol { padding-left: 0; padding-right: 20px; }
                                         <span>Speed</span>
                                         <input type="range" id="mqSpeedSlider" min="50" max="255" value="200" style="flex:1; accent-color:#fb923c;"/>
                                         <span id="mqSpeedReadout" style="font-family:monospace; color:#fb923c; min-width:30px; text-align:right;">200</span>
+                                    </div>
+                                    <div id="mqDriveLast" style="margin-top:8px; padding:6px 10px; background:#0a1628; border:1px solid #1d3556; border-radius:6px; font-family:'JetBrains Mono', monospace; font-size:11px; color:#93a8c4; text-align:center;">
+                                        last cmd: <span id="mqDriveLastVerb" style="color:#fb923c; font-weight:700;">—</span>
                                     </div>
                                 </div>
 
