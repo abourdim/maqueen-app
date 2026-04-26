@@ -54,8 +54,8 @@
  *
  * BUILD STAMP — edit these two lines before flashing:
  */
-const BUILD_VERSION = "0.1.25"
-const BUILD_DATE = "2026-04-26 18:47 UTC"
+const BUILD_VERSION = "0.1.26"
+const BUILD_DATE = "2026-04-26 18:57 UTC"
 
 // ---------- state ----------
 let btConnected = false
@@ -63,6 +63,12 @@ let logLevel = 0                    // 0=silent (default), 1=rx/tx, 2=+exec, 3=+
                                     // CRITICAL: keep default 0 — serial.writeLine
                                     // can block the BLE handler fiber when no USB
                                     // monitor is reading, killing all echoes.
+let streamsEnabled = false          // 0 = no auto-streams (default).
+                                    // Web app sends 'STREAM:on' once it's
+                                    // ready to receive ACC/TEMP/LIGHT/etc.
+                                    // Streaming before the BLE channel is
+                                    // ready or while RX is busy starves the
+                                    // receive handler.
 let lastAcc = [0, 0, 0]
 let accDeadband = 30                // mg
 let benchSent = 0
@@ -111,13 +117,13 @@ bluetooth.onBluetoothConnected(function () {
     btConnected = true
     basic.showIcon(IconNames.Yes)
     bluetooth.uartWriteLine("INFO:CONNECTED")
-    slog("[ble]  connected")
+    if (logLevel >= 1) slog("[ble]  connected")
 })
 
 bluetooth.onBluetoothDisconnected(function () {
     btConnected = false
     basic.showIcon(IconNames.No)
-    slog("[ble]  disconnected")
+    if (logLevel >= 1) slog("[ble]  disconnected")
 })
 
 // ---------- command parser ----------
@@ -391,6 +397,12 @@ bluetooth.onUartDataReceived(serial.delimiters(Delimiters.NewLine), function () 
         handleI2C(verb.substr(4))
     } else if (verb == "HELLO") {
         send("HELLO:" + BUILD_VERSION)
+    } else if (verb == "STREAM:on") {
+        streamsEnabled = true
+        send("STREAM:on")
+    } else if (verb == "STREAM:off") {
+        streamsEnabled = false
+        send("STREAM:off")
     }
     // ---- bit-playground bridge verbs (so existing UI tabs work) ----
     else if (verb.substr(0, 5) == "TEXT:") {
@@ -438,7 +450,7 @@ function handleIcon(name: string) {
 
 // ---------- accelerometer streaming (~20 Hz, on change) ----------
 basic.forever(function () {
-    if (btConnected) {
+    if (btConnected && streamsEnabled) {
         let x = input.acceleration(Dimension.X)
         let y = input.acceleration(Dimension.Y)
         let z = input.acceleration(Dimension.Z)
@@ -456,7 +468,7 @@ basic.forever(function () {
 // ---------- temperature streaming (~1 Hz, on change) ----------
 let lastTemp = -999
 basic.forever(function () {
-    if (btConnected) {
+    if (btConnected && streamsEnabled) {
         let t = input.temperature()
         if (t != lastTemp) {
             lastTemp = t
@@ -475,7 +487,7 @@ basic.forever(function () {
 let lastLight = -1
 let lastCompass = -1
 basic.forever(function () {
-    if (btConnected) {
+    if (btConnected && streamsEnabled) {
         let l = input.lightLevel()
         if (Math.abs(l - lastLight) > 4) {
             lastLight = l
@@ -494,7 +506,7 @@ basic.forever(function () {
 let lastBtnA = false
 let lastBtnB = false
 basic.forever(function () {
-    if (btConnected) {
+    if (btConnected && streamsEnabled) {
         let a = input.buttonIsPressed(Button.A)
         let b = input.buttonIsPressed(Button.B)
         if (a != lastBtnA) {
