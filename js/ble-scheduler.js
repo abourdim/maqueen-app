@@ -145,6 +145,26 @@
     }, Math.max(0, due));
   }
 
+  // Global write throttle — Web Bluetooth's GATT only permits ONE
+  // writeValue at a time. Without serialising, fast back-to-back sends
+  // raise 'NetworkError: GATT operation already in progress'.
+  // Each call waits MIN_WRITE_GAP_MS after the previous one before
+  // hitting sendLine. Acts as both a serializer and a rate cap.
+  const MIN_WRITE_GAP_MS = 90;   // ≈ 11 cmd/sec ceiling
+  let lastWriteAt = 0;
+  let writeQueue = Promise.resolve();
+  function throttledSend(line) {
+    writeQueue = writeQueue.then(() => {
+      const now = performance.now();
+      const gap = MIN_WRITE_GAP_MS - (now - lastWriteAt);
+      const delay = gap > 0 ? gap : 0;
+      return new Promise(r => setTimeout(r, delay)).then(() => {
+        lastWriteAt = performance.now();
+        try { global.sendLine(line); } catch (e) { /* swallow */ }
+      });
+    });
+  }
+
   function dispatch(verb, resolve, reject) {
     if (!global.sendLine) {
       reject(new Error('ble.js not loaded'));
@@ -172,7 +192,7 @@
 
     pending.set(seq, { verb, ts: performance.now(), resolve, reject, timeoutId });
     stats.sent++;
-    global.sendLine(line);
+    throttledSend(line);
     emitStats();
   }
 
@@ -244,12 +264,14 @@
   // ---------------------------------------------------------------
   // Defaults: sensible rate limits for the heavy verbs
   // ---------------------------------------------------------------
-  setRate('M', 10);     // motors — joystick drag
-  setRate('SRV', 10);   // servo — slider drag
-  setRate('RGB', 10);   // RGB animations
-  setRate('LED', 50);   // simple LED toggles — 20 ms gap, allows fast L+R pairs
+  setRate('M', 8);      // motors — joystick drag
+  setRate('SRV', 8);    // servo — slider drag
+  setRate('RGB', 8);    // RGB animations
+  setRate('LED', 30);   // simple LED toggles — fast L+R pairs
   setRate('BUZZ', 5);   // buzzer
-  // queries (LINE?, DIST?, IR?) and BENCH have no limit — they're user-triggered
+  setRate('LINE?', 4);  // line-sensor poll
+  setRate('DIST?', 4);  // ultrasonic poll
+  setRate('IR?', 4);    // IR poll
 
   // Boot the UART hook once the page has loaded ble.js + sensors.js
   if (document.readyState === 'loading') {
