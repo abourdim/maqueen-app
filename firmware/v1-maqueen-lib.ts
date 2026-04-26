@@ -54,8 +54,8 @@
  *
  * BUILD STAMP — edit these two lines before flashing:
  */
-const BUILD_VERSION = "0.1.19"
-const BUILD_DATE = "2026-04-26 17:46 UTC"
+const BUILD_VERSION = "0.1.20"
+const BUILD_DATE = "2026-04-26 17:55 UTC"
 
 // ---------- state ----------
 let btConnected = false
@@ -518,8 +518,12 @@ basic.forever(function () {
 })
 
 // ---------- start ----------
+// Only start UART — accelerometer/temp/etc. are streamed manually via
+// uartWriteLine, no need for the heavyweight BLE characteristic services
+// (which compound with maqueen + microphone + IR libs to overflow
+// micro:bit V1's RAM and trigger MakeCode's '!!proc || !bin.finalPass'
+// assertion).
 bluetooth.startUartService()
-bluetooth.startAccelerometerService()
 basic.showIcon(IconNames.No)
 setupIR()
 bootBanner()
