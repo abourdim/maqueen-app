@@ -274,12 +274,12 @@
       lets_go:            "Let's Go!",
 
       // Firmware Overlay
-      fw_title:           "micro:bit Firmware",
-      fw_intro:           "Flash this code to your micro:bit V2 using MakeCode:",
-      fw_step1:           "Click Copy Code below",
-      fw_step2:           "Open MakeCode and switch to JavaScript mode",
-      fw_step3:           "Select all (Ctrl+A) and paste (Ctrl+V)",
-      fw_step4:           "Click Download and flash to your micro:bit",
+      fw_title:           "Maqueen Lite v4 Firmware",
+      fw_intro:           "Flash this code to the micro:bit on your Maqueen Lite v4 using MakeCode. Add the pxt-maqueen extension first.",
+      fw_step1:           "Open MakeCode → Extensions → search \"maqueen\" or paste github.com/DFRobot/pxt-maqueen",
+      fw_step2:           "Switch to JavaScript mode and click Copy Code below",
+      fw_step3:           "Select all (Ctrl+A) and paste (Ctrl+V) into MakeCode",
+      fw_step4:           "Click Download and flash the .hex onto your micro:bit",
       copy_code:          "Copy Code",
       copied:             "Copied!",
       open_makecode:      "Open MakeCode",
