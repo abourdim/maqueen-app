@@ -54,8 +54,8 @@
  *
  * BUILD STAMP — edit these two lines before flashing:
  */
-const BUILD_VERSION = "0.1.13"
-const BUILD_DATE = "2026-04-26 16:01 UTC"
+const BUILD_VERSION = "0.1.14"
+const BUILD_DATE = "2026-04-26 16:27 UTC"
 
 // ---------- state ----------
 let btConnected = false
@@ -228,6 +228,9 @@ function handleServo(arg: string) {
     let port = v[0] == 1 ? maqueen.Servos.S1 : maqueen.Servos.S2
     let angle = Math.constrain(v[1], 0, 180)
     maqueen.servoRun(port, angle)
+    // Broadcast position so bit-playground's servo gauges + 3D arm reflect it
+    if (v[0] == 1) send("SERVO1_POS:" + angle)
+    else send("SERVO2_POS:" + angle)
     execlog("SRV " + v[0] + "=" + angle)
 }
 
@@ -449,6 +452,27 @@ basic.forever(function () {
         }
     }
     basic.pause(300)
+})
+
+// ---------- compass heading (fires after first calibration) ----------
+let lastCompass = -1
+basic.forever(function () {
+    if (btConnected) {
+        let h = input.compassHeading()   // -1 if not yet calibrated, 0..359 otherwise
+        if (h >= 0 && Math.abs(h - lastCompass) > 2) {
+            lastCompass = h
+            send("COMPASS:" + h)
+        }
+    }
+    basic.pause(200)
+})
+
+// ---------- logo touch (V2 only — silently no-op on V1) ----------
+input.onLogoEvent(TouchButtonEvent.Pressed, function () {
+    if (btConnected) send("BTN:LOGO:1")
+})
+input.onLogoEvent(TouchButtonEvent.Released, function () {
+    if (btConnected) send("BTN:LOGO:0")
 })
 
 // ---------- buttons (poll for press/release; onButtonReleased is not in pxt-microbit) ----------
