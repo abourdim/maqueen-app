@@ -6,7 +6,7 @@ Source of truth for every pin used by Maqueen Lab firmware and the underlying `p
 
 - **DFRobot pxt-maqueen extension** — [github.com/DFRobot/pxt-maqueen](https://github.com/DFRobot/pxt-maqueen) — the canonical MakeCode library; the only authoritative source for which micro:bit pin drives what on Maqueen Lite v4. All pin assignments below are extracted from this repo.
 - **pxt-maqueen `maqueen.ts`** — [maqueen.ts](https://github.com/DFRobot/pxt-maqueen/blob/master/maqueen.ts) — line-by-line `DigitalPin.PXX` and I2C `0x10` references cited in the "How we know" section below.
-- **pxt-maqueen `maqueenIR.cpp`** — [maqueenIR.cpp](https://github.com/DFRobot/pxt-maqueen/blob/master/maqueenIR.cpp) — IR-receiver C++ shim, fixed pin internal to the extension.
+- **pxt-maqueen `maqueenIR.cpp`** — [maqueenIR.cpp](https://github.com/DFRobot/pxt-maqueen/blob/master/maqueenIR.cpp) — IR-receiver C++ shim. Pin is **user-configurable** via `maqueenIR.initIR(pin)`; on Maqueen Lite v4 the on-board IR receiver is wired to **P16**.
 - **DFRobot Maqueen Lite product page** — [dfrobot.com/product-1783.html](https://www.dfrobot.com/product-1783.html) — high-level component list (4× RGB ambient, 2× LEDs, 2× line sensors, ultrasonic, IR, buzzer, S1/S2 servos, P0/P1/P2 Gravity ports, I2C). Does **not** publish the pin diagram in text.
 - **DFRobot Maqueen Lite wiki** — [wiki.dfrobot.com/rob0148-en](https://wiki.dfrobot.com/rob0148-en/) — installation guide, function diagram (image-only), example sketches.
 - **micro:bit pin reference** — [tech.microbit.org/hardware/edgeconnector/](https://tech.microbit.org/hardware/edgeconnector/) — for resolving which `DigitalPin.PXX` map to which physical edge-connector pad and which are shared with the LED matrix.
@@ -68,7 +68,7 @@ Maqueen Lab's v1 firmware (`firmware/v1-maqueen-lib.ts`) uses these `maqueen.*` 
 | Ultrasonic ECHO | **P2** | SR04 / SR04P |
 | Buzzer | **P0** | micro:bit default `music` lib |
 | Servos S1 / S2 | I2C **0x10** (via extension) | Use `maqueen.servoRun(S1\|S2, angle)` |
-| IR receiver | `maqueenIR.cpp` (fixed pin) | `maqueen.IR_read()` returns NEC code |
+| IR receiver | **P16** (default for Maqueen Lite v4) | `maqueenIR.initIR(P16)` + `onPressEvent(...)` per button |
 
 ---
 
@@ -122,7 +122,7 @@ Every pin assignment below is extracted from the [pxt-maqueen extension source](
 | I2C `0x10` reg `0x00` | Motor M1 | [maqueen.ts:202–205](https://github.com/DFRobot/pxt-maqueen/blob/master/maqueen.ts#L202) — `buf[0] = 0x00; ...; pins.i2cWriteBuffer(0x10, buf)` inside `motorRun(M1, ...)` |
 | I2C `0x10` reg `0x02` | Motor M2 | [maqueen.ts:208–211](https://github.com/DFRobot/pxt-maqueen/blob/master/maqueen.ts#L208) — `buf[0] = 0x02` for M2 |
 | I2C `0x10` reg `0x32` | 4× RGB ambient LEDs | [maqueen.ts:659](https://github.com/DFRobot/pxt-maqueen/blob/master/maqueen.ts#L659) — `pins.i2cWriteNumber(I2CADDR, 0x32, NumberFormat.Int8LE)` inside the RGB write block |
-| `IR receiver` (fixed) | NEC IR | [maqueenIR.cpp](https://github.com/DFRobot/pxt-maqueen/blob/master/maqueenIR.cpp) — C++ shim sets the pin internally; surfaced via `maqueen.IR_read()` in [maqueen.ts](https://github.com/DFRobot/pxt-maqueen/blob/master/maqueen.ts) |
+| `IR receiver` (P16) | NEC IR | [maqueenIR.cpp](https://github.com/DFRobot/pxt-maqueen/blob/master/maqueenIR.cpp) defines the API but does **not** hardcode a pin — user must call `maqueenIR.initIR(maqueenIR.Pins.P16)`. P16 is the convention for Maqueen Lite v4. |
 | `P0` | Buzzer | **Not in pxt-maqueen.** Maqueen Lite v4 wires the on-board buzzer to `P0`, the micro:bit's default `music` library output. Confirmed by DFRobot's example sketches on the [wiki](https://wiki.dfrobot.com/rob0148-en/) and matches micro:bit V2's built-in speaker convention. |
 | `P19` / `P20` | I2C SCL / SDA | **Not in pxt-maqueen.** Standard micro:bit edge-connector I2C pins per [tech.microbit.org/hardware/edgeconnector](https://tech.microbit.org/hardware/edgeconnector/); pxt-maqueen calls `pins.i2c*` which uses these by default. |
 | `P5` / `P11` | Button A / B | **Not in pxt-maqueen.** Built into the micro:bit board itself, not the Maqueen carrier. |

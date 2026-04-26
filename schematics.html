@@ -323,11 +323,11 @@
     <text x="630" y="435" text-anchor="end" class="comp-sub">digital</text>
   </g>
 
-  <!-- IR receiver — no GPIO line, fixed in C++ shim -->
+  <!-- IR receiver on P16 (Maqueen Lite v4 convention; user-configurable via maqueenIR.initIR) -->
   <g id="ir">
-    <rect x="480" y="540" width="160" height="46" rx="6" fill="#0a1628" stroke="#93a8c4" stroke-width="1.5" stroke-dasharray="4 3"/>
-    <text x="560" y="558" text-anchor="middle" fill="#fff" class="comp-label">IR receiver</text>
-    <text x="560" y="575" text-anchor="middle" class="comp-sub" font-style="italic">fixed pin · maqueenIR.cpp</text>
+    <rect x="480" y="540" width="160" height="46" rx="6" fill="#0a1628" stroke="#c084fc" stroke-width="1.5"/>
+    <text x="560" y="560" text-anchor="middle" fill="#fff" class="comp-label">IR receiver</text>
+    <text x="560" y="577" text-anchor="middle" class="comp-sub" font-style="italic">NEC · maqueenIR.initIR(P16)</text>
   </g>
 
   <!-- =========================================================
