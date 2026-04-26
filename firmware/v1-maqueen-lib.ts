@@ -149,8 +149,7 @@ function handleMotor(arg: string) {
 }
 
 function handleStop() {
-    // pxt-maqueen v1.7.16 : motorStop() takes 0 args and stops all motors
-    maqueen.motorStop()
+    maqueen.motorStop(maqueen.Motors.All)
     execlog("motors STOP")
 }
 
@@ -211,7 +210,8 @@ function handleLineQuery() {
 
 // DIST?
 function handleDistQuery() {
-    let cm = maqueen.Ultrasonic(PingUnit.Centimeters)
+    // pxt-maqueen v1.7.16: Ultrasonic() takes no args, returns cm directly
+    let cm = maqueen.Ultrasonic()
     send("DIST:" + cm)
     if (logLevel >= 3) execlog("DIST cm=" + cm)
 }
