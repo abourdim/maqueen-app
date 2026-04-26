@@ -6,7 +6,20 @@
  * Hardware: DFRobot Maqueen Lite v4 (ROB0148)
  * Extensions required (add in MakeCode → Extensions):
  *   • pxt-maqueen     (https://github.com/DFRobot/pxt-maqueen)
- *   • neopixel        (search "neopixel" — for the 4 RGB ambient LEDs on P15)
+ *
+ * OPTIONAL — 4× RGB ambient LEDs:
+ *   The standard 'neopixel' extension CONFLICTS with 'bluetooth' on
+ *   micro:bit; MakeCode blocks adding both. By default this firmware
+ *   ships WITHOUT the neopixel call — RGB:i,r,g,b commands are
+ *   accepted and echoed but only logged to USB serial (no visible
+ *   effect on the strip).
+ *
+ *   To enable real RGB output:
+ *     1. Try a BLE-safe NeoPixel fork in Extensions, e.g.:
+ *          https://github.com/Bohwaz/pxt-neopixel
+ *          https://github.com/openblockcc/pxt-neopixel-ble
+ *     2. Uncomment the 'NEOPIXEL BLOCK' below.
+ *     3. Re-flash.
  *
  * BLE UART wire protocol — sequence-numbered, echo-confirmed.
  *
@@ -41,8 +54,8 @@
  *
  * BUILD STAMP — edit these two lines before flashing:
  */
-const BUILD_VERSION = "0.1.3"
-const BUILD_DATE = "2026-04-26 15:10 UTC"
+const BUILD_VERSION = "0.1.4"
+const BUILD_DATE = "2026-04-26 15:14 UTC"
 
 // ---------- state ----------
 let btConnected = false
@@ -165,35 +178,48 @@ function handleLED(arg: string) {
     execlog("LED " + v[0] + "=" + v[1])
 }
 
-// ---- 4× RGB NeoPixel strip on P15 ----
-// Maqueen Lite v4's 4 ambient RGB LEDs are NOT exposed by pxt-maqueen v1.7.16.
-// They're standard WS2812/NeoPixel on P15 — needs the 'neopixel' extension
-// added in MakeCode (Extensions → search "neopixel").
-let rgbStrip: neopixel.Strip = null
-function rgbInit() {
-    if (rgbStrip == null) {
-        rgbStrip = neopixel.create(DigitalPin.P15, 4, NeoPixelMode.RGB)
-        rgbStrip.setBrightness(80)
-    }
-}
 // RGB:i,r,g,b — i=0..3 or * for all
+// DEFAULT: stub (logs to serial only) — no neopixel dependency so the
+// firmware compiles without the neopixel extension. See file header for
+// how to enable real RGB output.
 function handleRGB(arg: string) {
     let parts = arg.split(",")
     if (parts.length < 4) return
-    rgbInit()
-    let r = Math.constrain(parseInt(parts[1]), 0, 255)
-    let g = Math.constrain(parseInt(parts[2]), 0, 255)
-    let b = Math.constrain(parseInt(parts[3]), 0, 255)
-    let color = neopixel.rgb(r, g, b)
-    if (parts[0] == "*") {
-        for (let i = 0; i < 4; i++) rgbStrip.setPixelColor(i, color)
-    } else {
-        let idx = Math.constrain(parseInt(parts[0]), 0, 3)
-        rgbStrip.setPixelColor(idx, color)
-    }
-    rgbStrip.show()
-    execlog("RGB " + parts[0] + " = " + r + "," + g + "," + b)
+    let r = parseInt(parts[1])
+    let g = parseInt(parts[2])
+    let b = parseInt(parts[3])
+    execlog("RGB " + parts[0] + " = " + r + "," + g + "," + b + "  (stub — no neopixel)")
 }
+
+// ============================================================
+// NEOPIXEL BLOCK — uncomment ONLY if you have a BLE-safe neopixel
+// extension installed (e.g. Bohwaz/pxt-neopixel). Then DELETE the stub
+// handleRGB above so this version is used instead.
+// ============================================================
+// let rgbStrip: neopixel.Strip = null
+// function rgbInit() {
+//     if (rgbStrip == null) {
+//         rgbStrip = neopixel.create(DigitalPin.P15, 4, NeoPixelMode.RGB)
+//         rgbStrip.setBrightness(80)
+//     }
+// }
+// function handleRGB(arg: string) {
+//     let parts = arg.split(",")
+//     if (parts.length < 4) return
+//     rgbInit()
+//     let r = Math.constrain(parseInt(parts[1]), 0, 255)
+//     let g = Math.constrain(parseInt(parts[2]), 0, 255)
+//     let b = Math.constrain(parseInt(parts[3]), 0, 255)
+//     let color = neopixel.rgb(r, g, b)
+//     if (parts[0] == "*") {
+//         for (let i = 0; i < 4; i++) rgbStrip.setPixelColor(i, color)
+//     } else {
+//         let idx = Math.constrain(parseInt(parts[0]), 0, 3)
+//         rgbStrip.setPixelColor(idx, color)
+//     }
+//     rgbStrip.show()
+//     execlog("RGB " + parts[0] + " = " + r + "," + g + "," + b)
+// }
 
 // SRV:i,a
 function handleServo(arg: string) {
