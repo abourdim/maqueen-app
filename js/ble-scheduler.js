@@ -150,6 +150,14 @@
       reject(new Error('ble.js not loaded'));
       return;
     }
+    // Single chokepoint: drop on the floor if not connected.
+    // Auto-stops any running animation (rainbow, sweep) since they can't
+    // reach the robot anyway.
+    if (!isConnectedLive()) {
+      stopAll();
+      reject(new Error('not connected'));
+      return;
+    }
     const seq = nextSeq++;
     const line = `#${seq} ${verb}`;
     const timeoutId = setTimeout(() => {
@@ -251,9 +259,36 @@
   }
 
   // ---- export ----
+  // True if the BLE link is actually live. Combines:
+  //   1. Internal _connected flag (set by INFO:CONNECTED / INFO:DISCONNECTED lines)
+  //   2. Bit-playground's connectBtn.disabled === true (its UI flips on connect)
+  //   3. Falls back to false if neither signal is positive
+  // This is the single source of truth other modules should use.
+  function isConnectedLive() {
+    if (_connected) {
+      // Cross-check with bit-playground's button state — if that says
+      // disconnected (browser-side disconnect), trust it and reset.
+      const btn = document.getElementById('connectBtn');
+      if (btn && btn.disabled === false) {
+        _connected = false;
+        emit('disconnected', {});
+        return false;
+      }
+      return true;
+    }
+    // _connected is false — but maybe we missed INFO:CONNECTED. Check button.
+    const btn = document.getElementById('connectBtn');
+    if (btn && btn.disabled === true) {
+      _connected = true;
+      emit('connected', {});
+      return true;
+    }
+    return false;
+  }
+
   global.bleScheduler = {
     send, animate, stop, stopAll,
     setRate, on, getStats, resetStats,
-    isConnected: () => _connected,
+    isConnected: isConnectedLive,
   };
 })(window);
