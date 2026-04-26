@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.1.x — auto-bump enabled
+
+Pre-commit hook (`tools/git-hooks/pre-commit`) now bumps the firmware
+patch version + UTC build date on every commit. Set
+`SKIP_FW_BUMP=1 git commit ...` to opt out for a specific commit.
+
 ## v0.1.0 — 2026-04-26 (in progress)
 
 Initial scaffold. Forked from [bit-playground](https://github.com/abourdim/bit-playground) v1.2.0.
