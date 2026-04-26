@@ -54,12 +54,15 @@
  *
  * BUILD STAMP — edit these two lines before flashing:
  */
-const BUILD_VERSION = "0.1.24"
-const BUILD_DATE = "2026-04-26 18:11 UTC"
+const BUILD_VERSION = "0.1.25"
+const BUILD_DATE = "2026-04-26 18:47 UTC"
 
 // ---------- state ----------
 let btConnected = false
-let logLevel = 1                    // 0=silent, 1=rx/tx, 2=+exec, 3=+sensor polls
+let logLevel = 0                    // 0=silent (default), 1=rx/tx, 2=+exec, 3=+sensor polls
+                                    // CRITICAL: keep default 0 — serial.writeLine
+                                    // can block the BLE handler fiber when no USB
+                                    // monitor is reading, killing all echoes.
 let lastAcc = [0, 0, 0]
 let accDeadband = 30                // mg
 let benchSent = 0
@@ -82,14 +85,19 @@ function execlog(msg: string) {
     if (logLevel >= 2) slog("[exec] " + msg)
 }
 
-// ---------- send line on BLE + serial mirror ----------
+// ---------- send line on BLE only (USB log via txlog at logLevel >= 1) ----------
+// IMPORTANT: serial.writeLine can BLOCK the calling fiber when the USB
+// output buffer is full and no host monitor is reading it. Calling it on
+// every BLE TX freezes the receive handler → 0 echoes ever return.
+// txlog is gated on logLevel which defaults to 0 (silent).
 function send(line: string) {
     if (btConnected) bluetooth.uartWriteLine(line)
-    txlog(line)
+    if (logLevel >= 1) txlog(line)
 }
 
-// ---------- boot banner ----------
+// ---------- boot banner (only emits if user enabled USB logs via LOG:n) ----------
 function bootBanner() {
+    if (logLevel < 1) return
     slog("")
     slog("=========================================================")
     slog("[boot] Maqueen Lab firmware v" + BUILD_VERSION + " built " + BUILD_DATE)
