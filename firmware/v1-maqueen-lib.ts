@@ -149,7 +149,8 @@ function handleMotor(arg: string) {
 }
 
 function handleStop() {
-    maqueen.motorStop(maqueen.Motors.All)
+    // pxt-maqueen v1.7.16 : motorStop() takes 0 args and stops all motors
+    maqueen.motorStop()
     execlog("motors STOP")
 }
 
@@ -215,11 +216,11 @@ function handleDistQuery() {
     if (logLevel >= 3) execlog("DIST cm=" + cm)
 }
 
-// IR?
+// IR? — captured asynchronously by the IR handler below
+let lastIRCode = 0
 function handleIRQuery() {
-    let code = maqueen.IR_read()
-    send("IR:" + code)
-    if (logLevel >= 3) execlog("IR code=" + code)
+    send("IR:" + lastIRCode)
+    if (logLevel >= 3) execlog("IR code=" + lastIRCode)
 }
 
 // LOG:n
@@ -393,18 +394,23 @@ basic.forever(function () {
     basic.pause(300)
 })
 
-// ---------- buttons ----------
-input.onButtonPressed(Button.A, function () {
-    if (btConnected) send("BTN:A:1")
-})
-input.onButtonReleased(Button.A, function () {
-    if (btConnected) send("BTN:A:0")
-})
-input.onButtonPressed(Button.B, function () {
-    if (btConnected) send("BTN:B:1")
-})
-input.onButtonReleased(Button.B, function () {
-    if (btConnected) send("BTN:B:0")
+// ---------- buttons (poll for press/release; onButtonReleased is not in pxt-microbit) ----------
+let lastBtnA = false
+let lastBtnB = false
+basic.forever(function () {
+    if (btConnected) {
+        let a = input.buttonIsPressed(Button.A)
+        let b = input.buttonIsPressed(Button.B)
+        if (a != lastBtnA) {
+            lastBtnA = a
+            send("BTN:A:" + (a ? 1 : 0))
+        }
+        if (b != lastBtnB) {
+            lastBtnB = b
+            send("BTN:B:" + (b ? 1 : 0))
+        }
+    }
+    basic.pause(50)
 })
 
 // ---------- start ----------
