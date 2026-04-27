@@ -2,9 +2,9 @@
 
 **Web-based BLE component lab for the DFRobot Maqueen Lite v4 + Mechanic Kits.**
 
-Every actuator and sensor on the Maqueen Lite has a dedicated **Explorer** page where kids can manipulate the component live, see the code that drives it, and watch sensor data react. All control flows over BLE UART. Every command is echo-confirmed.
+Every actuator and sensor on the Maqueen Lite is reachable from a card in the **🤖 Maqueen** tab — drive the wheels, pose the servos, light the LEDs and NeoPixels, beep the buzzer, ping the ultrasonic, read the IR remote, follow a line. A second **🧪 Playground** tab keeps the legacy bit-playground sub-tabs (Controls, Sensors, Graph, 3D, Bench, More) for free-form micro:bit experiments. All control flows over BLE UART; every command is sequence-numbered and echo-confirmed.
 
-> **Status:** v0.1.0 — early scaffolding. See [plan.md](plan.md) for the full build plan.
+> **Status:** v0.1.55 — Maqueen tab feature-complete; live sensor strip, auto-pollers, mechanic-kit picker, follow-line, NeoPixel rainbow, LED matrix draw. See [CHANGELOG.md](CHANGELOG.md) for recent work, [plan.md](plan.md) for the original build plan.
 
 ---
 
@@ -52,10 +52,15 @@ Full pinout, conflict warnings, and protocol spec live in [docs/USER_GUIDE.md](d
 ## Architecture
 
 - **Web app**: vanilla JS + SVG + CSS. No framework. PWA-installable.
-- **BLE**: Web Bluetooth → micro:bit Bluetooth UART service.
-- **Protocol**: every command carries a sequence number. Micro:bit echoes back. Web app validates round-trip and surfaces latency/loss in the Console tab.
-- **Firmware**: stays dumb. Web app drives all animations (sweep, blink, rainbow) via streamed commands.
+- **BLE**: Web Bluetooth → micro:bit Bluetooth UART service. Single global write serializer awaits each `writeValue()` Promise — no `NetworkError: GATT operation already in progress`. Connection state is broadcast via DOM signal + MutationObserver; pending sends reject on disconnect.
+- **Protocol**: every command carries a sequence number. Micro:bit replies `ECHO:N <verb>`. Web app surfaces sent / echoed / lost / avg-latency on the live sensor strip's BLE bench chip. `HELLO`/`HELLO:<ver>` reports firmware version on the Connect card.
+- **Sensor streams**: ACC / LIGHT / SOUND auto-stream with a heartbeat (≥ once per ~500–1000 ms) so the Graph never looks frozen. Off by default — flip the `streams: ON/OFF` chip in the live strip, or enter the Sensors / Graph / 3D tab and they auto-arm. DIST / LINE / IR are polled on demand with per-poll-rate sliders (200–2000 ms, persisted in localStorage). Auto-pollers pause when leaving the Maqueen tab to spare BLE bandwidth.
+- **Firmware**: stays dumb. Web app drives all animations (sweep, blink, rainbow, follow-line tick) via streamed commands.
 - **USB serial mirror** at 115200 baud — boot banner, RX/TX log, executed commands. Useful for debugging without the web app.
+
+### Build / firmware version
+
+The pre-commit hook auto-bumps `BUILD_VERSION` **only** when `firmware/v1-maqueen-lib.ts` is in the staged change. Docs-only commits no longer bump the version — the stamp tracks real firmware churn. The `.hex` is **not** auto-compiled; rebuild it in MakeCode and re-flash when the version changes (see the User Guide's "Building the firmware .hex" section).
 
 See [plan.md](plan.md) for the full plan.
 

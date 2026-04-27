@@ -245,23 +245,32 @@
   <div class="step">
     <div class="num">3</div>
     <h3>Play</h3>
-    <p>Land on the <strong>🤖 Maqueen tab</strong>. Tap a direction, drag a slider, pick a color. Watch the live sensor strip up top react.</p>
+    <p>Land on the <strong>🤖 Maqueen tab</strong>. Tap a direction, drag a slider, pick a color. Watch the live sensor strip up top react. Switch to the <strong>🧪 Playground tab</strong> for the legacy bit-playground sub-tabs (Controls, Sensors, Graph, 3D, Bench, More).</p>
+  </div>
+</div>
+
+<div class="callout">
+  <div class="c-icon">🗂️</div>
+  <div class="c-body">
+    <h3>Two top tabs</h3>
+    <p><strong>🤖 Maqueen</strong> — the real-robot UI: cards for Drive, Servos, Simple LEDs, NeoPixels, Buzzer, Ultrasonic, IR remote, Line sensors (with Follow-line auto mode tucked inside).</p>
+    <p><strong>🧪 Playground</strong> — collapsible group of legacy bit-playground sub-tabs (Controls, Sensors, Graph, 3D, Bench, More). Free-form micro:bit experiments that don't depend on Maqueen hardware.</p>
   </div>
 </div>
 
 <!-- ============== WHAT YOU CAN DO ============== -->
 <h2>✨ What you can do</h2>
-<p class="section-sub">Six panels in the Maqueen tab, each driving a real piece of the robot.</p>
+<p class="section-sub">Cards in the Maqueen tab, each driving a real piece of the robot. A live sensor strip across the top shows LINE / DIST / IR / ACC plus the BLE bench (sent · echoed · lost · avg ms) and a <code>streams: ON/OFF</code> chip.</p>
 <div class="grid">
   <div class="card orange">
     <span class="icon">🛞</span>
     <h3>Drive the wheels</h3>
-    <p>Direction pad + speed slider. Drag while moving — speed updates instantly.</p>
+    <p>Direction pad + speed slider. Drag while moving — speed updates instantly. Flip <strong>Hold to drive</strong> on if you want release-to-stop.</p>
   </div>
   <div class="card cyan">
     <span class="icon">🦾</span>
     <h3>Pose the servos</h3>
-    <p>Two sliders, three presets. Pick a Mechanic Kit and the panel reshapes itself.</p>
+    <p>Two sliders, three presets. Pick a Mechanic Kit (Forklift / Loader / Beetle / Push) and the panel relabels itself with kit-specific roles.</p>
   </div>
   <div class="card yellow">
     <span class="icon">💡</span>
@@ -279,9 +288,28 @@
     <p>Piano-key notes (C–B), or any frequency + duration you type.</p>
   </div>
   <div class="card green">
-    <span class="icon">👀</span>
-    <h3>Read every sensor</h3>
-    <p>Line eyes, ultrasonic distance, IR remote, accelerometer — live on the strip up top.</p>
+    <span class="icon">📏</span>
+    <h3>Ultrasonic distance</h3>
+    <p>One-shot ping or auto-poll (200–2000 ms slider). When nothing's in front, the strip shows <code>DIST:-</code> instead of a bogus 500.</p>
+  </div>
+  <div class="card cyan">
+    <span class="icon">📺</span>
+    <h3>IR remote</h3>
+    <p>Last-pressed button echoes onto the strip. Works with the IR remote that ships with the Maqueen.</p>
+  </div>
+  <div class="card purple">
+    <span class="icon">🛤️</span>
+    <h3>Line sensors + Follow-line</h3>
+    <p>Live L/R eye dots — and the Follow-line auto mode now lives inside this card. Tick rate slider 100–1000 ms.</p>
+  </div>
+</div>
+
+<div class="callout">
+  <div class="c-icon">⚡</div>
+  <div class="c-body">
+    <h3>Auto-pollers + stream control, made polite</h3>
+    <p>DIST and LINE auto-poll at a rate you pick (200–2000 ms, persisted in localStorage). They <strong>pause when you leave the Maqueen tab</strong> so the BLE channel stays clear for whatever you're doing in the Playground tab.</p>
+    <p>The ACC / LIGHT / SOUND streams are <strong>off by default</strong> — toggle the <code>streams: ON/OFF</code> chip in the live strip, or just enter the Sensors / Graph / 3D sub-tab and they auto-arm. Each stream emits a heartbeat every ~500–1000 ms even when the value hasn't changed, so the Graph never looks frozen.</p>
   </div>
 </div>
 
@@ -291,6 +319,7 @@
   <div class="c-body">
     <h3>Every command is echo-confirmed</h3>
     <p>Each button press sends a sequence-numbered verb (<code>#42 SRV:1,90</code>). The micro:bit replies <code>ECHO:42 SRV:1,90</code>. The bench display in the live strip shows sent / echoed / lost / average round-trip — so you always know if BLE dropped a packet.</p>
+    <p>Under the hood: a single global write serializer awaits each <code>writeValue()</code> Promise — no more <code>NetworkError: GATT operation already in progress</code>. Pending sends are rejected immediately on disconnect (no silent hangs), and a fresh <code>HELLO</code> on connect prints the firmware version on the Connect card.</p>
   </div>
 </div>
 
@@ -516,16 +545,21 @@ RGB:i,r,g,b     NeoPixel i=0..3 or *
 SRV:i,a         servo i=1|2, a=0..180
 BUZZ:f,ms       tone (f=0 silences)
 LINE?           reply LINE:l,r
-DIST?           reply DIST:cm
+DIST?           reply DIST:cm  (or DIST:- when nothing detected)
 IR?             reply IR:code
+LM:HEX          5×5 LED matrix bitmap (Controls draw)
+STREAM:on|off   opt in/out of ACC/LIGHT/SOUND streams
 LOG:n           USB serial verbosity 0..3
 BENCH:PING      reply BENCH:PONG
 HELLO           reply HELLO:&lt;ver&gt;
 TEXT:msg        scrolling text on LED matrix
 CMD:icon        HEART/SMILE/SAD/FIRE/UP/DOWN/LEFT/RIGHT/CLEAR
+OTHER:*         More-tab verbs — now show feedback on the
+                micro:bit screen (digits, heart, arrows,
+                switch icons, bar graphs, scrolling text)
 SERVO1:angle    alias of SRV:1,angle
 SERVO2:angle    alias of SRV:2,angle</pre>
-    <p>Streams from the firmware: <code>ACC:x,y,z</code>, <code>TEMP:°C</code>, <code>LIGHT:n</code>, <code>SOUND:n</code>, <code>BTN:A:1</code>, <code>BTN:B:1</code>.</p>
+    <p>Streams from the firmware (heartbeat ~500–1000 ms, off by default — flip <code>STREAM:on</code> or the chip in the live strip): <code>ACC:x,y,z</code>, <code>TEMP:°C</code>, <code>LIGHT:n</code>, <code>SOUND:n</code>, <code>BTN:A:1</code>, <code>BTN:B:1</code>. <code>input.compassHeading()</code> was removed from the auto-stream — its tilt-game calibration was blocking the BLE handler and causing the "no echo" symptom.</p>
   </div>
 </details>
 
@@ -575,7 +609,7 @@ tools/bump-firmware.py auto-bump version + re-embed</pre>
   <a href="pinout.html">Pinout</a>
   <a href="plan.html">Plan</a>
   <a href="https://github.com/abourdim/maqueen-app">GitHub</a>
-  <div style="margin-top: 12px; opacity: 0.6;">v0.1.0 · MIT · forked from <a href="https://github.com/abourdim/bit-playground">bit-playground</a></div>
+  <div style="margin-top: 12px; opacity: 0.6;">v0.1.55 · MIT · forked from <a href="https://github.com/abourdim/bit-playground">bit-playground</a></div>
 </footer>
 
 </body>

@@ -1,6 +1,8 @@
 # Maqueen Lab — User Guide
 
-**Version:** v0.1.0 (early scaffold — only the Servo Explorer pilot is built)
+**Version:** v0.1.55 — Maqueen tab feature-complete (Drive, Servos with Mechanic-Kit picker, Simple LEDs, NeoPixels, Buzzer, Ultrasonic, IR remote, Line sensors + Follow-line). Live sensor strip across the top, auto-pollers with persisted rate sliders, and a `streams: ON/OFF` chip that auto-arms when you enter Sensors / Graph / 3D.
+
+> The HTML twin of this guide ([USER_GUIDE.html](../USER_GUIDE.html)) is the canonical, kid-friendly version and is kept up to date in lockstep.
 
 ---
 
@@ -51,24 +53,59 @@ Everything runs in the browser via Web Bluetooth — no install, no app store, j
 
 ---
 
-## What's in v0.1.0
+## What's in v0.1.55
 
-### Servo Explorer (pilot)
+### UI structure
 
-- Pick **S1** or **S2**.
-- Drag the **Angle** slider 0–180° → the SVG horn rotates and the robot's servo follows.
-- Click an angle preset for quick jumps.
-- Hit **▶ Sweep** for an automated back-and-forth animation (web-driven, BLE-rate-limited).
-- **Calibration** (per port, persisted in browser): set Min and Max angles to clamp the slider — useful when you've installed a kit and the servo can't physically reach 0° or 180°.
-- The **code panel** shows two equivalent versions of what your slider is sending:
-  - `maqueen.servoRun(...)` — using the DFRobot library (Phase 1).
-  - Raw `pins.i2cWriteBuffer(...)` — what it looks like at the I2C-register level (Phase 2 firmware).
-  - Each slider movement flashes the changed value and shows the BLE round-trip latency.
+The tab strip has **two top tabs**:
+
+- **🤖 Maqueen** — the real-robot UI. Cards for Drive, Servos (with a Mechanic-Kit picker: Forklift / Loader / Beetle / Push), Simple LEDs, NeoPixels, Buzzer, Ultrasonic, IR remote, and Line sensors (Follow-line auto mode lives inside the line-sensor card now).
+- **🧪 Playground** — collapsible group of legacy bit-playground sub-tabs: Controls, Sensors, Graph, 3D, Bench, More. (Down from 8 sub-tabs after dropping the duplicate Motors and GamePad sub-tabs.)
+
+A **live sensor strip** runs across the top: LINE, DIST, IR, ACC, BLE bench (sent · echoed · lost · avg ms), three poll buttons, and a `streams: ON/OFF` chip.
+
+### Drive
+
+- Direction pad + speed slider; drag while moving and the speed updates live.
+- **Hold to drive (release = stop)** option for kids who want a deadman feel.
+
+### Servos
+
+- Two sliders (S1, S2) with three presets per slider.
+- **Mechanic Kit picker** relabels the panel for Forklift (Lift/Tilt), Loader (Arm/Bucket), Beetle (Arm/Grip), or Push (Blade-only).
+- Per-port min/max calibration persists in localStorage.
+
+### Sensors / streams
+
+- DIST and LINE auto-poll at a rate you pick (200–2000 ms slider, persisted). When nothing is in front, DIST returns `DIST:-` (not the bogus `DIST:500` from earlier builds).
+- ACC / LIGHT / SOUND streams emit a heartbeat every ~500–1000 ms even when the value is unchanged, so the Graph never looks frozen. Streams are off by default; flip `STREAM:on` (or the chip in the strip), or just enter the Sensors / Graph / 3D sub-tab and they auto-arm on entry / disarm on exit.
+- Auto-pollers also pause when you leave the Maqueen tab — the BLE channel stays clear for whatever you're doing in the Playground.
+- `input.compassHeading()` is **not** in the auto-stream — it triggered tilt-game calibration that blocked the BLE handler (root cause of the long-standing "no echo" symptom).
+
+### Follow-line
+
+Lives inside the Line-sensor card. Tick rate slider 100–1000 ms (persisted).
+
+### LED matrix draw
+
+`LM:HEX` verb — Controls tab can paint the 5×5 matrix on the board.
+
+### More-tab feedback
+
+Every `OTHER:*` verb now shows visible micro:bit-screen feedback (digits, heart, arrows, switch icons, bar graphs, scrolling text) instead of silently acking.
 
 ### BLE Console
 
-- Live log of every TX (web → bit) and RX (bit → web) line.
-- Bench panel: sent / echoed / lost commands + average latency.
+- Single global write serializer — no `NetworkError: GATT operation already in progress`.
+- Connection state has one source of truth (DOM signal + MutationObserver, broadcasts `connected` / `disconnected`); pending sends reject on disconnect (no silent hangs).
+- `HELLO` / `HELLO:<ver>` confirms connection and reports firmware version on the Connect card.
+- Bench panel still shows sent / echoed / lost + avg latency.
+
+### Build / firmware version
+
+The pre-commit hook auto-bumps `BUILD_VERSION` **only** when `firmware/v1-maqueen-lib.ts` is in the staged change. Docs commits no longer bump the label — the stamp tracks real firmware churn.
+
+The `.hex` is **not** auto-compiled. Re-build it in MakeCode and re-flash when the firmware version changes (see `USER_GUIDE.html` → "Building the firmware .hex").
 
 ### Pinout reference
 
@@ -76,12 +113,19 @@ Open [pinout.html](../pinout.html) for the full pin map, I2C register layout, co
 
 ---
 
+## Removed / deprecated
+
+To kill duplication after the Maqueen tab landed:
+
+- **Touch P0/P1/P2 cards** — Maqueen wires P13/P14 to line sensors; P0/P1/P2 aren't exposed for touch.
+- **Buzzer card** in Controls — duplicate of Maqueen Buzzer.
+- **Servo / LED / Buzzer cards** in More — duplicates of the Maqueen panels.
+- **GamePad sub-tab** — duplicate of Maqueen Drive.
+- **Motors sub-tab** — duplicate of Maqueen Servos with the kit picker.
+
 ## What's coming next (per [plan.md](../plan.md))
 
-- More Component Explorers: Simple LED, RGB ambient (4 px), Motor (with wheel trim), Buzzer (with piano), Ultrasonic (sonar gauge), Line sensors, IR remote.
-- **Drive Explorer** with live 3-axis accelerometer telemetry overlaid with command markers.
-- **Mechanic Kit picker**: Forklift / Loader / Beetle / Push variants of the Servos tab.
-- **Add-on framework** for Gravity sensors and I2C accessories (verb namespace stubbed in firmware now).
+- **Add-on framework** for Gravity sensors and I2C accessories (verb namespace stubbed in firmware).
 - Trilingual UI (EN / AR / FR).
 - Phase 2 firmware (`firmware/v2-raw-pins.ts`): same wire protocol, raw `pins.*` calls instead of `maqueen.*` lib — for advanced learners.
 
