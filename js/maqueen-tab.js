@@ -1206,6 +1206,39 @@
       batBlip.querySelectorAll('circle').forEach(c => c.setAttribute('cy', yPos.toFixed(1)));
       batBlip.setAttribute('opacity', '1');
     }
+    // Sonar blip — same Y mapping as bat
+    const sonarBlip = document.getElementById('mqSonarBlip');
+    if (sonarBlip) {
+      const yPos = 120 - Math.min(1, cm / 200) * 90;
+      sonarBlip.querySelectorAll('circle').forEach(c => c.setAttribute('cy', yPos.toFixed(1)));
+      sonarBlip.setAttribute('opacity', '1');
+    }
+    // LiDAR blip cluster — same Y mapping
+    const lidarBlip = document.getElementById('mqLidarBlip');
+    if (lidarBlip) {
+      const yPos = 120 - Math.min(1, cm / 200) * 90;
+      const dy = yPos - 60;
+      lidarBlip.querySelectorAll('circle').forEach(c => {
+        const baseCy = parseFloat(c.getAttribute('cy'));
+        // Only shift if not already shifted (use data-base attr trick)
+        if (!c.dataset.baseCy) c.dataset.baseCy = baseCy;
+        c.setAttribute('cy', (parseFloat(c.dataset.baseCy) + dy).toFixed(1));
+      });
+      lidarBlip.setAttribute('opacity', '1');
+    }
+    // Heatmap marker — log-ish position so 10/30/100/200 land near tick marks
+    const heatMarker = document.getElementById('mqHeatMarker');
+    if (heatMarker) {
+      // Map cm → 0..100% with log-ish scale (so sub-30cm zone gets more space)
+      let pct;
+      if (cm <= 0) pct = 0;
+      else if (cm < 10) pct = (cm / 10) * 18;
+      else if (cm < 30) pct = 18 + ((cm - 10) / 20) * 12;
+      else if (cm < 100) pct = 30 + ((cm - 30) / 70) * 25;
+      else if (cm < 200) pct = 55 + ((cm - 100) / 100) * 45;
+      else pct = 100;
+      heatMarker.style.left = pct.toFixed(1) + '%';
+    }
     if (batNum) {
       // Tick on real value change (not on the same value being re-pinged)
       if (batNum.textContent !== cm + ' cm') {
@@ -1254,12 +1287,32 @@
     if (!conn) { setOrb(orb, 'warn', 'no link'); return; }
     setOrb(orb, 'on', 'polling ' + distRateMs + 'ms');
   }
+  // Radar style selector — toggle which visualization is shown.
+  function initRadarStyleSelector() {
+    const picks = document.querySelectorAll('.mq-radar-pick');
+    const styles = document.querySelectorAll('.mq-radar-style');
+    if (!picks.length) return;
+    let active;
+    try { active = localStorage.getItem('maqueen.radarStyle') || 'bat'; }
+    catch { active = 'bat'; }
+    function show(name) {
+      styles.forEach(s => s.style.display = (s.dataset.style === name) ? '' : 'none');
+      picks.forEach(p => {
+        const on = p.dataset.style === name;
+        p.classList.toggle('mq-radar-pick-active', on);
+      });
+      try { localStorage.setItem('maqueen.radarStyle', name); } catch {}
+    }
+    picks.forEach(p => p.addEventListener('click', () => show(p.dataset.style)));
+    show(active);
+  }
   function initUltrasonic() {
     const ping = document.getElementById('mqDistPing');
     const auto = document.getElementById('mqDistAuto');
     const rate = document.getElementById('mqDistRate');
     const read = document.getElementById('mqDistRateRead');
     if (!ping) return;
+    initRadarStyleSelector();
     ping.addEventListener('click', pollDist);
     auto.addEventListener('change', () => { restartDistAuto(); refreshDistOrb(); });
     if (rate) {
