@@ -6,17 +6,23 @@
 
 const BLE_MTU_PAYLOAD = 20; // typical BLE ATT payload limit
 
+// Returns the writeValue() Promise so callers (notably the maqueen-app
+// scheduler in js/ble-scheduler.js) can serialize properly by awaiting
+// completion. Web Bluetooth's GATT only allows one writeValue at a time,
+// so without an awaitable Promise the scheduler can only guess timing,
+// which leads to 'NetworkError: GATT operation already in progress'.
+// Bit-playground callers that don't care can simply ignore the return.
 function sendLine(line) {
     if (!writeChar || !isConnected) {
         addLogLine('TX blocked (not connected) > ' + line, 'error');
-        return;
+        return Promise.resolve();
     }
     const enc = new TextEncoder();
     const data = enc.encode(line + '\n');
 
     if (data.byteLength <= BLE_MTU_PAYLOAD) {
         // Fits in one write
-        writeChar.writeValue(data)
+        return writeChar.writeValue(data)
             .then(() => addLogLine('TX > ' + line, 'tx'))
             .catch(err => addLogLine('TX error: ' + err, 'error'));
     } else {
@@ -33,7 +39,7 @@ function sendLine(line) {
         chunks.forEach((chunk, i) => {
             chain = chain.then(() => writeChar.writeValue(chunk));
         });
-        chain
+        return chain
             .then(() => addLogLine('TX > ' + line + ' (' + chunks.length + ' chunks)', 'tx'))
             .catch(err => addLogLine('TX error: ' + err, 'error'));
     }

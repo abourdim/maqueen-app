@@ -154,75 +154,38 @@
   }
 
   // Global write serializer — Web Bluetooth's GATT only permits ONE
-  // writeValue at a time. The previous implementation gated by an elapsed
-  // time gap (90 ms), but actual BLE writes can take >100 ms when the
-  // link is busy, so back-to-back sends still triggered
+  // writeValue at a time. We delegate the actual write to bit-playground's
+  // sendLine (which sees the writeChar / isConnected globals that core.js
+  // owns) but AWAIT the Promise it now returns, so the next send can't
+  // start until the previous one is genuinely complete. Without awaiting
+  // the inner writeValue, fast back-to-back sends raised
   //   'NetworkError: GATT operation already in progress'.
-  // Now we await the writeValue() Promise itself so the next send can't
-  // start until the previous one is genuinely done.
-  const BLE_MTU_PAYLOAD = 20;
-  const POST_WRITE_GAP_MS = 10;  // tiny breather; mostly unnecessary
+  const POST_WRITE_GAP_MS = 5;   // tiny breather between writes
   let writeQueue = Promise.resolve();
-
-  // Direct write using bit-playground's writeChar (which it sets in ble.js
-  // on connect). We do the encoding + chunking ourselves so we can await
-  // each writeValue and surface success/failure in the message log
-  // identically to the original sendLine.
-  function realWrite(line) {
-    const wc = global.writeChar;
-    if (!wc || !global.isConnected) {
-      if (typeof global.addLogLine === 'function') {
-        global.addLogLine('TX blocked (not connected) > ' + line, 'error');
-      }
-      return Promise.resolve();
-    }
-    const data = new TextEncoder().encode(line + '\n');
-    let chain = Promise.resolve();
-    if (data.byteLength <= BLE_MTU_PAYLOAD) {
-      chain = wc.writeValue(data);
-    } else {
-      // chunk
-      let offset = 0;
-      while (offset < data.byteLength) {
-        const end = Math.min(offset + BLE_MTU_PAYLOAD, data.byteLength);
-        const chunk = data.slice(offset, end);
-        chain = chain.then(() => wc.writeValue(chunk));
-        offset = end;
-      }
-    }
-    return chain
-      .then(() => {
-        if (typeof global.addLogLine === 'function') {
-          global.addLogLine('TX > ' + line, 'tx');
-        }
-      })
-      .catch((err) => {
-        if (typeof global.addLogLine === 'function') {
-          global.addLogLine('TX error: ' + err, 'error');
-        }
-      });
-  }
-
+  let _origSendLine = null;
   function throttledSend(line) {
     writeQueue = writeQueue
-      .then(() => realWrite(line))
-      .then(() => new Promise(r => setTimeout(r, POST_WRITE_GAP_MS)));
+      .then(() => {
+        try {
+          const ret = _origSendLine ? _origSendLine(line) : null;
+          // ret is a Promise (post-fix) or undefined (older ble.js)
+          return ret || Promise.resolve();
+        } catch (e) { return Promise.resolve(); }
+      })
+      .then(() => new Promise(r => setTimeout(r, POST_WRITE_GAP_MS)))
+      .catch(() => {});
     return writeQueue;
   }
 
   // Replace global.sendLine so EVERY caller (bit-playground modules and
-  // the scheduler's own dispatch) goes through the awaited queue. The
-  // original ble.js sendLine fired writeValue() without awaiting it,
-  // which is what caused the GATT collisions.
+  // the scheduler's own dispatch) goes through the awaited queue.
   function installSendLineWrapper() {
-    // We don't need the original anymore — our realWrite() reproduces its
-    // behavior using writeChar directly. Just wait until ble.js has
-    // defined sendLine (so we know writeChar will exist on connect).
     if (typeof global.sendLine !== 'function') {
       setTimeout(installSendLineWrapper, 100);
       return;
     }
     if (global.sendLine._maqueenWrapped) return;
+    _origSendLine = global.sendLine;
     const wrapped = function (line) { throttledSend(line); };
     wrapped._maqueenWrapped = true;
     global.sendLine = wrapped;
