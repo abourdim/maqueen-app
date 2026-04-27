@@ -1041,6 +1041,19 @@ html[dir="rtl"] .hint ol { padding-left: 0; padding-right: 20px; }
                                         <button id="mqDriveAutoWander" type="button" class="mq-wander-btn" title="Hands-off demo — robot drives forward, watches the sonar, and turns on its own when it sees an obstacle. Touch any drive control to take back over." data-i18n="mq_drive_wander">🚦 Auto wander</button>
                                     </div>
 
+                                    <!-- 🎬 MACRO record + replay — capture up to 60 s of drive commands
+                                         and play them back at original timing. Persists across reload so
+                                         you can record a routine, hand the device to a kid, and hit play. -->
+                                    <div class="mq-macro-bar">
+                                        <button id="mqMacroRec" type="button" class="mq-macro-btn mq-macro-rec" title="Record up to 60 seconds of drive commands (M:L,R + STOP). Replays at original timing.">
+                                            <span class="mq-macro-icon">🔴</span> <span data-i18n="mq_macro_rec">Record</span>
+                                        </button>
+                                        <button id="mqMacroPlay" type="button" class="mq-macro-btn mq-macro-play" disabled title="Replay the last recording. Touch any drive control to take back over.">
+                                            <span class="mq-macro-icon">▶</span> <span data-i18n="mq_macro_play">Replay</span>
+                                        </button>
+                                        <span class="mq-macro-status" id="mqMacroStatus" data-i18n="mq_macro_idle">— no recording —</span>
+                                    </div>
+
                                     <!-- Live BLE verb tape (geek catnip — shows what the app actually sends) -->
                                     <div style="margin-top:8px;">
                                         <div style="font-size:10px; color:var(--text-secondary, #93a8c4); margin-bottom:4px; display:flex; align-items:center; gap:6px;">

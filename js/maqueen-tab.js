@@ -213,6 +213,13 @@
         mqWander.cancel();
       }
     } catch {}
+    // Macro: same override semantic during PLAYBACK (recording is unaffected
+    // — user input during recording IS the recording). Only cancels playback.
+    try {
+      if (typeof mqMacro !== 'undefined' && mqMacro.isPlaying() && !mqMacro.isOurCall()) {
+        mqMacro.cancel();
+      }
+    } catch {}
     if (dataL === 0 && dataR === 0) {
       // STOP: don't coalesce — we want STOP to actually land.
       send('STOP');
@@ -227,6 +234,8 @@
       try { mqOdometry.update(0, 0); } catch {}
       // Dashboard — power gauge falls to 0, gear flips to N.
       try { mqDashboard.recordMotors(0, 0); } catch {}
+      // Macro — capture STOP frame too (motion ends are part of the dance).
+      try { mqMacro.recordCmd(0, 0); } catch {}
       return;
     }
     const ref = 200;
@@ -248,6 +257,8 @@
     try { mqOdometry.update(L, R); } catch {}
     // Dashboard — power needle, peak marker, gear (D/N/R), drive timer.
     try { mqDashboard.recordMotors(L, R); } catch {}
+    // Macro — capture this frame (de-dups identical back-to-back values).
+    try { mqMacro.recordCmd(L, R); } catch {}
   }
   // Stub overridden in initDriveJuice() once the SVG is on screen.
   let updateMascot = null;
@@ -300,6 +311,11 @@
         else                      mqWander.start();
       });
     }
+    // Macro record / replay buttons.
+    const macroRec = document.getElementById('mqMacroRec');
+    if (macroRec) macroRec.addEventListener('click', () => mqMacro.toggleRec());
+    const macroPlay = document.getElementById('mqMacroPlay');
+    if (macroPlay) macroPlay.addEventListener('click', () => mqMacro.togglePlay());
     slider.addEventListener('input', e => {
       speed = +e.target.value;
       readout.textContent = speed;
@@ -1738,6 +1754,206 @@
     function isOurCall()  { return _ourCallFlag; }
     function isOurServo() { return _ourServoFlag; }
     return { start, stop, cancel, onDistance, isActive: () => active, isOurCall, isOurServo };
+  })();
+
+  // -------- 🎬 MACRO RECORD / REPLAY ----------------------
+  // Capture up to 60 s of (timestamp, L, R) drive commands and play
+  // them back at original timing. Persists across reload via
+  // localStorage so a recording survives page refreshes — record
+  // once, hand to a kid, hit replay.
+  //
+  // Override semantics
+  //   - During PLAYBACK: any non-macro fireDrive() call (= the user
+  //     grabbing the keypad / keyboard / joystick) cancels playback.
+  //     Same _ourCallFlag pattern as mqWander.
+  //   - During RECORDING: we capture EVERY fireDrive() — incl. ones
+  //     issued by mqWander. The recording is "what the robot did",
+  //     regardless of who told it to.
+  //   - Recording is auto-stopped after MAX_DURATION_MS so a forgotten
+  //     'Record' button doesn't fill localStorage indefinitely.
+  const mqMacro = (function () {
+    const STORAGE_KEY    = 'maqueen.lastMacro';
+    const MAX_DURATION_MS = 60000;       // hard cap
+    const PRELOAD_PAD_MS  = 200;         // tail STOP after last frame
+    let state    = 'idle';               // 'idle' | 'recording' | 'playing'
+    let frames   = [];                   // [{t, L, R}, ...]
+    let recStart = 0;
+    let playI    = 0;
+    let playStart = 0;
+    let playTimer = null;
+    let recAutoStop = null;
+    let statusTimer = null;
+    let _ourCall = false;                // set briefly during playback's fireDrive
+
+    // Restore last recording (if any) so 'Replay' is enabled on load.
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed) && parsed.length) frames = parsed;
+      }
+    } catch {}
+
+    function fmtSec(ms) { return (ms / 1000).toFixed(1) + ' s'; }
+
+    function paint() {
+      const recBtn  = document.getElementById('mqMacroRec');
+      const playBtn = document.getElementById('mqMacroPlay');
+      const status  = document.getElementById('mqMacroStatus');
+      if (recBtn) {
+        recBtn.classList.toggle('mq-macro-active', state === 'recording');
+        const label = recBtn.querySelector('span:not(.mq-macro-icon)');
+        if (label) {
+          const key = state === 'recording' ? 'mq_macro_stop_rec' : 'mq_macro_rec';
+          const fb  = state === 'recording' ? 'Stop'              : 'Record';
+          label.setAttribute('data-i18n', key);
+          label.textContent = (window.t && typeof window.t === 'function')
+            ? (window.t(key) || fb) : fb;
+        }
+      }
+      if (playBtn) {
+        playBtn.classList.toggle('mq-macro-active', state === 'playing');
+        playBtn.disabled = (state === 'recording') || (state === 'idle' && frames.length === 0);
+        const label = playBtn.querySelector('span:not(.mq-macro-icon)');
+        if (label) {
+          const key = state === 'playing' ? 'mq_macro_stop_play' : 'mq_macro_play';
+          const fb  = state === 'playing' ? 'Stop'                : 'Replay';
+          label.setAttribute('data-i18n', key);
+          label.textContent = (window.t && typeof window.t === 'function')
+            ? (window.t(key) || fb) : fb;
+        }
+      }
+      if (status) {
+        status.classList.remove('mq-macro-status-rec', 'mq-macro-status-play');
+        if (state === 'recording') {
+          const elapsed = performance.now() - recStart;
+          status.classList.add('mq-macro-status-rec');
+          status.textContent = '⏺ REC ' + fmtSec(elapsed) + ' / ' + fmtSec(MAX_DURATION_MS);
+          status.removeAttribute('data-i18n');
+        } else if (state === 'playing') {
+          const elapsed = performance.now() - playStart;
+          const total = frames.length ? frames[frames.length - 1].t : 0;
+          status.classList.add('mq-macro-status-play');
+          status.textContent = '▶ PLAY ' + fmtSec(elapsed) + ' / ' + fmtSec(total);
+          status.removeAttribute('data-i18n');
+        } else {
+          status.removeAttribute('data-i18n');
+          if (frames.length === 0) {
+            status.setAttribute('data-i18n', 'mq_macro_idle');
+            status.textContent = (window.t && typeof window.t === 'function')
+              ? (window.t('mq_macro_idle') || '— no recording —')
+              : '— no recording —';
+          } else {
+            const total = frames[frames.length - 1].t;
+            status.textContent = '✓ ' + frames.length + ' steps · ' + fmtSec(total);
+          }
+        }
+      }
+    }
+    function startStatusTicker() {
+      if (statusTimer) return;
+      statusTimer = setInterval(() => {
+        if (state === 'recording' || state === 'playing') paint();
+        else { clearInterval(statusTimer); statusTimer = null; }
+      }, 100);
+    }
+
+    // ---- Recording ------------------------------------------
+    function startRec() {
+      if (state !== 'idle') return;
+      state = 'recording';
+      frames = [];
+      recStart = performance.now();
+      paint();
+      startStatusTicker();
+      if (recAutoStop) clearTimeout(recAutoStop);
+      recAutoStop = setTimeout(stopRec, MAX_DURATION_MS);
+    }
+    function stopRec() {
+      if (state !== 'recording') return;
+      if (recAutoStop) { clearTimeout(recAutoStop); recAutoStop = null; }
+      state = 'idle';
+      // Persist (only if we actually captured something)
+      if (frames.length > 0) {
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(frames)); } catch {}
+      }
+      paint();
+    }
+    function recordCmd(L, R) {
+      if (state !== 'recording') return;
+      const t = performance.now() - recStart;
+      // De-dup back-to-back identical (L,R) — same wheel state means the
+      // robot kept doing the same thing, no need to record a duplicate.
+      const last = frames[frames.length - 1];
+      if (last && last.L === L && last.R === R) return;
+      frames.push({ t, L, R });
+    }
+
+    // ---- Playback -------------------------------------------
+    function play() {
+      if (state !== 'idle' || frames.length === 0) return;
+      state = 'playing';
+      playI = 0;
+      playStart = performance.now();
+      paint();
+      startStatusTicker();
+      schedule();
+    }
+    function schedule() {
+      if (state !== 'playing') return;
+      if (playI >= frames.length) {
+        // Tail: send a STOP shortly after the last frame so the robot
+        // doesn't keep moving once the macro ends.
+        playTimer = setTimeout(() => {
+          if (state !== 'playing') return;
+          _ourCall = true;
+          try { fireDrive(0, 0); } finally { _ourCall = false; }
+          stopPlay();
+        }, PRELOAD_PAD_MS);
+        return;
+      }
+      const cmd = frames[playI++];
+      const elapsed = performance.now() - playStart;
+      const wait = Math.max(0, cmd.t - elapsed);
+      playTimer = setTimeout(() => {
+        if (state !== 'playing') return;
+        _ourCall = true;
+        try { fireDrive(cmd.L, cmd.R, { coalesce: true }); }
+        finally { _ourCall = false; }
+        schedule();
+      }, wait);
+    }
+    function stopPlay() {
+      if (state !== 'playing') return;
+      if (playTimer) { clearTimeout(playTimer); playTimer = null; }
+      state = 'idle';
+      paint();
+    }
+    function cancel() {
+      // Called from fireDrive override. Only PLAYBACK auto-cancels on
+      // manual drive — recording should keep capturing user input.
+      if (state === 'playing') {
+        if (playTimer) { clearTimeout(playTimer); playTimer = null; }
+        state = 'idle';
+        paint();
+      }
+    }
+
+    // ---- Public surface -------------------------------------
+    function isOurCall()    { return _ourCall; }
+    function isPlaying()    { return state === 'playing'; }
+    function isRecording()  { return state === 'recording'; }
+    function toggleRec()    { (state === 'recording') ? stopRec() : startRec(); }
+    function togglePlay()   { (state === 'playing')   ? stopPlay() : play(); }
+
+    // Initial paint (DOM may not be ready yet — guarded inside paint()).
+    paint();
+
+    return {
+      toggleRec, togglePlay,
+      recordCmd, cancel,
+      isOurCall, isPlaying, isRecording,
+    };
   })();
 
   // -------- 🏁 TABLEAU DE BORD ----------------------------

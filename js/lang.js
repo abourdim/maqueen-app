@@ -104,6 +104,11 @@
       mq_chal_fig8:         "∞ Figure-8",
       mq_chal_score:        "SCORE",
       mq_chal_best:         "BEST",
+      mq_macro_rec:         "Record",
+      mq_macro_stop_rec:    "Stop",
+      mq_macro_play:        "Replay",
+      mq_macro_stop_play:   "Stop",
+      mq_macro_idle:        "— no recording —",
 
       // Tabs
       tab_maqueen:        "Maqueen",
@@ -577,6 +582,11 @@
       mq_chal_fig8:         "∞ Huit",
       mq_chal_score:        "SCORE",
       mq_chal_best:         "MEILLEUR",
+      mq_macro_rec:         "Enregistrer",
+      mq_macro_stop_rec:    "Stop",
+      mq_macro_play:        "Rejouer",
+      mq_macro_stop_play:   "Stop",
+      mq_macro_idle:        "— aucun enregistrement —",
 
       // Tabs
       tab_maqueen:        "Maqueen",
@@ -1050,6 +1060,11 @@
       mq_chal_fig8:         "\u221e \u0631\u0642\u0645 8",
       mq_chal_score:        "\u0627\u0644\u0646\u062a\u064a\u062c\u0629",
       mq_chal_best:         "\u0627\u0644\u0623\u0641\u0636\u0644",
+      mq_macro_rec:         "\u062a\u0633\u062c\u064a\u0644",
+      mq_macro_stop_rec:    "\u0625\u064a\u0642\u0627\u0641",
+      mq_macro_play:        "\u0625\u0639\u0627\u062f\u0629",
+      mq_macro_stop_play:   "\u0625\u064a\u0642\u0627\u0641",
+      mq_macro_idle:        "\u2014 \u0644\u0627 \u064a\u0648\u062c\u062f \u062a\u0633\u062c\u064a\u0644 \u2014",
 
       // Tabs
       tab_maqueen:        "Maqueen",
