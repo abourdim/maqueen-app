@@ -275,6 +275,18 @@
     if (odoReset) odoReset.addEventListener('click', () => {
       try { mqOdometry.reset(); } catch {}
     });
+    // 📸 Snapshot button — saves the path map + stats as PNG.
+    const odoSnap = document.getElementById('mqOdoSnap');
+    if (odoSnap) odoSnap.addEventListener('click', () => {
+      odoSnap.disabled = true;
+      try {
+        mqSnapshot.takeSnapshot().catch(() => {}).finally(() => {
+          odoSnap.disabled = false;
+        });
+      } catch {
+        odoSnap.disabled = false;
+      }
+    });
     // Dashboard reset button — clears PEAK/AVG/TRIP/timer (NOT odo, NOT path)
     const dashReset = document.getElementById('mqDashReset');
     if (dashReset) dashReset.addEventListener('click', () => {
@@ -2284,6 +2296,180 @@
       SHAPES, getTarget, getName, setShape,
       maybeUpdateScore, reset, paintBadge,
     };
+  })();
+
+  // -------- 📸 SNAPSHOT -----------------------------------
+  // Capture the current path map + dashboard stats as a PNG. Builds
+  // a 900×700 canvas with: header + cloned-path-SVG (rendered via
+  // data-URL → Image → drawImage) + a stats grid pulled from live
+  // DOM text + a small footer. Filename is timestamped so successive
+  // snapshots don't clobber each other.
+  //
+  // Uses zero external libraries — relies on the browser's native
+  // SVG-to-Image rendering. Caveats:
+  //   - Inline width/height set on the cloned SVG (browsers won't
+  //     render an SVG with only a viewBox).
+  //   - SVG attributes (stroke / fill / etc.) carry over but
+  //     CSS variables won't — the path SVG already uses concrete
+  //     hex colors so this is a non-issue.
+  const mqSnapshot = (function () {
+
+    function txt(id) {
+      const el = document.getElementById(id);
+      return el ? el.textContent.trim() : '—';
+    }
+
+    async function renderSvgToImage(svgEl, w, h) {
+      // Clone so we can mutate width/height + ensure xmlns without
+      // touching the live document.
+      const clone = svgEl.cloneNode(true);
+      clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+      clone.setAttribute('width',  w);
+      clone.setAttribute('height', h);
+      // Inline a background so the cropped PNG isn't transparent.
+      clone.style.background = '#061121';
+      const xml = new XMLSerializer().serializeToString(clone);
+      // Use unescape(encodeURIComponent(...)) for non-ASCII safety.
+      const url = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(xml)));
+      return new Promise((resolve) => {
+        const img = new Image();
+        img.onload  = () => resolve(img);
+        img.onerror = () => resolve(null);
+        img.src = url;
+      });
+    }
+
+    function drawHeader(ctx, W) {
+      ctx.fillStyle = '#fb923c';
+      ctx.font = 'bold 26px "JetBrains Mono", monospace';
+      ctx.textBaseline = 'top';
+      ctx.fillText('🤖 Maqueen Lab — Snapshot', 24, 22);
+      ctx.fillStyle = '#93a8c4';
+      ctx.font = '11px "JetBrains Mono", monospace';
+      ctx.fillText(new Date().toLocaleString(), 24, 56);
+      // Hairline divider under the header
+      ctx.strokeStyle = '#1d3556';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(24, 78);
+      ctx.lineTo(W - 24, 78);
+      ctx.stroke();
+    }
+
+    function drawStatsCol(ctx, x, y, w) {
+      // Pull live values from DOM so the snapshot reflects what
+      // the user is seeing right now. No state plumbing required.
+      const items = [
+        { key: 'ODO',      val: txt('mqDashODO'),      color: '#fb923c' },
+        { key: 'TRIP',     val: txt('mqDashTRIP'),     color: '#fb923c' },
+        { key: 'PEAK',     val: txt('mqDashPEAK'),     color: '#38bdf8' },
+        { key: 'AVG',      val: txt('mqDashAVG'),      color: '#facc15' },
+        { key: 'TIME',     val: txt('mqDashTime'),     color: '#93a8c4' },
+        { key: 'HEADING',  val: txt('mqOdoHeading'),   color: '#4ade80' },
+        { key: 'POSITION', val: txt('mqOdoPosition'),  color: '#00d4ff' },
+        { key: 'DIST',     val: txt('mqOdoDistance'),  color: '#fb923c' },
+      ];
+      const cellH = 56;
+      let cy = y;
+      for (const it of items) {
+        // Cell bg + frame
+        ctx.fillStyle = '#0a1628';
+        ctx.fillRect(x, cy, w, cellH);
+        ctx.strokeStyle = '#1d3556';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(x + 0.5, cy + 0.5, w - 1, cellH - 1);
+        // Colored left accent (matches the Drive panel's per-cell hue)
+        ctx.fillStyle = it.color;
+        ctx.fillRect(x, cy, 3, cellH);
+        // Key (small, dim)
+        ctx.fillStyle = '#93a8c4';
+        ctx.font = 'bold 10px "JetBrains Mono", monospace';
+        ctx.textBaseline = 'top';
+        ctx.fillText(it.key, x + 12, cy + 8);
+        // Value (large, accent)
+        ctx.fillStyle = it.color;
+        ctx.font = 'bold 18px "JetBrains Mono", monospace';
+        ctx.fillText(it.val, x + 12, cy + 24);
+        cy += cellH + 6;
+      }
+    }
+
+    function drawFooter(ctx, W, H) {
+      ctx.fillStyle = '#93a8c4';
+      ctx.font = '10px "JetBrains Mono", monospace';
+      ctx.textBaseline = 'bottom';
+      ctx.fillText('maqueen-app · Web Bluetooth lab for DFRobot Maqueen Lite v4', 24, H - 18);
+      // Build version on the right (if available)
+      try {
+        const ver = (window.BUILD_VERSION || '');
+        if (ver) {
+          ctx.textAlign = 'right';
+          ctx.fillText(String(ver), W - 24, H - 18);
+          ctx.textAlign = 'left';
+        }
+      } catch {}
+    }
+
+    async function takeSnapshot() {
+      const W = 900, H = 700;
+      const DPR = 2;     // 2× for retina-sharp output
+      const canvas = document.createElement('canvas');
+      canvas.width  = W * DPR;
+      canvas.height = H * DPR;
+      const ctx = canvas.getContext('2d');
+      ctx.scale(DPR, DPR);
+      // Background
+      ctx.fillStyle = '#061121';
+      ctx.fillRect(0, 0, W, H);
+      // Header bar
+      drawHeader(ctx, W);
+      // Layout — path map left, stats column right
+      const PAD     = 24;
+      const TOP     = 96;
+      const STAT_W  = 220;
+      const MAP_X   = PAD;
+      const MAP_W   = W - STAT_W - 3 * PAD;
+      const MAP_H   = H - TOP - 60;
+      const STAT_X  = MAP_X + MAP_W + PAD;
+      // Path map (rendered from the live odometry SVG)
+      const svg = document.getElementById('mqOdoSvg');
+      if (svg) {
+        const img = await renderSvgToImage(svg, MAP_W, MAP_H);
+        if (img) {
+          ctx.drawImage(img, MAP_X, TOP, MAP_W, MAP_H);
+          ctx.strokeStyle = '#1d3556';
+          ctx.lineWidth = 1;
+          ctx.strokeRect(MAP_X + 0.5, TOP + 0.5, MAP_W - 1, MAP_H - 1);
+        } else {
+          // Fallback: empty placeholder
+          ctx.fillStyle = '#0a1628';
+          ctx.fillRect(MAP_X, TOP, MAP_W, MAP_H);
+        }
+      }
+      // Stats column
+      drawStatsCol(ctx, STAT_X, TOP, STAT_W);
+      // Footer
+      drawFooter(ctx, W, H);
+      // Download — Blob + temporary <a> with downloads attribute
+      canvas.toBlob((blob) => {
+        if (!blob) return;
+        const a = document.createElement('a');
+        const stamp = new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'maqueen-snap-' + stamp + '.png';
+        a.style.display = 'none';
+        document.body.appendChild(a);
+        a.click();
+        // Clean up the temporary URL after the browser has had a beat
+        // to dispatch the download.
+        setTimeout(() => {
+          URL.revokeObjectURL(a.href);
+          a.remove();
+        }, 1500);
+      }, 'image/png');
+    }
+
+    return { takeSnapshot };
   })();
 
   // -------- 🧭 ODOMETRY ----------------------------------

@@ -109,6 +109,7 @@
       mq_macro_play:        "Replay",
       mq_macro_stop_play:   "Stop",
       mq_macro_idle:        "— no recording —",
+      mq_odo_snap:          "snap",
 
       // Tabs
       tab_maqueen:        "Maqueen",
@@ -587,6 +588,7 @@
       mq_macro_play:        "Rejouer",
       mq_macro_stop_play:   "Stop",
       mq_macro_idle:        "— aucun enregistrement —",
+      mq_odo_snap:          "capture",
 
       // Tabs
       tab_maqueen:        "Maqueen",
@@ -1065,6 +1067,7 @@
       mq_macro_play:        "\u0625\u0639\u0627\u062f\u0629",
       mq_macro_stop_play:   "\u0625\u064a\u0642\u0627\u0641",
       mq_macro_idle:        "\u2014 \u0644\u0627 \u064a\u0648\u062c\u062f \u062a\u0633\u062c\u064a\u0644 \u2014",
+      mq_odo_snap:          "\u0644\u0642\u0637\u0629",
 
       // Tabs
       tab_maqueen:        "Maqueen",
