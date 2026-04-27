@@ -664,8 +664,33 @@
   }
   attachReplyListeners();
 
+  // -------- MAQUEEN SUB-TAB STRIP ---------------------------
+  // Each card on the Maqueen tab is a `.mq-sub-page`. The header strip
+  // has `.mq-sub-btn[data-mq-target=...]` buttons. Showing one card at
+  // a time is much less overwhelming than the previous all-cards grid.
+  // Selection persists in localStorage so reloading returns to the same
+  // card the user was on.
+  function initMaqueenSubTabs() {
+    const buttons = document.querySelectorAll('.mq-sub-btn');
+    const pages = document.querySelectorAll('.mq-sub-page');
+    if (!buttons.length || !pages.length) return;
+    let active;
+    try { active = localStorage.getItem('maqueen.subTab') || 'drive'; }
+    catch { active = 'drive'; }
+    function show(target) {
+      pages.forEach(p => p.classList.toggle('mq-sub-active', p.dataset.mqSub === target));
+      buttons.forEach(b => b.classList.toggle('mq-active',     b.dataset.mqTarget === target));
+      try { localStorage.setItem('maqueen.subTab', target); } catch {}
+    }
+    buttons.forEach(b => b.addEventListener('click', () => show(b.dataset.mqTarget)));
+    // If saved target doesn't exist (e.g. card was removed), fall back to drive.
+    const valid = Array.from(pages).some(p => p.dataset.mqSub === active);
+    show(valid ? active : 'drive');
+  }
+
   // -------- init ------------------------------------------
   function init() {
+    initMaqueenSubTabs();
     initDrive();
     initServos();
     initLEDs();

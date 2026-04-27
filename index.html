@@ -550,10 +550,32 @@ html[dir="rtl"] .hint ol { padding-left: 0; padding-right: 20px; }
                                 </select>
                             </div>
 
-                            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:18px; padding:16px;">
+                            <!-- Maqueen sub-tab strip — show one element at a time -->
+                            <div id="mqSubTabBar" style="display:flex; flex-wrap:wrap; gap:6px; padding:14px 16px 0;">
+                                <button class="mq-sub-btn" data-mq-target="drive"      style="flex:1 1 auto; min-width:84px; padding:8px 10px; background:#0a1628; color:#fb923c; border:1px solid #1d3556; border-radius:8px; cursor:pointer; font-size:12px;">🛞 Drive</button>
+                                <button class="mq-sub-btn" data-mq-target="servos"     style="flex:1 1 auto; min-width:84px; padding:8px 10px; background:#0a1628; color:#00d4ff; border:1px solid #1d3556; border-radius:8px; cursor:pointer; font-size:12px;">🦾 Servos</button>
+                                <button class="mq-sub-btn" data-mq-target="leds"       style="flex:1 1 auto; min-width:84px; padding:8px 10px; background:#0a1628; color:#facc15; border:1px solid #1d3556; border-radius:8px; cursor:pointer; font-size:12px;">💡 LEDs</button>
+                                <button class="mq-sub-btn" data-mq-target="neopixels"  style="flex:1 1 auto; min-width:84px; padding:8px 10px; background:#0a1628; color:#f472b6; border:1px solid #1d3556; border-radius:8px; cursor:pointer; font-size:12px;">🌈 NeoPixels</button>
+                                <button class="mq-sub-btn" data-mq-target="buzzer"     style="flex:1 1 auto; min-width:84px; padding:8px 10px; background:#0a1628; color:#fbbf24; border:1px solid #1d3556; border-radius:8px; cursor:pointer; font-size:12px;">🔊 Buzzer</button>
+                                <button class="mq-sub-btn" data-mq-target="ultrasonic" style="flex:1 1 auto; min-width:84px; padding:8px 10px; background:#0a1628; color:#4ade80; border:1px solid #1d3556; border-radius:8px; cursor:pointer; font-size:12px;">📡 Distance</button>
+                                <button class="mq-sub-btn" data-mq-target="lines"      style="flex:1 1 auto; min-width:84px; padding:8px 10px; background:#0a1628; color:#4ade80; border:1px solid #1d3556; border-radius:8px; cursor:pointer; font-size:12px;">👀 Line</button>
+                                <button class="mq-sub-btn" data-mq-target="ir"         style="flex:1 1 auto; min-width:84px; padding:8px 10px; background:#0a1628; color:#c084fc; border:1px solid #1d3556; border-radius:8px; cursor:pointer; font-size:12px;">📺 IR</button>
+                                <button class="mq-sub-btn" data-mq-target="help"       style="flex:0 0 auto; padding:8px 10px; background:#0a1628; color:#00d4ff; border:1px solid #1d3556; border-radius:8px; cursor:pointer; font-size:12px;">ℹ️</button>
+                            </div>
+                            <style>
+                              .mq-sub-page { display: none !important; }
+                              .mq-sub-page.mq-sub-active { display: block !important; }
+                              .mq-sub-btn { transition: background 0.15s, border-color 0.15s, box-shadow 0.15s; }
+                              .mq-sub-btn.mq-active {
+                                background: rgba(0, 212, 255, 0.12) !important;
+                                box-shadow: 0 0 10px rgba(0, 212, 255, 0.35);
+                                border-color: #00d4ff !important;
+                              }
+                            </style>
+                            <div style="display:block; padding:16px;">
 
                                 <!-- DRIVE -->
-                                <div style="background:rgba(251,146,60,0.05); border:1px solid rgba(251,146,60,0.3); border-radius:10px; padding:14px;">
+                                <div data-mq-sub="drive" class="mq-sub-page" style="background:rgba(251,146,60,0.05); border:1px solid rgba(251,146,60,0.3); border-radius:10px; padding:14px;">
                                     <div style="font-weight:700; color:#fb923c; margin-bottom:10px; display:flex; align-items:center; gap:8px;"><span style="font-size:18px;">🛞</span> Drive</div>
                                     <div style="display:flex; gap:6px; justify-content:center; margin-bottom:10px;">
                                         <button class="mq-drive-btn" data-l="200" data-r="200" style="width:60px; height:48px; background:#0a1628; color:#fb923c; border:1px solid #fb923c; border-radius:8px; font-size:18px; cursor:pointer;">↑</button>
@@ -581,7 +603,7 @@ html[dir="rtl"] .hint ol { padding-left: 0; padding-right: 20px; }
                                 </div>
 
                                 <!-- SERVOS -->
-                                <div id="mqServosCard" style="background:rgba(0,212,255,0.05); border:1px solid rgba(0,212,255,0.3); border-radius:10px; padding:14px;">
+                                <div data-mq-sub="servos" class="mq-sub-page" id="mqServosCard" style="background:rgba(0,212,255,0.05); border:1px solid rgba(0,212,255,0.3); border-radius:10px; padding:14px;">
                                     <div style="font-weight:700; color:#00d4ff; margin-bottom:10px; display:flex; align-items:center; gap:8px;"><span style="font-size:18px;">🦾</span> Servos <span id="mqServosKitName" style="color:#93a8c4; font-size:11px; font-weight:400;">(generic)</span></div>
                                     <div style="display:flex; align-items:center; gap:8px; margin-bottom:24px;">
                                         <span id="mqS1Label" style="font-family:monospace; color:#93a8c4; min-width:40px;">S1</span>
@@ -597,7 +619,7 @@ html[dir="rtl"] .hint ol { padding-left: 0; padding-right: 20px; }
                                 </div>
 
                                 <!-- SIMPLE LEDS -->
-                                <div style="background:rgba(250,204,21,0.05); border:1px solid rgba(250,204,21,0.3); border-radius:10px; padding:14px;">
+                                <div data-mq-sub="leds" class="mq-sub-page" style="background:rgba(250,204,21,0.05); border:1px solid rgba(250,204,21,0.3); border-radius:10px; padding:14px;">
                                     <div style="font-weight:700; color:#facc15; margin-bottom:10px; display:flex; align-items:center; gap:8px;"><span style="font-size:18px;">💡</span> Simple LEDs</div>
                                     <div style="display:flex; gap:8px;">
                                         <button class="mq-led-btn" data-led="0" data-state="0" style="flex:1; padding:8px 12px; background:#0a1628; color:#facc15; border:1px solid #facc15; border-radius:6px; cursor:pointer; font-size:12px;">L: OFF</button>
@@ -610,7 +632,7 @@ html[dir="rtl"] .hint ol { padding-left: 0; padding-right: 20px; }
                                 </div>
 
                                 <!-- 4× RGB NEOPIXELS -->
-                                <div style="background:rgba(244,114,182,0.05); border:1px solid rgba(244,114,182,0.3); border-radius:10px; padding:14px;">
+                                <div data-mq-sub="neopixels" class="mq-sub-page" style="background:rgba(244,114,182,0.05); border:1px solid rgba(244,114,182,0.3); border-radius:10px; padding:14px;">
                                     <div style="font-weight:700; color:#f472b6; margin-bottom:10px; display:flex; align-items:center; gap:8px;"><span style="font-size:18px;">🌈</span> NeoPixels × 4</div>
                                     <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
                                         <label style="display:flex; align-items:center; gap:8px; font-size:12px; color:#93a8c4;">
@@ -637,7 +659,7 @@ html[dir="rtl"] .hint ol { padding-left: 0; padding-right: 20px; }
                                 </div>
 
                                 <!-- BUZZER -->
-                                <div style="background:rgba(251,191,36,0.05); border:1px solid rgba(251,191,36,0.3); border-radius:10px; padding:14px;">
+                                <div data-mq-sub="buzzer" class="mq-sub-page" style="background:rgba(251,191,36,0.05); border:1px solid rgba(251,191,36,0.3); border-radius:10px; padding:14px;">
                                     <div style="font-weight:700; color:#fbbf24; margin-bottom:10px; display:flex; align-items:center; gap:8px;"><span style="font-size:18px;">🔊</span> Buzzer</div>
                                     <div style="display:flex; gap:4px; flex-wrap:wrap; margin-bottom:10px;">
                                         <button class="mq-note" data-freq="262" style="flex:1; min-width:36px; padding:8px 4px; background:#0a1628; color:#fbbf24; border:1px solid #fbbf24; border-radius:6px; cursor:pointer; font-size:11px;">C</button>
@@ -665,7 +687,7 @@ html[dir="rtl"] .hint ol { padding-left: 0; padding-right: 20px; }
                                 </div>
 
                                 <!-- ULTRASONIC -->
-                                <div style="background:rgba(74,222,128,0.05); border:1px solid rgba(74,222,128,0.3); border-radius:10px; padding:14px;">
+                                <div data-mq-sub="ultrasonic" class="mq-sub-page" style="background:rgba(74,222,128,0.05); border:1px solid rgba(74,222,128,0.3); border-radius:10px; padding:14px;">
                                     <div style="font-weight:700; color:#4ade80; margin-bottom:10px; display:flex; align-items:center; gap:8px;"><span style="font-size:18px;">📡</span> Ultrasonic distance <span style="font-family:'JetBrains Mono', monospace; font-size:10px; font-weight:400; color:#93a8c4; background:#0a1628; padding:1px 6px; border-radius:4px;">P1·P2</span></div>
                                     <!-- Big distance readout + mini sonar arc -->
                                     <div style="display:flex; align-items:center; gap:14px; margin-bottom:10px;">
@@ -704,7 +726,7 @@ html[dir="rtl"] .hint ol { padding-left: 0; padding-right: 20px; }
                                 </div>
 
                                 <!-- LINE SENSORS -->
-                                <div style="background:rgba(74,222,128,0.05); border:1px solid rgba(74,222,128,0.3); border-radius:10px; padding:14px;">
+                                <div data-mq-sub="lines" class="mq-sub-page" style="background:rgba(74,222,128,0.05); border:1px solid rgba(74,222,128,0.3); border-radius:10px; padding:14px;">
                                     <div style="font-weight:700; color:#4ade80; margin-bottom:10px; display:flex; align-items:center; gap:8px;"><span style="font-size:18px;">👀</span> Line sensors <span style="font-family:'JetBrains Mono', monospace; font-size:10px; font-weight:400; color:#93a8c4; background:#0a1628; padding:1px 6px; border-radius:4px;">P13·P14</span></div>
                                     <!-- Two big "eyes" -->
                                     <div style="display:flex; align-items:center; gap:18px; margin-bottom:10px; padding:10px; background:#061121; border-radius:8px;">
@@ -749,7 +771,7 @@ html[dir="rtl"] .hint ol { padding-left: 0; padding-right: 20px; }
                                 </div>
 
                                 <!-- IR REMOTE -->
-                                <div style="background:rgba(192,132,252,0.05); border:1px solid rgba(192,132,252,0.3); border-radius:10px; padding:14px;">
+                                <div data-mq-sub="ir" class="mq-sub-page" style="background:rgba(192,132,252,0.05); border:1px solid rgba(192,132,252,0.3); border-radius:10px; padding:14px;">
                                     <div style="font-weight:700; color:#c084fc; margin-bottom:10px; display:flex; align-items:center; gap:8px;"><span style="font-size:18px;">📺</span> IR remote <span style="font-family:'JetBrains Mono', monospace; font-size:10px; font-weight:400; color:#93a8c4; background:#0a1628; padding:1px 6px; border-radius:4px;">NEC</span></div>
                                     <!-- Last code + flash indicator -->
                                     <div style="display:flex; align-items:center; gap:12px; margin-bottom:10px;">
@@ -772,7 +794,7 @@ html[dir="rtl"] .hint ol { padding-left: 0; padding-right: 20px; }
                                 </div>
 
                                 <!-- HELP -->
-                                <div style="background:rgba(0,212,255,0.04); border:1px solid rgba(0,212,255,0.2); border-radius:10px; padding:14px; font-size:12px; color:#93a8c4; line-height:1.6;">
+                                <div data-mq-sub="help" class="mq-sub-page" style="background:rgba(0,212,255,0.04); border:1px solid rgba(0,212,255,0.2); border-radius:10px; padding:14px; font-size:12px; color:#93a8c4; line-height:1.6;">
                                     <div style="font-weight:700; color:#00d4ff; margin-bottom:8px;">ℹ️ Quick reference</div>
                                     <div>• Flash <code>firmware/v1-maqueen-lib.ts</code> first.</div>
                                     <div>• Click <strong>Connect</strong> top-right.</div>
