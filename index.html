@@ -715,6 +715,53 @@ html[dir="rtl"] .hint ol { padding-left: 0; padding-right: 20px; }
                               @keyframes mqKitScoop  { 0%,100% { transform: rotate(0deg); } 50% { transform: rotate(-22deg); } }
                               @keyframes mqKitPinch  { 0%,100% { transform: scale(1, 1); } 50% { transform: scale(0.7, 1); } }
                               @keyframes mqKitPush   { 0%,100% { transform: translate(0,0); } 50% { transform: translate(0, 3px); } }
+                              /* === Geeky subtle animations === */
+                              /* Anatomy idle breathing — full SVG slow-pulses when nothing happening */
+                              #mqAnatomy { animation: mqAnatBreath 4.5s ease-in-out infinite; transform-origin: 110px 70px; }
+                              @keyframes mqAnatBreath {
+                                0%,100% { transform: scale(1);    filter: drop-shadow(0 0 0 rgba(0,0,0,0)); }
+                                50%     { transform: scale(1.012); filter: drop-shadow(0 0 6px var(--accent, #38bdf8)); }
+                              }
+                              /* Connection chip ECG — when CONNECTED, the dot pulses like a heartbeat */
+                              .status-chip.connected .status-dot,
+                              #connectionStatus.connected .status-dot {
+                                animation: mqEcg 1.4s ease-in-out infinite;
+                              }
+                              @keyframes mqEcg {
+                                0%, 60%, 100% { transform: scale(1);   box-shadow: 0 0 0 rgba(34,197,94,0); }
+                                15%           { transform: scale(1.6); box-shadow: 0 0 10px rgba(34,197,94,0.7); }
+                                30%           { transform: scale(0.85); }
+                                45%           { transform: scale(1.2); box-shadow: 0 0 6px rgba(34,197,94,0.5); }
+                              }
+                              /* Hover glow on every card — uses the active theme accent */
+                              .card { transition: box-shadow 0.25s, transform 0.18s; }
+                              .card:hover {
+                                box-shadow:
+                                    var(--card-shadow, 0 4px 12px rgba(0,0,0,0.10)),
+                                    0 0 0 1px var(--accent, #38bdf8) inset,
+                                    0 0 18px var(--accent-soft, rgba(56,189,248,0.10));
+                              }
+                              /* Material-style click ripple on sub-tab buttons */
+                              .mq-sub-btn { position: relative; overflow: hidden; }
+                              .mq-sub-btn::after {
+                                content: ''; position: absolute; inset: 0;
+                                background: radial-gradient(circle at var(--rx,50%) var(--ry,50%), var(--accent, #38bdf8) 0%, transparent 60%);
+                                opacity: 0; pointer-events: none;
+                              }
+                              .mq-sub-btn.mq-rippling::after {
+                                animation: mqRipple 0.45s ease-out;
+                              }
+                              @keyframes mqRipple {
+                                from { opacity: 0.35; }
+                                to   { opacity: 0; }
+                              }
+                              /* Number tick — quick scale pulse when a numeric readout changes */
+                              .mq-num-tick { animation: mqNumTick 0.18s ease-out; }
+                              @keyframes mqNumTick {
+                                0%   { transform: scale(1);   color: inherit; }
+                                40%  { transform: scale(1.18); }
+                                100% { transform: scale(1);   color: inherit; }
+                              }
                               .mq-pearl {
                                 width: 38px; height: 38px; border-radius: 50%;
                                 background: radial-gradient(circle at 30% 28%, rgba(255,255,255,0.55), rgba(255,255,255,0.05) 38%, var(--c,#000) 100%);

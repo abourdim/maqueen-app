@@ -1206,7 +1206,16 @@
       batBlip.querySelectorAll('circle').forEach(c => c.setAttribute('cy', yPos.toFixed(1)));
       batBlip.setAttribute('opacity', '1');
     }
-    if (batNum) { batNum.textContent = cm + ' cm'; batNum.style.color = color; }
+    if (batNum) {
+      // Tick on real value change (not on the same value being re-pinged)
+      if (batNum.textContent !== cm + ' cm') {
+        batNum.classList.remove('mq-num-tick');
+        void batNum.offsetWidth;
+        batNum.classList.add('mq-num-tick');
+      }
+      batNum.textContent = cm + ' cm';
+      batNum.style.color = color;
+    }
     if (batStatus) {
       const msg = cm < 10 ? 'OBSTACLE!' : cm < 30 ? 'close...' : cm < 100 ? 'tracked' : 'far';
       batStatus.textContent = msg;
@@ -1563,7 +1572,24 @@
       anatomyParts.forEach(g => g.classList.toggle('mq-anat-active', g.dataset.mqTarget === target));
       try { localStorage.setItem('maqueen.subTab', target); } catch {}
     }
-    buttons.forEach(b => b.addEventListener('click', () => show(b.dataset.mqTarget)));
+    // Material-style click ripple — set CSS vars to the click point so
+    // the ::after radial gradient blooms from where the user pressed.
+    function ripple(e, btn) {
+      const rect = btn.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width) * 100;
+      const y = ((e.clientY - rect.top) / rect.height) * 100;
+      btn.style.setProperty('--rx', x + '%');
+      btn.style.setProperty('--ry', y + '%');
+      btn.classList.remove('mq-rippling');
+      // Force reflow so the animation restarts on rapid clicks
+      // eslint-disable-next-line no-unused-expressions
+      void btn.offsetWidth;
+      btn.classList.add('mq-rippling');
+    }
+    buttons.forEach(b => b.addEventListener('click', (e) => {
+      ripple(e, b);
+      show(b.dataset.mqTarget);
+    }));
     // Click a part on the anatomy mini-map → switch to that sub-tab
     anatomyParts.forEach(g => g.addEventListener('click', () => show(g.dataset.mqTarget)));
     const valid = Array.from(pages).some(p => p.dataset.mqSub === active);

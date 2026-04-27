@@ -211,34 +211,36 @@
 }
 
 /* ====================================================================
-   THEME 5: COSMOS — magical galaxy purple, slightly darker, kid-friendly
+   THEME 5: COSMOS — deep galaxy navy + electric cyan
+   (Re-tuned away from lavender → modest, serious, boy-friendly maker
+   audience. Same 🌌 chip, fully different soul.)
    ==================================================================== */
 [data-theme="cosmos"] {
-    --bg-color:  #1f1538;       /* deep nebula purple */
-    --bg-deep:   #281b46;
-    --card-bg:   #2e2152;       /* cards lift off the nebula */
-    --card-bg-2: #382862;
-    --panel-bg:  #2e2152;
-    --card-border: rgba(196, 132, 252, 0.30);
-    --border:      rgba(196, 132, 252, 0.20);
-    --accent: #c084fc;          /* lavender */
-    --accent-soft: rgba(196, 132, 252, 0.16);
-    --accent-strong: rgba(196, 132, 252, 0.7);
-    --accent2: #f0abfc;
+    --bg-color:  #0b1730;       /* deep navy night sky */
+    --bg-deep:   #0f1f3f;
+    --card-bg:   #142848;       /* cards lift off the night */
+    --card-bg-2: #1a3258;
+    --panel-bg:  #142848;
+    --card-border: rgba(56, 189, 248, 0.30);
+    --border:      rgba(56, 189, 248, 0.20);
+    --accent: #38bdf8;          /* electric cyan, not lavender */
+    --accent-soft: rgba(56, 189, 248, 0.16);
+    --accent-strong: rgba(56, 189, 248, 0.7);
+    --accent2: #818cf8;         /* steel-indigo secondary */
     --danger: #fca5a5;
-    --muted: #c4b5d4;
+    --muted: #94a3b8;
     --text: #ffffff;
-    --text-secondary: #e9d5ff;
-    --pill-bg: #382862;
-    --pill-border: rgba(196, 132, 252, 0.36);
-    --input-bg: #281b46;
-    --glow1: rgba(196, 132, 252, 0.18);
-    --glow2: rgba(240, 171, 252, 0.12);
-    --body-glow1: rgba(196, 132, 252, 0.20);
-    --body-glow2: rgba(240, 171, 252, 0.14);
-    --btn-primary-bg: linear-gradient(135deg, #c084fc, #a855f7);
-    --btn-primary-text: #fff;
-    --btn-primary-border: rgba(196, 132, 252, 0.8);
+    --text-secondary: #dbeafe;
+    --pill-bg: #1a3258;
+    --pill-border: rgba(56, 189, 248, 0.36);
+    --input-bg: #0f1f3f;
+    --glow1: rgba(56, 189, 248, 0.18);
+    --glow2: rgba(129, 140, 248, 0.12);
+    --body-glow1: rgba(56, 189, 248, 0.20);
+    --body-glow2: rgba(129, 140, 248, 0.14);
+    --btn-primary-bg: linear-gradient(135deg, #38bdf8, #0284c7);
+    --btn-primary-text: #0b1730;
+    --btn-primary-border: rgba(56, 189, 248, 0.8);
     --connected-bg: rgba(34, 197, 94, 0.22);
     --connected-border: rgba(34, 197, 94, 0.7);
     --connected-text: #bbf7d0;
@@ -246,21 +248,21 @@
     --disconnected-bg: rgba(252, 165, 165, 0.18);
     --disconnected-border: rgba(252, 165, 165, 0.5);
     --disconnected-dot: #fca5a5;
-    --shadow-color: rgba(31, 21, 56, 0.55);
+    --shadow-color: rgba(11, 23, 48, 0.55);
     --log-info: #e2e8f0;
     --log-tx: #6ee7b7;
     --log-rx: #93c5fd;
     --log-error: #fca5a5;
     --log-success: #fde047;
     --log-warning: #fdba74;
-    --card-grad: linear-gradient(180deg, #382862 0%, #2e2152 70%, #281b46 100%);
+    --card-grad: linear-gradient(180deg, #1a3258 0%, #142848 70%, #0f1f3f 100%);
     --card-shadow:
         0 1px 0 rgba(255,255,255,0.10) inset,
-        0 0 0 1px rgba(196,132,252,0.12) inset,
-        0 8px 24px rgba(31,21,56,0.5),
+        0 0 0 1px rgba(56,189,248,0.12) inset,
+        0 8px 24px rgba(11,23,48,0.5),
         0 2px 6px rgba(0,0,0,0.30);
-    --log-bg: #1a0e30;
-    --log-fg: #e9d5ff;
+    --log-bg: #061226;
+    --log-fg: #dbeafe;
 }
 
 /* ====================================================================
