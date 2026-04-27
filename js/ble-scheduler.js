@@ -59,8 +59,16 @@
   // Match ECHO:N <verb> or ERR:N <reason>
   function intercept(line) {
     if (!line) return;
+    // ANY received line proves the BLE link is up. Covers two cases the
+    // explicit signals miss: (a) INFO:CONNECTED was emitted before our
+    // UART hook was installed, and (b) bit-playground's auto-HELLO on
+    // connect is echoed back as a bare 'ECHO HELLO' (no seq), which the
+    // ECHO:N regex below doesn't match. Without this fallback the
+    // scheduler thinks it's offline and rejects every drive command.
+    if (!_connected) { _connected = true; emit('connected', {}); }
     if (line === 'INFO:CONNECTED') {
-      _connected = true; emit('connected', {}); return;
+      // already handled above; just consume
+      return;
     }
     if (line === 'INFO:DISCONNECTED') {
       _connected = false; emit('disconnected', {}); return;
