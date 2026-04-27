@@ -4311,6 +4311,31 @@ html[dir="rtl"] .lang-picker { margin-left: 0; margin-right: auto; }
   color: #fb923c;
   border-color: #fb923c;
 }
+/* Legend in the panel header — trail vs obstacles. Tiny color swatch
+   + label so the user instantly understands the two layers. */
+.mq-odo-legend {
+  display: inline-flex;
+  gap: 10px;
+  margin-left: auto;
+  margin-right: 8px;
+  font-weight: 400;
+  font-size: 9px;
+  color: var(--text-secondary, #93a8c4);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.mq-odo-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.mq-odo-swatch {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  box-shadow: 0 0 4px currentColor;
+}
 .mq-odo-body {
   display: grid;
   grid-template-columns: minmax(180px, 1fr) minmax(120px, auto);

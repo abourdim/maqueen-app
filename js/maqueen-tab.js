@@ -741,8 +741,10 @@
       updateServoScope(angle);
       renderCode();
       try { mqAnat.servo(port); } catch {}
-      // Sweep radar tracks S1 only (that's the port the sonar is mounted on).
+      // Sweep radar AND odometry SLAM-lite both track S1 only (that's the
+      // port the sonar is mounted on in the Maqueen kit).
       try { if (port === 1) mqSweepRadar.recordAngle(angle); } catch {}
+      try { if (port === 1) mqOdometry.recordAngle(angle); } catch {}
       // BLE — coalesced so dragging the slider doesn't drown the channel
       if (window.bleScheduler) {
         flashStatus('… sending', '#fbbf24');
@@ -1316,6 +1318,22 @@
     let raf = null;
     let started = false;
 
+    // ---- SLAM-lite: project sonar pings into world coordinates ----
+    // Each obstacle = a sonar reading taken at known robot pose +
+    // known servo angle, transformed into the world frame and dropped
+    // onto the map. Persistent (caps at 400, FIFO drop), 25 s fade.
+    //
+    // Servo convention: angle 90° = sonar pointing along robot's heading
+    // (forward). Angle 0° = pointing right of forward. Angle 180° = left.
+    // (This matches typical Maqueen kit mounting; calibrate by changing
+    // SERVO_FWD_ANGLE if your kit's zero is different.)
+    const SERVO_FWD_ANGLE = 90;     // servo deg that = robot's forward
+    const OBST_MAX = 400;
+    const OBST_FADE_MS = 25000;
+    let lastServoAngle = SERVO_FWD_ANGLE;
+    let lastServoAt = 0;
+    const obstacles = [];           // [{x, y, cm, t}, ...]
+
     function tick(now) {
       if (!started) return;
       if (lastT === 0) lastT = now;
@@ -1360,11 +1378,49 @@
         if (Math.abs(trail[i].x) > m) m = Math.abs(trail[i].x);
         if (Math.abs(trail[i].y) > m) m = Math.abs(trail[i].y);
       }
+      // Obstacles also get a vote — the map should fit them too,
+      // otherwise close-range walls get clipped off-screen.
+      for (let i = 0; i < obstacles.length; i++) {
+        if (Math.abs(obstacles[i].x) > m) m = Math.abs(obstacles[i].x);
+        if (Math.abs(obstacles[i].y) > m) m = Math.abs(obstacles[i].y);
+      }
       return 90 / m;
+    }
+
+    // SLAM-lite projection: take a sonar reading at (servo_deg, cm)
+    // and project it into world coordinates using the current robot pose.
+    //
+    //   robot at (x, y) facing theta (rad, 0=+y world)
+    //   servo angle in robot frame = (servo - 90) deg, +CW (right of fwd)
+    //   sonar bearing in world = theta + servo_offset_in_robot
+    //   obstacle = robot_pos + cm * (sin(bearing), cos(bearing))
+    function projectSonar(servoDeg, cm) {
+      if (cm <= 0 || cm > 200) return;            // invalid / too far to be useful
+      const offsetRad = (servoDeg - SERVO_FWD_ANGLE) * Math.PI / 180;
+      const bearing = theta + offsetRad;
+      const ox = x + cm * Math.sin(bearing);
+      const oy = y + cm * Math.cos(bearing);
+      obstacles.push({ x: ox, y: oy, cm, t: performance.now() });
+      if (obstacles.length > OBST_MAX) obstacles.shift();
+    }
+
+    // Hooks fired from the existing setAngle / setDist plumbing.
+    // Same signature as mqSweepRadar so callsites stay symmetric.
+    function recordAngle(angle) {
+      lastServoAngle = +angle;
+      lastServoAt = performance.now();
+    }
+    function recordDistance(cm) {
+      // Project only if servo angle is fresh enough — same 500 ms window
+      // as the sweep radar uses, for the same reason: angle + distance
+      // must come from roughly the same physical instant to be valid.
+      if (performance.now() - lastServoAt > 500) return;
+      projectSonar(lastServoAngle, cm);
     }
 
     function render() {
       const scale = computeScale();
+      const now = performance.now();
       // Trail polyline: world (x, y) → SVG (x*scale, -y*scale)  (SVG y is down)
       const trailEl = document.getElementById('mqOdoTrail');
       if (trailEl) {
@@ -1377,6 +1433,23 @@
           }
           trailEl.setAttribute('points', pts);
         }
+      }
+      // Obstacles: drop fully-faded, render rest with opacity = 1-age/FADE_MS.
+      const obstLayer = document.getElementById('mqOdoObstacles');
+      if (obstLayer) {
+        while (obstacles.length && (now - obstacles[0].t) > OBST_FADE_MS) obstacles.shift();
+        let svg = '';
+        for (let i = 0; i < obstacles.length; i++) {
+          const o = obstacles[i];
+          const op = Math.max(0, 1 - (now - o.t) / OBST_FADE_MS);
+          // Color by distance — close = red (danger), mid = amber, far = pale yellow
+          const color = o.cm < 10 ? '#ef4444' : o.cm < 30 ? '#fbbf24' : '#fde68a';
+          const r = o.cm < 10 ? 1.6 : 1.2;
+          const sx = (o.x * scale).toFixed(1);
+          const sy = (-o.y * scale).toFixed(1);
+          svg += `<circle cx="${sx}" cy="${sy}" r="${r}" fill="${color}" opacity="${op.toFixed(2)}"/>`;
+        }
+        obstLayer.innerHTML = svg;
       }
       // Robot dot — at (x, y), rotated by θ (clockwise = positive in SVG-y-inverted frame)
       const robot = document.getElementById('mqOdoRobot');
@@ -1421,6 +1494,9 @@
     function reset() {
       x = 0; y = 0; theta = 0; totalDist = 0;
       trail.length = 0;
+      obstacles.length = 0;
+      const obstLayer = document.getElementById('mqOdoObstacles');
+      if (obstLayer) obstLayer.innerHTML = '';
       render();
     }
 
@@ -1431,7 +1507,7 @@
       raf = requestAnimationFrame(tick);
     }
 
-    return { update, reset, start };
+    return { update, recordAngle, recordDistance, reset, start };
   })();
 
   // -------- 📡 SWEEP RADAR --------------------------------
@@ -1558,6 +1634,9 @@
     const noSensor = (cm <= 0 || cm >= 500);
     // Sweep radar — feed every reading (incl. no-sensor → "— cm" in HUD).
     try { mqSweepRadar.recordDistance(cm); } catch {}
+    // Odometry SLAM-lite — project (servo, dist) into the world map
+    // when the angle reading is fresh. No-op for no-sensor / out-of-range.
+    try { mqOdometry.recordDistance(cm); } catch {}
     // Glossy gauge — compatibility shims for the old IDs are still in DOM
     const big = document.getElementById('mqDistBig');
     const bar = document.getElementById('mqDistBar');
