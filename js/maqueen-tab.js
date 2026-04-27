@@ -174,9 +174,30 @@
     }
     if (wheelL || wheelR) requestAnimationFrame(tick);
 
-    // ---- MASCOT REACTIONS (face / flames) ----
+    // ---- MASCOT REACTIONS (face / flames / power bars / motion vector) ----
+    const powerLBar = document.getElementById('mqPowerLBar');
+    const powerRBar = document.getElementById('mqPowerRBar');
+    const powerLVal = document.getElementById('mqPowerLVal');
+    const powerRVal = document.getElementById('mqPowerRVal');
+    const motionVec = document.getElementById('mqMotionVec');
+
+    function setPowerBar(barEl, valEl, val) {
+      if (!barEl) return;
+      // Bar fills from baseline (y=0) upward for positive, downward for negative.
+      // Bar has total height 100, baseline at y=0, range -50..+50 in svg units.
+      const h = Math.round(Math.abs(val) / 255 * 50);
+      if (val >= 0) {
+        barEl.setAttribute('y', String(-h));
+        barEl.setAttribute('height', String(h));
+      } else {
+        barEl.setAttribute('y', '0');
+        barEl.setAttribute('height', String(h));
+      }
+      if (valEl) valEl.textContent = String(val);
+    }
+
     updateMascot = function (L, R) {
-      // flames when going forward fast (both wheels positive ~half speed+)
+      // flames when both wheels going forward fast
       if (flames) flames.style.opacity = (L > 100 && R > 100) ? '1' : '0';
       // mouth: smile while moving, neutral on stop
       if (mouth) {
@@ -186,7 +207,77 @@
           mouth.setAttribute('rx', '14'); mouth.setAttribute('ry', '6');
         }
       }
+      // Power bars
+      setPowerBar(powerLBar, powerLVal, L);
+      setPowerBar(powerRBar, powerRVal, R);
+      // Motion vector — direction from differential drive intuition.
+      // Forward speed = avg of L,R. Turn = (R-L)/2 → maps to rotation angle.
+      // Vector length = magnitude (clamped 0..1). Vector rotation = atan2-ish.
+      if (motionVec) {
+        const fwd = (L + R) / 2;          // forward component
+        const turn = (R - L) / 2;         // turn component
+        const mag = Math.min(1, Math.sqrt(fwd*fwd + turn*turn) / 200);
+        // Angle: 0deg = up (forward). Negative turn → rotate left (CCW).
+        // Use atan2(turn, abs(fwd)) so reverse still points "down".
+        let angleDeg = 0;
+        if (Math.abs(fwd) > 1 || Math.abs(turn) > 1) {
+          const a = Math.atan2(turn, fwd) * 180 / Math.PI;
+          angleDeg = a;
+          if (fwd < 0) angleDeg = 180 - a;   // reverse → flip
+        }
+        motionVec.setAttribute(
+          'transform',
+          `translate(140 110) rotate(${angleDeg.toFixed(1)}) scale(${mag.toFixed(2)})`
+        );
+      }
+      // BLE tape entry
+      pushBleTape(L, R);
     };
+
+    // ---- LIVE BLE VERB TAPE ----
+    // Dedup consecutive identical verbs (joystick drag would otherwise spam)
+    // and remove the static "last cmd: —" row on first push.
+    const tape = document.getElementById('mqBleTape');
+    let lastTapeVerb = '';
+    function pushBleTape(L, R) {
+      if (!tape) return;
+      const verb = (L === 0 && R === 0) ? 'STOP' : `M:${L},${R}`;
+      if (verb === lastTapeVerb) return;
+      lastTapeVerb = verb;
+      // First real entry — clear the "last cmd: —" placeholder.
+      const placeholder = document.getElementById('mqDriveLast');
+      if (placeholder) placeholder.remove();
+      const t = new Date();
+      const time = t.toTimeString().slice(0,8);
+      const row = document.createElement('div');
+      row.style.cssText = 'display:flex; gap:8px; padding:1px 0; opacity:0;';
+      row.innerHTML =
+        `<span style="color:#4ade80; min-width:62px;">${time}</span>` +
+        `<span style="color:#93a8c4;">→</span>` +
+        `<span style="color:#fb923c; font-weight:700;">${verb}</span>` +
+        `<span style="margin-left:auto; color:#93a8c4; font-size:10px;" data-pending>…</span>`;
+      tape.insertBefore(row, tape.firstChild);
+      requestAnimationFrame(() => { row.style.transition = 'opacity 0.2s'; row.style.opacity = '1'; });
+      while (tape.children.length > 6) tape.removeChild(tape.lastChild);
+    }
+
+    // Subscribe to scheduler echo events to mark the most-recent pending row
+    // as "✓ <latency>". The echo event has { seq, verb, latency }.
+    if (window.bleScheduler && window.bleScheduler.on) {
+      window.bleScheduler.on('echo', (info) => {
+        if (!tape || !info) return;
+        // Only mark M:* / STOP echoes (other verbs aren't drive)
+        const v = info.verb || '';
+        if (!v.startsWith('M:') && v !== 'STOP') return;
+        const pending = tape.querySelector('[data-pending]');
+        if (pending) {
+          const ms = Math.round(info.latency || 0);
+          pending.textContent = `✓ ${ms} ms`;
+          pending.style.color = ms < 100 ? '#4ade80' : ms < 300 ? '#fbbf24' : '#f87171';
+          pending.removeAttribute('data-pending');
+        }
+      });
+    }
 
     // ---- JOYSTICK ----
     // Maps drag position to differential drive. Y axis = forward (up
