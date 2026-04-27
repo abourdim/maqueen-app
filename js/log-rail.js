@@ -35,7 +35,14 @@
   const COLLAPSE_VIEWPORT = 1100;
 
   function isPinnedPref() {
-    try { return localStorage.getItem(STORAGE_KEY) === '1'; } catch { return false; }
+    // DEFAULT ON: first-time visitors get the log as a right sidebar by
+    // default — that's where it belongs on a desktop. Users who want it
+    // back inline can click 'Unpin'; their preference persists.
+    try {
+      const v = localStorage.getItem(STORAGE_KEY);
+      if (v === null) return true;     // no preference yet → pin
+      return v === '1';
+    } catch { return true; }
   }
   function setPinnedPref(v) {
     try { localStorage.setItem(STORAGE_KEY, v ? '1' : '0'); } catch {}

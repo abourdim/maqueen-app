@@ -4767,20 +4767,21 @@ body.log-pinned {
 
 body.log-pinned .log-card {
   position: fixed;
-  top: 12px;
-  right: 12px;
-  bottom: 12px;
+  top: 0;
+  right: 0;
+  bottom: 0;
   width: var(--log-rail-w);
-  /* Subtract the 12px insets (top/bottom) for the height calc */
-  max-height: calc(100vh - 24px);
+  max-height: 100vh;
   margin: 0;
   z-index: 950;
   display: flex;
   flex-direction: column;
-  /* Layered shadow + 1 px border ring to lift it off the page */
+  /* Docked-against-edge: no rounding on the right side, strong left
+     shadow so it reads as a permanent panel attached to the viewport. */
+  border-radius: 0;
   box-shadow:
-    -10px 0 28px rgba(0, 0, 0, 0.4),
-    0 0 0 1px var(--border, #1d3556);
+    -14px 0 36px rgba(0, 0, 0, 0.5),
+    -1px 0 0 var(--border, #1d3556);
   /* Slightly stronger backdrop on glassy themes so the log stays legible */
   background: var(--card-bg, #0f1e35);
 }
