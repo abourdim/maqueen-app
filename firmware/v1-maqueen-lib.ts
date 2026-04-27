@@ -54,8 +54,8 @@
  *
  * BUILD STAMP — edit these two lines before flashing:
  */
-const BUILD_VERSION = "0.1.27"
-const BUILD_DATE = "2026-04-26 19:06 UTC"
+const BUILD_VERSION = "0.1.28"
+const BUILD_DATE = "2026-04-27 02:25 UTC"
 
 // ---------- state ----------
 let btConnected = false
@@ -275,7 +275,14 @@ function handleLineQuery() {
 function handleDistQuery() {
     // pxt-maqueen v1.7.16: Ultrasonic() takes no args, returns cm directly
     let cm = maqueen.Ultrasonic()
-    send("DIST:" + cm)
+    // 500 is pxt-maqueen's "no echo / out of range" sentinel; 0 is a bad read.
+    // Translate to "-" so the log line "DIST:-" is self-explanatory instead
+    // of the confusing "DIST:500". App side already treats both as "no reading".
+    if (cm <= 0 || cm >= 500) {
+        send("DIST:-")
+    } else {
+        send("DIST:" + cm)
+    }
     if (logLevel >= 3) execlog("DIST cm=" + cm)
 }
 

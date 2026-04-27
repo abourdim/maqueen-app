@@ -69,6 +69,8 @@
     let m;
     if ((m = line.match(/^LINE:(\d+),(\d+)$/))) {
       setLineSensors(+m[1], +m[2]);
+    } else if (line === 'DIST:-') {
+      setDistance(0); // firmware reports no echo / out of range
     } else if ((m = line.match(/^DIST:(\d+(?:\.\d+)?)$/))) {
       setDistance(m[1]);
     } else if ((m = line.match(/^IR:(\d+)$/))) {

@@ -528,7 +528,9 @@
     window.bleScheduler.on('reply', ({ line }) => {
       if (!line) return;
       let m;
-      if ((m = line.match(/^DIST:(\d+(?:\.\d+)?)$/))) {
+      if (line === 'DIST:-') {
+        setDist(0); // no echo / out of range
+      } else if ((m = line.match(/^DIST:(\d+(?:\.\d+)?)$/))) {
         setDist(m[1]);
       } else if ((m = line.match(/^IR:(\d+)$/)) && +m[1] > 0) {
         setIR(m[1]);
