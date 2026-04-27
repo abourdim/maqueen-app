@@ -601,6 +601,48 @@
     initLineFollow();
     initFollowRate();
     initLineCard();
+    initTabGate();
+  }
+
+  // -------- TAB GATE ----------------------------------------
+  // Pause every auto-poll / follow timer whenever the user leaves the
+  // Maqueen tab — the polls are useless on Controls/Sensors/etc and they
+  // saturate the BLE channel. Resume on return so checkbox state is
+  // preserved across tab switches.
+  function initTabGate() {
+    function isMaqueenActive() {
+      const active = document.querySelector('.tab-btn.active');
+      return active && active.getAttribute('data-page') === 'maqueen';
+    }
+    function pauseAll() {
+      if (distAutoTimer) { clearInterval(distAutoTimer); distAutoTimer = null; }
+      if (lineAutoTimer) { clearInterval(lineAutoTimer); lineAutoTimer = null; }
+      if (followTimer)   { clearInterval(followTimer);   followTimer   = null; }
+    }
+    function resumeIfNeeded() {
+      const distAuto = document.getElementById('mqDistAuto');
+      const lineAuto = document.getElementById('mqLineAuto');
+      if (distAuto && distAuto.checked && !distAutoTimer) {
+        distAutoTimer = setInterval(pollDist, distRateMs);
+      }
+      if (lineAuto && lineAuto.checked && !lineAutoTimer) {
+        lineAutoTimer = setInterval(pollLine, lineRateMs);
+      }
+      if (following && !followTimer) {
+        followTimer = setInterval(followTick, followRateMs);
+      }
+    }
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        // small delay so .active flips first
+        setTimeout(() => {
+          if (isMaqueenActive()) resumeIfNeeded();
+          else pauseAll();
+        }, 30);
+      });
+    });
+    // Initial state — if first tab isn't Maqueen, pause
+    setTimeout(() => { if (!isMaqueenActive()) pauseAll(); }, 50);
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
