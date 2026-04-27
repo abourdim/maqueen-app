@@ -659,6 +659,10 @@
         // Send STOP (angle 90) to actually stop a continuous-rotation servo
         if (window.bleScheduler) window.bleScheduler.send('SRV:' + port + ',90', { coalesce: true }).catch(() => {});
         startContinuousSpin(port, 0);
+        // Reset PWM scope to the STOP pulse width (1.5 ms = angle 90)
+        lastShown = { port, angle: 90 };
+        updateServoScope(90);
+        renderCode();
       } else {
         // Restore positional defaults
         slider.min = '0'; slider.max = '180'; slider.value = '90';
@@ -676,6 +680,9 @@
         }
         rotateDial(port, 90);
         setBigReadout(port, 90);
+        lastShown = { port, angle: 90 };
+        updateServoScope(90);
+        renderCode();
       }
     }
     // In 360° mode the dial rotates continuously at a rate proportional to speed.
@@ -719,8 +726,16 @@
       if (readout) readout.textContent = (speedPct > 0 ? '+' : '') + speedPct + '%';
       if (big) { big.textContent = (speedPct > 0 ? '+' : '') + speedPct + '%'; }
       // Map -100..+100 -> 0..180 for the SRV verb
+      // -100% -> 1.0 ms (90+(-100)*0.9 = 0°)
+      //    0% -> 1.5 ms (90° = STOP for a continuous-rotation servo)
+      // +100% -> 2.0 ms (180°)
       const angle = Math.max(0, Math.min(180, Math.round(90 + speedPct * 0.9)));
       lastShown = { port, angle };
+      // Same PWM scope used in 180° mode — pulse width is what the
+      // continuous-rotation servo actually reads, just interpreted as
+      // direction+rate instead of position. So showing it changing as
+      // the user adjusts speed is exactly the right thing.
+      updateServoScope(angle);
       renderCode();
       if (window.bleScheduler) {
         flashStatus('… sending', '#fbbf24');
