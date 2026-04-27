@@ -1469,6 +1469,72 @@
     });
   }
 
+  // -------- 🔊 SONAR AUDIO PING ---------------------------
+  // Optional audio feedback for sonar readings — submarine / Geiger-
+  // counter aesthetic. Each setDist() call plays a tiny pip whose
+  // PITCH and VOLUME both scale with distance: close = high & loud,
+  // far = low & soft. Off by default (lazy AudioContext init — no
+  // node created until the user opts in, so the page makes zero
+  // noise on load and Chrome's autoplay policy stays clean).
+  //
+  // Why a single sine + 60 ms exponential envelope:
+  //   - Square-ish (sine + sharp ramp) = audible click without harsh harmonics
+  //   - Exponential decay ≈ ear-friendly; no "click" tail
+  //   - Skip if cm out-of-range so a 'no echo' read is silent
+  const mqAudioPing = (function () {
+    const KEY = 'maqueen.audioPing';
+    let enabled = false;
+    let ctx = null;
+    try { enabled = localStorage.getItem(KEY) === '1'; } catch {}
+
+    function getCtx() {
+      if (ctx) return ctx;
+      try {
+        ctx = new (window.AudioContext || window.webkitAudioContext)();
+      } catch {}
+      return ctx;
+    }
+    function ensureRunning() {
+      const ac = getCtx();
+      if (!ac) return null;
+      // Browsers suspend AudioContext until a user gesture. The toggle
+      // click counts as one — resume() inside that handler unlocks it.
+      if (ac.state === 'suspended') ac.resume().catch(() => {});
+      return ac;
+    }
+    function ping(cm) {
+      if (!enabled) return;
+      if (!(cm > 0 && cm < 500)) return;     // no echo / out of range
+      const ac = ensureRunning();
+      if (!ac || ac.state !== 'running') return;
+      // cm → tone mapping. Clamp at 100 cm; closer is louder + higher.
+      const t = Math.max(0, Math.min(1, cm / 100));
+      const freq = 1500 - t * 1000;          // 0 cm: 1500 Hz, 100+ cm: 500 Hz
+      const vol  = 0.04 + (1 - t) * 0.10;    // 0 cm: 0.14, 100+ cm: 0.04
+      const now = ac.currentTime;
+      const osc = ac.createOscillator();
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      const gain = ac.createGain();
+      // Sharp attack (3 ms) + exponential-ish decay (60 ms) = a clean
+      // pip without the harsh DC-step click of a raw on/off envelope.
+      gain.gain.setValueAtTime(0, now);
+      gain.gain.linearRampToValueAtTime(vol, now + 0.003);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.06);
+      osc.connect(gain);
+      gain.connect(ac.destination);
+      osc.start(now);
+      osc.stop(now + 0.08);
+    }
+    function setEnabled(on) {
+      enabled = !!on;
+      try { localStorage.setItem(KEY, enabled ? '1' : '0'); } catch {}
+      // Resume immediately so the very next ping is audible (no one-pip lag).
+      if (enabled) ensureRunning();
+    }
+    return { ping, setEnabled, isEnabled: () => enabled };
+  })();
+
   // -------- 🚦 AUTO-WANDER --------------------------------
   // Hands-off demo: robot drives forward, polls sonar, turns on its
   // own when it sees an obstacle. Classic "perception → decision →
@@ -2094,6 +2160,9 @@
     try { mqDashboard.recordDistance(cm); } catch {}
     // Auto-wander — react to obstacles by turning. No-op when not active.
     try { mqWander.onDistance(cm); } catch {}
+    // Sonar audio ping — tiny pip whose pitch/volume scale with cm.
+    // Silent when toggle is off OR no echo / out of range.
+    try { mqAudioPing.ping(cm); } catch {}
     // Glossy gauge — compatibility shims for the old IDs are still in DOM
     const big = document.getElementById('mqDistBig');
     const bar = document.getElementById('mqDistBar');
@@ -2276,6 +2345,16 @@
     if (window.bleScheduler && window.bleScheduler.on) {
       window.bleScheduler.on('connected',    refreshDistOrb);
       window.bleScheduler.on('disconnected', refreshDistOrb);
+    }
+    // Audio-ping toggle. Restore persisted state, wire change handler.
+    // The change handler IS a user gesture, which is what unlocks Web
+    // Audio under Chrome's autoplay policy — perfect timing.
+    const audioChk = document.getElementById('mqDistAudio');
+    if (audioChk) {
+      audioChk.checked = mqAudioPing.isEnabled();
+      audioChk.addEventListener('change', e => {
+        mqAudioPing.setEnabled(e.target.checked);
+      });
     }
   }
 
