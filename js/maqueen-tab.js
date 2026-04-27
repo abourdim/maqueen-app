@@ -712,7 +712,28 @@
     // Slider + quick-button wiring lives below in the mode-aware block —
     // s1/s2 dispatch via modeAwareSlider() depending on 180° vs 360° mode.
 
+    // Shared sweep-speed control — period in ms (full back-and-forth cycle)
+    let sweepPeriodMs = 2000;
+    try { sweepPeriodMs = +localStorage.getItem('maqueen.sweepPeriod') || 2000; } catch {}
+    const sweepSlider  = document.getElementById('mqServoSweepSpeed');
+    const sweepReadout = document.getElementById('mqServoSweepSpeedRead');
+    function paintSweepReadout() {
+      if (sweepReadout) sweepReadout.textContent = (sweepPeriodMs / 1000).toFixed(1) + ' s/cycle';
+    }
+    if (sweepSlider) {
+      sweepSlider.value = sweepPeriodMs;
+      paintSweepReadout();
+      sweepSlider.addEventListener('input', e => {
+        sweepPeriodMs = +e.target.value;
+        try { localStorage.setItem('maqueen.sweepPeriod', String(sweepPeriodMs)); } catch {}
+        paintSweepReadout();
+      });
+    }
+
     // Sweep — uses scheduler.animate so it's properly rate-limited.
+    // Reads sweepPeriodMs LIVE on each tick so the slider can adjust speed
+    // mid-sweep without restarting. Update rate scales inversely too —
+    // faster sweep → more frames per second so motion stays smooth.
     const sweeping = { 1: false, 2: false };
     document.querySelectorAll('.mq-servo-sweep').forEach(b => {
       const port = +b.dataset.port;
@@ -726,11 +747,12 @@
         }
         sweeping[port] = true;
         b.textContent = '⏸ Stop';
-        const start = performance.now();
+        // Update rate: ~10 Hz for slow sweeps, ~20 Hz for very fast ones,
+        // capped so the BLE scheduler doesn't drown.
+        const hz = Math.min(20, Math.max(8, Math.round(20000 / sweepPeriodMs)));
         window.bleScheduler.animate(`servo-sweep-${port}`, t => {
-          const phase = ((t % 2000) / 2000) * 2 * Math.PI;
+          const phase = ((t % sweepPeriodMs) / sweepPeriodMs) * 2 * Math.PI;
           const a = Math.round(90 + Math.sin(phase) * 90);
-          // Update visuals every frame
           rotateDial(port, a);
           setBigReadout(port, a);
           const slider = port === 1 ? s1 : s2;
@@ -741,7 +763,7 @@
           updateServoScope(a);
           renderCode();
           return `SRV:${port},${a}`;
-        }, 10);
+        }, hz);
       });
     });
 
