@@ -49,6 +49,24 @@
       message_log:        "Message Log",
       export:             "Export",
 
+      // Maqueen-tab specific (added in v0.1.5x)
+      mq_servo_180:       "180° position",
+      mq_servo_360:       "360° speed",
+      mq_show_code:       "🧱 Code that runs on the micro:bit",
+      mq_signal_pwm:      "PWM signal · pulse width sets the angle",
+      mq_signal_ws2812:   "WS2812 bit timing · self-clocked single-wire serial",
+      mq_signal_nec:      "NEC frame · last received",
+      mq_signal_ble:      "Live BLE wire",
+      mq_dist_listening:  "listening...",
+      mq_dist_far:        "far",
+      mq_dist_close:      "close...",
+      mq_dist_obstacle:   "OBSTACLE!",
+      mq_polling:         "polling",
+      mq_paused:          "paused",
+      mq_no_link:         "no link",
+      mq_drive_diff:      "differential drive",
+      mq_hold_to_drive:   "hold to drive (release = stop)",
+
       // Tabs
       tab_maqueen:        "Maqueen",
       tab_controls:       "Controls",
@@ -466,6 +484,24 @@
       message_log:        "Journal des messages",
       export:             "Exporter",
 
+      // Maqueen-tab specific (added in v0.1.5x)
+      mq_servo_180:       "180° position",
+      mq_servo_360:       "360° vitesse",
+      mq_show_code:       "🧱 Le code qui tourne sur le micro:bit",
+      mq_signal_pwm:      "Signal PWM · la largeur d'impulsion fixe l'angle",
+      mq_signal_ws2812:   "Timing WS2812 · liaison série auto-cadencée",
+      mq_signal_nec:      "Trame NEC · dernière reçue",
+      mq_signal_ble:      "Bus BLE en direct",
+      mq_dist_listening:  "à l'écoute...",
+      mq_dist_far:        "loin",
+      mq_dist_close:      "proche...",
+      mq_dist_obstacle:   "OBSTACLE !",
+      mq_polling:         "scrute",
+      mq_paused:          "en pause",
+      mq_no_link:         "pas de lien",
+      mq_drive_diff:      "entraînement différentiel",
+      mq_hold_to_drive:   "tenir pour rouler (relâcher = stop)",
+
       // Tabs
       tab_maqueen:        "Maqueen",
       tab_controls:       "Commandes",
@@ -882,6 +918,24 @@
       clear:              "\u0645\u0633\u062d",
       message_log:        "\u0633\u062c\u0644 \u0627\u0644\u0631\u0633\u0627\u0626\u0644",
       export:             "\u062a\u0635\u062f\u064a\u0631",
+
+      // Maqueen-tab specific (added in v0.1.5x)
+      mq_servo_180:       "180\u00b0 \u0648\u0636\u0639\u064a\u0629",
+      mq_servo_360:       "360\u00b0 \u0633\u0631\u0639\u0629",
+      mq_show_code:       "\ud83e\uddf1 \u0627\u0644\u0643\u0648\u062f \u0627\u0644\u0645\u0646\u0641\u0651\u0630 \u0639\u0644\u0649 \u0627\u0644\u0645\u064a\u0643\u0631\u0648\u0628\u064a\u062a",
+      mq_signal_pwm:      "\u0625\u0634\u0627\u0631\u0629 PWM \u00b7 \u0639\u0631\u0636 \u0627\u0644\u0646\u0628\u0636\u0629 \u064a\u062d\u062f\u062f \u0627\u0644\u0632\u0627\u0648\u064a\u0629",
+      mq_signal_ws2812:   "\u062a\u0648\u0642\u064a\u062a WS2812 \u00b7 \u062a\u0633\u0644\u0633\u0644 \u0630\u0627\u062a\u064a \u0627\u0644\u062a\u0632\u0627\u0645\u0646",
+      mq_signal_nec:      "\u0625\u0637\u0627\u0631 NEC \u00b7 \u0622\u062e\u0631 \u0627\u0633\u062a\u0644\u0627\u0645",
+      mq_signal_ble:      "\u062e\u0637 BLE \u0645\u0628\u0627\u0634\u0631",
+      mq_dist_listening:  "\u064a\u0633\u062a\u0645\u0639...",
+      mq_dist_far:        "\u0628\u0639\u064a\u062f",
+      mq_dist_close:      "\u0642\u0631\u064a\u0628...",
+      mq_dist_obstacle:   "\u0639\u0627\u0626\u0642!",
+      mq_polling:         "\u064a\u0633\u062a\u0641\u0633\u0631",
+      mq_paused:          "\u0645\u0648\u0642\u0648\u0641 \u0645\u0624\u0642\u062a\u0627\u064b",
+      mq_no_link:         "\u0644\u0627 \u0627\u062a\u0635\u0627\u0644",
+      mq_drive_diff:      "\u062f\u0641\u0639 \u062a\u0641\u0627\u0636\u0644\u064a",
+      mq_hold_to_drive:   "\u0627\u0636\u063a\u0637 \u0648\u0623\u0645\u0633\u0643 \u0644\u0644\u0642\u064a\u0627\u062f\u0629 (\u0623\u0641\u0644\u0627\u062a = \u0625\u064a\u0642\u0627\u0641)",
 
       // Tabs
       tab_maqueen:        "Maqueen",

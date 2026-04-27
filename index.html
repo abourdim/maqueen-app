@@ -866,12 +866,17 @@ html[dir="rtl"] .hint ol { padding-left: 0; padding-right: 20px; }
                                                     <text x="180" y="40" fill="#00d4ff" font-size="22" font-weight="700" text-anchor="end" font-family="JetBrains Mono, monospace" id="mqS1BigReadout">90°</text>
                                                 </svg>
                                             </div>
+                                            <!-- Mode toggle: 180 deg position vs 360 deg continuous rotation -->
+                                            <div style="display:flex; gap:0; margin-top:6px;">
+                                                <button class="mq-servo-mode mq-servo-mode-active" data-port="1" data-mode="180" style="flex:1; padding:4px; background:var(--card-bg-2, #0a1628); color:#00d4ff; border:1px solid #00d4ff; border-radius:4px 0 0 4px; cursor:pointer; font-size:10px; font-weight:700;" data-i18n="mq_servo_180" title="Standard hobby servo: pulse width sets the angle">180° position</button>
+                                                <button class="mq-servo-mode" data-port="1" data-mode="360" style="flex:1; padding:4px; background:var(--card-bg-2, #0a1628); color:var(--text-secondary, #93a8c4); border:1px solid var(--border, #1d3556); border-left:none; border-radius:0 4px 4px 0; cursor:pointer; font-size:10px;" data-i18n="mq_servo_360" title="Continuous-rotation servo: pulse width sets the speed (90 = stop)">360° speed</button>
+                                            </div>
                                             <div style="display:flex; align-items:center; gap:8px; margin-top:6px;">
                                                 <span id="mqS1Label" style="font-family:monospace; color:var(--text-secondary, #93a8c4); min-width:40px; font-size:12px;">S1</span>
                                                 <input type="range" id="mqS1Slider" min="0" max="180" value="90" style="flex:1; accent-color:#00d4ff;"/>
                                                 <span id="mqS1Readout" style="font-family:monospace; color:#00d4ff; min-width:38px; text-align:right; font-size:11px;">90°</span>
                                             </div>
-                                            <div style="display:flex; gap:4px; margin-top:6px; flex-wrap:wrap;">
+                                            <div id="mqS1Quick" style="display:flex; gap:4px; margin-top:6px; flex-wrap:wrap;">
                                                 <button class="mq-servo-quick" data-port="1" data-angle="0"   style="flex:1; padding:5px; background:var(--card-bg-2, #0a1628); color:#00d4ff; border:1px solid var(--border, #1d3556); border-radius:5px; cursor:pointer; font-size:10px;">0°</button>
                                                 <button class="mq-servo-quick" data-port="1" data-angle="90"  style="flex:1; padding:5px; background:var(--card-bg-2, #0a1628); color:#00d4ff; border:1px solid var(--border, #1d3556); border-radius:5px; cursor:pointer; font-size:10px;">90°</button>
                                                 <button class="mq-servo-quick" data-port="1" data-angle="180" style="flex:1; padding:5px; background:var(--card-bg-2, #0a1628); color:#00d4ff; border:1px solid var(--border, #1d3556); border-radius:5px; cursor:pointer; font-size:10px;">180°</button>
@@ -894,12 +899,17 @@ html[dir="rtl"] .hint ol { padding-left: 0; padding-right: 20px; }
                                                     <text x="180" y="40" fill="#4ade80" font-size="22" font-weight="700" text-anchor="end" font-family="JetBrains Mono, monospace" id="mqS2BigReadout">90°</text>
                                                 </svg>
                                             </div>
+                                            <!-- Mode toggle for S2 -->
+                                            <div style="display:flex; gap:0; margin-top:6px;">
+                                                <button class="mq-servo-mode mq-servo-mode-active" data-port="2" data-mode="180" style="flex:1; padding:4px; background:var(--card-bg-2, #0a1628); color:#4ade80; border:1px solid #4ade80; border-radius:4px 0 0 4px; cursor:pointer; font-size:10px; font-weight:700;" data-i18n="mq_servo_180">180° position</button>
+                                                <button class="mq-servo-mode" data-port="2" data-mode="360" style="flex:1; padding:4px; background:var(--card-bg-2, #0a1628); color:var(--text-secondary, #93a8c4); border:1px solid var(--border, #1d3556); border-left:none; border-radius:0 4px 4px 0; cursor:pointer; font-size:10px;" data-i18n="mq_servo_360">360° speed</button>
+                                            </div>
                                             <div style="display:flex; align-items:center; gap:8px; margin-top:6px;">
                                                 <span id="mqS2Label" style="font-family:monospace; color:var(--text-secondary, #93a8c4); min-width:40px; font-size:12px;">S2</span>
                                                 <input type="range" id="mqS2Slider" min="0" max="180" value="90" style="flex:1; accent-color:#4ade80;"/>
                                                 <span id="mqS2Readout" style="font-family:monospace; color:#4ade80; min-width:38px; text-align:right; font-size:11px;">90°</span>
                                             </div>
-                                            <div style="display:flex; gap:4px; margin-top:6px; flex-wrap:wrap;">
+                                            <div id="mqS2Quick" style="display:flex; gap:4px; margin-top:6px; flex-wrap:wrap;">
                                                 <button class="mq-servo-quick" data-port="2" data-angle="0"   style="flex:1; padding:5px; background:var(--card-bg-2, #0a1628); color:#4ade80; border:1px solid var(--border, #1d3556); border-radius:5px; cursor:pointer; font-size:10px;">0°</button>
                                                 <button class="mq-servo-quick" data-port="2" data-angle="90"  style="flex:1; padding:5px; background:var(--card-bg-2, #0a1628); color:#4ade80; border:1px solid var(--border, #1d3556); border-radius:5px; cursor:pointer; font-size:10px;">90°</button>
                                                 <button class="mq-servo-quick" data-port="2" data-angle="180" style="flex:1; padding:5px; background:var(--card-bg-2, #0a1628); color:#4ade80; border:1px solid var(--border, #1d3556); border-radius:5px; cursor:pointer; font-size:10px;">180°</button>

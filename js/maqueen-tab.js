@@ -569,15 +569,8 @@
       }
     }
 
-    s1.addEventListener('input', e => setAngle(1, +e.target.value));
-    s2.addEventListener('input', e => setAngle(2, +e.target.value));
-
-    // Quick angle preset buttons (per-servo)
-    document.querySelectorAll('.mq-servo-quick').forEach(b => {
-      b.addEventListener('click', () => {
-        setAngle(+b.dataset.port, +b.dataset.angle);
-      });
-    });
+    // Slider + quick-button wiring lives below in the mode-aware block —
+    // s1/s2 dispatch via modeAwareSlider() depending on 180° vs 360° mode.
 
     // Sweep — uses scheduler.animate so it's properly rate-limited.
     const sweeping = { 1: false, 2: false };
@@ -612,6 +605,128 @@
       });
     });
 
+    // ---- 360° (continuous-rotation) servo mode ----
+    // 180° (default): slider 0..180, dial shows position via horn rotation.
+    // 360° (continuous): slider -100..+100 (speed), 0 = stop, sign = direction.
+    //   Maps to the same SRV:port,angle wire format: speed s ∈ [-100,+100]
+    //   becomes angle a = clamp(0, 180, 90 + s * 0.9). Visualization changes
+    //   to a continuously-rotating disk whose RPM = |speed|.
+    const mode = { 1: '180', 2: '180' };
+    const spinTimers = { 1: null, 2: null };
+    function styleModeBtn(btn, on, color) {
+      btn.style.color = on ? color : 'var(--text-secondary, #93a8c4)';
+      btn.style.borderColor = on ? color : 'var(--border, #1d3556)';
+      btn.style.fontWeight = on ? '700' : '400';
+      btn.classList.toggle('mq-servo-mode-active', on);
+    }
+    function setMode(port, m) {
+      mode[port] = m;
+      const slider  = port === 1 ? s1 : s2;
+      const readout = port === 1 ? r1 : r2;
+      const quickEl = document.getElementById('mqS' + port + 'Quick');
+      const dial    = port === 1 ? dial1 : dial2;
+      const big     = port === 1 ? big1 : big2;
+      const color   = port === 1 ? '#00d4ff' : '#4ade80';
+      // Update mode buttons styling
+      document.querySelectorAll('.mq-servo-mode[data-port="' + port + '"]').forEach(b => {
+        styleModeBtn(b, b.dataset.mode === m, color);
+      });
+      // Stop any continuous spin animation when switching modes
+      if (spinTimers[port]) { cancelAnimationFrame(spinTimers[port]); spinTimers[port] = null; }
+      if (m === '360') {
+        // Rebuild slider as bipolar -100..+100, default 0 (stop)
+        slider.min = '-100'; slider.max = '100'; slider.value = '0';
+        if (readout) readout.textContent = '0%';
+        if (big) big.textContent = '0%';
+        // Quick presets become STOP / FWD / REV
+        if (quickEl) {
+          quickEl.innerHTML =
+            '<button class="mq-servo-quick" data-port="' + port + '" data-speed="-100" style="flex:1; padding:5px; background:var(--card-bg-2, #0a1628); color:' + color + '; border:1px solid var(--border, #1d3556); border-radius:5px; cursor:pointer; font-size:10px;">⏪ -100%</button>' +
+            '<button class="mq-servo-quick" data-port="' + port + '" data-speed="0"    style="flex:1; padding:5px; background:var(--card-bg-2, #0a1628); color:#f87171; border:1px solid var(--border, #1d3556); border-radius:5px; cursor:pointer; font-size:10px; font-weight:700;">⏹ STOP</button>' +
+            '<button class="mq-servo-quick" data-port="' + port + '" data-speed="100"  style="flex:1; padding:5px; background:var(--card-bg-2, #0a1628); color:' + color + '; border:1px solid var(--border, #1d3556); border-radius:5px; cursor:pointer; font-size:10px;">⏩ +100%</button>' +
+            '<button class="mq-servo-sweep" data-port="' + port + '" style="flex:1; padding:5px; background:var(--card-bg-2, #0a1628); color:#facc15; border:1px solid var(--border, #1d3556); border-radius:5px; cursor:pointer; font-size:10px;">▶ Sweep</button>';
+          rewireQuickButtons();
+        }
+        // Send STOP (angle 90) to actually stop a continuous-rotation servo
+        if (window.bleScheduler) window.bleScheduler.send('SRV:' + port + ',90', { coalesce: true }).catch(() => {});
+        startContinuousSpin(port, 0);
+      } else {
+        // Restore positional defaults
+        slider.min = '0'; slider.max = '180'; slider.value = '90';
+        if (readout) readout.textContent = '90°';
+        if (big) big.textContent = '90°';
+        if (quickEl) {
+          quickEl.innerHTML =
+            '<button class="mq-servo-quick" data-port="' + port + '" data-angle="0"   style="flex:1; padding:5px; background:var(--card-bg-2, #0a1628); color:' + color + '; border:1px solid var(--border, #1d3556); border-radius:5px; cursor:pointer; font-size:10px;">0°</button>' +
+            '<button class="mq-servo-quick" data-port="' + port + '" data-angle="90"  style="flex:1; padding:5px; background:var(--card-bg-2, #0a1628); color:' + color + '; border:1px solid var(--border, #1d3556); border-radius:5px; cursor:pointer; font-size:10px;">90°</button>' +
+            '<button class="mq-servo-quick" data-port="' + port + '" data-angle="180" style="flex:1; padding:5px; background:var(--card-bg-2, #0a1628); color:' + color + '; border:1px solid var(--border, #1d3556); border-radius:5px; cursor:pointer; font-size:10px;">180°</button>' +
+            '<button class="mq-servo-sweep" data-port="' + port + '" style="flex:1; padding:5px; background:var(--card-bg-2, #0a1628); color:#facc15; border:1px solid var(--border, #1d3556); border-radius:5px; cursor:pointer; font-size:10px;">▶ Sweep</button>';
+          rewireQuickButtons();
+        }
+        rotateDial(port, 90);
+        setBigReadout(port, 90);
+      }
+    }
+    // In 360° mode the dial rotates continuously at a rate proportional to speed
+    function startContinuousSpin(port, speed) {
+      if (spinTimers[port]) { cancelAnimationFrame(spinTimers[port]); }
+      const dial = port === 1 ? dial1 : dial2;
+      if (!dial) return;
+      let angle = 0;
+      let last = performance.now();
+      function tick(now) {
+        const dt = now - last; last = now;
+        // Max rate ~720 deg/sec at speed=100 (visually fast but not blurred)
+        angle = (angle + (speed / 100) * 720 * (dt / 1000)) % 360;
+        dial.setAttribute('transform', `rotate(${angle.toFixed(1)} 100 100)`);
+        spinTimers[port] = requestAnimationFrame(tick);
+      }
+      spinTimers[port] = requestAnimationFrame(tick);
+    }
+    function setSpeed(port, speedPct) {
+      speedPct = Math.max(-100, Math.min(100, +speedPct));
+      const slider = port === 1 ? s1 : s2;
+      const readout = port === 1 ? r1 : r2;
+      const big = port === 1 ? big1 : big2;
+      if (slider && +slider.value !== speedPct) slider.value = speedPct;
+      if (readout) readout.textContent = (speedPct > 0 ? '+' : '') + speedPct + '%';
+      if (big) { big.textContent = (speedPct > 0 ? '+' : '') + speedPct + '%'; }
+      // Map -100..+100 -> 0..180 for the SRV verb
+      const angle = Math.max(0, Math.min(180, Math.round(90 + speedPct * 0.9)));
+      lastShown = { port, angle };
+      renderCode();
+      if (window.bleScheduler) {
+        flashStatus('… sending', '#fbbf24');
+        window.bleScheduler.send(`SRV:${port},${angle}`, { coalesce: true })
+          .then(({ latency } = {}) => flashStatus('✓ ' + Math.round(latency || 0) + ' ms', '#4ade80'))
+          .catch(err => flashStatus('✗ ' + (err && err.message || 'err'), '#f87171'));
+      }
+      startContinuousSpin(port, speedPct);
+    }
+    // Rewire slider behavior to dispatch to the right handler based on current mode
+    function modeAwareSlider(port, val) {
+      if (mode[port] === '360') setSpeed(port, val);
+      else setAngle(port, val);
+    }
+    s1.addEventListener('input', e => modeAwareSlider(1, +e.target.value));
+    s2.addEventListener('input', e => modeAwareSlider(2, +e.target.value));
+    // Wire mode toggle buttons
+    document.querySelectorAll('.mq-servo-mode').forEach(b => {
+      b.addEventListener('click', () => setMode(+b.dataset.port, b.dataset.mode));
+    });
+    function rewireQuickButtons() {
+      document.querySelectorAll('.mq-servo-quick').forEach(b => {
+        b.addEventListener('click', () => {
+          const port = +b.dataset.port;
+          if (mode[port] === '360' && b.dataset.speed != null) {
+            setSpeed(port, +b.dataset.speed);
+          } else if (b.dataset.angle != null) {
+            setAngle(port, +b.dataset.angle);
+          }
+        });
+      });
+    }
+
     // Code-view tab toggle
     document.querySelectorAll('.mq-servo-codetab').forEach(b => {
       b.addEventListener('click', () => {
@@ -631,6 +746,7 @@
     rotateDial(1, 90);
     rotateDial(2, 90);
     renderCode();
+    rewireQuickButtons();   // wires the 180°-mode quick buttons (0/90/180)
     document.getElementById('mqKitPicker').addEventListener('change', e => applyKit(e.target.value));
 
     // Restore saved kit
