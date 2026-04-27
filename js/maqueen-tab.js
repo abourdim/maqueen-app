@@ -613,43 +613,110 @@
     applyKit(saved);
   }
 
+  // -------- SHARED: glossy-dome state helpers --------------
+  // Treat the dome as a 2-state visual: OFF (dark, no pulse) / ON (lit
+  // background-color + pulsing glow via .mq-on class).
+  function setDomeOn(el, color, on) {
+    if (!el) return;
+    if (on) {
+      el.style.backgroundColor = color;
+      el.classList.add('mq-on');
+    } else {
+      el.style.backgroundColor = '#1d3556';
+      el.classList.remove('mq-on');
+    }
+  }
+
+  // -------- SHARED: sparkline (last-N values → SVG polyline) ---
+  // Returns an object with push(v) to feed values; also auto-decays
+  // when no new value arrives so the line doesn't lie about freshness.
+  function makeSparkline(pathEl, opts) {
+    opts = opts || {};
+    const max = opts.max != null ? opts.max : 100;
+    const samples = opts.samples || 30;
+    const buf = [];
+    function render() {
+      if (!pathEl || !buf.length) return;
+      const w = 100, h = opts.h != null ? opts.h : 24;
+      const step = w / Math.max(1, samples - 1);
+      const pts = buf.map((v, i) => {
+        const x = i * step;
+        const y = h - Math.max(0, Math.min(1, v / max)) * h;
+        return `${x.toFixed(1)},${y.toFixed(1)}`;
+      });
+      pathEl.setAttribute('d', 'M' + pts.join(' L'));
+    }
+    return {
+      push(v) {
+        buf.push(+v);
+        if (buf.length > samples) buf.shift();
+        render();
+      },
+      reset() { buf.length = 0; if (pathEl) pathEl.setAttribute('d', ''); }
+    };
+  }
+
+  // -------- SHARED: status orb (.mq-orb-on / .mq-orb-warn / .mq-orb-err / off) ---
+  function setOrb(el, mode, label) {
+    if (!el) return;
+    el.classList.remove('mq-orb-on', 'mq-orb-warn', 'mq-orb-err');
+    if (mode) el.classList.add('mq-orb-' + mode);
+    if (label != null) el.textContent = label;
+  }
+
   // -------- SIMPLE LEDS -----------------------------------
   function initLEDs() {
+    const domeL = document.getElementById('mqLedDomeL');
+    const domeR = document.getElementById('mqLedDomeR');
     const btns = document.querySelectorAll('.mq-led-btn');
     if (!btns.length) return;
+    const stateLabel = (idx) => document.getElementById(idx === '0' ? 'mqLedDomeLState' : 'mqLedDomeRState');
+    const tape = document.getElementById('mqLedLastVerb');
+    function updateLed(idx, on) {
+      const dome = idx === '0' ? domeL : domeR;
+      const lbl = stateLabel(idx);
+      setDomeOn(dome, '#facc15', on);
+      if (lbl) lbl.textContent = on ? 'ON' : 'OFF';
+      const verb = `LED:${idx},${on ? 1 : 0}`;
+      if (tape) tape.textContent = verb;
+      send(verb);
+    }
     btns.forEach(btn => {
       btn.addEventListener('click', () => {
         const idx = btn.dataset.led;
         const next = btn.dataset.state === '0' ? '1' : '0';
         btn.dataset.state = next;
-        const lr = idx === '0' ? 'L' : 'R';
-        btn.textContent = `${lr}: ${next === '1' ? 'ON' : 'OFF'}`;
-        btn.style.background = next === '1' ? '#facc15' : '#0a1628';
-        btn.style.color = next === '1' ? '#0a1628' : '#facc15';
-        send(`LED:${idx},${next}`);
+        updateLed(idx, next === '1');
       });
     });
 
     document.getElementById('mqLedAllOff').addEventListener('click', async () => {
-      // Await each send so they serialize past the rate limit
+      // Update visuals first (so the off feels immediate), then send
+      btns.forEach(b => { b.dataset.state = '0'; });
+      setDomeOn(domeL, '#facc15', false); setDomeOn(domeR, '#facc15', false);
+      const lblL = stateLabel('0'); const lblR = stateLabel('1');
+      if (lblL) lblL.textContent = 'OFF';
+      if (lblR) lblR.textContent = 'OFF';
+      if (tape) tape.textContent = 'LED:*,0';
       await send('LED:0,0');
       await send('LED:1,0');
-      btns.forEach(b => {
-        b.dataset.state = '0';
-        const lr = b.dataset.led === '0' ? 'L' : 'R';
-        b.textContent = `${lr}: OFF`;
-        b.style.background = '#0a1628';
-        b.style.color = '#facc15';
-      });
     });
 
     document.getElementById('mqLedBlink').addEventListener('click', async () => {
-      // Serialize each LED command — awaiting echo naturally spaces them
-      // past the rate limit, so BOTH L and R toggle every cycle.
       for (let i = 0; i < 5; i++) {
+        btns.forEach(b => b.dataset.state = '1');
+        setDomeOn(domeL, '#facc15', true); setDomeOn(domeR, '#facc15', true);
+        if (stateLabel('0')) stateLabel('0').textContent = 'ON';
+        if (stateLabel('1')) stateLabel('1').textContent = 'ON';
+        if (tape) tape.textContent = 'LED:*,1';
         await send('LED:0,1');
         await send('LED:1,1');
         await new Promise(r => setTimeout(r, 200));
+        btns.forEach(b => b.dataset.state = '0');
+        setDomeOn(domeL, '#facc15', false); setDomeOn(domeR, '#facc15', false);
+        if (stateLabel('0')) stateLabel('0').textContent = 'OFF';
+        if (stateLabel('1')) stateLabel('1').textContent = 'OFF';
+        if (tape) tape.textContent = 'LED:*,0';
         await send('LED:0,0');
         await send('LED:1,0');
         await new Promise(r => setTimeout(r, 200));
@@ -659,19 +726,33 @@
 
   // -------- 4× RGB ----------------------------------------
   let rainbowTimer = null;
+  function setPearl(i, hex) {
+    const p = document.getElementById('mqPearl' + i);
+    if (p) p.style.setProperty('--c', hex);
+  }
+  function setPearlRGB(i, r, g, b) {
+    const hex = '#' + [r, g, b].map(v => v.toString(16).padStart(2, '0')).join('');
+    setPearl(i, hex);
+  }
   function initRGB() {
     const pickers = document.querySelectorAll('.mq-rgb-picker');
     if (!pickers.length) return;
+    // Mirror initial picker colors onto pearls
+    pickers.forEach(p => setPearl(p.dataset.i, p.value));
     pickers.forEach(p => {
       p.addEventListener('input', e => {
         const i = e.target.dataset.i;
         const { r, g, b } = hexToRGB(e.target.value);
+        setPearl(i, e.target.value);
         sendCoalesced(`RGB:${i},${r},${g},${b}`);
       });
     });
     document.getElementById('mqRgbAllOff').addEventListener('click', () => {
       if (rainbowTimer) { clearInterval(rainbowTimer); rainbowTimer = null; }
-      for (let i = 0; i < 4; i++) send(`RGB:${i},0,0,0`);
+      for (let i = 0; i < 4; i++) {
+        setPearlRGB(i, 0, 0, 0);
+        send(`RGB:${i},0,0,0`);
+      }
     });
     document.getElementById('mqRgbRainbow').addEventListener('click', () => {
       if (rainbowTimer) { clearInterval(rainbowTimer); rainbowTimer = null; return; }
@@ -680,6 +761,7 @@
         for (let i = 0; i < 4; i++) {
           const hue = (phase + i * 90) % 360;
           const { r, g, b } = hslToRgb(hue, 100, 50);
+          setPearlRGB(i, r, g, b);
           sendCoalesced(`RGB:${i},${r},${g},${b}`);
         }
         phase = (phase + 18) % 360;
@@ -698,58 +780,97 @@
   function initBuzzer() {
     const freqEl = document.getElementById('mqBuzzFreq');
     const msEl = document.getElementById('mqBuzzMs');
+    const wavePath = document.getElementById('mqBuzzWavePath');
+    const freqDisp = document.getElementById('mqBuzzFreqDisplay');
+    const msDisp = document.getElementById('mqBuzzMsDisplay');
     if (!freqEl) return;
+
+    function updateWave() {
+      const f = +freqEl.value || 440;
+      // Visualize "cycles per 200px viewport" — high freq = denser wave.
+      // Map 50–2000 Hz to 1–10 cycles for readable density.
+      const cycles = Math.max(1, Math.min(14, Math.round(f / 150)));
+      const w = 200, h = 40, mid = 20, amp = 14;
+      const samples = 60;
+      let d = `M 0 ${mid}`;
+      for (let i = 1; i <= samples; i++) {
+        const x = (i / samples) * w;
+        const y = mid - amp * Math.sin((i / samples) * cycles * 2 * Math.PI);
+        d += ` L ${x.toFixed(1)} ${y.toFixed(1)}`;
+      }
+      if (wavePath) wavePath.setAttribute('d', d);
+      if (freqDisp) freqDisp.textContent = f;
+      if (msDisp) msDisp.textContent = msEl.value || 200;
+    }
+    updateWave();
+    freqEl.addEventListener('input', updateWave);
+    msEl.addEventListener('input', updateWave);
+
     document.querySelectorAll('.mq-note').forEach(n => {
       n.addEventListener('click', () => {
         const f = +n.dataset.freq;
         freqEl.value = f;
+        updateWave();
+        // brief active flash on the key
+        n.classList.add('mq-active');
+        setTimeout(() => n.classList.remove('mq-active'), 180);
         send(`BUZZ:${f},${msEl.value || 200}`);
       });
     });
     document.getElementById('mqBuzzPlay').addEventListener('click', () => {
+      updateWave();
       send(`BUZZ:${freqEl.value || 440},${msEl.value || 200}`);
     });
     document.getElementById('mqBuzzOff').addEventListener('click', () => send('BUZZ:0,0'));
   }
 
   // -------- ULTRASONIC ------------------------------------
-  let distHistory = [];
   let distAutoTimer = null;
+  // Distance sparkline (last ~30 samples = ~30 sec at 1 Hz default)
+  let distSpark = null;
+  function ensureDistSpark() {
+    if (distSpark) return distSpark;
+    const path = document.getElementById('mqDistSpark');
+    if (!path) return null;
+    distSpark = makeSparkline(path, { max: 200, samples: 30 });
+    return distSpark;
+  }
   function setDist(cm) {
+    cm = Math.round(+cm);
+    const noSensor = (cm <= 0 || cm >= 500);
+    // Glossy gauge — compatibility shims for the old IDs are still in DOM
     const big = document.getElementById('mqDistBig');
     const bar = document.getElementById('mqDistBar');
-    const dot = document.getElementById('mqSonarDot');
     const range = document.getElementById('mqDistRange');
-    if (!big) return;
-    cm = Math.round(+cm);
-    // pxt-maqueen returns its max-range value (500) when the SR04 isn't
-    // wired in or doesn't echo. 0 = bad reading. Treat both as "no sensor".
-    const noSensor = (cm <= 0 || cm >= 500);
+    const arc = document.getElementById('mqDistGaugeArc');
+    const num = document.getElementById('mqDistGaugeNum');
+    const emoji = document.getElementById('mqDistEmoji');
+    const sparkInfo = document.getElementById('mqDistSparkInfo');
     if (noSensor) {
-      big.textContent = '— cm';
-      big.style.color = '#93a8c4';
+      if (big) big.textContent = '— cm';
+      if (num) { num.textContent = '— cm'; num.setAttribute('fill', '#93a8c4'); }
+      if (emoji) emoji.textContent = '📡';
+      if (arc) arc.setAttribute('stroke-dasharray', '0 100');
       if (range) range.textContent = 'no sensor / no echo';
       if (bar) bar.style.width = '0%';
-      if (dot) { dot.setAttribute('cy', 20); dot.setAttribute('fill', '#1d3556'); }
-      // don't pollute history with placeholders
+      if (sparkInfo) sparkInfo.textContent = 'no echo';
       return;
     }
-    big.textContent = cm + ' cm';
-    big.style.color = cm < 10 ? '#f87171' : cm < 30 ? '#fbbf24' : '#4ade80';
+    const color = cm < 10 ? '#f87171' : cm < 30 ? '#fbbf24' : '#4ade80';
+    const emojiPick = cm < 10 ? '🚧' : cm < 30 ? '⚠️' : '📡';
+    if (big) big.textContent = cm + ' cm';
+    if (num) { num.textContent = cm + ' cm'; num.setAttribute('fill', color); }
+    if (emoji) emoji.textContent = emojiPick;
     if (range) range.textContent = 'range 0–500 cm';
-    // bar maps 0..200 cm to 0..100%
-    const pct = Math.max(0, Math.min(100, (cm / 200) * 100));
-    if (bar) bar.style.width = pct + '%';
-    // sonar dot — map distance to position on the arc (closer = lower y)
-    if (dot) {
-      const ratio = Math.min(1, cm / 100);     // 0..100 cm maps to full arc height
-      dot.setAttribute('cy', 50 - ratio * 30);   // 50 = near, 20 = far
-      dot.setAttribute('fill', cm < 10 ? '#f87171' : cm < 30 ? '#fbbf24' : '#4ade80');
-    }
-    distHistory.push(cm);
-    if (distHistory.length > 6) distHistory.shift();
-    const hist = document.getElementById('mqDistHistory');
-    if (hist) hist.textContent = distHistory.join(' → ') + ' cm';
+    // gauge arc: closer = MORE filled (because closer = "more alarm")
+    // 0..200 cm clamped, then inverted: 0 cm → 100% fill, 200+ cm → 0% fill
+    const closenessPct = Math.max(0, Math.min(100, 100 - (cm / 200) * 100));
+    if (arc) arc.setAttribute('stroke-dasharray', `${closenessPct.toFixed(1)} 100`);
+    if (bar) bar.style.width = (Math.max(0, Math.min(100, (cm / 200) * 100)) + '%');
+    // Sparkline + last-value info
+    const sp = ensureDistSpark();
+    if (sp) sp.push(Math.min(200, cm));
+    if (sparkInfo) sparkInfo.textContent = cm + ' cm';
   }
   function pollDist() {
     if (window.bleScheduler && window.bleScheduler.isConnected()) {
@@ -771,6 +892,15 @@
       distAutoTimer = setInterval(pollDist, distRateMs);
     }
   }
+  function refreshDistOrb() {
+    const orb = document.getElementById('mqDistOrb');
+    const auto = document.getElementById('mqDistAuto');
+    if (!orb) return;
+    if (!auto || !auto.checked) { setOrb(orb, '', 'paused'); return; }
+    const conn = window.bleScheduler && window.bleScheduler.isConnected();
+    if (!conn) { setOrb(orb, 'warn', 'no link'); return; }
+    setOrb(orb, 'on', 'polling ' + distRateMs + 'ms');
+  }
   function initUltrasonic() {
     const ping = document.getElementById('mqDistPing');
     const auto = document.getElementById('mqDistAuto');
@@ -778,7 +908,7 @@
     const read = document.getElementById('mqDistRateRead');
     if (!ping) return;
     ping.addEventListener('click', pollDist);
-    auto.addEventListener('change', restartDistAuto);
+    auto.addEventListener('change', () => { restartDistAuto(); refreshDistOrb(); });
     if (rate) {
       rate.value = distRateMs;
       if (read) read.textContent = distRateMs + ' ms';
@@ -787,9 +917,16 @@
         if (read) read.textContent = distRateMs + ' ms';
         try { localStorage.setItem('maqueen.distRate', String(distRateMs)); } catch {}
         restartDistAuto();
+        refreshDistOrb();
       });
     }
     restartDistAuto();
+    refreshDistOrb();
+    // Re-evaluate orb on connect/disconnect transitions
+    if (window.bleScheduler && window.bleScheduler.on) {
+      window.bleScheduler.on('connected',    refreshDistOrb);
+      window.bleScheduler.on('disconnected', refreshDistOrb);
+    }
   }
 
   // -------- IR REMOTE -------------------------------------
@@ -811,10 +948,10 @@
     lastIRCode = code;
     big.textContent = code;
     name.textContent = irNames[code] ? '"' + irNames[code] + '"' : 'unmapped — click 🏷 to name it';
-    // pulse glow
+    // Glossy dome pulse — flash via background-color + .mq-on for ~600ms
     if (pulse) {
-      pulse.style.boxShadow = '0 0 16px #c084fc, 0 0 4px #c084fc inset';
-      setTimeout(() => { pulse.style.boxShadow = 'none'; }, 350);
+      setDomeOn(pulse, '#c084fc', true);
+      setTimeout(() => setDomeOn(pulse, '#c084fc', false), 600);
     }
     if (irHistory[irHistory.length - 1] !== code) {
       irHistory.push(code);
@@ -852,36 +989,37 @@
   let following = false;
   let followTimer = null;
 
+  // Sparklines for L and R sensor history (last ~30 samples)
+  let lineSparkL = null, lineSparkR = null;
+  function ensureLineSparks() {
+    if (lineSparkL && lineSparkR) return;
+    const pL = document.getElementById('mqLineSparkL');
+    const pR = document.getElementById('mqLineSparkR');
+    if (pL) lineSparkL = makeSparkline(pL, { max: 1, samples: 30, h: 16 });
+    if (pR) lineSparkR = makeSparkline(pR, { max: 1, samples: 30, h: 16 });
+  }
   function setLineStateUI(l, r) {
     lineState.l = +l; lineState.r = +r;
-    // Tiny badge in the Drive panel auto-modes section
+    // Tiny badge inside the Line card's auto-mode block
     const el = document.getElementById('mqLineState');
     if (el) {
       const fmt = v => v == 0 ? '●' : '○';   // ● = on line (black)
       el.textContent = `L:${fmt(l)} R:${fmt(r)}`;
       el.style.color = (l == 0 || r == 0) ? '#fbbf24' : '#4ade80';
     }
-    // Big eyes in the dedicated Line sensors card
+    // Glossy eye domes — sensor reads 0 (= on black line) → glow yellow
     const eyeL = document.getElementById('mqLineEyeL');
     const eyeR = document.getElementById('mqLineEyeR');
     const valL = document.getElementById('mqLineLVal');
     const valR = document.getElementById('mqLineRVal');
-    if (eyeL) {
-      // 0 = on black line  -> bright glow
-      // 1 = off line       -> dim
-      const onL = (l == 0);
-      eyeL.style.background = onL ? '#fbbf24' : '#1d3556';
-      eyeL.style.boxShadow = onL ? '0 0 16px #fbbf24' : 'none';
-      eyeL.style.borderColor = onL ? '#fbbf24' : '#4ade80';
-    }
-    if (eyeR) {
-      const onR = (r == 0);
-      eyeR.style.background = onR ? '#fbbf24' : '#1d3556';
-      eyeR.style.boxShadow = onR ? '0 0 16px #fbbf24' : 'none';
-      eyeR.style.borderColor = onR ? '#fbbf24' : '#4ade80';
-    }
+    setDomeOn(eyeL, '#fbbf24', l == 0);
+    setDomeOn(eyeR, '#fbbf24', r == 0);
     if (valL) valL.textContent = l;
     if (valR) valR.textContent = r;
+    // Sparkline: invert so the line goes UP when on black (more interesting)
+    ensureLineSparks();
+    if (lineSparkL) lineSparkL.push(l == 0 ? 1 : 0);
+    if (lineSparkR) lineSparkR.push(r == 0 ? 1 : 0);
   }
 
   // -------- LINE SENSORS auto-poll + manual read button -----
@@ -902,6 +1040,15 @@
       lineAutoTimer = setInterval(pollLine, lineRateMs);
     }
   }
+  function refreshLineOrb() {
+    const orb = document.getElementById('mqLineOrb');
+    const auto = document.getElementById('mqLineAuto');
+    if (!orb) return;
+    if (!auto || !auto.checked) { setOrb(orb, '', 'paused'); return; }
+    const conn = window.bleScheduler && window.bleScheduler.isConnected();
+    if (!conn) { setOrb(orb, 'warn', 'no link'); return; }
+    setOrb(orb, 'on', 'polling ' + lineRateMs + 'ms');
+  }
   function initLineCard() {
     const poll = document.getElementById('mqLinePoll');
     const auto = document.getElementById('mqLineAuto');
@@ -909,7 +1056,7 @@
     const read = document.getElementById('mqLineRateRead');
     if (!poll) return;
     poll.addEventListener('click', pollLine);
-    auto.addEventListener('change', restartLineAuto);
+    auto.addEventListener('change', () => { restartLineAuto(); refreshLineOrb(); });
     if (rate) {
       rate.value = lineRateMs;
       if (read) read.textContent = lineRateMs + ' ms';
@@ -918,9 +1065,15 @@
         if (read) read.textContent = lineRateMs + ' ms';
         try { localStorage.setItem('maqueen.lineRate', String(lineRateMs)); } catch {}
         restartLineAuto();
+        refreshLineOrb();
       });
     }
     restartLineAuto();
+    refreshLineOrb();
+    if (window.bleScheduler && window.bleScheduler.on) {
+      window.bleScheduler.on('connected',    refreshLineOrb);
+      window.bleScheduler.on('disconnected', refreshLineOrb);
+    }
   }
 
   function followTick() {
