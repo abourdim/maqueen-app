@@ -4403,6 +4403,42 @@ html[dir="rtl"] .lang-picker { margin-left: 0; margin-right: auto; }
 }
 
 /* ===========================================================
+ * 🚦 Auto-wander button (Drive sub-tab) — toggles a closed-loop
+ * drive-forward + obstacle-avoid demo. Pulses when active so the
+ * user knows the robot is being driven by JS, not them.
+ * =========================================================== */
+.mq-wander-btn {
+  background: var(--card-bg-2, #0a1628);
+  color: #4ade80;
+  border: 1px solid #4ade80;
+  border-radius: 5px;
+  padding: 4px 10px;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease-out;
+  white-space: nowrap;
+}
+.mq-wander-btn:hover {
+  background: rgba(74, 222, 128, 0.12);
+}
+.mq-wander-btn.mq-wander-active {
+  background: rgba(74, 222, 128, 0.18);
+  color: #86efac;
+  border-color: #86efac;
+  animation: mqWanderPulse 1.4s ease-in-out infinite;
+}
+@keyframes mqWanderPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.45);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(74, 222, 128, 0);
+  }
+}
+
+/* ===========================================================
  * 🏁 Tableau de bord (Drive sub-tab) — analog cockpit gauges
  * Four 270° SVG gauges (SPEED · POWER · HEADING · SONAR) +
  * LCD trip computer + warning cluster. Driven by the same

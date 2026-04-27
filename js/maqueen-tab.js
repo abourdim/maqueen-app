@@ -205,6 +205,14 @@
   }
   function fireDrive(dataL, dataR, opts) {
     opts = opts || {};
+    // Auto-cancel auto-wander if a non-wander caller (= the user) takes the
+    // wheel. We DON'T issue a STOP here — the new fireDrive call IS the new
+    // intended motion; cancel() just flips the flag and updates the button.
+    try {
+      if (typeof mqWander !== 'undefined' && mqWander.isActive() && !mqWander.isOurCall()) {
+        mqWander.cancel();
+      }
+    } catch {}
     if (dataL === 0 && dataR === 0) {
       // STOP: don't coalesce — we want STOP to actually land.
       send('STOP');
@@ -267,9 +275,21 @@
         try { mqDashboard.recordLink(window.bleScheduler.isConnected()); } catch {}
       };
       window.bleScheduler.on('connected',    setLink);
-      window.bleScheduler.on('disconnected', setLink);
+      window.bleScheduler.on('disconnected', () => {
+        setLink();
+        // Always halt the autonomous demo if we lose the link mid-wander.
+        try { mqWander.stop(); } catch {}
+      });
       // Initial paint
       setLink();
+    }
+    // Auto-wander toggle button.
+    const wanderBtn = document.getElementById('mqDriveAutoWander');
+    if (wanderBtn) {
+      wanderBtn.addEventListener('click', () => {
+        if (mqWander.isActive()) mqWander.stop();
+        else                      mqWander.start();
+      });
     }
     slider.addEventListener('input', e => {
       speed = +e.target.value;
@@ -1449,6 +1469,106 @@
     });
   }
 
+  // -------- 🚦 AUTO-WANDER --------------------------------
+  // Hands-off demo: robot drives forward, polls sonar, turns on its
+  // own when it sees an obstacle. Classic "perception → decision →
+  // action" loop — the same one taught in every intro-robotics class.
+  //
+  // Behavior
+  //   - Forward at 70% of the user's current speed slider value.
+  //   - Sonar < OBSTACLE_CM cm → turn in place ~ROTATE_MS ms.
+  //     Direction alternates each obstacle (left/right/left...) so
+  //     the robot doesn't get stuck shimmying against the same wall.
+  //   - Any manual drive command (key/button/joystick) auto-cancels
+  //     wander — fireDrive() detects non-wander calls and stops it.
+  //   - Stops on disconnect.
+  const mqWander = (function () {
+    const OBSTACLE_CM = 25;       // turn when something is closer than this
+    const TURN_BASE   = 150;      // turn-in-place wheel speed (each side)
+    const ROTATE_MS   = 650;      // duration of one in-place spin
+    const FORWARD_BASE_PCT = 0.70;// fraction of user's speed slider value
+    let active = false;
+    let turnAlternator = 0;       // 0,1,0,1 → left, right, left, right
+    let inTurn  = false;
+    let turnEndsAt = 0;
+    let turnTimer  = null;
+    let _ourCallFlag = false;     // set briefly while WE invoke fireDrive
+
+    function paint() {
+      const btn = document.getElementById('mqDriveAutoWander');
+      if (!btn) return;
+      btn.classList.toggle('mq-wander-active', active);
+      // Re-apply the i18n string when toggling so live-translation works.
+      const key = active ? 'mq_drive_wander_stop' : 'mq_drive_wander';
+      const fallback = active ? '⏹ Stop wander' : '🚦 Auto wander';
+      btn.setAttribute('data-i18n', key);
+      btn.textContent = (window.t && typeof window.t === 'function')
+        ? (window.t(key) || fallback)
+        : fallback;
+    }
+    function safeFire(L, R) {
+      _ourCallFlag = true;
+      try { fireDrive(L, R, { coalesce: true }); }
+      finally { _ourCallFlag = false; }
+    }
+    function startForward() {
+      if (!active) return;
+      // Pull live from speed slider so the user can adjust mid-wander.
+      const slider = document.getElementById('mqSpeedSlider');
+      const userSpeed = slider ? +slider.value : 200;
+      const v = Math.round(userSpeed * FORWARD_BASE_PCT);
+      safeFire(v, v);
+    }
+    function spinAway() {
+      if (!active) return;
+      inTurn = true;
+      const dir = (turnAlternator++ % 2) === 0 ? +1 : -1;
+      // L,R for in-place spin: opposite signs.
+      safeFire(dir * TURN_BASE, -dir * TURN_BASE);
+      turnEndsAt = performance.now() + ROTATE_MS;
+      if (turnTimer) clearTimeout(turnTimer);
+      turnTimer = setTimeout(() => {
+        inTurn = false;
+        startForward();
+      }, ROTATE_MS);
+    }
+    function start() {
+      if (active) return;
+      active = true;
+      inTurn = false;
+      paint();
+      startForward();
+    }
+    function stop() {
+      if (!active) return;
+      active = false;
+      inTurn = false;
+      if (turnTimer) { clearTimeout(turnTimer); turnTimer = null; }
+      // Send a real STOP so the robot actually stops; this goes through
+      // safeFire so fireDrive's override-detection doesn't mis-fire.
+      safeFire(0, 0);
+      paint();
+    }
+    // External cancel (called from fireDrive when a manual command lands).
+    // Same as stop() but doesn't issue STOP — the manual call IS the new
+    // motion, so issuing STOP would override it.
+    function cancel() {
+      if (!active) return;
+      active = false;
+      inTurn = false;
+      if (turnTimer) { clearTimeout(turnTimer); turnTimer = null; }
+      paint();
+    }
+    function onDistance(cm) {
+      if (!active || inTurn) return;
+      if (cm > 0 && cm < OBSTACLE_CM) {
+        spinAway();
+      }
+    }
+    function isOurCall() { return _ourCallFlag; }
+    return { start, stop, cancel, onDistance, isActive: () => active, isOurCall };
+  })();
+
   // -------- 🏁 TABLEAU DE BORD ----------------------------
   // Automotive cockpit dashboard. Four analog gauges + LCD trip
   // computer + warning cluster. Reads data already on the wire
@@ -1972,6 +2092,8 @@
     // Dashboard — SONAR gauge needle (inverted: close = right) + the
     // collision warning light when cm < 10.
     try { mqDashboard.recordDistance(cm); } catch {}
+    // Auto-wander — react to obstacles by turning. No-op when not active.
+    try { mqWander.onDistance(cm); } catch {}
     // Glossy gauge — compatibility shims for the old IDs are still in DOM
     const big = document.getElementById('mqDistBig');
     const bar = document.getElementById('mqDistBar');

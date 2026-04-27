@@ -92,6 +92,8 @@
       mq_dash_avg:          "AVG",
       mq_dash_collision:    "⚠ COLLISION",
       mq_dash_no_link:      "⚠ NO LINK",
+      mq_drive_wander:      "🚦 Auto wander",
+      mq_drive_wander_stop: "⏹ Stop wander",
 
       // Tabs
       tab_maqueen:        "Maqueen",
@@ -553,6 +555,8 @@
       mq_dash_avg:          "MOY",
       mq_dash_collision:    "⚠ COLLISION",
       mq_dash_no_link:      "⚠ HORS LIGNE",
+      mq_drive_wander:      "🚦 Errance auto",
+      mq_drive_wander_stop: "⏹ Stop errance",
 
       // Tabs
       tab_maqueen:        "Maqueen",
@@ -1014,6 +1018,8 @@
       mq_dash_avg:          "\u0645\u062a\u0648\u0633\u0637",
       mq_dash_collision:    "\u26a0 \u062a\u0635\u0627\u062f\u0645",
       mq_dash_no_link:      "\u26a0 \u0644\u0627 \u0627\u062a\u0635\u0627\u0644",
+      mq_drive_wander:      "\ud83d\udea6 \u062a\u062c\u0648\u0627\u0644 \u062a\u0644\u0642\u0627\u0626\u064a",
+      mq_drive_wander_stop: "\u23f9 \u0625\u064a\u0642\u0627\u0641 \u0627\u0644\u062a\u062c\u0648\u0627\u0644",
 
       // Tabs
       tab_maqueen:        "Maqueen",

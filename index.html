@@ -1029,7 +1029,7 @@ html[dir="rtl"] .hint ol { padding-left: 0; padding-right: 20px; }
                                         </div>
                                     </div>
 
-                                    <!-- Speed + hold-to-drive (promoted out of the old "Buttons + keyboard" details) -->
+                                    <!-- Speed + hold-to-drive + auto-wander (one row of motion controls) -->
                                     <div style="display:flex; align-items:center; gap:10px; font-size:11px; color:var(--text-secondary, #93a8c4); flex-wrap:wrap;">
                                         <span>Speed</span>
                                         <input type="range" id="mqSpeedSlider" min="50" max="255" value="200" style="flex:1; min-width:120px; accent-color:#fb923c;"/>
@@ -1038,6 +1038,7 @@ html[dir="rtl"] .hint ol { padding-left: 0; padding-right: 20px; }
                                             <input type="checkbox" id="mqHoldToDrive" style="accent-color:#fb923c;">
                                             hold to drive
                                         </label>
+                                        <button id="mqDriveAutoWander" type="button" class="mq-wander-btn" title="Hands-off demo — robot drives forward, watches the sonar, and turns on its own when it sees an obstacle. Touch any drive control to take back over." data-i18n="mq_drive_wander">🚦 Auto wander</button>
                                     </div>
 
                                     <!-- Live BLE verb tape (geek catnip — shows what the app actually sends) -->
