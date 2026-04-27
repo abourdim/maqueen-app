@@ -54,8 +54,8 @@
  *
  * BUILD STAMP — edit these two lines before flashing:
  */
-const BUILD_VERSION = "0.1.46"
-const BUILD_DATE = "2026-04-27 05:07 UTC"
+const BUILD_VERSION = "0.1.47"
+const BUILD_DATE = "2026-04-27 05:11 UTC"
 
 // ---------- state ----------
 let btConnected = false
@@ -472,7 +472,12 @@ function handleIcon(name: string) {
     execlog("icon=" + name)
 }
 
-// ---------- accelerometer streaming (~20 Hz, on change) ----------
+// ---------- accelerometer streaming ----------
+// Sends ACC at up to ~20 Hz when moving (delta > deadband), and
+// at least once every HEARTBEAT_MS even when stationary, so the
+// Graph / 3D tabs always show fresh data instead of looking frozen.
+let lastAccSentAt = 0
+const ACC_HEARTBEAT_MS = 500
 basic.forever(function () {
     if (btConnected && streamsEnabled) {
         let x = input.acceleration(Dimension.X)
@@ -481,8 +486,12 @@ basic.forever(function () {
         let dx = Math.abs(x - lastAcc[0])
         let dy = Math.abs(y - lastAcc[1])
         let dz = Math.abs(z - lastAcc[2])
-        if (dx > accDeadband || dy > accDeadband || dz > accDeadband) {
+        let now = input.runningTime()
+        let moved = (dx > accDeadband || dy > accDeadband || dz > accDeadband)
+        let stale = (now - lastAccSentAt) >= ACC_HEARTBEAT_MS
+        if (moved || stale) {
             lastAcc = [x, y, z]
+            lastAccSentAt = now
             send("ACC:" + x + "," + y + "," + z)
         }
     }
