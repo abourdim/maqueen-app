@@ -119,6 +119,70 @@
     },
   };
 
+  // -------- 🤖 LIVE MASCOT (Drive sub-tab) ----------------
+  // The big top-down mascot becomes alive: it rotates with the robot's
+  // estimated heading (from odometry), grows a sonar antenna that
+  // tracks the S1 servo angle and shows the live distance reading,
+  // and its eyes widen + glow red when the sonar sees an obstacle
+  // closer than 10 cm. Three live data streams, one selfie of the bot.
+  //
+  // All best-effort: each call is a no-op if the SVG isn't on screen
+  // (e.g. user is on a different sub-tab).
+  const mqMascot = {
+    // Apply odometry heading (radians, CW positive) to the spin group.
+    // CSS transition smooths sub-frame jitter from the integrator.
+    heading(theta) {
+      const g = document.getElementById('mqMascotSpin');
+      if (!g) return;
+      const deg = (theta * 180 / Math.PI).toFixed(1);
+      g.setAttribute('transform', `rotate(${deg} 140 110)`);
+    },
+    // Servo angle drives the sonar ray's rotation. Convention:
+    //   servo 90° = pointing forward (no rotation)
+    //   servo 0°  = pointed right of forward (+90° SVG rotation)
+    //   servo 180°= pointed left  (−90° SVG rotation)
+    sonarServo(angleDeg) {
+      const g = document.getElementById('mqMascotSonarRay');
+      if (!g) return;
+      const rotateDeg = (90 - angleDeg).toFixed(1);
+      g.setAttribute('transform', `translate(140 38) rotate(${rotateDeg})`);
+    },
+    // Distance reading sets ray length + color. Hide if no sensor / out-of-range.
+    sonarDistance(cm) {
+      const line = document.getElementById('mqMascotSonarLine');
+      const tip  = document.getElementById('mqMascotSonarTip');
+      if (!line || !tip) return;
+      const valid = cm > 0 && cm < 500;
+      if (!valid) {
+        line.setAttribute('stroke-opacity', '0');
+        tip.setAttribute('fill-opacity', '0');
+        return;
+      }
+      // Map 0..100 cm → 8..50 px ray length (close = short, far = long).
+      const len = 8 + Math.min(1, cm / 100) * 42;
+      const y2 = -(3 + len);  // start at y=-3 (past sensor module rect)
+      line.setAttribute('y2', y2.toFixed(1));
+      tip.setAttribute('cy', y2.toFixed(1));
+      // Color by distance (matches the eye-alert threshold).
+      const color = cm < 10 ? '#f87171' : cm < 30 ? '#fbbf24' : '#4ade80';
+      line.setAttribute('stroke', color);
+      tip.setAttribute('fill', color);
+      line.setAttribute('stroke-opacity', '0.85');
+      tip.setAttribute('fill-opacity', '0.95');
+      // Eye reaction — widen + red on near-obstacle.
+      const close = cm < 10;
+      const eyes = ['mqMascotEyeL', 'mqMascotEyeR'];
+      eyes.forEach(id => {
+        const e = document.getElementById(id);
+        if (!e) return;
+        e.setAttribute('stroke', close ? '#f87171' : '#4ade80');
+        e.setAttribute('r', close ? '7' : '6');
+        e.setAttribute('stroke-width', close ? '2' : '1.5');
+        e.style.filter = close ? 'drop-shadow(0 0 5px #f87171)' : '';
+      });
+    },
+  };
+
   // Drive STOP particle burst — 8 dust particles flying out, CSS-driven.
   function spawnStopPuff() {
     const mascot = document.getElementById('mqMascot');
@@ -742,9 +806,11 @@
       renderCode();
       try { mqAnat.servo(port); } catch {}
       // Sweep radar AND odometry SLAM-lite both track S1 only (that's the
-      // port the sonar is mounted on in the Maqueen kit).
+      // port the sonar is mounted on in the Maqueen kit). The big mascot
+      // also gets it (the on-screen sonar antenna pivots with S1).
       try { if (port === 1) mqSweepRadar.recordAngle(angle); } catch {}
       try { if (port === 1) mqOdometry.recordAngle(angle); } catch {}
+      try { if (port === 1) mqMascot.sonarServo(angle); } catch {}
       // BLE — coalesced so dragging the slider doesn't drown the channel
       if (window.bleScheduler) {
         flashStatus('… sending', '#fbbf24');
@@ -845,10 +911,13 @@
           updateServoScope(a);
           renderCode();
           // Feed the visualizers too — sweep mode bypasses setAngle()
-          // which is where mqSweepRadar / mqOdometry usually pick up the
-          // angle. Keep them in sync so the radar beam tracks during sweep.
+          // which is where mqSweepRadar / mqOdometry / mqMascot usually
+          // pick up the angle. Keep them in sync so the radar beam, the
+          // SLAM-lite projection, and the mascot's sonar antenna all
+          // track during sweep.
           try { if (port === 1) mqSweepRadar.recordAngle(a); } catch {}
           try { if (port === 1) mqOdometry.recordAngle(a); } catch {}
+          try { if (port === 1) mqMascot.sonarServo(a); } catch {}
           return `SRV:${port},${a}`;
         }, hz);
       });
@@ -1504,6 +1573,10 @@
       if (compass) {
         compass.setAttribute('transform', `rotate(${(-theta * 180 / Math.PI).toFixed(1)})`);
       }
+      // Drive sub-tab mascot — keep it spinning to match the robot's
+      // estimated heading. Same source of truth (odometry's theta) so
+      // mini-map, world map, and mascot are always in lockstep.
+      try { mqMascot.heading(theta); } catch {}
       // HUD numbers
       const hudH = document.getElementById('mqOdoHeading');
       const hudD = document.getElementById('mqOdoDistance');
@@ -1675,6 +1748,8 @@
     // Odometry SLAM-lite — project (servo, dist) into the world map
     // when the angle reading is fresh. No-op for no-sensor / out-of-range.
     try { mqOdometry.recordDistance(cm); } catch {}
+    // Big mascot — sonar antenna length + color + eye-widening alert.
+    try { mqMascot.sonarDistance(cm); } catch {}
     // Glossy gauge — compatibility shims for the old IDs are still in DOM
     const big = document.getElementById('mqDistBig');
     const bar = document.getElementById('mqDistBar');

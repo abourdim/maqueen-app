@@ -942,51 +942,75 @@ html[dir="rtl"] .hint ol { padding-left: 0; padding-right: 20px; }
                                                     <text id="mqPowerRVal" x="0" y="65" text-anchor="middle" fill="var(--text, #93a8c4)" font-size="9" font-family="JetBrains Mono, monospace">0</text>
                                                 </g>
 
-                                                <!-- Body (centered, rounded) — colored borders show wheel-side identity -->
-                                                <rect x="85" y="45" width="110" height="130" rx="22" fill="#0f1e35" stroke="#fb923c" stroke-width="2"/>
-                                                <!-- Front line-sensor eyes -->
-                                                <circle id="mqMascotEyeL" cx="112" cy="62" r="6" fill="#1d3556" stroke="#4ade80" stroke-width="1.5"/>
-                                                <circle id="mqMascotEyeR" cx="168" cy="62" r="6" fill="#1d3556" stroke="#4ade80" stroke-width="1.5"/>
-                                                <!-- Body LEDs (mirror Simple LEDs state) -->
-                                                <circle id="mqMascotLedL" cx="112" cy="110" r="5" fill="#1d3556" stroke="#facc15" stroke-width="1.2"/>
-                                                <circle id="mqMascotLedR" cx="168" cy="110" r="5" fill="#1d3556" stroke="#facc15" stroke-width="1.2"/>
-                                                <!-- Cute face -->
-                                                <ellipse cx="140" cy="135" rx="14" ry="6" fill="none" stroke="#93a8c4" stroke-width="1.5" stroke-linecap="round" id="mqMascotMouth"/>
-                                                <!-- Motion vector arrow (rotates + scales by JS, anchored at body center 140,110) -->
-                                                <g id="mqMotionVec" transform="translate(140 110) rotate(0) scale(0)" style="transition: transform 0.15s ease-out;">
-                                                    <line x1="0" y1="0" x2="0" y2="-50" stroke="#4ade80" stroke-width="3" marker-end="url(#mqArrowHead)" stroke-linecap="round"/>
-                                                </g>
+                                                <!-- ▼▼ ROTATES with odometry heading ▼▼
+                                                     Everything physical to the robot lives in mqMascotSpin and
+                                                     rotates as a unit. Motor bars (UI gauges) stay outside this
+                                                     group — they always read "L on left, R on right of screen"
+                                                     because they're showing power values, not physical parts. -->
+                                                <g id="mqMascotSpin" transform="rotate(0 140 110)" style="transition: transform 0.18s ease-out;">
+                                                    <!-- Body (centered, rounded) — colored borders show wheel-side identity -->
+                                                    <rect x="85" y="45" width="110" height="130" rx="22" fill="#0f1e35" stroke="#fb923c" stroke-width="2"/>
+                                                    <!-- Front line-sensor eyes (also flag near-obstacle alerts) -->
+                                                    <circle id="mqMascotEyeL" cx="112" cy="62" r="6" fill="#1d3556" stroke="#4ade80" stroke-width="1.5"/>
+                                                    <circle id="mqMascotEyeR" cx="168" cy="62" r="6" fill="#1d3556" stroke="#4ade80" stroke-width="1.5"/>
+                                                    <!-- Body LEDs (mirror Simple LEDs state) -->
+                                                    <circle id="mqMascotLedL" cx="112" cy="110" r="5" fill="#1d3556" stroke="#facc15" stroke-width="1.2"/>
+                                                    <circle id="mqMascotLedR" cx="168" cy="110" r="5" fill="#1d3556" stroke="#facc15" stroke-width="1.2"/>
+                                                    <!-- Cute face -->
+                                                    <ellipse cx="140" cy="135" rx="14" ry="6" fill="none" stroke="#93a8c4" stroke-width="1.5" stroke-linecap="round" id="mqMascotMouth"/>
+                                                    <!-- Motion vector arrow (rotates + scales by JS, anchored at body center 140,110) -->
+                                                    <g id="mqMotionVec" transform="translate(140 110) rotate(0) scale(0)" style="transition: transform 0.15s ease-out;">
+                                                        <line x1="0" y1="0" x2="0" y2="-50" stroke="#4ade80" stroke-width="3" marker-end="url(#mqArrowHead)" stroke-linecap="round"/>
+                                                    </g>
 
-                                                <!-- LEFT wheel (orange) — wraps inner spinning group -->
-                                                <g id="mqWheelLGroup" transform="translate(60 110)">
-                                                    <rect x="-12" y="-38" width="24" height="76" rx="6" fill="#1d3556" stroke="#fb923c" stroke-width="1.5"/>
-                                                    <g id="mqWheelL">
-                                                        <circle r="20" fill="#0a1628"/>
-                                                        <line x1="-15" y1="0" x2="15" y2="0" stroke="#fb923c" stroke-width="2"/>
-                                                        <line x1="0" y1="-15" x2="0" y2="15" stroke="#fb923c" stroke-width="2"/>
-                                                        <line x1="-11" y1="-11" x2="11" y2="11" stroke="#fb923c" stroke-width="1.5" opacity="0.6"/>
-                                                        <line x1="-11" y1="11" x2="11" y2="-11" stroke="#fb923c" stroke-width="1.5" opacity="0.6"/>
-                                                        <circle r="3" fill="#fb923c"/>
+                                                    <!-- 🔊 SONAR ray — sticks out the front of the robot, rotates
+                                                         with the S1 servo angle, length = current sonar reading.
+                                                         Inside mqMascotSpin so it inherits robot rotation; its OWN
+                                                         rotation is set by JS based on (90° − servo). The little
+                                                         sensor module on the pivot is the HC-SR04 PCB on the servo
+                                                         horn — turns with the servo, just like in real life. -->
+                                                    <g id="mqMascotSonarRay" transform="translate(140 38) rotate(0)" style="transition: transform 0.18s ease-out;">
+                                                        <!-- Sensor module (HC-SR04 with 2 'eyes' = the TX/RX cans) -->
+                                                        <rect x="-8" y="-3" width="16" height="6" rx="1.5" fill="#0a1628" stroke="#1d3556" stroke-width="0.6"/>
+                                                        <circle cx="-4" cy="0" r="1.6" fill="#1d3556" stroke="#4ade80" stroke-width="0.4"/>
+                                                        <circle cx="4"  cy="0" r="1.6" fill="#1d3556" stroke="#4ade80" stroke-width="0.4"/>
+                                                        <!-- The ray itself — JS updates length + color via cm reading -->
+                                                        <line   id="mqMascotSonarLine" x1="0" y1="-3" x2="0" y2="-25" stroke="#4ade80" stroke-width="1.6" stroke-linecap="round" stroke-opacity="0"/>
+                                                        <circle id="mqMascotSonarTip"  cx="0" cy="-25" r="1.8" fill="#4ade80" fill-opacity="0"/>
+                                                    </g>
+
+                                                    <!-- LEFT wheel (orange) — wraps inner spinning group -->
+                                                    <g id="mqWheelLGroup" transform="translate(60 110)">
+                                                        <rect x="-12" y="-38" width="24" height="76" rx="6" fill="#1d3556" stroke="#fb923c" stroke-width="1.5"/>
+                                                        <g id="mqWheelL">
+                                                            <circle r="20" fill="#0a1628"/>
+                                                            <line x1="-15" y1="0" x2="15" y2="0" stroke="#fb923c" stroke-width="2"/>
+                                                            <line x1="0" y1="-15" x2="0" y2="15" stroke="#fb923c" stroke-width="2"/>
+                                                            <line x1="-11" y1="-11" x2="11" y2="11" stroke="#fb923c" stroke-width="1.5" opacity="0.6"/>
+                                                            <line x1="-11" y1="11" x2="11" y2="-11" stroke="#fb923c" stroke-width="1.5" opacity="0.6"/>
+                                                            <circle r="3" fill="#fb923c"/>
+                                                        </g>
+                                                    </g>
+                                                    <!-- RIGHT wheel (cyan) -->
+                                                    <g id="mqWheelRGroup" transform="translate(220 110)">
+                                                        <rect x="-12" y="-38" width="24" height="76" rx="6" fill="#1d3556" stroke="#00d4ff" stroke-width="1.5"/>
+                                                        <g id="mqWheelR">
+                                                            <circle r="20" fill="#0a1628"/>
+                                                            <line x1="-15" y1="0" x2="15" y2="0" stroke="#00d4ff" stroke-width="2"/>
+                                                            <line x1="0" y1="-15" x2="0" y2="15" stroke="#00d4ff" stroke-width="2"/>
+                                                            <line x1="-11" y1="-11" x2="11" y2="11" stroke="#00d4ff" stroke-width="1.5" opacity="0.6"/>
+                                                            <line x1="-11" y1="11" x2="11" y2="-11" stroke="#00d4ff" stroke-width="1.5" opacity="0.6"/>
+                                                            <circle r="3" fill="#00d4ff"/>
+                                                        </g>
+                                                    </g>
+
+                                                    <!-- Speed flames -->
+                                                    <g id="mqMascotFlames" opacity="0">
+                                                        <path d="M 125 178 Q 130 195 135 178 Q 140 198 145 178 Q 150 195 155 178" fill="#fbbf24"/>
+                                                        <path d="M 130 178 Q 135 190 140 178 Q 145 190 150 178" fill="#f87171"/>
                                                     </g>
                                                 </g>
-                                                <!-- RIGHT wheel (cyan) -->
-                                                <g id="mqWheelRGroup" transform="translate(220 110)">
-                                                    <rect x="-12" y="-38" width="24" height="76" rx="6" fill="#1d3556" stroke="#00d4ff" stroke-width="1.5"/>
-                                                    <g id="mqWheelR">
-                                                        <circle r="20" fill="#0a1628"/>
-                                                        <line x1="-15" y1="0" x2="15" y2="0" stroke="#00d4ff" stroke-width="2"/>
-                                                        <line x1="0" y1="-15" x2="0" y2="15" stroke="#00d4ff" stroke-width="2"/>
-                                                        <line x1="-11" y1="-11" x2="11" y2="11" stroke="#00d4ff" stroke-width="1.5" opacity="0.6"/>
-                                                        <line x1="-11" y1="11" x2="11" y2="-11" stroke="#00d4ff" stroke-width="1.5" opacity="0.6"/>
-                                                        <circle r="3" fill="#00d4ff"/>
-                                                    </g>
-                                                </g>
-
-                                                <!-- Speed flames -->
-                                                <g id="mqMascotFlames" opacity="0">
-                                                    <path d="M 125 178 Q 130 195 135 178 Q 140 198 145 178 Q 150 195 155 178" fill="#fbbf24"/>
-                                                    <path d="M 130 178 Q 135 190 140 178 Q 145 190 150 178" fill="#f87171"/>
-                                                </g>
+                                                <!-- ▲▲ end mqMascotSpin ▲▲ -->
 
                                                 <!-- Pin / driver hint -->
                                                 <text x="140" y="208" text-anchor="middle" fill="var(--text, #93a8c4)" font-size="8" font-family="JetBrains Mono, monospace">I²C 0x10 → motor driver TB6612FNG</text>
