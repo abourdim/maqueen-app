@@ -79,11 +79,55 @@
         setLastVerb(`M:${L},${R}`);
       }
     });
-    document.querySelectorAll('.mq-drive-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        if (btn.dataset.stop === '1') { fireDrive(0, 0); return; }
-        fireDrive(+btn.dataset.l, +btn.dataset.r);
+    // Hold-to-drive option: when ON, press an arrow to drive and release
+    // to STOP. When OFF (default), single-click sets the motors and they
+    // keep running until STOP is pressed.
+    let holdToDrive = false;
+    try { holdToDrive = localStorage.getItem('maqueen.holdToDrive') === '1'; } catch {}
+    const holdChk = document.getElementById('mqHoldToDrive');
+    if (holdChk) {
+      holdChk.checked = holdToDrive;
+      holdChk.addEventListener('change', e => {
+        holdToDrive = e.target.checked;
+        try { localStorage.setItem('maqueen.holdToDrive', holdToDrive ? '1' : '0'); } catch {}
+        // Brake immediately when toggling so a held button doesn't keep running
+        fireDrive(0, 0);
       });
+    }
+
+    document.querySelectorAll('.mq-drive-btn').forEach(btn => {
+      const isStopBtn = btn.dataset.stop === '1';
+      // STOP always works the same — single click brakes
+      if (isStopBtn) {
+        btn.addEventListener('click', () => fireDrive(0, 0));
+        return;
+      }
+      const dl = +btn.dataset.l;
+      const dr = +btn.dataset.r;
+      // Click mode (default)
+      btn.addEventListener('click', () => {
+        if (holdToDrive) return;   // press/release path handles it
+        fireDrive(dl, dr);
+      });
+      // Hold-to-drive mode: press → drive, release → stop.
+      // Use mousedown/touchstart paired with up/leave/end/cancel for
+      // robust release detection on both mouse and touch.
+      const press = (e) => {
+        if (!holdToDrive) return;
+        e.preventDefault();
+        fireDrive(dl, dr);
+      };
+      const release = (e) => {
+        if (!holdToDrive) return;
+        e.preventDefault();
+        fireDrive(0, 0);
+      };
+      btn.addEventListener('mousedown',  press);
+      btn.addEventListener('touchstart', press, { passive: false });
+      btn.addEventListener('mouseup',    release);
+      btn.addEventListener('mouseleave', release);
+      btn.addEventListener('touchend',   release);
+      btn.addEventListener('touchcancel',release);
     });
   }
 
