@@ -664,6 +664,8 @@
         slider.min = '0'; slider.max = '180'; slider.value = '90';
         if (readout) readout.textContent = '90°';
         if (big) big.textContent = '90°';
+        // Re-enable the smooth snap transition for positional moves
+        if (dial) dial.style.transition = 'transform 0.18s ease-out';
         if (quickEl) {
           quickEl.innerHTML =
             '<button class="mq-servo-quick" data-port="' + port + '" data-angle="0"   style="flex:1; padding:5px; background:var(--card-bg-2, #0a1628); color:' + color + '; border:1px solid var(--border, #1d3556); border-radius:5px; cursor:pointer; font-size:10px;">0°</button>' +
@@ -676,17 +678,33 @@
         setBigReadout(port, 90);
       }
     }
-    // In 360° mode the dial rotates continuously at a rate proportional to speed
+    // In 360° mode the dial rotates continuously at a rate proportional to speed.
+    // CSS `transition: transform 0.18s` would fight per-frame attribute changes
+    // and cause judder — we kill the transition while spinning, restore on exit.
     function startContinuousSpin(port, speed) {
-      if (spinTimers[port]) { cancelAnimationFrame(spinTimers[port]); }
+      if (spinTimers[port]) { cancelAnimationFrame(spinTimers[port]); spinTimers[port] = null; }
       const dial = port === 1 ? dial1 : dial2;
       if (!dial) return;
+      // Kill the smooth-snap transition for the duration of continuous spin
+      dial.style.transition = 'none';
+      // Speed = 0 means "stop": leave the dial at its current angle, don't tick.
+      if (speed === 0) {
+        // Restore transition so a future 180°-mode return snaps smoothly
+        dial.style.transition = 'transform 0.18s ease-out';
+        return;
+      }
       let angle = 0;
+      const m = (dial.getAttribute('transform') || '').match(/rotate\(([-\d.]+)/);
+      if (m) angle = parseFloat(m[1]);
       let last = performance.now();
       function tick(now) {
         const dt = now - last; last = now;
-        // Max rate ~720 deg/sec at speed=100 (visually fast but not blurred)
-        angle = (angle + (speed / 100) * 720 * (dt / 1000)) % 360;
+        // Cap dt so a tab-switch hiccup doesn't jump the angle
+        const safeDt = Math.min(dt, 100);
+        // Max ~360 deg/sec at speed=100 (one revolution per second — visible)
+        angle = (angle + (speed / 100) * 360 * (safeDt / 1000));
+        // Wrap to keep numbers bounded
+        if (angle > 360 || angle < -360) angle = angle % 360;
         dial.setAttribute('transform', `rotate(${angle.toFixed(1)} 100 100)`);
         spinTimers[port] = requestAnimationFrame(tick);
       }

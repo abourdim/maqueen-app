@@ -848,48 +848,74 @@ html[dir="rtl"] .hint ol { padding-left: 0; padding-right: 20px; }
                                     <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:14px;">
                                         <!-- S1 -->
                                         <div style="background:var(--card-bg-2, #0a1628); border:1px solid var(--border, #1d3556); border-radius:10px; padding:12px;">
-                                            <!-- Big readout ABOVE the dial (no overlap with the horn) -->
-                                            <div style="text-align:center; font-family:'JetBrains Mono', monospace; font-size:24px; font-weight:700; color:#00d4ff; line-height:1; margin-bottom:4px;" id="mqS1BigReadout">90°</div>
+                                            <!-- Big readout ABOVE the dial (with breathing room before the 90° tick) -->
+                                            <div style="text-align:center; font-family:'JetBrains Mono', monospace; font-size:24px; font-weight:700; color:#00d4ff; line-height:1; margin-bottom:14px;" id="mqS1BigReadout">90°</div>
                                             <div style="position:relative; width:100%; max-width:240px; margin:0 auto;">
-                                                <!-- Top-down servo: case + 4 mounting screws + 4-arm horn with one indicator arm.
-                                                     Body is 160x120 from (20,40) to (180,160) → center (100,100).
-                                                     Horn arms are MAX 50 units long so the tip never swings outside the body
-                                                     (smallest body half-extent is 60 units vertically). -->
-                                                <svg viewBox="0 0 200 220" style="width:100%; height:auto;">
+                                                <svg viewBox="0 0 200 220" style="width:100%; height:auto; overflow:visible;">
                                                     <defs>
-                                                        <radialGradient id="mqServoBodyG1" cx="50%" cy="40%" r="60%">
-                                                            <stop offset="0%" stop-color="var(--card-bg, #0f1e35)"/>
-                                                            <stop offset="100%" stop-color="var(--bg-deep, #061121)"/>
+                                                        <!-- 3D case body — light from top-left, shadow bottom-right -->
+                                                        <linearGradient id="mqServoBodyG1" x1="0%" y1="0%" x2="100%" y2="100%">
+                                                            <stop offset="0%"  stop-color="#bf2e2e"/>
+                                                            <stop offset="50%" stop-color="#8b1717"/>
+                                                            <stop offset="100%" stop-color="#3f0808"/>
+                                                        </linearGradient>
+                                                        <radialGradient id="mqServoWellG1" cx="50%" cy="50%" r="50%">
+                                                            <stop offset="0%"  stop-color="#0a0708"/>
+                                                            <stop offset="100%" stop-color="#1a0f10"/>
                                                         </radialGradient>
+                                                        <linearGradient id="mqServoHornG1" x1="0%" y1="0%" x2="100%" y2="100%">
+                                                            <stop offset="0%"  stop-color="#9be9ff"/>
+                                                            <stop offset="50%" stop-color="#00d4ff"/>
+                                                            <stop offset="100%" stop-color="#006a82"/>
+                                                        </linearGradient>
+                                                        <filter id="mqHornShadow1" x="-20%" y="-20%" width="140%" height="140%">
+                                                            <feDropShadow dx="0.8" dy="2" stdDeviation="1.6" flood-color="#000" flood-opacity="0.55"/>
+                                                        </filter>
                                                     </defs>
-                                                    <!-- Tick labels OUTSIDE the body so they never fight the horn -->
                                                     <text x="6"   y="105" fill="var(--text, #93a8c4)" font-size="9" font-family="JetBrains Mono, monospace" text-anchor="start">0°</text>
                                                     <text x="100" y="14"  fill="var(--text, #93a8c4)" font-size="9" font-family="JetBrains Mono, monospace" text-anchor="middle">90°</text>
                                                     <text x="194" y="105" fill="var(--text, #93a8c4)" font-size="9" font-family="JetBrains Mono, monospace" text-anchor="end">180°</text>
-                                                    <!-- Servo case -->
-                                                    <rect x="20" y="40" width="160" height="120" rx="10" fill="url(#mqServoBodyG1)" stroke="#00d4ff" stroke-width="1.5"/>
-                                                    <!-- 4 mounting screw holes (corners) -->
-                                                    <circle cx="32" cy="52" r="3.5" fill="var(--bg-deep, #061121)" stroke="#00d4ff" stroke-width="0.8"/>
-                                                    <circle cx="168" cy="52" r="3.5" fill="var(--bg-deep, #061121)" stroke="#00d4ff" stroke-width="0.8"/>
-                                                    <circle cx="32" cy="148" r="3.5" fill="var(--bg-deep, #061121)" stroke="#00d4ff" stroke-width="0.8"/>
-                                                    <circle cx="168" cy="148" r="3.5" fill="var(--bg-deep, #061121)" stroke="#00d4ff" stroke-width="0.8"/>
-                                                    <!-- Output shaft well (the spline opening) -->
-                                                    <circle cx="100" cy="100" r="20" fill="var(--bg-deep, #061121)" stroke="#00d4ff" stroke-width="1"/>
-                                                    <!-- ROTATING HORN — 4-arm cross, all arms 35 units, plus a yellow direction indicator -->
-                                                    <g id="mqServoDialS1" transform="rotate(0 100 100)" style="transition: transform 0.18s ease-out;">
-                                                        <!-- 4-arm cross -->
-                                                        <rect x="65"  y="98" width="70" height="4" rx="2" fill="#00d4ff"/>
-                                                        <rect x="98"  y="65" width="4" height="70" rx="2" fill="#00d4ff"/>
+                                                    <!-- Servo case (3D-shaded) -->
+                                                    <rect x="20" y="40" width="160" height="120" rx="10" fill="url(#mqServoBodyG1)" stroke="#0a0203" stroke-width="1"/>
+                                                    <!-- Top highlight (gives the case a beveled look) -->
+                                                    <rect x="22" y="42" width="156" height="10" rx="6" fill="rgba(255,255,255,0.18)"/>
+                                                    <!-- Mounting flanges -->
+                                                    <rect x="6" y="68" width="20" height="64" rx="3" fill="url(#mqServoBodyG1)" stroke="#0a0203" stroke-width="0.8"/>
+                                                    <rect x="174" y="68" width="20" height="64" rx="3" fill="url(#mqServoBodyG1)" stroke="#0a0203" stroke-width="0.8"/>
+                                                    <!-- Mounting screws (now on the flanges, with metallic look) -->
+                                                    <g>
+                                                        <circle cx="16" cy="84" r="3.5" fill="#3a3a3a" stroke="#1a1a1a" stroke-width="0.5"/>
+                                                        <line x1="13.5" y1="84" x2="18.5" y2="84" stroke="#101010" stroke-width="0.8"/>
+                                                        <circle cx="16" cy="116" r="3.5" fill="#3a3a3a" stroke="#1a1a1a" stroke-width="0.5"/>
+                                                        <line x1="13.5" y1="116" x2="18.5" y2="116" stroke="#101010" stroke-width="0.8"/>
+                                                        <circle cx="184" cy="84" r="3.5" fill="#3a3a3a" stroke="#1a1a1a" stroke-width="0.5"/>
+                                                        <line x1="181.5" y1="84" x2="186.5" y2="84" stroke="#101010" stroke-width="0.8"/>
+                                                        <circle cx="184" cy="116" r="3.5" fill="#3a3a3a" stroke="#1a1a1a" stroke-width="0.5"/>
+                                                        <line x1="181.5" y1="116" x2="186.5" y2="116" stroke="#101010" stroke-width="0.8"/>
+                                                    </g>
+                                                    <!-- 'SG90' label embossed on the case -->
+                                                    <text x="100" y="148" fill="rgba(255,255,255,0.55)" font-size="7" font-weight="700" font-family="JetBrains Mono, monospace" text-anchor="middle">SG90</text>
+                                                    <!-- Output shaft well — recessed, darker -->
+                                                    <circle cx="100" cy="100" r="22" fill="url(#mqServoWellG1)" stroke="#0a0203" stroke-width="1"/>
+                                                    <circle cx="100" cy="100" r="22" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="0.8" transform="translate(0 -1)"/>
+                                                    <!-- ROTATING HORN — 4-arm cross with depth (gradient + drop shadow) -->
+                                                    <g id="mqServoDialS1" transform="rotate(0 100 100)" filter="url(#mqHornShadow1)" style="transition: transform 0.18s ease-out;">
+                                                        <!-- Cross -->
+                                                        <rect x="65"  y="97" width="70" height="6" rx="3" fill="url(#mqServoHornG1)"/>
+                                                        <rect x="97"  y="65" width="6" height="70" rx="3" fill="url(#mqServoHornG1)"/>
                                                         <!-- Arm-tip screw holes -->
-                                                        <circle cx="68"  cy="100" r="2.2" fill="var(--bg-deep, #061121)" stroke="#00d4ff" stroke-width="0.7"/>
-                                                        <circle cx="132" cy="100" r="2.2" fill="var(--bg-deep, #061121)" stroke="#00d4ff" stroke-width="0.7"/>
-                                                        <circle cx="100" cy="68"  r="2.2" fill="var(--bg-deep, #061121)" stroke="#00d4ff" stroke-width="0.7"/>
-                                                        <circle cx="100" cy="132" r="2.2" fill="var(--bg-deep, #061121)" stroke="#00d4ff" stroke-width="0.7"/>
-                                                        <!-- Direction indicator: yellow tip on the 'top' arm so rotation is unambiguous -->
-                                                        <circle cx="100" cy="68" r="3.5" fill="#facc15"/>
-                                                        <!-- Spline hub -->
-                                                        <circle cx="100" cy="100" r="11" fill="#00d4ff"/>
-                                                        <circle cx="100" cy="100" r="6" fill="var(--card-bg-2, #0a1628)"/>
+                                                        <circle cx="68"  cy="100" r="2.5" fill="#0a1628" stroke="#000" stroke-width="0.5"/>
+                                                        <circle cx="132" cy="100" r="2.5" fill="#0a1628" stroke="#000" stroke-width="0.5"/>
+                                                        <circle cx="100" cy="68"  r="2.5" fill="#0a1628" stroke="#000" stroke-width="0.5"/>
+                                                        <circle cx="100" cy="132" r="2.5" fill="#0a1628" stroke="#000" stroke-width="0.5"/>
+                                                        <!-- Yellow direction indicator on top arm -->
+                                                        <circle cx="100" cy="68" r="4.5" fill="#facc15" stroke="#92400e" stroke-width="0.6"/>
+                                                        <!-- Spline hub with metallic look -->
+                                                        <circle cx="100" cy="100" r="13" fill="url(#mqServoHornG1)" stroke="#003a4f" stroke-width="0.6"/>
+                                                        <circle cx="100" cy="100" r="6" fill="#0a1c24"/>
+                                                        <!-- Phillips-head screw on the hub -->
+                                                        <line x1="96" y1="100" x2="104" y2="100" stroke="#000" stroke-width="0.8"/>
+                                                        <line x1="100" y1="96" x2="100" y2="104" stroke="#000" stroke-width="0.8"/>
                                                     </g>
                                                     <!-- Cable nub at the back -->
                                                     <rect x="92" y="160" width="16" height="6" rx="2" fill="var(--card-bg, #1d3556)" stroke="#00d4ff" stroke-width="0.6"/>
@@ -915,36 +941,62 @@ html[dir="rtl"] .hint ol { padding-left: 0; padding-right: 20px; }
                                         </div>
                                         <!-- S2 -->
                                         <div style="background:var(--card-bg-2, #0a1628); border:1px solid var(--border, #1d3556); border-radius:10px; padding:12px;">
-                                            <div style="text-align:center; font-family:'JetBrains Mono', monospace; font-size:24px; font-weight:700; color:#4ade80; line-height:1; margin-bottom:4px;" id="mqS2BigReadout">90°</div>
+                                            <div style="text-align:center; font-family:'JetBrains Mono', monospace; font-size:24px; font-weight:700; color:#4ade80; line-height:1; margin-bottom:14px;" id="mqS2BigReadout">90°</div>
                                             <div style="position:relative; width:100%; max-width:240px; margin:0 auto;">
-                                                <svg viewBox="0 0 200 220" style="width:100%; height:auto;">
+                                                <svg viewBox="0 0 200 220" style="width:100%; height:auto; overflow:visible;">
                                                     <defs>
-                                                        <radialGradient id="mqServoBodyG2" cx="50%" cy="40%" r="60%">
-                                                            <stop offset="0%" stop-color="var(--card-bg, #0f1e35)"/>
-                                                            <stop offset="100%" stop-color="var(--bg-deep, #061121)"/>
+                                                        <linearGradient id="mqServoBodyG2" x1="0%" y1="0%" x2="100%" y2="100%">
+                                                            <stop offset="0%"  stop-color="#1f2937"/>
+                                                            <stop offset="50%" stop-color="#111827"/>
+                                                            <stop offset="100%" stop-color="#030712"/>
+                                                        </linearGradient>
+                                                        <radialGradient id="mqServoWellG2" cx="50%" cy="50%" r="50%">
+                                                            <stop offset="0%"  stop-color="#020a05"/>
+                                                            <stop offset="100%" stop-color="#0a1410"/>
                                                         </radialGradient>
+                                                        <linearGradient id="mqServoHornG2" x1="0%" y1="0%" x2="100%" y2="100%">
+                                                            <stop offset="0%"  stop-color="#bbf7d0"/>
+                                                            <stop offset="50%" stop-color="#4ade80"/>
+                                                            <stop offset="100%" stop-color="#15803d"/>
+                                                        </linearGradient>
+                                                        <filter id="mqHornShadow2" x="-20%" y="-20%" width="140%" height="140%">
+                                                            <feDropShadow dx="0.8" dy="2" stdDeviation="1.6" flood-color="#000" flood-opacity="0.55"/>
+                                                        </filter>
                                                     </defs>
                                                     <text x="6"   y="105" fill="var(--text, #93a8c4)" font-size="9" font-family="JetBrains Mono, monospace" text-anchor="start">0°</text>
                                                     <text x="100" y="14"  fill="var(--text, #93a8c4)" font-size="9" font-family="JetBrains Mono, monospace" text-anchor="middle">90°</text>
                                                     <text x="194" y="105" fill="var(--text, #93a8c4)" font-size="9" font-family="JetBrains Mono, monospace" text-anchor="end">180°</text>
-                                                    <rect x="20" y="40" width="160" height="120" rx="10" fill="url(#mqServoBodyG2)" stroke="#4ade80" stroke-width="1.5"/>
-                                                    <circle cx="32" cy="52" r="3.5" fill="var(--bg-deep, #061121)" stroke="#4ade80" stroke-width="0.8"/>
-                                                    <circle cx="168" cy="52" r="3.5" fill="var(--bg-deep, #061121)" stroke="#4ade80" stroke-width="0.8"/>
-                                                    <circle cx="32" cy="148" r="3.5" fill="var(--bg-deep, #061121)" stroke="#4ade80" stroke-width="0.8"/>
-                                                    <circle cx="168" cy="148" r="3.5" fill="var(--bg-deep, #061121)" stroke="#4ade80" stroke-width="0.8"/>
-                                                    <circle cx="100" cy="100" r="20" fill="var(--bg-deep, #061121)" stroke="#4ade80" stroke-width="1"/>
-                                                    <g id="mqServoDialS2" transform="rotate(0 100 100)" style="transition: transform 0.18s ease-out;">
-                                                        <rect x="65" y="98" width="70" height="4" rx="2" fill="#4ade80"/>
-                                                        <rect x="98" y="65" width="4" height="70" rx="2" fill="#4ade80"/>
-                                                        <circle cx="68"  cy="100" r="2.2" fill="var(--bg-deep, #061121)" stroke="#4ade80" stroke-width="0.7"/>
-                                                        <circle cx="132" cy="100" r="2.2" fill="var(--bg-deep, #061121)" stroke="#4ade80" stroke-width="0.7"/>
-                                                        <circle cx="100" cy="68"  r="2.2" fill="var(--bg-deep, #061121)" stroke="#4ade80" stroke-width="0.7"/>
-                                                        <circle cx="100" cy="132" r="2.2" fill="var(--bg-deep, #061121)" stroke="#4ade80" stroke-width="0.7"/>
-                                                        <circle cx="100" cy="68" r="3.5" fill="#facc15"/>
-                                                        <circle cx="100" cy="100" r="11" fill="#4ade80"/>
-                                                        <circle cx="100" cy="100" r="6" fill="var(--card-bg-2, #0a1628)"/>
+                                                    <rect x="20" y="40" width="160" height="120" rx="10" fill="url(#mqServoBodyG2)" stroke="#000" stroke-width="1"/>
+                                                    <rect x="22" y="42" width="156" height="10" rx="6" fill="rgba(255,255,255,0.12)"/>
+                                                    <rect x="6" y="68" width="20" height="64" rx="3" fill="url(#mqServoBodyG2)" stroke="#000" stroke-width="0.8"/>
+                                                    <rect x="174" y="68" width="20" height="64" rx="3" fill="url(#mqServoBodyG2)" stroke="#000" stroke-width="0.8"/>
+                                                    <g>
+                                                        <circle cx="16" cy="84" r="3.5" fill="#3a3a3a" stroke="#1a1a1a" stroke-width="0.5"/>
+                                                        <line x1="13.5" y1="84" x2="18.5" y2="84" stroke="#101010" stroke-width="0.8"/>
+                                                        <circle cx="16" cy="116" r="3.5" fill="#3a3a3a" stroke="#1a1a1a" stroke-width="0.5"/>
+                                                        <line x1="13.5" y1="116" x2="18.5" y2="116" stroke="#101010" stroke-width="0.8"/>
+                                                        <circle cx="184" cy="84" r="3.5" fill="#3a3a3a" stroke="#1a1a1a" stroke-width="0.5"/>
+                                                        <line x1="181.5" y1="84" x2="186.5" y2="84" stroke="#101010" stroke-width="0.8"/>
+                                                        <circle cx="184" cy="116" r="3.5" fill="#3a3a3a" stroke="#1a1a1a" stroke-width="0.5"/>
+                                                        <line x1="181.5" y1="116" x2="186.5" y2="116" stroke="#101010" stroke-width="0.8"/>
                                                     </g>
-                                                    <rect x="92" y="160" width="16" height="6" rx="2" fill="var(--card-bg, #1d3556)" stroke="#4ade80" stroke-width="0.6"/>
+                                                    <text x="100" y="148" fill="rgba(255,255,255,0.55)" font-size="7" font-weight="700" font-family="JetBrains Mono, monospace" text-anchor="middle">SG90</text>
+                                                    <circle cx="100" cy="100" r="22" fill="url(#mqServoWellG2)" stroke="#000" stroke-width="1"/>
+                                                    <circle cx="100" cy="100" r="22" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="0.8" transform="translate(0 -1)"/>
+                                                    <g id="mqServoDialS2" transform="rotate(0 100 100)" filter="url(#mqHornShadow2)" style="transition: transform 0.18s ease-out;">
+                                                        <rect x="65" y="97" width="70" height="6" rx="3" fill="url(#mqServoHornG2)"/>
+                                                        <rect x="97" y="65" width="6" height="70" rx="3" fill="url(#mqServoHornG2)"/>
+                                                        <circle cx="68"  cy="100" r="2.5" fill="#0a1628" stroke="#000" stroke-width="0.5"/>
+                                                        <circle cx="132" cy="100" r="2.5" fill="#0a1628" stroke="#000" stroke-width="0.5"/>
+                                                        <circle cx="100" cy="68"  r="2.5" fill="#0a1628" stroke="#000" stroke-width="0.5"/>
+                                                        <circle cx="100" cy="132" r="2.5" fill="#0a1628" stroke="#000" stroke-width="0.5"/>
+                                                        <circle cx="100" cy="68" r="4.5" fill="#facc15" stroke="#92400e" stroke-width="0.6"/>
+                                                        <circle cx="100" cy="100" r="13" fill="url(#mqServoHornG2)" stroke="#0a4a25" stroke-width="0.6"/>
+                                                        <circle cx="100" cy="100" r="6" fill="#0a1c10"/>
+                                                        <line x1="96" y1="100" x2="104" y2="100" stroke="#000" stroke-width="0.8"/>
+                                                        <line x1="100" y1="96" x2="100" y2="104" stroke="#000" stroke-width="0.8"/>
+                                                    </g>
+                                                    <rect x="92" y="160" width="16" height="6" rx="2" fill="#1a1a1a" stroke="#000" stroke-width="0.6"/>
                                                     <text x="100" y="180" fill="var(--text-secondary, #93a8c4)" font-size="6.5" font-family="JetBrains Mono, monospace" text-anchor="middle">SG90 · top view</text>
                                                 </svg>
                                             </div>
