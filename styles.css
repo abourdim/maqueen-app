@@ -4748,59 +4748,67 @@ html[dir="rtl"] .lang-picker { margin-left: 0; margin-right: auto; }
 }
 
 /* ===========================================================
- * 📌 Log rail — pin MESSAGE LOG to the right side of viewport
- * Toggled by body.log-pinned. Width is a CSS custom property
- * (--log-rail-w) updated by js/log-rail.js on drag. The card
- * itself becomes position:fixed so it ignores all parent
- * containers and stays glued to the right edge regardless of
- * page scroll.
+ * 📌 Log rail — MESSAGE LOG as a permanent right sidebar
+ * js/log-rail.js wraps .app + a new <aside id="logRailAside">
+ * in a 2-column grid (.app-shell). The log card lives in the
+ * aside permanently — structurally independent from the rest
+ * of the layout, not just visually pinned via position:fixed.
+ *
+ * Width is a CSS custom property (--log-rail-w) updated by the
+ * resize handle. Below 1100 px the grid collapses to a single
+ * column and the rail is hidden (raw UART log isn't useful on
+ * a phone anyway).
  * =========================================================== */
 :root { --log-rail-w: 380px; }
 
-body.log-pinned {
-  /* Push main content left so the rail doesn't cover it.
-     Transition is short enough to feel snappy, long enough
-     to read as a deliberate UI action. */
-  padding-right: var(--log-rail-w);
-  transition: padding-right 0.18s ease-out;
+.app-shell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--log-rail-w);
+  align-items: stretch;
+  min-height: 100vh;
+  width: 100%;
+}
+.app-shell > .app {
+  /* Allow the main column to shrink when the rail is dragged wider —
+     without `min-width: 0` on a grid item, fixed-width children would
+     prevent the column from contracting. */
+  min-width: 0;
 }
 
-body.log-pinned .log-card {
-  position: fixed;
+aside.log-rail {
+  position: sticky;
   top: 0;
-  right: 0;
-  bottom: 0;
-  width: var(--log-rail-w);
-  max-height: 100vh;
-  margin: 0;
-  z-index: 950;
-  /* IMPORTANT: when pinned, force the card visible regardless of
-     .app.beginner-mode hiding. The user explicitly pinned the log
-     to the right rail, so they want to see it — overriding the
-     mode-based hiding here is the right call. Without this, the
-     padding-right on body.log-pinned reserves space for a card that
-     beginner-mode has display:none'd, leaving an empty blue strip. */
+  align-self: start;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--card-bg, #0f1e35);
+  border-left: 1px solid var(--border, #1d3556);
+  box-shadow: -10px 0 28px rgba(0, 0, 0, 0.35);
+  z-index: 50;
+}
+aside.log-rail > .log-card {
+  /* Force visible regardless of .app.beginner-mode hiding — the rail
+     is a deliberate, permanent fixture, so the log shows in any mode. */
   display: flex !important;
   flex-direction: column;
-  /* Docked-against-edge: no rounding on the right side, strong left
-     shadow so it reads as a permanent panel attached to the viewport. */
+  flex: 1 1 auto;
+  min-height: 0;
+  margin: 0;
+  border: none;
   border-radius: 0;
-  box-shadow:
-    -14px 0 36px rgba(0, 0, 0, 0.5),
-    -1px 0 0 var(--border, #1d3556);
-  /* Slightly stronger backdrop on glassy themes so the log stays legible */
-  background: var(--card-bg, #0f1e35);
+  box-shadow: none;
+  background: transparent;
 }
-/* Make the inner log scroll to fill remaining height — without this
-   the log just sits short and the bottom of the rail is empty. */
-body.log-pinned .log-card #log {
+/* Inner #log fills remaining height so the scroll area expands to the
+   bottom of the rail instead of sitting short. */
+aside.log-rail .log-card #log {
   flex: 1 1 auto;
   min-height: 0;
 }
 
-/* Drag handle on the LEFT edge of the pinned card. Wide enough to
-   be hittable (8 px), but transparent until hover/drag — we don't
-   want a visible bar competing with the card's border. */
+/* Drag handle on the LEFT edge of the rail — transparent until
+   hover/drag so it doesn't compete with the rail border. */
 .log-rail-handle {
   position: absolute;
   left: -4px;
@@ -4809,13 +4817,8 @@ body.log-pinned .log-card #log {
   width: 8px;
   cursor: ew-resize;
   background: transparent;
-  z-index: 951;
-  /* Hidden when not pinned so it can't catch clicks in inline mode */
-  display: none;
+  z-index: 51;
   touch-action: none;
-}
-body.log-pinned .log-rail-handle {
-  display: block;
 }
 .log-rail-handle:hover,
 .log-rail-handle.dragging {
@@ -4828,33 +4831,16 @@ body.log-pinned .log-rail-handle {
   );
 }
 .log-rail-handle.dragging {
-  /* Subtle expansion so user knows they grabbed it */
   width: 10px;
   left: -5px;
 }
 
-/* The pin button — same look as Clear/Export but with an accent
-   when pinned (so it reads as "active state"). */
-#logPinBtn { display: inline-flex; align-items: center; gap: 4px; }
-body.log-pinned #logPinBtn {
-  border-color: var(--accent, #38bdf8);
-  color: var(--accent, #38bdf8);
-}
-
-/* Auto-collapse on narrow viewports — the JS strips the body class
-   too, but this is a belt-and-suspenders safety net in case JS fails
-   to load: never let the rail cover the whole screen. */
+/* Auto-collapse on narrow viewports — single column, rail hidden. */
 @media (max-width: 1100px) {
-  body.log-pinned {
-    padding-right: 0;
+  .app-shell {
+    grid-template-columns: 1fr;
   }
-  body.log-pinned .log-card {
-    position: static;
-    width: auto;
-    max-height: none;
-    box-shadow: none;
-  }
-  body.log-pinned .log-rail-handle {
+  aside.log-rail {
     display: none;
   }
 }
