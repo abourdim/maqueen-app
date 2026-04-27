@@ -47,20 +47,35 @@
       el.animate([{ opacity: 0.4 }, { opacity: 1 }], { duration: 250 });
     }
   }
-  function fireDrive(dataL, dataR) {
+  // mascot/wheels share these; updated by every fireDrive() so the SVG
+  // visualisation stays honest (== last command actually sent).
+  let _lastSentL = 0, _lastSentR = 0;
+  function fireDrive(dataL, dataR, opts) {
+    opts = opts || {};
     if (dataL === 0 && dataR === 0) {
+      // STOP: don't coalesce — we want STOP to actually land.
       send('STOP');
       lastDir = null;
+      _lastSentL = 0; _lastSentR = 0;
       setLastVerb('STOP');
+      if (typeof updateMascot === 'function') updateMascot(0, 0);
       return;
     }
     const ref = 200;
     const L = Math.round(dataL * (speed / ref));
     const R = Math.round(dataR * (speed / ref));
-    send(`M:${L},${R}`);
+    if (opts.coalesce && window.bleScheduler) {
+      window.bleScheduler.send(`M:${L},${R}`, { coalesce: true }).catch(() => {});
+    } else {
+      send(`M:${L},${R}`);
+    }
     lastDir = { l: dataL, r: dataR };
+    _lastSentL = L; _lastSentR = R;
     setLastVerb(`M:${L},${R}`);
+    if (typeof updateMascot === 'function') updateMascot(L, R);
   }
+  // Stub overridden in initDriveJuice() once the SVG is on screen.
+  let updateMascot = null;
   function initDrive() {
     const slider = document.getElementById('mqSpeedSlider');
     const readout = document.getElementById('mqSpeedReadout');
@@ -128,6 +143,160 @@
       btn.addEventListener('mouseleave', release);
       btn.addEventListener('touchend',   release);
       btn.addEventListener('touchcancel',release);
+    });
+
+    initDriveJuice();
+  }
+
+  // -------- DRIVE JUICE: mascot wheels + joystick + keyboard ----
+  // All three input paths funnel through fireDrive() — the BLE layer
+  // doesn't see a difference between buttons / joystick / keyboard.
+  function initDriveJuice() {
+    // ---- WHEEL ANIMATION ----
+    // Each wheel rotates around its own center (the inner <g> uses no
+    // translate, only transform=rotate, so it spins in place inside the
+    // already-translated parent group). Speed is proportional to the
+    // signed motor value last sent.
+    const wheelL = document.getElementById('mqWheelL');
+    const wheelR = document.getElementById('mqWheelR');
+    const flames = document.getElementById('mqMascotFlames');
+    const mouth  = document.getElementById('mqMascotMouth');
+    let wlAngle = 0, wrAngle = 0;
+    function tick() {
+      // Degrees per frame at full motor (255) — calibrated for visible-but-
+      // not-blurry spin at ~60 fps. Negative motor = reverse.
+      const degPerFrame = 7;
+      wlAngle = (wlAngle + (_lastSentL / 255) * degPerFrame) % 360;
+      wrAngle = (wrAngle + (_lastSentR / 255) * degPerFrame) % 360;
+      if (wheelL) wheelL.setAttribute('transform', `rotate(${wlAngle.toFixed(1)})`);
+      if (wheelR) wheelR.setAttribute('transform', `rotate(${wrAngle.toFixed(1)})`);
+      requestAnimationFrame(tick);
+    }
+    if (wheelL || wheelR) requestAnimationFrame(tick);
+
+    // ---- MASCOT REACTIONS (face / flames) ----
+    updateMascot = function (L, R) {
+      // flames when going forward fast (both wheels positive ~half speed+)
+      if (flames) flames.style.opacity = (L > 100 && R > 100) ? '1' : '0';
+      // mouth: smile while moving, neutral on stop
+      if (mouth) {
+        if (L === 0 && R === 0) {
+          mouth.setAttribute('rx', '14'); mouth.setAttribute('ry', '2');
+        } else {
+          mouth.setAttribute('rx', '14'); mouth.setAttribute('ry', '6');
+        }
+      }
+    };
+
+    // ---- JOYSTICK ----
+    // Maps drag position to differential drive. Y axis = forward (up
+    // is positive forward), X axis = turn right (positive). Send while
+    // dragging in coalesce mode so the BLE channel can't drown.
+    const zone  = document.getElementById('mqJoyZone');
+    const thumb = document.getElementById('mqJoyThumb');
+    if (zone && thumb) {
+      const radius = 50;     // thumb travel radius in px (zone is 140 / 2 minus thumb radius)
+      let dragging = false;
+      let cx = 0, cy = 0;
+      function start(e) {
+        e.preventDefault();
+        dragging = true;
+        thumb.style.transition = 'none';
+        const r = zone.getBoundingClientRect();
+        cx = r.left + r.width / 2;
+        cy = r.top  + r.height / 2;
+        move(e);
+      }
+      function move(e) {
+        if (!dragging) return;
+        e.preventDefault();
+        const t = (e.touches && e.touches[0]) || e;
+        let dx = t.clientX - cx;
+        let dy = t.clientY - cy;
+        const d = Math.sqrt(dx * dx + dy * dy);
+        if (d > radius) { dx *= radius / d; dy *= radius / d; }
+        thumb.style.transform = `translate(${dx}px, ${dy}px)`;
+        // Normalize -1..1 (y inverted: drag UP = forward)
+        const nx = dx / radius;
+        const ny = -dy / radius;
+        // Differential drive mix
+        const ref = 200;          // matches fireDrive scale
+        const L = Math.max(-200, Math.min(200, Math.round((ny + nx) * ref)));
+        const R = Math.max(-200, Math.min(200, Math.round((ny - nx) * ref)));
+        // Below dead-zone: treat as stop so it actually brakes when near center
+        if (Math.abs(nx) < 0.12 && Math.abs(ny) < 0.12) {
+          fireDrive(0, 0);
+        } else {
+          fireDrive(L, R, { coalesce: true });
+        }
+      }
+      function end(e) {
+        if (!dragging) return;
+        e && e.preventDefault();
+        dragging = false;
+        thumb.style.transition = 'transform 0.15s ease-out';
+        thumb.style.transform = 'translate(0px, 0px)';
+        fireDrive(0, 0);
+      }
+      zone.addEventListener('pointerdown', start);
+      window.addEventListener('pointermove', move);
+      window.addEventListener('pointerup', end);
+      window.addEventListener('pointercancel', end);
+    }
+
+    // ---- KEYBOARD ----
+    // WASD / arrow keys / Space — only active when the Drive sub-tab is
+    // visible AND no input field is focused. Latest direction wins;
+    // releasing the active key sends STOP.
+    const KEY = {
+      'w':       [200, 200],  'arrowup':    [200, 200],
+      's':       [-200, -200], 'arrowdown':  [-200, -200],
+      'a':       [-150, 150],  'arrowleft':  [-150, 150],
+      'd':       [150, -150],  'arrowright': [150, -150],
+    };
+    const held = new Set();
+    function driveSubtabActive() {
+      const maqActive = document.querySelector('.tab-btn.active');
+      if (!maqActive || maqActive.getAttribute('data-page') !== 'maqueen') return false;
+      const sub = document.querySelector('.mq-sub-page.mq-sub-active');
+      return sub && sub.getAttribute('data-mq-sub') === 'drive';
+    }
+    function isTyping() {
+      const a = document.activeElement;
+      if (!a) return false;
+      const t = a.tagName;
+      return t === 'INPUT' || t === 'TEXTAREA' || a.isContentEditable;
+    }
+    document.addEventListener('keydown', (e) => {
+      if (!driveSubtabActive() || isTyping()) return;
+      const k = e.key.toLowerCase();
+      if (k === ' ') {
+        e.preventDefault();
+        held.clear();
+        fireDrive(0, 0);
+        return;
+      }
+      const v = KEY[k];
+      if (!v) return;
+      e.preventDefault();
+      if (held.has(k)) return;   // ignore key auto-repeat
+      held.add(k);
+      fireDrive(v[0], v[1], { coalesce: true });
+    });
+    document.addEventListener('keyup', (e) => {
+      if (!driveSubtabActive()) return;
+      const k = e.key.toLowerCase();
+      if (!KEY[k]) return;
+      held.delete(k);
+      // No more direction keys held → stop. (If user is still holding
+      // another, fire that one instead.)
+      if (held.size === 0) {
+        fireDrive(0, 0);
+      } else {
+        const next = held.values().next().value;
+        const v = KEY[next];
+        fireDrive(v[0], v[1], { coalesce: true });
+      }
     });
   }
 
