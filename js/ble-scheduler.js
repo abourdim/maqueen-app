@@ -281,31 +281,26 @@
   }
 
   // ---- export ----
-  // True if the BLE link is actually live. Combines:
-  //   1. Internal _connected flag (set by INFO:CONNECTED / INFO:DISCONNECTED lines)
-  //   2. Bit-playground's connectBtn.disabled === true (its UI flips on connect)
-  //   3. Falls back to false if neither signal is positive
-  // This is the single source of truth other modules should use.
+  // True if the BLE link is actually live. Authoritative source is
+  // bit-playground's window.isConnected (set in ble.js on GATT connect/
+  // disconnect). The internal _connected flag is a secondary signal driven
+  // by INFO:CONNECTED / INFO:DISCONNECTED firmware lines — useful for the
+  // scheduler's own bookkeeping but NOT trusted on its own (it can stick
+  // true across page reloads of state, or lag the actual GATT state).
+  //
+  // Earlier versions cross-checked the connectBtn.disabled state, but that
+  // attribute can be true on page load before the user ever connected,
+  // causing the scheduler to think it was connected and dispatch verbs
+  // that ble.js then rejected as "TX blocked".
   function isConnectedLive() {
-    if (_connected) {
-      // Cross-check with bit-playground's button state — if that says
-      // disconnected (browser-side disconnect), trust it and reset.
-      const btn = document.getElementById('connectBtn');
-      if (btn && btn.disabled === false) {
-        _connected = false;
-        emit('disconnected', {});
-        return false;
-      }
-      return true;
-    }
-    // _connected is false — but maybe we missed INFO:CONNECTED. Check button.
-    const btn = document.getElementById('connectBtn');
-    if (btn && btn.disabled === true) {
-      _connected = true;
-      emit('connected', {});
-      return true;
-    }
-    return false;
+    const live = (typeof global.isConnected !== 'undefined')
+      ? !!global.isConnected
+      : _connected;
+    // Keep our internal flag in sync so emit('connected'/'disconnected')
+    // fire on the transition (other modules can subscribe).
+    if (live && !_connected) { _connected = true; emit('connected', {}); }
+    if (!live && _connected) { _connected = false; emit('disconnected', {}); }
+    return live;
   }
 
   global.bleScheduler = {
