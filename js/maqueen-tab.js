@@ -1540,33 +1540,56 @@
   // own when it sees an obstacle. Classic "perception → decision →
   // action" loop — the same one taught in every intro-robotics class.
   //
-  // Behavior
-  //   - Forward at 70% of the user's current speed slider value.
-  //   - Sonar < OBSTACLE_CM cm → turn in place ~ROTATE_MS ms.
-  //     Direction alternates each obstacle (left/right/left...) so
-  //     the robot doesn't get stuck shimmying against the same wall.
+  // Behavior (state machine: forward → scanning → turning → forward)
+  //   - Forward at 70% of the user's current speed slider value, S1
+  //     servo centered (90°) so the sonar sees what's straight ahead.
+  //   - Sonar < OBSTACLE_CM → STOP, enter SCANNING phase.
+  //   - SCANNING: pan S1 through 3 angles (30° / 90° / 150°), wait for
+  //     a sonar reading at each, record cm. This is the robot LITERALLY
+  //     looking around.
+  //   - Pick the angle with the maximum clearance, convert servo angle
+  //     to robot turn (servo 30° = sonar pointing right of forward, so
+  //     rotate right; servo 150° = left, rotate left; 90° = forward,
+  //     no rotation needed). Spin duration scales with how much we
+  //     need to rotate (≈ 60° offset → ~470 ms, full 90° → ~700 ms).
+  //   - Re-center S1 servo to 90° before resuming forward so the next
+  //     obstacle scan starts from a known orientation.
   //   - Any manual drive command (key/button/joystick) auto-cancels
   //     wander — fireDrive() detects non-wander calls and stops it.
-  //   - Stops on disconnect.
+  //   - Stops on disconnect; re-centers servo on stop.
   const mqWander = (function () {
-    const OBSTACLE_CM = 25;       // turn when something is closer than this
-    const TURN_BASE   = 150;      // turn-in-place wheel speed (each side)
-    const ROTATE_MS   = 650;      // duration of one in-place spin
-    const FORWARD_BASE_PCT = 0.70;// fraction of user's speed slider value
-    let active = false;
-    let turnAlternator = 0;       // 0,1,0,1 → left, right, left, right
-    let inTurn  = false;
-    let turnEndsAt = 0;
-    let turnTimer  = null;
-    let _ourCallFlag = false;     // set briefly while WE invoke fireDrive
+    const OBSTACLE_CM      = 25;     // distance that triggers a scan
+    const TURN_BASE        = 150;    // in-place spin wheel speed
+    const FORWARD_BASE_PCT = 0.70;   // fraction of speed slider
+    const SCAN_ANGLES      = [30, 90, 150];   // S1 angles to sample
+    const SCAN_DWELL_MS    = 350;    // wait between servo set + sonar read
+    const ROTATE_MS_PER_DEG = 8;     // ≈ 720 ms for 90° turn
+    const NEUTRAL_DEG      = 5;      // no-turn dead-zone
+
+    let active   = false;
+    let phase    = 'idle';           // 'idle' | 'forward' | 'scanning' | 'turning'
+    let scanIdx  = 0;
+    let scanResults = [];            // cm at each SCAN_ANGLES[i]
+    let phaseTimer = null;
+    let lastSonarCm = 0;
+    let _ourCallFlag = false;        // set briefly while WE invoke fireDrive
+    let _ourServoFlag = false;       // set briefly while WE pan the servo
 
     function paint() {
       const btn = document.getElementById('mqDriveAutoWander');
       if (!btn) return;
       btn.classList.toggle('mq-wander-active', active);
-      // Re-apply the i18n string when toggling so live-translation works.
-      const key = active ? 'mq_drive_wander_stop' : 'mq_drive_wander';
-      const fallback = active ? '⏹ Stop wander' : '🚦 Auto wander';
+      // Phase-aware label so the user can see what the robot is doing.
+      let key, fallback;
+      if (!active) {
+        key = 'mq_drive_wander';      fallback = '🚦 Auto wander';
+      } else if (phase === 'scanning') {
+        key = 'mq_drive_wander_scan'; fallback = '🔍 Scanning…';
+      } else if (phase === 'turning') {
+        key = 'mq_drive_wander_turn'; fallback = '↺ Turning…';
+      } else {
+        key = 'mq_drive_wander_stop'; fallback = '⏹ Stop wander';
+      }
       btn.setAttribute('data-i18n', key);
       btn.textContent = (window.t && typeof window.t === 'function')
         ? (window.t(key) || fallback)
@@ -1577,62 +1600,135 @@
       try { fireDrive(L, R, { coalesce: true }); }
       finally { _ourCallFlag = false; }
     }
-    function startForward() {
+    function setServo(deg) {
+      // Coalesced send so back-to-back scan steps don't queue. Mark with
+      // _ourServoFlag in case any future override logic wants to ignore
+      // wander-issued servo moves (currently unused but cheap to maintain).
+      _ourServoFlag = true;
+      try {
+        if (window.bleScheduler) {
+          window.bleScheduler.send('SRV:1,' + deg, { coalesce: true }).catch(() => {});
+        }
+        // Also nudge the visualizers so the radar beam / mascot antenna
+        // pivot in lockstep with the scan — these would normally be fed
+        // from setAngle() but setAngle isn't called for our raw send.
+        try { mqSweepRadar.recordAngle(deg); } catch {}
+        try { mqOdometry.recordAngle(deg); } catch {}
+        try { mqMascot.sonarServo(deg); } catch {}
+      } finally { _ourServoFlag = false; }
+    }
+    function clearTimer() {
+      if (phaseTimer) { clearTimeout(phaseTimer); phaseTimer = null; }
+    }
+
+    function enterForward() {
       if (!active) return;
-      // Pull live from speed slider so the user can adjust mid-wander.
+      phase = 'forward';
+      paint();
+      // Centre the sonar so the obstacle test reflects what's ahead.
+      setServo(90);
       const slider = document.getElementById('mqSpeedSlider');
       const userSpeed = slider ? +slider.value : 200;
       const v = Math.round(userSpeed * FORWARD_BASE_PCT);
       safeFire(v, v);
     }
-    function spinAway() {
+
+    function enterScanning() {
       if (!active) return;
-      inTurn = true;
-      const dir = (turnAlternator++ % 2) === 0 ? +1 : -1;
-      // L,R for in-place spin: opposite signs.
-      safeFire(dir * TURN_BASE, -dir * TURN_BASE);
-      turnEndsAt = performance.now() + ROTATE_MS;
-      if (turnTimer) clearTimeout(turnTimer);
-      turnTimer = setTimeout(() => {
-        inTurn = false;
-        startForward();
-      }, ROTATE_MS);
+      phase = 'scanning';
+      scanIdx = 0;
+      scanResults = [];
+      safeFire(0, 0);                 // halt motion before scanning
+      paint();
+      scanStep();
     }
+    function scanStep() {
+      if (!active || phase !== 'scanning') return;
+      if (scanIdx >= SCAN_ANGLES.length) { decideAndTurn(); return; }
+      const angle = SCAN_ANGLES[scanIdx];
+      setServo(angle);
+      // Give the servo time to slew + the next polled DIST? to land.
+      // We use the LATEST lastSonarCm at the end of the dwell — it's
+      // updated by onDistance() as readings come in.
+      clearTimer();
+      phaseTimer = setTimeout(() => {
+        if (!active || phase !== 'scanning') return;
+        scanResults[scanIdx] = lastSonarCm;
+        scanIdx++;
+        scanStep();
+      }, SCAN_DWELL_MS);
+    }
+    function decideAndTurn() {
+      if (!active) return;
+      // Pick the index with the max reading. Treat 0 (no echo) as
+      // "infinite clearance" — that's a perfectly safe direction.
+      let bestIdx = 0;
+      let bestVal = -1;
+      for (let i = 0; i < scanResults.length; i++) {
+        const v = scanResults[i] === 0 ? 9999 : scanResults[i];
+        if (v > bestVal) { bestVal = v; bestIdx = i; }
+      }
+      // servo 30° = sonar pointing right of forward → robot turns right
+      // servo 90° = forward → no turn
+      // servo 150° = left → robot turns left
+      // offset = 90 − targetAngle. Positive = turn right (L+, R−).
+      const targetAngle = SCAN_ANGLES[bestIdx];
+      const offsetDeg = 90 - targetAngle;
+      if (Math.abs(offsetDeg) <= NEUTRAL_DEG) {
+        // Best clearance is straight ahead — no need to turn, just go.
+        enterForward();
+        return;
+      }
+      phase = 'turning';
+      paint();
+      const turnMs = Math.max(180, Math.abs(offsetDeg) * ROTATE_MS_PER_DEG);
+      const dir = offsetDeg > 0 ? +1 : -1;
+      safeFire(dir * TURN_BASE, -dir * TURN_BASE);
+      clearTimer();
+      phaseTimer = setTimeout(() => { enterForward(); }, turnMs);
+    }
+
     function start() {
       if (active) return;
       active = true;
-      inTurn = false;
-      paint();
-      startForward();
+      enterForward();
     }
     function stop() {
       if (!active) return;
       active = false;
-      inTurn = false;
-      if (turnTimer) { clearTimeout(turnTimer); turnTimer = null; }
-      // Send a real STOP so the robot actually stops; this goes through
-      // safeFire so fireDrive's override-detection doesn't mis-fire.
+      phase = 'idle';
+      clearTimer();
+      // Real STOP so the robot halts; re-centre the servo so the next
+      // session (or manual sonar read) sees forward by default.
       safeFire(0, 0);
+      setServo(90);
       paint();
     }
-    // External cancel (called from fireDrive when a manual command lands).
-    // Same as stop() but doesn't issue STOP — the manual call IS the new
-    // motion, so issuing STOP would override it.
+    // External cancel — manual fireDrive lands; we just disengage.
+    // Don't issue STOP (the manual call IS the new motion) but DO
+    // re-centre the servo since we may have left it panned mid-scan.
     function cancel() {
       if (!active) return;
       active = false;
-      inTurn = false;
-      if (turnTimer) { clearTimeout(turnTimer); turnTimer = null; }
+      phase = 'idle';
+      clearTimer();
+      setServo(90);
       paint();
     }
     function onDistance(cm) {
-      if (!active || inTurn) return;
+      if (!active) return;
+      // Cache for the SCANNING dwell to read at the end of each step.
+      if (cm > 0 && cm < 500) lastSonarCm = cm;
+      // Trigger a scan only from FORWARD phase. Ignore obstacle reads
+      // during scanning/turning — those are part of the decision loop.
+      if (phase !== 'forward') return;
       if (cm > 0 && cm < OBSTACLE_CM) {
-        spinAway();
+        enterScanning();
       }
     }
-    function isOurCall() { return _ourCallFlag; }
-    return { start, stop, cancel, onDistance, isActive: () => active, isOurCall };
+    function isOurCall()  { return _ourCallFlag; }
+    function isOurServo() { return _ourServoFlag; }
+    return { start, stop, cancel, onDistance, isActive: () => active, isOurCall, isOurServo };
   })();
 
   // -------- 🏁 TABLEAU DE BORD ----------------------------

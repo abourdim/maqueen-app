@@ -94,6 +94,8 @@
       mq_dash_no_link:      "⚠ NO LINK",
       mq_drive_wander:      "🚦 Auto wander",
       mq_drive_wander_stop: "⏹ Stop wander",
+      mq_drive_wander_scan: "🔍 Scanning…",
+      mq_drive_wander_turn: "↺ Turning…",
       mq_dist_audio:        "🔊 audio",
 
       // Tabs
@@ -558,6 +560,8 @@
       mq_dash_no_link:      "⚠ HORS LIGNE",
       mq_drive_wander:      "🚦 Errance auto",
       mq_drive_wander_stop: "⏹ Stop errance",
+      mq_drive_wander_scan: "🔍 Sondage…",
+      mq_drive_wander_turn: "↺ Virage…",
       mq_dist_audio:        "🔊 son",
 
       // Tabs
@@ -1022,6 +1026,8 @@
       mq_dash_no_link:      "\u26a0 \u0644\u0627 \u0627\u062a\u0635\u0627\u0644",
       mq_drive_wander:      "\ud83d\udea6 \u062a\u062c\u0648\u0627\u0644 \u062a\u0644\u0642\u0627\u0626\u064a",
       mq_drive_wander_stop: "\u23f9 \u0625\u064a\u0642\u0627\u0641 \u0627\u0644\u062a\u062c\u0648\u0627\u0644",
+      mq_drive_wander_scan: "\ud83d\udd0d \u064a\u0633\u062a\u0643\u0634\u0641\u2026",
+      mq_drive_wander_turn: "\u21ba \u064a\u0633\u062a\u062f\u064a\u0631\u2026",
       mq_dist_audio:        "\ud83d\udd0a \u0635\u0648\u062a",
 
       // Tabs
