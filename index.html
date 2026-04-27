@@ -1051,6 +1051,202 @@ html[dir="rtl"] .hint ol { padding-left: 0; padding-right: 20px; }
                                         </div>
                                     </div>
 
+                                    <!-- 🏁 TABLEAU DE BORD — automotive-style cockpit dashboard.
+                                         Four analog gauges (270° sweep, classic Mercedes/Porsche
+                                         aesthetic) + LCD trip computer + warning cluster. All values
+                                         read from data already on the wire — no new BLE traffic. -->
+                                    <div class="mq-dash-panel" style="margin-top:8px;">
+                                        <div class="mq-dash-header">
+                                            <span>🏁 <span data-i18n="mq_dash_title">Dashboard</span> · <span style="opacity:0.65; font-weight:400;" data-i18n="mq_dash_sub">live cockpit</span></span>
+                                            <div class="mq-dash-warns">
+                                                <span class="mq-dash-warn" id="mqDashWarnCol" data-i18n="mq_dash_collision">⚠ COLLISION</span>
+                                                <span class="mq-dash-warn" id="mqDashWarnLink" data-i18n="mq_dash_no_link">⚠ NO LINK</span>
+                                                <span class="mq-dash-gear" id="mqDashGear">N</span>
+                                                <button class="mq-dash-reset" id="mqDashReset" type="button" title="Reset PEAK / AVG / TRIP. Doesn't touch the path map." aria-label="Reset trip stats">↺</button>
+                                            </div>
+                                        </div>
+                                        <div class="mq-dash-gauges">
+                                            <!-- SPEED gauge — analog, 0..30 cm/s, cyan needle + red max-marker -->
+                                            <div class="mq-gauge" style="--gauge-color:#38bdf8;">
+                                                <svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
+                                                    <defs>
+                                                        <radialGradient id="mqGaugeFaceSpeed" cx="50%" cy="50%" r="50%">
+                                                            <stop offset="0%" stop-color="#0c1d3a"/>
+                                                            <stop offset="100%" stop-color="#020a14"/>
+                                                        </radialGradient>
+                                                    </defs>
+                                                    <!-- Face -->
+                                                    <circle cx="50" cy="50" r="46" fill="url(#mqGaugeFaceSpeed)" stroke="#1d3556" stroke-width="1.2"/>
+                                                    <!-- Tick marks (270° sweep, -135° to +135°) -->
+                                                    <g class="mq-gauge-ticks" stroke="#93a8c4" stroke-linecap="round">
+                                                        <!-- Major ticks at 0%, 25%, 50%, 75%, 100% -->
+                                                        <line x1="50" y1="10" x2="50" y2="16" stroke-width="1.2" transform="rotate(-135 50 50)"/>
+                                                        <line x1="50" y1="10" x2="50" y2="16" stroke-width="1.2" transform="rotate(-67.5 50 50)"/>
+                                                        <line x1="50" y1="10" x2="50" y2="16" stroke-width="1.2"/>
+                                                        <line x1="50" y1="10" x2="50" y2="16" stroke-width="1.2" transform="rotate(67.5 50 50)"/>
+                                                        <line x1="50" y1="10" x2="50" y2="16" stroke-width="1.2" transform="rotate(135 50 50)"/>
+                                                        <!-- Minor ticks every 13.5° between majors -->
+                                                        <g stroke-width="0.6" opacity="0.55">
+                                                            <line x1="50" y1="10" x2="50" y2="14" transform="rotate(-121.5 50 50)"/>
+                                                            <line x1="50" y1="10" x2="50" y2="14" transform="rotate(-108 50 50)"/>
+                                                            <line x1="50" y1="10" x2="50" y2="14" transform="rotate(-94.5 50 50)"/>
+                                                            <line x1="50" y1="10" x2="50" y2="14" transform="rotate(-81 50 50)"/>
+                                                            <line x1="50" y1="10" x2="50" y2="14" transform="rotate(-54 50 50)"/>
+                                                            <line x1="50" y1="10" x2="50" y2="14" transform="rotate(-40.5 50 50)"/>
+                                                            <line x1="50" y1="10" x2="50" y2="14" transform="rotate(-27 50 50)"/>
+                                                            <line x1="50" y1="10" x2="50" y2="14" transform="rotate(-13.5 50 50)"/>
+                                                            <line x1="50" y1="10" x2="50" y2="14" transform="rotate(13.5 50 50)"/>
+                                                            <line x1="50" y1="10" x2="50" y2="14" transform="rotate(27 50 50)"/>
+                                                            <line x1="50" y1="10" x2="50" y2="14" transform="rotate(40.5 50 50)"/>
+                                                            <line x1="50" y1="10" x2="50" y2="14" transform="rotate(54 50 50)"/>
+                                                            <line x1="50" y1="10" x2="50" y2="14" transform="rotate(81 50 50)"/>
+                                                            <line x1="50" y1="10" x2="50" y2="14" transform="rotate(94.5 50 50)"/>
+                                                            <line x1="50" y1="10" x2="50" y2="14" transform="rotate(108 50 50)"/>
+                                                            <line x1="50" y1="10" x2="50" y2="14" transform="rotate(121.5 50 50)"/>
+                                                        </g>
+                                                    </g>
+                                                    <!-- Number labels at 0 / 50% / 100% -->
+                                                    <g fill="var(--text-secondary, #93a8c4)" font-family="JetBrains Mono, monospace" font-size="6" text-anchor="middle">
+                                                        <text x="18" y="86">0</text>
+                                                        <text x="50" y="20">15</text>
+                                                        <text x="82" y="86">30</text>
+                                                    </g>
+                                                    <!-- PEAK marker — red thin needle that climbs to peak and stays -->
+                                                    <line id="mqGaugePeakSpeed" x1="50" y1="50" x2="50" y2="14" stroke="#f87171" stroke-width="0.7" stroke-linecap="round" opacity="0.85" transform="rotate(-135 50 50)"/>
+                                                    <!-- Main needle -->
+                                                    <g id="mqGaugeNeedleSpeed" transform="rotate(-135 50 50)" style="transition:transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);">
+                                                        <polygon points="50,52 50.5,18 49.5,18" fill="var(--gauge-color)" stroke="var(--gauge-color)" stroke-width="0.4"/>
+                                                    </g>
+                                                    <!-- Center pin -->
+                                                    <circle cx="50" cy="50" r="3" fill="#1d3556" stroke="var(--gauge-color)" stroke-width="0.8"/>
+                                                    <circle cx="50" cy="50" r="1" fill="var(--gauge-color)"/>
+                                                    <!-- Glass reflection sweep -->
+                                                    <path d="M 12 36 A 40 40 0 0 1 64 12" stroke="rgba(255,255,255,0.06)" stroke-width="3" fill="none"/>
+                                                </svg>
+                                                <div class="mq-gauge-label"><span data-i18n="mq_dash_speed">SPEED</span> · <span class="mq-gauge-unit">cm/s</span></div>
+                                                <div class="mq-gauge-value" id="mqGaugeValSpeed">0.0</div>
+                                            </div>
+
+                                            <!-- POWER gauge — abs(L+R)/2 / 255 → 0..100% -->
+                                            <div class="mq-gauge" style="--gauge-color:#fb923c;">
+                                                <svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
+                                                    <circle cx="50" cy="50" r="46" fill="url(#mqGaugeFaceSpeed)" stroke="#1d3556" stroke-width="1.2"/>
+                                                    <g class="mq-gauge-ticks" stroke="#93a8c4" stroke-linecap="round">
+                                                        <line x1="50" y1="10" x2="50" y2="16" stroke-width="1.2" transform="rotate(-135 50 50)"/>
+                                                        <line x1="50" y1="10" x2="50" y2="16" stroke-width="1.2" transform="rotate(-67.5 50 50)"/>
+                                                        <line x1="50" y1="10" x2="50" y2="16" stroke-width="1.2"/>
+                                                        <line x1="50" y1="10" x2="50" y2="16" stroke-width="1.2" transform="rotate(67.5 50 50)"/>
+                                                        <line x1="50" y1="10" x2="50" y2="16" stroke-width="1.2" transform="rotate(135 50 50)"/>
+                                                    </g>
+                                                    <!-- Redline arc (last 20%) -->
+                                                    <path d="M 81.4 81.4 A 31.4 31.4 0 0 1 50 81.4" fill="none" stroke="#f87171" stroke-width="2" opacity="0.5" transform="rotate(0 50 50)"/>
+                                                    <g fill="var(--text-secondary, #93a8c4)" font-family="JetBrains Mono, monospace" font-size="6" text-anchor="middle">
+                                                        <text x="18" y="86">0</text>
+                                                        <text x="50" y="20">50</text>
+                                                        <text x="82" y="86">100</text>
+                                                    </g>
+                                                    <line id="mqGaugePeakPower" x1="50" y1="50" x2="50" y2="14" stroke="#f87171" stroke-width="0.7" stroke-linecap="round" opacity="0.85" transform="rotate(-135 50 50)"/>
+                                                    <g id="mqGaugeNeedlePower" transform="rotate(-135 50 50)" style="transition:transform 0.18s ease-out;">
+                                                        <polygon points="50,52 50.5,18 49.5,18" fill="var(--gauge-color)" stroke="var(--gauge-color)" stroke-width="0.4"/>
+                                                    </g>
+                                                    <circle cx="50" cy="50" r="3" fill="#1d3556" stroke="var(--gauge-color)" stroke-width="0.8"/>
+                                                    <circle cx="50" cy="50" r="1" fill="var(--gauge-color)"/>
+                                                    <path d="M 12 36 A 40 40 0 0 1 64 12" stroke="rgba(255,255,255,0.06)" stroke-width="3" fill="none"/>
+                                                </svg>
+                                                <div class="mq-gauge-label"><span data-i18n="mq_dash_power">POWER</span> · <span class="mq-gauge-unit">%</span></div>
+                                                <div class="mq-gauge-value" id="mqGaugeValPower">0</div>
+                                            </div>
+
+                                            <!-- HEADING gauge — compass-style, N at top, full 360° -->
+                                            <div class="mq-gauge" style="--gauge-color:#4ade80;">
+                                                <svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
+                                                    <circle cx="50" cy="50" r="46" fill="url(#mqGaugeFaceSpeed)" stroke="#1d3556" stroke-width="1.2"/>
+                                                    <g class="mq-gauge-ticks" stroke="#93a8c4" stroke-linecap="round">
+                                                        <line x1="50" y1="6" x2="50" y2="12"  stroke-width="1.2" stroke="#f87171"/>
+                                                        <line x1="50" y1="6" x2="50" y2="12"  stroke-width="1" transform="rotate(90 50 50)"/>
+                                                        <line x1="50" y1="6" x2="50" y2="12"  stroke-width="1" transform="rotate(180 50 50)"/>
+                                                        <line x1="50" y1="6" x2="50" y2="12"  stroke-width="1" transform="rotate(270 50 50)"/>
+                                                        <g stroke-width="0.5" opacity="0.5">
+                                                            <line x1="50" y1="8" x2="50" y2="12" transform="rotate(45 50 50)"/>
+                                                            <line x1="50" y1="8" x2="50" y2="12" transform="rotate(135 50 50)"/>
+                                                            <line x1="50" y1="8" x2="50" y2="12" transform="rotate(225 50 50)"/>
+                                                            <line x1="50" y1="8" x2="50" y2="12" transform="rotate(315 50 50)"/>
+                                                        </g>
+                                                    </g>
+                                                    <g fill="var(--text-secondary, #93a8c4)" font-family="JetBrains Mono, monospace" font-size="7" text-anchor="middle" font-weight="700">
+                                                        <text x="50" y="22" fill="#f87171">N</text>
+                                                        <text x="80" y="53">E</text>
+                                                        <text x="50" y="84">S</text>
+                                                        <text x="20" y="53">W</text>
+                                                    </g>
+                                                    <!-- Heading needle — straight arrow, north-up at heading=0 -->
+                                                    <g id="mqGaugeNeedleHead" transform="rotate(0 50 50)" style="transition:transform 0.22s ease-out;">
+                                                        <polygon points="50,52 51,18 50,14 49,18" fill="var(--gauge-color)" stroke="var(--gauge-color)" stroke-width="0.3"/>
+                                                        <polygon points="50,48 51,82 50,86 49,82" fill="#93a8c4" opacity="0.5"/>
+                                                    </g>
+                                                    <circle cx="50" cy="50" r="3" fill="#1d3556" stroke="var(--gauge-color)" stroke-width="0.8"/>
+                                                    <circle cx="50" cy="50" r="1" fill="var(--gauge-color)"/>
+                                                    <path d="M 12 36 A 40 40 0 0 1 64 12" stroke="rgba(255,255,255,0.06)" stroke-width="3" fill="none"/>
+                                                </svg>
+                                                <div class="mq-gauge-label"><span data-i18n="mq_dash_heading">HEADING</span> · <span class="mq-gauge-unit">°</span></div>
+                                                <div class="mq-gauge-value" id="mqGaugeValHead">0</div>
+                                            </div>
+
+                                            <!-- SONAR gauge — INVERTED scale: 0cm = needle pegged right (alarm),
+                                                 100+cm = needle pegged left (chill). Color shifts with proximity. -->
+                                            <div class="mq-gauge" style="--gauge-color:#fbbf24;">
+                                                <svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
+                                                    <circle cx="50" cy="50" r="46" fill="url(#mqGaugeFaceSpeed)" stroke="#1d3556" stroke-width="1.2"/>
+                                                    <g class="mq-gauge-ticks" stroke="#93a8c4" stroke-linecap="round">
+                                                        <line x1="50" y1="10" x2="50" y2="16" stroke-width="1.2" transform="rotate(-135 50 50)"/>
+                                                        <line x1="50" y1="10" x2="50" y2="16" stroke-width="1.2" transform="rotate(-67.5 50 50)"/>
+                                                        <line x1="50" y1="10" x2="50" y2="16" stroke-width="1.2"/>
+                                                        <line x1="50" y1="10" x2="50" y2="16" stroke-width="1.2" transform="rotate(67.5 50 50)"/>
+                                                        <line x1="50" y1="10" x2="50" y2="16" stroke-width="1.2" transform="rotate(135 50 50)"/>
+                                                    </g>
+                                                    <!-- Danger arc (last 30% on the right = closest distances) -->
+                                                    <path d="M 50 4 A 46 46 0 0 1 81.4 18.6" fill="none" stroke="#f87171" stroke-width="2" opacity="0.5"/>
+                                                    <g fill="var(--text-secondary, #93a8c4)" font-family="JetBrains Mono, monospace" font-size="6" text-anchor="middle">
+                                                        <text x="18" y="86">100+</text>
+                                                        <text x="50" y="20">30</text>
+                                                        <text x="82" y="86">0</text>
+                                                    </g>
+                                                    <g id="mqGaugeNeedleSonar" transform="rotate(-135 50 50)" style="transition:transform 0.18s ease-out;">
+                                                        <polygon points="50,52 50.5,18 49.5,18" fill="var(--gauge-color)" stroke="var(--gauge-color)" stroke-width="0.4"/>
+                                                    </g>
+                                                    <circle cx="50" cy="50" r="3" fill="#1d3556" stroke="var(--gauge-color)" stroke-width="0.8"/>
+                                                    <circle cx="50" cy="50" r="1" fill="var(--gauge-color)"/>
+                                                    <path d="M 12 36 A 40 40 0 0 1 64 12" stroke="rgba(255,255,255,0.06)" stroke-width="3" fill="none"/>
+                                                </svg>
+                                                <div class="mq-gauge-label"><span data-i18n="mq_dash_sonar">SONAR</span> · <span class="mq-gauge-unit">cm</span></div>
+                                                <div class="mq-gauge-value" id="mqGaugeValSonar">—</div>
+                                            </div>
+                                        </div>
+                                        <!-- LCD trip computer strip -->
+                                        <div class="mq-dash-lcd">
+                                            <div class="mq-lcd-cell">
+                                                <span class="mq-lcd-key" data-i18n="mq_dash_odo">ODO</span>
+                                                <span class="mq-lcd-val" id="mqDashODO">0.00 m</span>
+                                            </div>
+                                            <div class="mq-lcd-cell">
+                                                <span class="mq-lcd-key" data-i18n="mq_dash_trip">TRIP</span>
+                                                <span class="mq-lcd-val" id="mqDashTRIP">0.00 m</span>
+                                            </div>
+                                            <div class="mq-lcd-cell">
+                                                <span class="mq-lcd-key" data-i18n="mq_dash_peak">PEAK</span>
+                                                <span class="mq-lcd-val" id="mqDashPEAK">0.0 cm/s</span>
+                                            </div>
+                                            <div class="mq-lcd-cell">
+                                                <span class="mq-lcd-key" data-i18n="mq_dash_avg">AVG</span>
+                                                <span class="mq-lcd-val" id="mqDashAVG">0.0 cm/s</span>
+                                            </div>
+                                            <div class="mq-lcd-cell">
+                                                <span class="mq-lcd-key">⏱</span>
+                                                <span class="mq-lcd-val" id="mqDashTime">00:00</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                     <!-- 🧭 ODOMETRY — dead-reckoning navigator. Integrates wheel velocities
                                          in real time (no encoder; pure differential-drive kinematics) to draw
                                          the robot's path. Same math every wheeled robot uses. The 'estimate'

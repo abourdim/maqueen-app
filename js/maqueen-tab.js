@@ -217,6 +217,8 @@
       try { mqAnat.motors(0, 0); } catch {}
       // Odometry — robot stopped, so wheel velocities are zero.
       try { mqOdometry.update(0, 0); } catch {}
+      // Dashboard — power gauge falls to 0, gear flips to N.
+      try { mqDashboard.recordMotors(0, 0); } catch {}
       return;
     }
     const ref = 200;
@@ -236,6 +238,8 @@
     // what the ROBOT actually got (post speed-slider scaling), not the
     // raw button intent.
     try { mqOdometry.update(L, R); } catch {}
+    // Dashboard — power needle, peak marker, gear (D/N/R), drive timer.
+    try { mqDashboard.recordMotors(L, R); } catch {}
   }
   // Stub overridden in initDriveJuice() once the SVG is on screen.
   let updateMascot = null;
@@ -252,6 +256,21 @@
     if (odoReset) odoReset.addEventListener('click', () => {
       try { mqOdometry.reset(); } catch {}
     });
+    // Dashboard reset button — clears PEAK/AVG/TRIP/timer (NOT odo, NOT path)
+    const dashReset = document.getElementById('mqDashReset');
+    if (dashReset) dashReset.addEventListener('click', () => {
+      try { mqDashboard.reset(); } catch {}
+    });
+    // BLE link warning — react to connect/disconnect transitions.
+    if (window.bleScheduler && window.bleScheduler.on) {
+      const setLink = () => {
+        try { mqDashboard.recordLink(window.bleScheduler.isConnected()); } catch {}
+      };
+      window.bleScheduler.on('connected',    setLink);
+      window.bleScheduler.on('disconnected', setLink);
+      // Initial paint
+      setLink();
+    }
     slider.addEventListener('input', e => {
       speed = +e.target.value;
       readout.textContent = speed;
@@ -1430,6 +1449,167 @@
     });
   }
 
+  // -------- 🏁 TABLEAU DE BORD ----------------------------
+  // Automotive cockpit dashboard. Four analog gauges + LCD trip
+  // computer + warning cluster. Reads data already on the wire
+  // (fireDrive L,R; mqOdometry pose+totalDist; setDist cm).
+  //
+  // Gauge needle convention: 270° sweep, -135° (left) to +135°
+  // (right). For a value v in [0, max], rotation = -135 + (v/max)*270.
+  // For the heading gauge, 360° direct rotation.
+  // For the sonar gauge: INVERTED so close = right (alarm side).
+  const mqDashboard = (function () {
+    const SPEED_MAX  = 30;     // cm/s — typical Maqueen top speed
+    const POWER_MAX  = 100;    // %
+    const SONAR_MAX  = 100;    // cm — beyond this peg the needle "chill"
+
+    let peakSpeed   = 0;       // cm/s
+    let peakPower   = 0;       // %
+    let driveMs     = 0;       // accumulated time motors were active
+    let lastDriveT  = 0;       // performance.now() at last drive tick
+    let isDriving   = false;
+    let lastL = 0, lastR = 0;
+    // ODO persists across resets; TRIP zeroes when user hits reset.
+    let odoMeters  = 0;
+    let tripMeters = 0;
+    let lastTotalDist = 0;     // last seen mqOdometry totalDist (for delta)
+    try {
+      const v = +localStorage.getItem('maqueen.odoMeters');
+      if (v && isFinite(v)) odoMeters = v;
+    } catch {}
+
+    // Generic needle update — rotates the SVG group around (50, 50).
+    function setNeedle(id, angleDeg) {
+      const el = document.getElementById(id);
+      if (el) el.setAttribute('transform', `rotate(${angleDeg.toFixed(1)} 50 50)`);
+    }
+    function valToSweep(val, max) {
+      const t = Math.max(0, Math.min(1, val / max));
+      return -135 + t * 270;
+    }
+    function setText(id, str) {
+      const el = document.getElementById(id);
+      if (el && el.textContent !== str) el.textContent = str;
+    }
+    function setWarn(id, on) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.classList.toggle('mq-dash-warn-on', !!on);
+    }
+    function setGear(letter) {
+      const el = document.getElementById('mqDashGear');
+      if (!el) return;
+      if (el.dataset.gear !== letter) {
+        el.dataset.gear = letter;
+        el.textContent = letter;
+      }
+    }
+
+    function fmtMeters(m) {
+      // Show with cm precision when small, m precision when large.
+      if (m < 1) return (m * 100).toFixed(0) + ' cm';
+      return m.toFixed(2) + ' m';
+    }
+    function fmtMMSS(ms) {
+      const s = Math.floor(ms / 1000);
+      return String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0');
+    }
+
+    // Hooks ----------------------------------------------------
+    // Wheel-velocity hook from fireDrive (post speed-scale).
+    function recordMotors(L, R) {
+      lastL = +L; lastR = +R;
+      const mag = Math.max(Math.abs(L), Math.abs(R));
+      const pwrPct = Math.min(100, (mag / 255) * 100);
+      // Power gauge — main needle, peak marker
+      setNeedle('mqGaugeNeedlePower', valToSweep(pwrPct, POWER_MAX));
+      if (pwrPct > peakPower) {
+        peakPower = pwrPct;
+        setNeedle('mqGaugePeakPower', valToSweep(peakPower, POWER_MAX));
+      }
+      setText('mqGaugeValPower', Math.round(pwrPct));
+      // Gear: avg sign of L,R determines D / N / R
+      const avg = (L + R) / 2;
+      const gear = (Math.abs(avg) < 5) ? 'N' : (avg > 0 ? 'D' : 'R');
+      setGear(gear);
+      // Drive-time clock — only counts while at least one motor is active
+      const wasDriving = isDriving;
+      isDriving = mag > 5;
+      const now = performance.now();
+      if (wasDriving && lastDriveT) driveMs += (now - lastDriveT);
+      lastDriveT = isDriving ? now : 0;
+    }
+    // Pose hook from mqOdometry — gets called every render() tick at ~60 Hz.
+    function recordPose(theta, totalDist) {
+      // Heading gauge — direct degree mapping
+      const hdgDeg = ((theta * 180 / Math.PI) % 360 + 360) % 360;
+      setNeedle('mqGaugeNeedleHead', hdgDeg);
+      setText('mqGaugeValHead', hdgDeg.toFixed(0));
+      // Speed (cm/s) computed from totalDist delta — uses real wheel-speed
+      // integral. We compute on the fly because mqOdometry tracks totalDist.
+      const dDist = Math.max(0, totalDist - lastTotalDist);
+      lastTotalDist = totalDist;
+      // Gauge speed reading uses |v|, instantaneous-ish.
+      // Pull from current motor estimate: v = (L+R)/2 * VEL_SCALE (25/200 cm/s/unit).
+      const speedCmS = Math.abs((lastL + lastR) / 2 * (25 / 200));
+      setNeedle('mqGaugeNeedleSpeed', valToSweep(speedCmS, SPEED_MAX));
+      setText('mqGaugeValSpeed', speedCmS.toFixed(1));
+      if (speedCmS > peakSpeed) {
+        peakSpeed = speedCmS;
+        setNeedle('mqGaugePeakSpeed', valToSweep(peakSpeed, SPEED_MAX));
+      }
+      // ODO + TRIP integrate the actual world-distance moved
+      const dMeters = dDist / 100;
+      odoMeters  += dMeters;
+      tripMeters += dMeters;
+      // Throttle localStorage writes — every 1 m of travel is plenty
+      if (Math.floor(odoMeters * 100) % 100 === 0 && dMeters > 0) {
+        try { localStorage.setItem('maqueen.odoMeters', odoMeters.toFixed(3)); } catch {}
+      }
+      // LCD strip
+      setText('mqDashODO',  fmtMeters(odoMeters));
+      setText('mqDashTRIP', fmtMeters(tripMeters));
+      setText('mqDashPEAK', peakSpeed.toFixed(1) + ' cm/s');
+      const avg = driveMs > 100 ? (tripMeters * 100) / (driveMs / 1000) : 0;
+      setText('mqDashAVG', avg.toFixed(1) + ' cm/s');
+      setText('mqDashTime', fmtMMSS(driveMs));
+    }
+    // Sonar — drives the SONAR gauge + COLLISION warning light.
+    function recordDistance(cm) {
+      const valid = cm > 0 && cm < 500;
+      const valEl = document.getElementById('mqGaugeValSonar');
+      if (!valid) {
+        setNeedle('mqGaugeNeedleSonar', -135);
+        if (valEl) valEl.textContent = '—';
+        setWarn('mqDashWarnCol', false);
+        return;
+      }
+      // Inverted scale: cm=0 → +135° (right, danger), cm=100+ → -135° (left, chill)
+      const t = Math.min(1, cm / SONAR_MAX);
+      setNeedle('mqGaugeNeedleSonar', 135 - t * 270);
+      if (valEl) valEl.textContent = String(Math.round(cm));
+      setWarn('mqDashWarnCol', cm < 10);
+    }
+    function recordLink(connected) {
+      setWarn('mqDashWarnLink', !connected);
+    }
+
+    function reset() {
+      peakSpeed = 0;
+      peakPower = 0;
+      driveMs = 0;
+      tripMeters = 0;
+      setNeedle('mqGaugePeakSpeed', valToSweep(0, SPEED_MAX));
+      setNeedle('mqGaugePeakPower', valToSweep(0, POWER_MAX));
+      setText('mqDashTRIP', fmtMeters(0));
+      setText('mqDashPEAK', '0.0 cm/s');
+      setText('mqDashAVG',  '0.0 cm/s');
+      setText('mqDashTime', '00:00');
+    }
+
+    return { recordMotors, recordPose, recordDistance, recordLink, reset };
+  })();
+
   // -------- 🧭 ODOMETRY ----------------------------------
   // Dead-reckoning navigator. Every time fireDrive() pushes new wheel
   // velocities (L, R), we update the integrator. An rAF tick integrates
@@ -1612,6 +1792,10 @@
       // estimated heading. Same source of truth (odometry's theta) so
       // mini-map, world map, and mascot are always in lockstep.
       try { mqMascot.heading(theta); } catch {}
+      // Dashboard — speed gauge (from totalDist delta), heading needle,
+      // ODO/TRIP/PEAK/AVG. Reads our internal state so it stays in sync
+      // with the integrator. ~60 Hz from this rAF loop.
+      try { mqDashboard.recordPose(theta, totalDist); } catch {}
       // HUD numbers
       const hudH = document.getElementById('mqOdoHeading');
       const hudD = document.getElementById('mqOdoDistance');
@@ -1785,6 +1969,9 @@
     try { mqOdometry.recordDistance(cm); } catch {}
     // Big mascot — sonar antenna length + color + eye-widening alert.
     try { mqMascot.sonarDistance(cm); } catch {}
+    // Dashboard — SONAR gauge needle (inverted: close = right) + the
+    // collision warning light when cm < 10.
+    try { mqDashboard.recordDistance(cm); } catch {}
     // Glossy gauge — compatibility shims for the old IDs are still in DOM
     const big = document.getElementById('mqDistBig');
     const bar = document.getElementById('mqDistBar');
