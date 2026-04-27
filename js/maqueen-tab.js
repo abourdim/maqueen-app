@@ -330,16 +330,31 @@
       window.bleScheduler.send('DIST?').catch(() => {});
     }
   }
+  let distRateMs = +(localStorage.getItem('maqueen.distRate') || 600);
+  function restartDistAuto() {
+    const auto = document.getElementById('mqDistAuto');
+    if (distAutoTimer) { clearInterval(distAutoTimer); distAutoTimer = null; }
+    if (auto && auto.checked) distAutoTimer = setInterval(pollDist, distRateMs);
+  }
   function initUltrasonic() {
     const ping = document.getElementById('mqDistPing');
     const auto = document.getElementById('mqDistAuto');
+    const rate = document.getElementById('mqDistRate');
+    const read = document.getElementById('mqDistRateRead');
     if (!ping) return;
     ping.addEventListener('click', pollDist);
-    auto.addEventListener('change', e => {
-      if (distAutoTimer) { clearInterval(distAutoTimer); distAutoTimer = null; }
-      if (e.target.checked) distAutoTimer = setInterval(pollDist, 600);
-    });
-    if (auto.checked) distAutoTimer = setInterval(pollDist, 600);
+    auto.addEventListener('change', restartDistAuto);
+    if (rate) {
+      rate.value = distRateMs;
+      if (read) read.textContent = distRateMs + ' ms';
+      rate.addEventListener('input', e => {
+        distRateMs = +e.target.value;
+        if (read) read.textContent = distRateMs + ' ms';
+        try { localStorage.setItem('maqueen.distRate', String(distRateMs)); } catch {}
+        restartDistAuto();
+      });
+    }
+    restartDistAuto();
   }
 
   // -------- IR REMOTE -------------------------------------
@@ -441,16 +456,31 @@
       window.bleScheduler.send('LINE?').catch(() => {});
     }
   }
+  let lineRateMs = +(localStorage.getItem('maqueen.lineRate') || 600);
+  function restartLineAuto() {
+    const auto = document.getElementById('mqLineAuto');
+    if (lineAutoTimer) { clearInterval(lineAutoTimer); lineAutoTimer = null; }
+    if (auto && auto.checked) lineAutoTimer = setInterval(pollLine, lineRateMs);
+  }
   function initLineCard() {
     const poll = document.getElementById('mqLinePoll');
     const auto = document.getElementById('mqLineAuto');
+    const rate = document.getElementById('mqLineRate');
+    const read = document.getElementById('mqLineRateRead');
     if (!poll) return;
     poll.addEventListener('click', pollLine);
-    auto.addEventListener('change', e => {
-      if (lineAutoTimer) { clearInterval(lineAutoTimer); lineAutoTimer = null; }
-      if (e.target.checked) lineAutoTimer = setInterval(pollLine, 600);
-    });
-    if (auto.checked) lineAutoTimer = setInterval(pollLine, 600);
+    auto.addEventListener('change', restartLineAuto);
+    if (rate) {
+      rate.value = lineRateMs;
+      if (read) read.textContent = lineRateMs + ' ms';
+      rate.addEventListener('input', e => {
+        lineRateMs = +e.target.value;
+        if (read) read.textContent = lineRateMs + ' ms';
+        try { localStorage.setItem('maqueen.lineRate', String(lineRateMs)); } catch {}
+        restartLineAuto();
+      });
+    }
+    restartLineAuto();
   }
 
   function followTick() {
@@ -478,6 +508,7 @@
     setLastVerb(`M:${L},${R}`);
   }
 
+  let followRateMs = +(localStorage.getItem('maqueen.followRate') || 200);
   function startFollow() {
     if (following) return;
     if (!window.bleScheduler || !window.bleScheduler.isConnected()) {
@@ -491,7 +522,24 @@
       btn.style.color = '#f87171';
       btn.style.borderColor = '#f87171';
     }
-    followTimer = setInterval(followTick, 200);
+    followTimer = setInterval(followTick, followRateMs);
+  }
+  function initFollowRate() {
+    const rate = document.getElementById('mqFollowRate');
+    const read = document.getElementById('mqFollowRateRead');
+    if (!rate) return;
+    rate.value = followRateMs;
+    if (read) read.textContent = followRateMs + ' ms';
+    rate.addEventListener('input', e => {
+      followRateMs = +e.target.value;
+      if (read) read.textContent = followRateMs + ' ms';
+      try { localStorage.setItem('maqueen.followRate', String(followRateMs)); } catch {}
+      // If currently following, restart at new rate
+      if (following && followTimer) {
+        clearInterval(followTimer);
+        followTimer = setInterval(followTick, followRateMs);
+      }
+    });
   }
   function stopFollow() {
     if (!following) return;
@@ -551,6 +599,7 @@
     initUltrasonic();
     initIR();
     initLineFollow();
+    initFollowRate();
     initLineCard();
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
