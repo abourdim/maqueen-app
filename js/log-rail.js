@@ -97,6 +97,24 @@
       // for the narrow column.
       panel.classList.add('in-rail');
       aside.appendChild(panel);
+      // Pluck the 'streams: OFF' toggle out of the sensor panel and
+      // dock it inside the CONNECT card next to the Firmware button.
+      // Streams ON/OFF is a connection-level setting (it controls
+      // continuous ACC/TEMP/LIGHT/COMPASS/BTN broadcasts), so it
+      // belongs with the link controls, not the sensor readouts.
+      const streamsBtn = panel.querySelector('#mq-streams-toggle');
+      const fwFooter   = connect && connect.querySelector('.connection-footer');
+      if (streamsBtn && fwFooter && !fwFooter.contains(streamsBtn)) {
+        // Re-flow the footer as a horizontal pair, preserve original colors.
+        fwFooter.style.display = 'flex';
+        fwFooter.style.gap = '6px';
+        fwFooter.style.alignItems = 'stretch';
+        const fwBtn = fwFooter.querySelector('button');
+        if (fwBtn) fwBtn.style.flex = '1 1 auto';
+        streamsBtn.classList.add('mq-streams-in-connect');
+        streamsBtn.style.flex = '0 0 auto';
+        fwFooter.appendChild(streamsBtn);
+      }
     }
     aside.appendChild(card);
     return aside;
