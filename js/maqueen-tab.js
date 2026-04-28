@@ -2864,6 +2864,85 @@
     const blips = [];           // FIFO of {angle, cm, t}
     const MAX_BLIPS = 220;
     const FADE_MS = 5000;
+    // 🎯 Marker render mode: 'dots' (original), 'sectors' (filled angular
+    // wedges → polar occupancy histogram), 'rays' (thin bearing lines from
+    // origin out to detection). Persisted so the user's choice survives.
+    const MODE_KEY = 'maqueen.sweepMarker';
+    let renderMode = 'dots';
+    try { renderMode = localStorage.getItem(MODE_KEY) || 'dots'; } catch {}
+    function setMode(m) {
+      if (!m) m = 'dots';
+      renderMode = m;
+      try { localStorage.setItem(MODE_KEY, m); } catch {}
+      // Repaint chip active state
+      document.querySelectorAll('.mq-sweep-mode').forEach(b => {
+        b.classList.toggle('mq-sweep-mode-active', b.dataset.mode === m);
+      });
+    }
+    function getMode() { return renderMode; }
+
+    // ---- Render helpers per mode ----
+    // All take (now, blipColor) and return SVG markup string.
+    // Each blip's age → opacity = 1 - age/FADE_MS.
+    function renderDots(now, blipColor) {
+      let svg = '';
+      for (let i = 0; i < blips.length; i++) {
+        const b = blips[i];
+        const op = Math.max(0, 1 - (now - b.t) / FADE_MS);
+        const r = distToRadius(b.cm);
+        const p = polar(b.angle, r);
+        const color = blipColor(b.cm);
+        const radius = b.cm < 10 ? 2.4 : 2.0;
+        svg += `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${radius}" fill="${color}" opacity="${op.toFixed(2)}"/>`;
+      }
+      return svg;
+    }
+    // 'rays' — thin bearing line from origin (200, 200) out to the detection.
+    // Cleaner than lines-from-everywhere: encodes the bearing explicitly.
+    function renderRays(now, blipColor) {
+      let svg = '';
+      for (let i = 0; i < blips.length; i++) {
+        const b = blips[i];
+        const op = Math.max(0, 1 - (now - b.t) / FADE_MS);
+        const r = distToRadius(b.cm);
+        const p = polar(b.angle, r);
+        const color = blipColor(b.cm);
+        const w = b.cm < 10 ? 1.4 : 0.8;
+        svg += `<line x1="200" y1="200" x2="${p.x.toFixed(1)}" y2="${p.y.toFixed(1)}" stroke="${color}" stroke-width="${w}" stroke-opacity="${op.toFixed(2)}" stroke-linecap="round"/>`;
+      }
+      return svg;
+    }
+    // 'sectors' — bin blips into 6° angular slices, draw each as a filled
+    // pie wedge from origin out to the bin's most-recent distance. Reads
+    // as a polar occupancy grid: walls emerge as fat colored sectors,
+    // openings as thin/missing ones.
+    const SECTOR_DEG = 6;
+    function renderSectors(now, blipColor) {
+      // Bucket blips by angular bin; within a bin, keep the most recent.
+      const bins = new Map();
+      for (let i = 0; i < blips.length; i++) {
+        const b = blips[i];
+        const binId = Math.floor(b.angle / SECTOR_DEG);
+        const cur = bins.get(binId);
+        if (!cur || b.t > cur.t) bins.set(binId, { ...b, _binId: binId });
+      }
+      let svg = '';
+      for (const [binId, b] of bins) {
+        const op = Math.max(0, 1 - (now - b.t) / FADE_MS) * 0.55;   // 0.55 cap so grid stays visible
+        const r  = distToRadius(b.cm);
+        if (r <= 0) continue;
+        const a1 = (binId * SECTOR_DEG) * Math.PI / 180;
+        const a2 = ((binId + 1) * SECTOR_DEG) * Math.PI / 180;
+        const x1 = 200 + r * Math.cos(a1), y1 = 200 - r * Math.sin(a1);
+        const x2 = 200 + r * Math.cos(a2), y2 = 200 - r * Math.sin(a2);
+        const color = blipColor(b.cm);
+        // Pie slice: M origin → L outer1 → A radius radius 0 0 0 outer2 → Z
+        // sweep-flag 0 because angles INCREASE clockwise in our (x,y) world,
+        // but in SVG with y inverted that's actually a counter-clockwise arc.
+        svg += `<path d="M 200 200 L ${x1.toFixed(1)} ${y1.toFixed(1)} A ${r.toFixed(1)} ${r.toFixed(1)} 0 0 0 ${x2.toFixed(1)} ${y2.toFixed(1)} Z" fill="${color}" fill-opacity="${op.toFixed(2)}" stroke="${color}" stroke-width="0.4" stroke-opacity="${(op + 0.15).toFixed(2)}"/>`;
+      }
+      return svg;
+    }
 
     // Distance → SVG radius. Piecewise so close objects get more visual
     // space (closer = action zone). Matches the arc rings at 10/30/100 cm
@@ -2908,25 +2987,25 @@
       const hudD = document.getElementById('mqSweepHudD');
       if (hudA) hudA.textContent = Math.round(lastAngle) + ' deg';
       if (hudD) hudD.textContent = (lastCm == null ? '— cm' : lastCm + ' cm');
-      // Blips — drop fully-faded, render rest with opacity = 1 - age/FADE_MS
-      const layer = document.getElementById('mqSweepBlips');
-      if (layer) {
-        while (blips.length && (now - blips[0].t) > FADE_MS) blips.shift();
-        let svg = '';
-        for (let i = 0; i < blips.length; i++) {
-          const b = blips[i];
-          const op = Math.max(0, 1 - (now - b.t) / FADE_MS);
-          const r = distToRadius(b.cm);
-          const p = polar(b.angle, r);
-          // Sweep blips on the green phosphor grid — the 'safe' tier
-          // used pale green (#86efac) which BLENDED with the grid. Bump
-          // to white so detected objects always pop, regardless of
-          // distance band.
-          const color = b.cm < 10 ? '#ef4444' : b.cm < 30 ? '#fbbf24' : '#ffffff';
-          const radius = b.cm < 10 ? 2.4 : 2.0;
-          svg += `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${radius}" fill="${color}" opacity="${op.toFixed(2)}"/>`;
-        }
-        layer.innerHTML = svg;
+      // Blips — drop fully-faded first.
+      while (blips.length && (now - blips[0].t) > FADE_MS) blips.shift();
+      // Pick the active render mode — branch on persisted user choice.
+      const dotsLayer    = document.getElementById('mqSweepBlips');
+      const sectorsLayer = document.getElementById('mqSweepSectors');
+      // Helper: threshold color shared across all 3 render modes.
+      const blipColor = (cm) => cm < 10 ? '#ef4444' : cm < 30 ? '#fbbf24' : '#ffffff';
+      // Render-mode dispatch — clear unused layers each frame so toggling
+      // between modes wipes the previous render cleanly.
+      if (renderMode === 'sectors') {
+        if (dotsLayer) dotsLayer.innerHTML = '';
+        if (sectorsLayer) sectorsLayer.innerHTML = renderSectors(now, blipColor);
+      } else if (renderMode === 'rays') {
+        if (sectorsLayer) sectorsLayer.innerHTML = '';
+        if (dotsLayer) dotsLayer.innerHTML = renderRays(now, blipColor);
+      } else {
+        // 'dots' (default) — original fading-circle blips.
+        if (sectorsLayer) sectorsLayer.innerHTML = '';
+        if (dotsLayer) dotsLayer.innerHTML = renderDots(now, blipColor);
       }
       // LOCK indicator — last 6 blips clustered near current (angle, dist)
       const lock = document.getElementById('mqSweepHudLock');
@@ -2958,7 +3037,7 @@
       active = false;
       if (raf) { cancelAnimationFrame(raf); raf = null; }
     }
-    return { recordAngle, recordDistance, start, stop, isActive: () => active };
+    return { recordAngle, recordDistance, start, stop, isActive: () => active, setMode, getMode };
   })();
 
   // -------- ULTRASONIC ------------------------------------
@@ -3216,6 +3295,13 @@
     }
     picks.forEach(p => p.addEventListener('click', () => show(p.dataset.style)));
     show(active);
+    // 🎯 Sweep marker style chips — apply persisted choice + wire clicks.
+    try { mqSweepRadar.setMode(mqSweepRadar.getMode()); } catch {}
+    document.querySelectorAll('.mq-sweep-mode').forEach(b => {
+      b.addEventListener('click', () => {
+        try { mqSweepRadar.setMode(b.dataset.mode); } catch {}
+      });
+    });
   }
   function initUltrasonic() {
     const ping = document.getElementById('mqDistPing');

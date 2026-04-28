@@ -4408,6 +4408,51 @@ html[dir="rtl"] .lang-picker { margin-left: 0; margin-right: auto; }
 }
 
 /* ===========================================================
+ * 🎯 Sweep marker style chips — pick how detected obstacles are
+ * rendered on the Sweep radar (dots / sectors / rays). Lives at
+ * the top of the sweep-style radar panel.
+ * =========================================================== */
+.mq-sweep-mode-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 6px;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+}
+.mq-sweep-mode-lbl {
+  font-size: 9px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--text-secondary, #93a8c4);
+  opacity: 0.7;
+  margin-right: 2px;
+}
+.mq-sweep-mode {
+  background: rgba(34, 197, 94, 0.06);
+  color: #86efac;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-family: inherit;
+  font-size: 10px;
+  cursor: pointer;
+  transition: all 0.12s ease-out;
+}
+.mq-sweep-mode:hover {
+  background: rgba(34, 197, 94, 0.14);
+  border-color: rgba(34, 197, 94, 0.55);
+}
+.mq-sweep-mode.mq-sweep-mode-active {
+  background: rgba(34, 197, 94, 0.22);
+  color: #bbf7d0;
+  border-color: #86efac;
+  font-weight: 700;
+  box-shadow: 0 0 6px rgba(134, 239, 172, 0.35);
+}
+
+/* ===========================================================
  * 🎯 Path challenges — selector + score badge in the path panel
  * Sits under the panel header. Selector picks a target shape;
  * the SVG draws a dashed outline; score updates live.

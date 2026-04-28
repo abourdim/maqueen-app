@@ -114,6 +114,10 @@
       mq_dist_leg_close:    "< 30 cm · close",
       mq_dist_leg_safe:     "≥ 30 cm · safe",
       mq_dist_leg_noecho:   "— · no echo",
+      mq_sweep_marker:      "marker:",
+      mq_sweep_dots:        "●●● dots",
+      mq_sweep_sectors:     "▆▆▆ sectors",
+      mq_sweep_rays:        "─── rays",
 
       // Tabs
       tab_maqueen:        "Maqueen",
@@ -597,6 +601,10 @@
       mq_dist_leg_close:    "< 30 cm · proche",
       mq_dist_leg_safe:     "≥ 30 cm · sûr",
       mq_dist_leg_noecho:   "— · pas d'écho",
+      mq_sweep_marker:      "marqueur :",
+      mq_sweep_dots:        "●●● points",
+      mq_sweep_sectors:     "▆▆▆ secteurs",
+      mq_sweep_rays:        "─── rayons",
 
       // Tabs
       tab_maqueen:        "Maqueen",
@@ -1080,6 +1088,10 @@
       mq_dist_leg_close:    "< 30 \u0633\u0645 \u00b7 \u0642\u0631\u064a\u0628",
       mq_dist_leg_safe:     "\u2265 30 \u0633\u0645 \u00b7 \u0622\u0645\u0646",
       mq_dist_leg_noecho:   "\u2014 \u00b7 \u0644\u0627 \u0635\u062f\u0649",
+      mq_sweep_marker:      "\u0627\u0644\u0639\u0644\u0627\u0645\u0629:",
+      mq_sweep_dots:        "\u25cf\u25cf\u25cf \u0646\u0642\u0627\u0637",
+      mq_sweep_sectors:     "\u2586\u2586\u2586 \u0642\u0637\u0627\u0639\u0627\u062a",
+      mq_sweep_rays:        "\u2500\u2500\u2500 \u0623\u0634\u0639\u0629",
 
       // Tabs
       tab_maqueen:        "Maqueen",

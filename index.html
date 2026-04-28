@@ -2241,6 +2241,15 @@ html[dir="rtl"] .hint ol { padding-left: 0; padding-right: 20px; }
                                          REAL (servo angle, sonar distance) pairs that fade over 5 s.
                                          Pair this with S1 Sweep mode for the full effect. -->
                                     <div class="mq-radar-style" data-style="sweep" style="display:none; background:radial-gradient(ellipse at 50% 100%, #0a1f0a 0%, #02080d 100%); border:1px solid #15803d; border-radius:10px; padding:12px 8px 8px; margin-bottom:10px;">
+                                        <!-- 🎯 Marker style picker — three ways to render detected
+                                             objects on the sweep grid. Same data, totally different
+                                             visual languages — kids can discover which one they like. -->
+                                        <div class="mq-sweep-mode-bar">
+                                            <span class="mq-sweep-mode-lbl" data-i18n="mq_sweep_marker">marker:</span>
+                                            <button class="mq-sweep-mode mq-sweep-mode-active" data-mode="dots" title="Each reading = a fading dot (the original)"><span data-i18n="mq_sweep_dots">●●● dots</span></button>
+                                            <button class="mq-sweep-mode" data-mode="sectors" title="Each reading = a filled angular wedge — room map emerges as the sweep covers more angles"><span data-i18n="mq_sweep_sectors">▆▆▆ sectors</span></button>
+                                            <button class="mq-sweep-mode" data-mode="rays" title="Each reading = a thin bearing line from origin to the detection — submarine sonar style"><span data-i18n="mq_sweep_rays">─── rays</span></button>
+                                        </div>
                                         <div style="position:relative; max-width:420px; margin:0 auto;">
                                             <svg id="mqSweepSvg" viewBox="0 0 400 220" style="width:100%; height:auto; display:block;">
                                                 <defs>
@@ -2284,6 +2293,9 @@ html[dir="rtl"] .hint ol { padding-left: 0; padding-right: 20px; }
                                                     <text x="284" y="212">30 cm</text>
                                                     <text x="334" y="212">100 cm</text>
                                                 </g>
+                                                <!-- 'sectors' render mode layer — drawn UNDER the beam so the
+                                                     bright sweep stays on top of the persistent occupancy fills. -->
+                                                <g id="mqSweepSectors" pointer-events="none"></g>
                                                 <!-- Sweep beam (rotated by JS via transform on this group) -->
                                                 <g id="mqSweepBeamG" transform="rotate(-90 200 200)" filter="url(#mqSweepBlur)">
                                                     <!-- Trailing fan: 8 lines at decreasing opacity, each 2° behind -->
