@@ -49,16 +49,16 @@
     return w;
   }
 
-  // Move the .log-card AND .connection-card out of their inline
+  // Move CONNECT card + maqueen-panel + log-card out of their inline
   // parents into a dedicated <aside> rail at the layout level.
-  // Both belong together — CONNECT establishes the BLE link, the
-  // log shows the traffic. Putting them in the same rail makes the
-  // sidebar a coherent "BLE control center", and frees the entire
-  // top row of the main app for content.
+  // Order in the rail: CONNECT (top) → maqueen-panel (live sensor
+  // strip) → LOG (bottom, fills remaining space). All BLE-related
+  // panels in one coherent sidebar.
   // Idempotent — safe to call twice.
   function relocateCard() {
     const card    = document.querySelector('.log-card');
     const connect = document.querySelector('.connection-card');
+    const panel   = document.getElementById('maqueen-panel');
     const app     = document.querySelector('.app');
     if (!card || !app) return null;
     let aside = document.getElementById('logRailAside');
@@ -84,12 +84,19 @@
       shell.appendChild(aside);
     }
 
-    // Move the CONNECT card into the rail FIRST (so it sits at the
-    // top), then the log card below it. Order matters here.
+    // Order in the rail: CONNECT (top) → maqueen-panel (live sensor
+    // strip, sibling) → LOG card (bottom). All three as separate
+    // panels, each its own visual block.
     if (connect) {
       // Tag the rail body so CSS knows it has a connect-on-top layout.
       aside.classList.add('has-connect');
       aside.appendChild(connect);
+    }
+    if (panel) {
+      // Tag for the rail-specific compact CSS that rewraps the strip
+      // for the narrow column.
+      panel.classList.add('in-rail');
+      aside.appendChild(panel);
     }
     aside.appendChild(card);
     return aside;

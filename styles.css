@@ -4885,6 +4885,51 @@ aside.log-rail > .connection-card .connection-footer button {
   padding: 5px 10px;
   font-size: 11px;
 }
+/* maqueen-panel (live sensor strip) — sits between CONNECT and LOG
+   in the rail. The panel was designed for full-page-width; in the
+   narrow rail it needs compaction: smaller font + button sizes,
+   tighter gaps. The existing flex-wrap takes care of layout —
+   items will rewrap onto multiple rows automatically. */
+aside.log-rail > #maqueen-panel.in-rail {
+  flex: 0 0 auto;
+  margin: 8px 8px 0;
+  padding: 6px 10px;
+  font-size: 11px;
+  gap: 8px 12px;
+  border-radius: 10px;
+}
+aside.log-rail > #maqueen-panel.in-rail > div {
+  font-size: 11px;
+}
+aside.log-rail > #maqueen-panel.in-rail > div span:first-child {
+  /* Sensor labels (LINE / DIST / IR / ACC / BLE) */
+  font-size: 9px;
+}
+/* Compact poll buttons */
+aside.log-rail > #maqueen-panel.in-rail button {
+  font-size: 9px !important;
+  padding: 3px 7px !important;
+}
+/* The 'Maqueen Lite v4' title is redundant inside the rail (CONNECT
+   above already says we're connected). Hide it so the panel's first
+   wrap row gets sensor data instead of a label. */
+aside.log-rail > #maqueen-panel.in-rail > div:first-child {
+  display: none;
+}
+/* BLE stats was floated to the right via margin-left:auto — that
+   doesn't read well when wrapped. Remove the auto-margin in the rail
+   so it flows naturally with the other items. */
+aside.log-rail > #maqueen-panel.in-rail > div[title="BLE round-trip stats"] {
+  margin-left: 0;
+  border-left: none;
+  padding-left: 0;
+}
+/* Compact ACC: 3 numbers in 120 px is too wide for the rail. Let it
+   shrink naturally — the readout will line-wrap if needed. */
+aside.log-rail > #maqueen-panel.in-rail #mq-acc {
+  min-width: 0;
+}
+
 /* The log card fills the REMAINING vertical space below CONNECT.
    Same floating-card chrome as CONNECT for visual consistency —
    both panels look like proper rounded cards inside the rail. */
