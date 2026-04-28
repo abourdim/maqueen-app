@@ -4767,12 +4767,38 @@ html[dir="rtl"] .lang-picker { margin-left: 0; margin-right: auto; }
   align-items: stretch;
   min-height: 100vh;
   width: 100%;
+  /* Cap total layout width and center on very wide screens. With the
+     log moved to the rail, .app no longer needs 1400 px to look right
+     — 1100 keeps the cards comfortably sized AND reduces the visual
+     'spread' for users who don't have ultrawide monitors. */
+  max-width: calc(1100px + var(--log-rail-w));
+  margin: 0 auto;
 }
 .app-shell > .app {
   /* Allow the main column to shrink when the rail is dragged wider —
      without `min-width: 0` on a grid item, fixed-width children would
      prevent the column from contracting. */
   min-width: 0;
+  /* Force .app to FILL its grid column, overriding the internal
+     max-width: 1200 from the original design. */
+  width: 100%;
+  max-width: none;
+  margin: 0;
+}
+
+/* SPACE OPTIMIZATION: in expert mode, the log card has been moved to
+   the rail and the activity-card (.beginner-only) is display:none.
+   Result: .col-right is empty, but .row-top still reserves 50% for
+   it because both columns are flex:1. Collapse it so .col-left fills
+   the row naturally — no dark band next to CONNECT. */
+.app:not(.beginner-mode) .row-top .col-right {
+  display: none;
+}
+/* Cap the CONNECT card so it doesn't stretch awkwardly when col-left
+   suddenly has the whole row to itself. The card looks balanced at
+   ~520 px; beyond that it just looks oversized. */
+.app:not(.beginner-mode) .row-top .col-left {
+  max-width: 540px;
 }
 
 aside.log-rail {
