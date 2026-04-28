@@ -309,8 +309,19 @@
       window.bleScheduler.on('connected',    setLink);
       window.bleScheduler.on('disconnected', () => {
         setLink();
-        // Always halt the autonomous demo if we lose the link mid-wander.
+        // SAFETY: kill ALL autonomous motor sources on disconnect.
+        // Otherwise mqWander's setIntervals + mqMacro's playback queue
+        // keep firing fireDrive() calls that pile up in the BLE
+        // scheduler's queue. When the link comes back, all those
+        // queued M:L,R commands flush at once → robot does erratic
+        // moves the user didn't ask for.
         try { mqWander.stop(); } catch {}
+        try { mqMacro.cancel(); } catch {}
+        // Reset the on-screen mascot/dashboard so they don't keep
+        // showing 'driving' state when nothing is actually moving.
+        try { mqDashboard.recordMotors(0, 0); } catch {}
+        try { mqAnat.motors(0, 0); } catch {}
+        if (typeof updateMascot === 'function') updateMascot(0, 0);
       });
       // Initial paint
       setLink();
