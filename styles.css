@@ -4817,20 +4817,19 @@ aside.log-rail {
    Heavy compaction for the narrow rail: we strip non-essential
    metadata (subtitle, Name row, dim version/build/commit lines)
    and tighten paddings + button sizes. The full build-info is
-   still available in the Firmware popup. */
+   still available in the Firmware popup.
+   The card keeps proper rounded chrome and floats inside the rail
+   with a small margin — reads as a real card, not a stripped panel. */
 aside.log-rail > .connection-card {
   flex: 0 0 auto;
-  margin: 0;
+  margin: 8px 8px 0 8px;
   padding: 10px 14px 12px;
-  border: none;
-  border-radius: 0;
-  /* Distinct panel: slightly darker bg + crisp 2px divider so it
-     reads as its own block, not flowing into the log below. */
   background: var(--bg-deep, #061121);
-  border-bottom: 2px solid var(--border, #1d3556);
+  border: 1px solid var(--border, #1d3556);
+  border-radius: 10px;
   box-shadow:
-    inset 0 -1px 0 rgba(0, 0, 0, 0.4),     /* dark inset under */
-    0 1px 0 rgba(255, 255, 255, 0.03);     /* subtle highlight */
+    0 4px 12px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
   /* Override any beginner-mode hiding so CONNECT always shows in the rail */
   display: block !important;
 }
@@ -4886,7 +4885,9 @@ aside.log-rail > .connection-card .connection-footer button {
   padding: 5px 10px;
   font-size: 11px;
 }
-/* The log card fills the REMAINING vertical space below CONNECT */
+/* The log card fills the REMAINING vertical space below CONNECT.
+   Same floating-card chrome as CONNECT for visual consistency —
+   both panels look like proper rounded cards inside the rail. */
 aside.log-rail > .log-card {
   /* Force visible regardless of .app.beginner-mode hiding — the rail
      is a deliberate, permanent fixture, so the log shows in any mode. */
@@ -4894,13 +4895,16 @@ aside.log-rail > .log-card {
   flex-direction: column;
   flex: 1 1 auto;
   min-height: 0;
-  /* Breathing room above the log header so it doesn't kiss the
-     CONNECT divider — the gap is what reads as 'separate panel'. */
-  margin: 10px 0 0 0;
-  border: none;
-  border-radius: 0;
-  box-shadow: none;
-  background: transparent;
+  margin: 10px 8px 8px 8px;
+  background: var(--bg-deep, #061121);
+  border: 1px solid var(--border, #1d3556);
+  border-radius: 10px;
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  /* Inner content needs to round-clip to the card's curved corners,
+     otherwise the log scroll area pokes past the rounded edges. */
+  overflow: hidden;
 }
 /* Inner #log fills remaining height so the scroll area expands to the
    bottom of the rail instead of sitting short. */
