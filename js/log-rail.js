@@ -120,11 +120,13 @@
         // in SIZE with Connect/Disconnect above.
         streamsBtn.removeAttribute('style');
         streamsBtn.classList.add('secondary', 'mq-streams-in-connect');
-        // Sit at natural content width — Firmware and streams: OFF
-        // each take only as much room as their text + button padding
-        // need, no stretching to fill the row.
-        streamsBtn.style.flex = '0 0 auto';
-        if (fwBtn) fwBtn.style.flex = '0 0 auto';
+        // Equal-width pair, mirroring Connect/Disconnect above —
+        // both share the footer row 50/50, same dimensions as the
+        // primary buttons. flex:1 1 0 from a zero base ignores the
+        // intrinsic content width so the longer 'streams: OFF' label
+        // doesn't make that pill wider than 'Firmware'.
+        streamsBtn.style.flex = '1 1 0';
+        if (fwBtn) fwBtn.style.flex = '1 1 0';
         fwFooter.appendChild(streamsBtn);
       }
     }

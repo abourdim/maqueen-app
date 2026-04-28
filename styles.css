@@ -4890,12 +4890,19 @@ aside.log-rail > .connection-card #appBuildInfo #fwVersionLine {
      3. Firmware      — outlined dim grey (discrete utility)
      4. Streams: ON   — outlined dim yellow (discrete + status tint)
    Same pill shape, same height, same font-weight — only paint differs. */
+/* In the rail, force the connection-grid to stack vertically.
+   Default is a 2-column grid (main | footer) which works on the
+   wide page but in the narrow rail it puts Firmware + streams on
+   the SAME row as Connect/Disconnect → 4 buttons squashed in one
+   row, the right pair gets clipped off the rail edge. */
+aside.log-rail > .connection-card .connection-grid {
+  grid-template-columns: 1fr !important;
+}
 aside.log-rail > .connection-card .connection-footer {
   margin-top: 8px;
   display: flex;
   gap: 8px;
   align-items: stretch;
-  justify-content: center;
 }
 aside.log-rail > .connection-card .connection-footer button {
   /* Inherit base button sizing (8px 14px / 0.78rem / weight 600 /
