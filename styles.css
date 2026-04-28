@@ -5304,6 +5304,31 @@ body.rail-collapsed .log-rail-collapse-btn {
   right: 0;
 }
 
+.mq-copilot-btn { color: #f472b6; border-color: rgba(244,114,182,0.4); }
+.mq-copilot-btn.mq-copilot-on {
+  background: #f472b6; color: #1a0e2a; border-color: #f472b6;
+  box-shadow: 0 0 10px rgba(244,114,182,0.5);
+}
+.mq-syn-btn { color: #22d3ee; border-color: rgba(34,211,238,0.4); }
+.mq-syn-btn.mq-syn-on {
+  background: linear-gradient(90deg, #ef4444, #fbbf24, #4ade80, #38bdf8, #c084fc);
+  color: #1a0e2a;
+  border-color: #fff;
+  font-weight: 700;
+}
+.mq-sniffer-btn.mq-sniffer-on {
+  background: #38bdf8 !important;
+  color: #01202b !important;
+  border-color: #38bdf8 !important;
+  font-weight: 700 !important;
+  box-shadow: 0 0 8px rgba(56,189,248,0.5);
+}
+.mq-headlock-btn.mq-headlock-on {
+  background: #fbbf24 !important;
+  color: #01202b !important;
+  border-color: #fbbf24 !important;
+  box-shadow: 0 0 8px rgba(251,191,36,0.5);
+}
 /* Tilt-to-drive toggle — golden, pulses to signal 'sensor active'. */
 .mq-tilt-btn { color: #fbbf24; border-color: rgba(251,191,36,0.4); }
 .mq-tilt-btn.mq-tilt-on {

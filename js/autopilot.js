@@ -154,7 +154,18 @@
     // theta increases turning LEFT. Match mqOdometry's integration.
     const dx = tgt.x - pose.x, dy = tgt.y - pose.y;
     const bearing = Math.atan2(dx, dy);     // 0 = forward, +π/2 = right
-    let err = bearing - pose.theta;
+    // Heading source: compass-locked (drift-free) if user toggled
+    // 🎚 LOCK on AND a fresh HEAD: reply is available; otherwise
+    // wheel-integrated theta (legacy behavior preserved).
+    let theta = pose.theta;
+    if (window.mqHeading && window.mqHeading.isLocked() && window.mqHeading.isFresh()) {
+      // Compass returns 0..360 with 0 = North = +y forward. Convert to
+      // theta in mqOdometry's convention (theta=0 is +y, +theta turns
+      // robot toward +x = compass-degrees-decreasing). So theta_compass
+      // = -compassDeg (rad).
+      theta = -window.mqHeading.get() * Math.PI / 180;
+    }
+    let err = bearing - theta;
     while (err >  Math.PI) err -= 2 * Math.PI;
     while (err < -Math.PI) err += 2 * Math.PI;
     let omega = K_HEAD * err;

@@ -77,6 +77,10 @@
     <script src="js/session-recap.js" defer></script>
     <script src="js/battery.js" defer></script>
     <script src="js/pair-robots.js" defer></script>
+    <script src="js/heading-lock.js" defer></script>
+    <script src="js/ble-sniffer.js" defer></script>
+    <script src="js/copilot.js" defer></script>
+    <script src="js/synesthesia.js" defer></script>
 <style>
 .lang-picker { display: flex; gap: 2px; }
 .lang-picker .lang-btn { border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.7rem; font-weight: 600; background: transparent; color: inherit; opacity: 0.5; }
@@ -227,6 +231,13 @@ html[dir="rtl"] .hint ol { padding-left: 0; padding-right: 20px; }
       <!-- Battery — populated by 'BAT?' verb when the firmware
            supports it (see firmware/v1-maqueen-lib.ts). Gracefully
            shows '—' if the verb isn't implemented yet. -->
+      <!-- Compass heading via firmware HEAD? verb (graceful degrade if absent). -->
+      <div id="mqHeadBlock" title="Compass heading (firmware HEAD? verb)" style="display:flex; align-items:center; gap:6px;">
+        <span style="color:var(--text-secondary, #93a8c4); font-size:11px;">HDG</span>
+        <span id="mq-head-icon" style="font-size:14px;">🧭</span>
+        <span id="mq-head" style="color:#4ade80; font-weight:700; min-width:42px; text-align:right;">—</span>
+      </div>
+
       <div id="mqBatBlock" title="Battery voltage (firmware BAT? verb)" style="display:flex; align-items:center; gap:6px;">
         <span style="color:var(--text-secondary, #93a8c4); font-size:11px;">BAT</span>
         <span id="mq-bat-icon" style="font-size:14px;">🔋</span>
@@ -1466,6 +1477,18 @@ html[dir="rtl"] .hint ol { padding-left: 0; padding-right: 20px; }
                                             <button id="mqSlamStart" type="button" title="Start a 60-second timed SLAM run. Drive around — score counts every unique 10×10 cm cell your trail visits." style="padding:4px 10px; background:#00d4ff; color:#01202b; border:none; border-radius:6px; font-weight:700; cursor:pointer; font-size:11px;" data-i18n="mq_slam_start">▶ 60 s run</button>
                                             <span id="mqSlamTimer" style="font-family:monospace; color:#fbbf24; min-width:50px;"></span>
                                             <span style="margin-left:auto;"><span data-i18n="mq_slam_best">best:</span> <b id="mqSlamBest" style="color:#fbbf24; font-family:monospace;">—</b></span>
+                                        </div>
+                                        <!-- 🎯 Drift Champion + Heading Lock — needs firmware HEAD? verb.
+                                             Compares wheel-odometry heading vs compass heading; lower
+                                             gap = higher score. Best persists. The "lock" toggle makes
+                                             autopilot use the compass for drift-free navigation. -->
+                                        <div id="mqDriftBar" style="display:flex; gap:10px; align-items:center; padding:6px 10px; margin:4px 0; font-size:11px; color:var(--text-secondary, #93a8c4); background:rgba(251,191,36,0.05); border:1px solid rgba(251,191,36,0.25); border-radius:8px; flex-wrap:wrap;">
+                                            <span style="font-weight:700; color:#fbbf24;">🎯 <span data-i18n="mq_drift_label">Drift Champion</span></span>
+                                            <button id="mqHeadLockBtn" type="button" title="Heading Lock — autopilot uses the compass instead of wheel odometry. Drift-free navigation. Needs firmware HEAD? verb." class="mq-headlock-btn" style="padding:4px 10px; background:transparent; color:#fbbf24; border:1px solid rgba(251,191,36,0.4); border-radius:6px; cursor:pointer; font-size:11px;">🎚 lock</button>
+                                            <button id="mqDriftStart" type="button" title="60-second timed drift run. Drive however you like — score is mean degree gap between wheel-heading and compass-heading. Lower drift = higher score." style="padding:4px 10px; background:#fbbf24; color:#01202b; border:none; border-radius:6px; font-weight:700; cursor:pointer; font-size:11px;">▶ 60 s run</button>
+                                            <span id="mqDriftTimer" style="font-family:monospace; color:#fbbf24; min-width:50px;"></span>
+                                            <span style="margin-left:auto;">best: <b id="mqDriftBest" style="color:#fbbf24; font-family:monospace;">—</b></span>
+                                            <div id="mqDriftFeedback" style="width:100%; font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--text-secondary, #93a8c4); min-height:14px;"></div>
                                         </div>
                                         <div class="mq-odo-body">
                                             <svg id="mqOdoSvg" viewBox="-100 -100 200 200" preserveAspectRatio="xMidYMid meet">
