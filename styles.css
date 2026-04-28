@@ -4933,7 +4933,11 @@ aside.log-rail > .rail-robot > div .card-subtitle {
 }
 aside.log-rail > .rail-robot > svg {
   width: 100% !important;
-  max-width: 220px !important;
+  /* Fill the rail card with breathing room — was 220 px, now uses
+     most of the available width inside the card (rail width minus
+     card margins + padding). Caps at 320 px so it doesn't get
+     ridiculous when the user drags the rail extra wide. */
+  max-width: 320px !important;
   height: auto !important;
   display: block;
   align-self: center;
