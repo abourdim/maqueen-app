@@ -147,13 +147,12 @@
     ctx.drawImage(video, -canvas.width, 0, canvas.width, canvas.height);
     ctx.restore();
     if (hands.length) {
-      ctx.strokeStyle = '#22d3ee';
-      ctx.lineWidth = 1;
+      ctx.fillStyle = '#22d3ee';                  // (was unset → black on black)
       const k = hands[0].keypoints;
       for (let i = 0; i < k.length; i++) {
         const x = canvas.width - k[i].x / video.videoWidth * canvas.width;
         const y = k[i].y / video.videoHeight * canvas.height;
-        ctx.beginPath(); ctx.arc(x, y, 1.5, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(x, y, 2, 0, Math.PI * 2); ctx.fill();
       }
     }
   }

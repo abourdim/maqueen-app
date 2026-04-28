@@ -60,13 +60,29 @@
   // ---- Channel hookup -----------------------------------------
   function bindChannel(channel) {
     dc = channel;
-    dc.onopen    = () => status('✓ data channel open — drive away!', '#4ade80');
+    dc.onopen    = () => {
+      status('✓ data channel open — drive away!', '#4ade80');
+      // Hand the channel to fencing-mode for hit-broadcast.
+      try { if (typeof window.mqFencingSetChannel === 'function') window.mqFencingSetChannel(dc); } catch {}
+    };
     dc.onclose   = () => status('channel closed', 'var(--text-secondary, #93a8c4)');
     dc.onmessage = (e) => {
-      // Receiver: relay the verb to the local BLE scheduler.
+      const raw = String(e.data || '');
+      // Cross-module routing: JSON-encoded events go to their handler;
+      // plain text gets relayed as a BLE verb.
+      if (raw.startsWith('{')) {
+        try {
+          const obj = JSON.parse(raw);
+          // Fencing duel HIT messages → fencing-mode.js public hook.
+          if (obj && obj.type === 'HIT' && typeof window.mqFencingTakeHit === 'function') {
+            window.mqFencingTakeHit(obj);
+            return;
+          }
+        } catch { /* fall through to BLE relay */ }
+      }
       try {
         if (window.bleScheduler && window.bleScheduler.send) {
-          window.bleScheduler.send(String(e.data || '')).catch(() => {});
+          window.bleScheduler.send(raw).catch(() => {});
         }
       } catch {}
     };

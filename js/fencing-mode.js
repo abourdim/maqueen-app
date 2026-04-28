@@ -36,6 +36,11 @@
     if (t) t.textContent = theirScore;
   }
 
+  // Pair-robots holds the actual RTCDataChannel. We expose a hook
+  // pair-robots calls (window.mqFencingChannel) when it has one
+  // open; stash it so we can broadcast hits.
+  window.mqFencingSetChannel = function (ch) { dataChannel = ch; };
+
   function broadcastHit(damage) {
     if (!dataChannel || dataChannel.readyState !== 'open') return;
     try { dataChannel.send(JSON.stringify({ type: 'HIT', damage })); } catch {}

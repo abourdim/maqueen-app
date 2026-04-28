@@ -136,10 +136,26 @@
     }
   }
 
+  // Wake-word gate. Without this, every cough / background voice /
+  // misrecognition triggers a Claude API call (= cost amplification +
+  // unwanted robot motion). Recognized phrase must contain a wake word
+  // before we forward to the API.
+  const WAKE_WORDS = /\b(maqueen|hey\s*robot|robot|h[ée]\s*maqueen)\b/i;
+
   async function handlePhrase(text) {
     if (!text) return;
+    if (!WAKE_WORDS.test(text)) {
+      paintStatus('🔇 ignored (no wake word)', '#94a3b8');
+      return;
+    }
+    // Strip the wake word so the prompt to Claude is the actual request.
+    const cleaned = text.replace(WAKE_WORDS, '').replace(/^[\s,.:]+/, '').trim();
+    if (!cleaned) {
+      paintStatus('👂 yes? (say a request)', '#38bdf8');
+      return;
+    }
     paintStatus('💬 thinking…', '#fbbf24');
-    const choreo = await callClaude(text);
+    const choreo = await callClaude(cleaned);
     if (choreo) {
       paintStatus('🤖 ' + (choreo.say || ''), '#4ade80');
       await executeChoreo(choreo);

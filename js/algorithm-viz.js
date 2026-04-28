@@ -69,8 +69,14 @@
       if (o.y > maxY) maxY = o.y;
     }
     minX -= 20; maxX += 20; minY -= 20; maxY += 20;
-    const cols = Math.max(4, Math.ceil((maxX - minX) / CELL_CM));
-    const rows = Math.max(4, Math.ceil((maxY - minY) / CELL_CM));
+    let cols = Math.max(4, Math.ceil((maxX - minX) / CELL_CM));
+    let rows = Math.max(4, Math.ceil((maxY - minY) / CELL_CM));
+    // Cap grid at 200x200 cells (= 20m x 20m world). Beyond that the
+    // browser stalls during animation. If the SLAM map is bigger,
+    // we clip; A* still runs on the visible region.
+    const MAX = 200;
+    if (cols > MAX) { maxX = minX + MAX * CELL_CM; cols = MAX; }
+    if (rows > MAX) { maxY = minY + MAX * CELL_CM; rows = MAX; }
     const blocked = new Uint8Array(cols * rows);
     for (const o of obstacles) {
       const cx = Math.floor((o.x - minX) / CELL_CM);

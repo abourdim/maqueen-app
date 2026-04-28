@@ -108,9 +108,15 @@
     return null;
   }
 
-  // Symbol-rate sampling: sample every SYMBOL_MS, detect the dominant.
+  // Symbol-rate sampling: sample every 50 ms, detect the dominant.
+  // BUGFIX: previous version skipped consecutive identical symbols
+  // (e.g., "AA" decoded as "A"). New approach: require a silence
+  // gap (sym === null) between consecutive detections. Each tone is
+  // SYMBOL_MS=250 ms with GAP_MS=60 ms silence between, so we'll
+  // always see at least one null sample between symbols.
   let lastSymbolAt = 0;
   let lastSymbol = null;
+  let sawSilence = true;        // initially "in silence" (no current tone)
   let inFrame = false;
   let nibbles = [];
   let receivedText = '';
@@ -118,15 +124,16 @@
   async function decodeLoop() {
     while (decoderRunning) {
       const sym = detectSymbol();
-      if (sym !== null && sym !== lastSymbol) {
-        const now = performance.now();
-        if (now - lastSymbolAt > 150) {     // debounce same symbol
-          handleSymbol(sym);
-          lastSymbolAt = now;
-        }
-        lastSymbol = sym;
-      } else if (sym === null) {
+      const now = performance.now();
+      if (sym === null) {
+        sawSilence = true;
         lastSymbol = null;
+      } else if (sawSilence && (now - lastSymbolAt > 150)) {
+        // Fresh symbol after silence — accept even if it equals the previous.
+        handleSymbol(sym);
+        lastSymbolAt = now;
+        lastSymbol = sym;
+        sawSilence = false;
       }
       await new Promise(r => setTimeout(r, 50));
     }
