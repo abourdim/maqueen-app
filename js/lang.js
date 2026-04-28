@@ -118,6 +118,8 @@
       mq_sweep_dots:        "●●● dots",
       mq_sweep_sectors:     "▆▆▆ sectors",
       mq_sweep_rays:        "─── rays",
+      mq_sweep_stars:       "✦✦✦ stars",
+      mq_sweep_emoji:       "💥⚠✨ emoji",
 
       // Tabs
       tab_maqueen:        "Maqueen",
@@ -605,6 +607,8 @@
       mq_sweep_dots:        "●●● points",
       mq_sweep_sectors:     "▆▆▆ secteurs",
       mq_sweep_rays:        "─── rayons",
+      mq_sweep_stars:       "✦✦✦ étoiles",
+      mq_sweep_emoji:       "💥⚠✨ emoji",
 
       // Tabs
       tab_maqueen:        "Maqueen",
@@ -1092,6 +1096,8 @@
       mq_sweep_dots:        "\u25cf\u25cf\u25cf \u0646\u0642\u0627\u0637",
       mq_sweep_sectors:     "\u2586\u2586\u2586 \u0642\u0637\u0627\u0639\u0627\u062a",
       mq_sweep_rays:        "\u2500\u2500\u2500 \u0623\u0634\u0639\u0629",
+      mq_sweep_stars:       "\u2726\u2726\u2726 \u0646\u062c\u0648\u0645",
+      mq_sweep_emoji:       "\ud83d\udca5\u26a0\u2728 \u0631\u0645\u0648\u0632",
 
       // Tabs
       tab_maqueen:        "Maqueen",

@@ -2912,6 +2912,52 @@
       }
       return svg;
     }
+    // ✦ STARS — 5-point star polygons at each detection point. Same
+    // threshold colors, slightly larger than the dots so the points
+    // read clearly. Playful + still readable as data.
+    function renderStars(now, blipColor) {
+      let svg = '';
+      for (let i = 0; i < blips.length; i++) {
+        const b = blips[i];
+        const op = Math.max(0, 1 - (now - b.t) / FADE_MS);
+        const r = distToRadius(b.cm);
+        const p = polar(b.angle, r);
+        const color = blipColor(b.cm);
+        // Star size scales with proximity (close = bigger = louder)
+        const R = b.cm < 10 ? 4.5 : b.cm < 30 ? 3.5 : 3.0;
+        // 5-point star polygon: 10 vertices alternating outer R / inner r·0.4
+        const cx = p.x, cy = p.y;
+        const inner = R * 0.4;
+        let pts = '';
+        for (let v = 0; v < 10; v++) {
+          const rad = v % 2 === 0 ? R : inner;
+          const a = (v / 10) * 2 * Math.PI - Math.PI / 2;  // start at top
+          const x = cx + rad * Math.cos(a);
+          const y = cy + rad * Math.sin(a);
+          pts += `${x.toFixed(1)},${y.toFixed(1)} `;
+        }
+        svg += `<polygon points="${pts}" fill="${color}" opacity="${op.toFixed(2)}"/>`;
+      }
+      return svg;
+    }
+    // 🌟 EMOJI — kid-friendly icons at detection points. Distance picks
+    // the emoji: 💥 collision · ⚠️ warning · ✨ all clear. Threshold
+    // story told entirely with universally-recognized symbols.
+    function renderEmoji(now) {
+      let svg = '';
+      for (let i = 0; i < blips.length; i++) {
+        const b = blips[i];
+        const op = Math.max(0, 1 - (now - b.t) / FADE_MS);
+        const r = distToRadius(b.cm);
+        const p = polar(b.angle, r);
+        const emoji = b.cm < 10 ? '💥' : b.cm < 30 ? '⚠️' : '✨';
+        const size = b.cm < 10 ? 12 : b.cm < 30 ? 10 : 9;
+        // <text> with text-anchor middle + dominant-baseline central
+        // to keep the glyph centered on (p.x, p.y).
+        svg += `<text x="${p.x.toFixed(1)}" y="${p.y.toFixed(1)}" font-size="${size}" text-anchor="middle" dominant-baseline="central" opacity="${op.toFixed(2)}">${emoji}</text>`;
+      }
+      return svg;
+    }
     // 'sectors' — bin blips into 6° angular slices, draw each as a filled
     // pie wedge from origin out to the bin's most-recent distance. Reads
     // as a polar occupancy grid: walls emerge as fat colored sectors,
@@ -2992,8 +3038,14 @@
       // Pick the active render mode — branch on persisted user choice.
       const dotsLayer    = document.getElementById('mqSweepBlips');
       const sectorsLayer = document.getElementById('mqSweepSectors');
-      // Helper: threshold color shared across all 3 render modes.
-      const blipColor = (cm) => cm < 10 ? '#ef4444' : cm < 30 ? '#fbbf24' : '#ffffff';
+      // Vibrant 4-tier threshold color spectrum — bolder than the
+      // 3-tier red/amber/white, with cyan replacing the muted 'safe'
+      // for at-a-glance recognition on the green sweep grid.
+      const blipColor = (cm) =>
+        cm < 10 ? '#ef4444'              // red   · obstacle
+      : cm < 30 ? '#fbbf24'              // amber · close
+      : cm < 60 ? '#84cc16'              // lime  · mid-safe
+      :           '#22d3ee';             // cyan  · clear-far
       // Render-mode dispatch — clear unused layers each frame so toggling
       // between modes wipes the previous render cleanly.
       if (renderMode === 'sectors') {
@@ -3002,6 +3054,12 @@
       } else if (renderMode === 'rays') {
         if (sectorsLayer) sectorsLayer.innerHTML = '';
         if (dotsLayer) dotsLayer.innerHTML = renderRays(now, blipColor);
+      } else if (renderMode === 'stars') {
+        if (sectorsLayer) sectorsLayer.innerHTML = '';
+        if (dotsLayer) dotsLayer.innerHTML = renderStars(now, blipColor);
+      } else if (renderMode === 'emoji') {
+        if (sectorsLayer) sectorsLayer.innerHTML = '';
+        if (dotsLayer) dotsLayer.innerHTML = renderEmoji(now);
       } else {
         // 'dots' (default) — original fading-circle blips.
         if (sectorsLayer) sectorsLayer.innerHTML = '';
