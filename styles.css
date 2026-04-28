@@ -376,16 +376,14 @@ body {
 /* Header */
 
 .header {
-    padding: 12px 18px 14px;
+    padding: 12px 18px 12px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    /* Visual separation from the content below — hairline border + a
-       subtle highlight underneath gives it a clear seam without being
-       a heavy divider. The 18 px margin pushes the tabs/buttons row
-       further down so the breathing space alone reads as 'distinct
-       sections'. */
-    margin-bottom: 18px;
+    /* Visual separation from the content below — the hairline border
+       + bevel highlight does the heavy lifting; only a small margin
+       to keep the tab row close to the header. */
+    margin-bottom: 8px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);
     box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04);
     gap: 10px;
