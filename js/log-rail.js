@@ -49,14 +49,20 @@
     return w;
   }
 
-  // Move the .log-card out of its inline parent into a dedicated
-  // <aside> rail at the layout level. Idempotent — safe to call twice.
+  // Move the .log-card AND .connection-card out of their inline
+  // parents into a dedicated <aside> rail at the layout level.
+  // Both belong together — CONNECT establishes the BLE link, the
+  // log shows the traffic. Putting them in the same rail makes the
+  // sidebar a coherent "BLE control center", and frees the entire
+  // top row of the main app for content.
+  // Idempotent — safe to call twice.
   function relocateCard() {
-    const card = document.querySelector('.log-card');
-    const app  = document.querySelector('.app');
+    const card    = document.querySelector('.log-card');
+    const connect = document.querySelector('.connection-card');
+    const app     = document.querySelector('.app');
     if (!card || !app) return null;
-    // Already moved? Done.
     let aside = document.getElementById('logRailAside');
+    // Already moved? Done.
     if (aside && aside.contains(card)) return aside;
 
     // Wrap .app in a shell if not already
@@ -78,9 +84,13 @@
       shell.appendChild(aside);
     }
 
-    // Move the log card into the rail. Detaching from col-right means
-    // the activity-card (beginner-only) gets the column to itself,
-    // which is the cleaner mental model anyway.
+    // Move the CONNECT card into the rail FIRST (so it sits at the
+    // top), then the log card below it. Order matters here.
+    if (connect) {
+      // Tag the rail body so CSS knows it has a connect-on-top layout.
+      aside.classList.add('has-connect');
+      aside.appendChild(connect);
+    }
     aside.appendChild(card);
     return aside;
   }

@@ -4786,19 +4786,17 @@ html[dir="rtl"] .lang-picker { margin-left: 0; margin-right: auto; }
   margin: 0;
 }
 
-/* SPACE OPTIMIZATION: in expert mode, the log card has been moved to
-   the rail and the activity-card (.beginner-only) is display:none.
-   Result: .col-right is empty, but .row-top still reserves 50% for
-   it because both columns are flex:1. Collapse it so .col-left fills
-   the row naturally — no dark band next to CONNECT. */
-.app:not(.beginner-mode) .row-top .col-right {
+/* SPACE OPTIMIZATION: with CONNECT moved into the rail (above the
+   log), the original .row-top layout is now empty in both modes:
+   - Expert: col-left was CONNECT (gone), col-right was log (gone) →
+     entire row hidden, tabs rise to the top.
+   - Beginner: col-left empty; col-right has activity-card. Hide just
+     col-left so the activity card claims the row. */
+.app .row-top .col-left {
   display: none;
 }
-/* Cap the CONNECT card so it doesn't stretch awkwardly when col-left
-   suddenly has the whole row to itself. The card looks balanced at
-   ~520 px; beyond that it just looks oversized. */
-.app:not(.beginner-mode) .row-top .col-left {
-  max-width: 540px;
+.app:not(.beginner-mode) .row-top {
+  display: none;
 }
 
 aside.log-rail {
@@ -4812,7 +4810,22 @@ aside.log-rail {
   border-left: 1px solid var(--border, #1d3556);
   box-shadow: -10px 0 28px rgba(0, 0, 0, 0.35);
   z-index: 50;
+  /* Internal scroll if both CONNECT + LOG don't fit in viewport */
+  overflow: hidden;
 }
+/* CONNECT card on top — auto height (sized to its own content) */
+aside.log-rail > .connection-card {
+  flex: 0 0 auto;
+  margin: 0;
+  border: none;
+  border-radius: 0;
+  border-bottom: 1px solid var(--border, #1d3556);
+  box-shadow: none;
+  background: transparent;
+  /* Override any beginner-mode hiding so CONNECT always shows in the rail */
+  display: block !important;
+}
+/* The log card fills the REMAINING vertical space below CONNECT */
 aside.log-rail > .log-card {
   /* Force visible regardless of .app.beginner-mode hiding — the rail
      is a deliberate, permanent fixture, so the log shows in any mode. */
@@ -4831,6 +4844,19 @@ aside.log-rail > .log-card {
 aside.log-rail .log-card #log {
   flex: 1 1 auto;
   min-height: 0;
+}
+
+/* SPACE OPTIMIZATION: with CONNECT moved to the rail, .row-top has
+   no children left (col-left was CONNECT, col-right was empty in
+   expert mode). Hide the entire row so the tabs/main content rise up. */
+.app .row-top:empty,
+.app:not(.beginner-mode) .row-top {
+  display: none;
+}
+/* Beginner mode: row-top still has the activity-card in col-right.
+   Override the above with higher-specificity rule. */
+.app.beginner-mode .row-top {
+  display: flex;
 }
 
 /* Drag handle on the LEFT edge of the rail — transparent until
