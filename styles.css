@@ -4877,28 +4877,43 @@ aside.log-rail > .connection-card #appBuildInfo #fwVersionLine {
   padding-top: 0 !important;
   margin-top: 0 !important;
 }
-/* Compact firmware footer button */
+/* Footer pair (Firmware + Streams) — DISCRETE utility buttons.
+   Visual hierarchy in the CONNECT card:
+     1. Connect (primary, cyan filled)        ← main action
+     2. Disconnect (secondary, outlined)      ← opposite of Connect
+     3. Firmware + Streams (footer, faint)    ← settings, recede
+   So the eye lands on Connect first; Firmware/Streams are there
+   when you need them, but don't compete for attention. */
 aside.log-rail > .connection-card .connection-footer {
-  margin-top: 6px;
+  margin-top: 8px;
+  display: flex;
+  gap: 6px;
+  align-items: stretch;
 }
 aside.log-rail > .connection-card .connection-footer button {
-  padding: 5px 10px;
-  font-size: 11px;
+  font-size: 10px !important;
+  padding: 4px 9px !important;
+  background: transparent !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  color: var(--text-secondary, #93a8c4) !important;
+  font-weight: 400 !important;
+  border-radius: 5px !important;
+  transition: all 0.15s ease-out;
 }
-/* Streams toggle moved INTO the connect-footer alongside the Firmware
-   button. The button now wears .secondary .small classes (same as
-   Firmware) for identical chrome — radius, padding, font, hover state.
-   We then layer a yellow accent on top so the meaningful 'streams =
-   live broadcasts' status stays at-a-glance recognizable. */
+aside.log-rail > .connection-card .connection-footer button:hover {
+  border-color: rgba(255, 255, 255, 0.22) !important;
+  color: var(--text, #e2e8f0) !important;
+  background: rgba(255, 255, 255, 0.04) !important;
+}
+/* Streams keeps a subtle yellow tint on the TEXT only — meaningful
+   status cue (yellow = changes BLE traffic), without a loud border. */
 .mq-streams-in-connect {
-  /* Inherit .secondary look, just paint the yellow accent. */
-  color: #fbbf24 !important;
-  border-color: rgba(251, 191, 36, 0.6) !important;
+  color: rgba(251, 191, 36, 0.7) !important;
 }
 .mq-streams-in-connect:hover {
-  color: #fde68a !important;
-  border-color: #fbbf24 !important;
-  background: rgba(251, 191, 36, 0.08) !important;
+  color: #fbbf24 !important;
+  background: rgba(251, 191, 36, 0.06) !important;
+  border-color: rgba(251, 191, 36, 0.3) !important;
 }
 /* maqueen-panel (live sensor strip) — sits between CONNECT and LOG
    in the rail. The panel was designed for full-page-width with
