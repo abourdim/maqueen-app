@@ -2927,6 +2927,11 @@
     // Submarine-sonar readout elements (mirrors the Bat readout in green)
     const sonarNum    = document.getElementById('mqSonarNum');
     const sonarStatus = document.getElementById('mqSonarStatus');
+    // LiDAR readout (cyan) + Heat readout (amber)
+    const lidarNum    = document.getElementById('mqLidarNum');
+    const lidarStatus = document.getElementById('mqLidarStatus');
+    const heatNum     = document.getElementById('mqHeatNum');
+    const heatStatus  = document.getElementById('mqHeatStatus');
     if (noSensor) {
       if (big) big.textContent = '— cm';
       if (num) { num.textContent = '— cm'; num.setAttribute('fill', '#93a8c4'); }
@@ -2941,6 +2946,10 @@
       if (batTof) batTof.textContent = '— ms';
       if (sonarNum) { sonarNum.textContent = '— cm'; sonarNum.style.color = '#86efac'; }
       if (sonarStatus) { sonarStatus.textContent = 'listening...'; sonarStatus.style.color = '#93a8c4'; }
+      if (lidarNum) { lidarNum.textContent = '— cm'; lidarNum.style.color = '#7dd3fc'; }
+      if (lidarStatus) { lidarStatus.textContent = 'scanning...'; lidarStatus.style.color = '#93a8c4'; }
+      if (heatNum) { heatNum.textContent = '— cm'; heatNum.style.color = '#fbbf24'; }
+      if (heatStatus) { heatStatus.textContent = 'cooling...'; heatStatus.style.color = '#93a8c4'; }
       return;
     }
     const color = cm < 10 ? '#f87171' : cm < 30 ? '#fbbf24' : '#4ade80';
@@ -3029,6 +3038,36 @@
       const msg = cm < 10 ? 'CONTACT!' : cm < 30 ? 'closing in' : cm < 100 ? 'pinged' : 'open water';
       sonarStatus.textContent = msg;
       sonarStatus.style.color = color;
+    }
+    // LiDAR readout — laser-scanner verbs ('class-1' vibe)
+    if (lidarNum) {
+      if (lidarNum.textContent !== cm + ' cm') {
+        lidarNum.classList.remove('mq-num-tick');
+        void lidarNum.offsetWidth;
+        lidarNum.classList.add('mq-num-tick');
+      }
+      lidarNum.textContent = cm + ' cm';
+      lidarNum.style.color = color;
+    }
+    if (lidarStatus) {
+      const msg = cm < 10 ? 'BLOCKED' : cm < 30 ? 'point cloud near' : cm < 100 ? 'point cloud' : 'clear';
+      lidarStatus.textContent = msg;
+      lidarStatus.style.color = color;
+    }
+    // Heat readout — thermal-imaging style verbs
+    if (heatNum) {
+      if (heatNum.textContent !== cm + ' cm') {
+        heatNum.classList.remove('mq-num-tick');
+        void heatNum.offsetWidth;
+        heatNum.classList.add('mq-num-tick');
+      }
+      heatNum.textContent = cm + ' cm';
+      heatNum.style.color = color;
+    }
+    if (heatStatus) {
+      const msg = cm < 10 ? 'HOT!' : cm < 30 ? 'warm' : cm < 100 ? 'mild' : 'cool';
+      heatStatus.textContent = msg;
+      heatStatus.style.color = color;
     }
     // Time of flight: t = 2 * d / 340 m/s.  d in cm → t in ms
     // = 2 * (cm/100) / 340 * 1000  =  cm / 17  ms

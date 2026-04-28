@@ -2197,6 +2197,12 @@ html[dir="rtl"] .hint ol { padding-left: 0; padding-right: 20px; }
                                                 <circle cx="100" cy="120" r="3" fill="#38bdf8"/>
                                                 <text x="100" y="137" fill="#7dd3fc" font-size="6" font-family="JetBrains Mono, monospace" text-anchor="middle">LiDAR · class-1 laser scanner</text>
                                             </svg>
+                                            <!-- Distance readout — same prominent treatment as Bat/Sonar
+                                                 styles, painted in the LiDAR's cyan/sky-blue palette. -->
+                                            <div style="text-align:center; margin-top:4px; font-family:'JetBrains Mono', monospace;">
+                                                <span id="mqLidarNum" style="font-size:24px; font-weight:700; color:#7dd3fc;">— cm</span>
+                                                <span id="mqLidarStatus" style="margin-left:10px; font-size:11px; color:var(--text-secondary, #93a8c4);">scanning...</span>
+                                            </div>
                                         </div>
                                     </div>
 
@@ -2218,7 +2224,13 @@ html[dir="rtl"] .hint ol { padding-left: 0; padding-right: 20px; }
                                                 <!-- Marker (JS positions via left%) -->
                                                 <div id="mqHeatMarker" style="position:absolute; top:-6px; bottom:-6px; left:-100%; width:4px; background:#ffffff; box-shadow:0 0 8px #fff, 0 0 12px var(--accent, #38bdf8); border-radius:2px; transition:left 0.25s ease-out;"></div>
                                             </div>
-                                            <div style="text-align:center; margin-top:14px; font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--text-secondary, #93a8c4);">
+                                            <!-- Distance readout — same prominent treatment as the
+                                                 other radar styles, painted in heat orange/yellow. -->
+                                            <div style="text-align:center; margin-top:14px; font-family:'JetBrains Mono', monospace;">
+                                                <span id="mqHeatNum" style="font-size:24px; font-weight:700; color:#fbbf24;">— cm</span>
+                                                <span id="mqHeatStatus" style="margin-left:10px; font-size:11px; color:var(--text-secondary, #93a8c4);">cooling...</span>
+                                            </div>
+                                            <div style="text-align:center; margin-top:6px; font-family:'JetBrains Mono', monospace; font-size:10px; color:var(--text-secondary, #93a8c4); opacity:0.7;">
                                                 Closer = warmer · further = cooler
                                             </div>
                                         </div>
