@@ -336,59 +336,18 @@ html[dir="rtl"] .hint ol { padding-left: 0; padding-right: 20px; }
                             </button>
                         </div>
                     </div>
-                </div>
-            </div>
-
-            <!-- RIGHT: Message log / Activity -->
-            <div class="col-right">
-                <!-- Simple Activity for Beginners -->
-                <div class="card activity-card beginner-only">
-                    <div class="card-header">
-                        <div>
-                            <div class="card-title">
-                                <span class="icon">⚡</span>
-                                <span data-i18n="activity_title">Activity</span>
-                            </div>
-                        </div>
-                        <button id="clearActivityBtn" class="secondary small" data-i18n="clear">Clear</button>
-                    </div>
-                    <div id="activity" class="activity-feed" aria-live="polite"></div>
-                </div>
-
-                <!-- Technical Log for Experts -->
-                <div class="card log-card expert-only">
-                    <div class="card-header">
-                        <div>
-                            <div class="card-title">
-                                <span class="icon">📜</span>
-                                <span data-i18n="message_log">Message Log</span>
-                            </div>
-                            <div class="card-subtitle">
-                                Raw UART messages
-                            </div>
-                        </div>
-                        <div class="log-controls">
-                            <button id="logPinBtn" class="secondary small" aria-label="Pin log to side" title="Pin log to right side — always visible while you scroll. Drag the left edge to resize.">
-                                <span class="btn-icon" id="logPinIcon">📌</span>
-                                <span id="logPinLabel" data-i18n="mq_log_pin">Pin</span>
-                            </button>
-                            <button id="clearLogBtn" class="secondary small" aria-label="Clear log" data-i18n="clear">Clear</button>
-                            <button id="exportLogBtn" class="small" aria-label="Export log">
-                                <span class="btn-icon">⬇</span>
-                                <span data-i18n="export">Export</span>
-                            </button>
-                        </div>
-                    </div>
 
                     <!-- BLE STACK FLOW — every verb sent spawns a glowing dot
                          that travels Browser → Queue → BLE → micro:bit → Driver → Output.
-                         Echoes turn it green; timeouts/errors turn it red. -->
-                    <div id="mqStackFlow" style="background:var(--bg-deep, #061121); border:1px solid var(--border, #1d3556); border-radius:6px; padding:8px; margin-bottom:8px;">
-                        <div style="display:flex; align-items:center; gap:6px; margin-bottom:4px; font-size:9px; color:var(--text-secondary, #93a8c4); font-family:'JetBrains Mono', monospace;">
+                         Echoes turn it green; timeouts/errors turn it red.
+                         Lives in the CONNECT card (where it conceptually belongs —
+                         it's about the link, not the log) at the bottom edge. -->
+                    <div id="mqStackFlow" style="margin-top:8px; background:var(--bg-deep, #061121); border:1px solid var(--border, #1d3556); border-radius:6px; padding:6px;">
+                        <div style="display:flex; align-items:center; gap:6px; margin-bottom:2px; font-size:9px; color:var(--text-secondary, #93a8c4); font-family:'JetBrains Mono', monospace;">
                             <span>📡 BLE stack flow</span>
                             <span id="mqStackFlowStats" style="margin-left:auto; color:var(--accent, #38bdf8);">— ms · — / —</span>
                         </div>
-                        <svg id="mqStackFlowSvg" viewBox="0 0 600 70" preserveAspectRatio="none" style="width:100%; height:60px; display:block;">
+                        <svg id="mqStackFlowSvg" viewBox="0 0 600 70" preserveAspectRatio="none" style="width:100%; height:50px; display:block;">
                             <defs>
                                 <linearGradient id="mqStackLine" x1="0%" y1="0%" x2="100%" y2="0%">
                                     <stop offset="0%"  stop-color="var(--accent, #38bdf8)" stop-opacity="0.45"/>
@@ -433,6 +392,49 @@ html[dir="rtl"] .hint ol { padding-left: 0; padding-right: 20px; }
                             <!-- Particle layer — JS appends animated dots here -->
                             <g id="mqStackFlowParticles"></g>
                         </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT: Message log / Activity -->
+            <div class="col-right">
+                <!-- Simple Activity for Beginners -->
+                <div class="card activity-card beginner-only">
+                    <div class="card-header">
+                        <div>
+                            <div class="card-title">
+                                <span class="icon">⚡</span>
+                                <span data-i18n="activity_title">Activity</span>
+                            </div>
+                        </div>
+                        <button id="clearActivityBtn" class="secondary small" data-i18n="clear">Clear</button>
+                    </div>
+                    <div id="activity" class="activity-feed" aria-live="polite"></div>
+                </div>
+
+                <!-- Technical Log for Experts -->
+                <div class="card log-card expert-only">
+                    <div class="card-header">
+                        <div>
+                            <div class="card-title">
+                                <span class="icon">📜</span>
+                                <span data-i18n="message_log">Message Log</span>
+                            </div>
+                            <div class="card-subtitle">
+                                Raw UART messages
+                            </div>
+                        </div>
+                        <div class="log-controls">
+                            <button id="logPinBtn" class="secondary small" aria-label="Pin log to side" title="Pin log to right side — always visible while you scroll. Drag the left edge to resize.">
+                                <span class="btn-icon" id="logPinIcon">📌</span>
+                                <span id="logPinLabel" data-i18n="mq_log_pin">Pin</span>
+                            </button>
+                            <button id="clearLogBtn" class="secondary small" aria-label="Clear log" data-i18n="clear">Clear</button>
+                            <button id="exportLogBtn" class="small" aria-label="Export log">
+                                <span class="btn-icon">⬇</span>
+                                <span data-i18n="export">Export</span>
+                            </button>
+                        </div>
                     </div>
 
                     <div id="log" class="log" aria-live="polite" role="log"></div>
@@ -1052,17 +1054,6 @@ html[dir="rtl"] .hint ol { padding-left: 0; padding-right: 20px; }
                                             <span class="mq-macro-icon">▶</span> <span data-i18n="mq_macro_play">Replay</span>
                                         </button>
                                         <span class="mq-macro-status" id="mqMacroStatus" data-i18n="mq_macro_idle">— no recording —</span>
-                                    </div>
-
-                                    <!-- Live BLE verb tape (geek catnip — shows what the app actually sends) -->
-                                    <div style="margin-top:8px;">
-                                        <div style="font-size:10px; color:var(--text-secondary, #93a8c4); margin-bottom:4px; display:flex; align-items:center; gap:6px;">
-                                            <span>📡 Live BLE wire</span>
-                                            <span style="font-size:9px; opacity:0.7;">(what your browser sent the robot · newest first)</span>
-                                        </div>
-                                        <div id="mqBleTape" style="background:var(--card-bg-2, #0a1628); border:1px solid var(--border, #1d3556); border-radius:6px; padding:6px 10px; font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--text-secondary, #93a8c4); min-height:60px; max-height:80px; overflow-y:auto;">
-                                            <div id="mqDriveLast" style="color:var(--text-secondary, #93a8c4);">last cmd: <span id="mqDriveLastVerb" style="color:#fb923c; font-weight:700;">—</span></div>
-                                        </div>
                                     </div>
 
                                     <!-- 🏁 TABLEAU DE BORD — automotive-style cockpit dashboard.
