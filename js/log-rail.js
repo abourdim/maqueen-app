@@ -120,10 +120,11 @@
         // in SIZE with Connect/Disconnect above.
         streamsBtn.removeAttribute('style');
         streamsBtn.classList.add('secondary', 'mq-streams-in-connect');
-        // Equal-width pair: both buttons flex:1 from a zero base so
-        // they split the footer 50/50 regardless of label length.
-        streamsBtn.style.flex = '1 1 0';
-        if (fwBtn) fwBtn.style.flex = '1 1 0';
+        // Sit at natural content width — Firmware and streams: OFF
+        // each take only as much room as their text + button padding
+        // need, no stretching to fill the row.
+        streamsBtn.style.flex = '0 0 auto';
+        if (fwBtn) fwBtn.style.flex = '0 0 auto';
         fwFooter.appendChild(streamsBtn);
       }
     }

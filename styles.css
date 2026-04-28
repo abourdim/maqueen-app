@@ -4893,8 +4893,9 @@ aside.log-rail > .connection-card #appBuildInfo #fwVersionLine {
 aside.log-rail > .connection-card .connection-footer {
   margin-top: 8px;
   display: flex;
-  gap: 6px;
+  gap: 8px;
   align-items: stretch;
+  justify-content: center;
 }
 aside.log-rail > .connection-card .connection-footer button {
   /* Inherit base button sizing (8px 14px / 0.78rem / weight 600 /
