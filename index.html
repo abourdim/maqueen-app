@@ -2130,6 +2130,12 @@ html[dir="rtl"] .hint ol { padding-left: 0; padding-right: 20px; }
                                                 <rect x="86" y="115" width="28" height="10" rx="2" fill="#052e16" stroke="#22c55e" stroke-width="0.8"/>
                                                 <text x="100" y="137" fill="#86efac" font-size="6" font-family="JetBrains Mono, monospace" text-anchor="middle">SUBMARINE SONAR · 3 s sweep</text>
                                             </svg>
+                                            <!-- Distance readout — same prominent treatment as the Bat
+                                                 style, painted in the sonar's phosphor green. -->
+                                            <div style="text-align:center; margin-top:4px; font-family:'JetBrains Mono', monospace;">
+                                                <span id="mqSonarNum" style="font-size:24px; font-weight:700; color:#86efac;">— cm</span>
+                                                <span id="mqSonarStatus" style="margin-left:10px; font-size:11px; color:var(--text-secondary, #93a8c4);">listening...</span>
+                                            </div>
                                         </div>
                                     </div>
 

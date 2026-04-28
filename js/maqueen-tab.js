@@ -2924,6 +2924,9 @@
     const batNum    = document.getElementById('mqDistRadarNum');
     const batStatus = document.getElementById('mqDistRadarStatus');
     const batTof    = document.getElementById('mqDistTofMs');
+    // Submarine-sonar readout elements (mirrors the Bat readout in green)
+    const sonarNum    = document.getElementById('mqSonarNum');
+    const sonarStatus = document.getElementById('mqSonarStatus');
     if (noSensor) {
       if (big) big.textContent = '— cm';
       if (num) { num.textContent = '— cm'; num.setAttribute('fill', '#93a8c4'); }
@@ -2936,6 +2939,8 @@
       if (batNum) batNum.textContent = '— cm';
       if (batStatus) { batStatus.textContent = 'listening...'; batStatus.style.color = '#93a8c4'; }
       if (batTof) batTof.textContent = '— ms';
+      if (sonarNum) { sonarNum.textContent = '— cm'; sonarNum.style.color = '#86efac'; }
+      if (sonarStatus) { sonarStatus.textContent = 'listening...'; sonarStatus.style.color = '#93a8c4'; }
       return;
     }
     const color = cm < 10 ? '#f87171' : cm < 30 ? '#fbbf24' : '#4ade80';
@@ -3008,6 +3013,22 @@
       const msg = cm < 10 ? 'OBSTACLE!' : cm < 30 ? 'close...' : cm < 100 ? 'tracked' : 'far';
       batStatus.textContent = msg;
       batStatus.style.color = color;
+    }
+    // Submarine-sonar readout — same number, same color thresholds,
+    // submarine-style status verbs.
+    if (sonarNum) {
+      if (sonarNum.textContent !== cm + ' cm') {
+        sonarNum.classList.remove('mq-num-tick');
+        void sonarNum.offsetWidth;
+        sonarNum.classList.add('mq-num-tick');
+      }
+      sonarNum.textContent = cm + ' cm';
+      sonarNum.style.color = color;
+    }
+    if (sonarStatus) {
+      const msg = cm < 10 ? 'CONTACT!' : cm < 30 ? 'closing in' : cm < 100 ? 'pinged' : 'open water';
+      sonarStatus.textContent = msg;
+      sonarStatus.style.color = color;
     }
     // Time of flight: t = 2 * d / 340 m/s.  d in cm → t in ms
     // = 2 * (cm/100) / 340 * 1000  =  cm / 17  ms
