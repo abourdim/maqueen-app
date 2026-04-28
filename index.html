@@ -147,6 +147,7 @@ html[dir="rtl"] .hint ol { padding-left: 0; padding-right: 20px; }
         <a href="schematics.html" title="Engineer schematic" style="text-decoration:none; font-size:1rem; opacity:0.6; padding:2px 4px;">📐</a>
         <a href="pinout.html" title="Pinout reference" style="text-decoration:none; font-size:1rem; opacity:0.6; padding:2px 4px;">📌</a>
         <a href="USER_GUIDE.html" title="User Guide" style="text-decoration:none; font-size:1rem; opacity:0.6; padding:2px 4px;">📖</a>
+        <button id="qrShareBtn" type="button" title="Scan to open Maqueen Lab on a phone" style="border:none; background:none; cursor:pointer; font-size:1rem; opacity:0.6; padding:2px 4px;">📱</button>
         <button id="clearCacheBtn" title="Reset" style="border:none; background:none; cursor:pointer; font-size:1rem; opacity:0.5; padding:2px 4px;">🗑️</button>
     </div>
     <div style="width:1px; height:24px; background:var(--card-border, rgba(148,163,184,0.3)); margin:0 4px;"></div>
@@ -3827,6 +3828,90 @@ document.getElementById('clearCacheBtn')?.addEventListener('click', () => {
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('sw.js').catch(() => {});
 }
+</script>
+
+<!-- ============================================================
+     QR SHARE — header chip → modal with QR code for the live URL.
+     Loaded lazily; library is the public-domain Kazuhiko Arase
+     qrcode-generator (~20 KB), bundled locally for offline use.
+     ============================================================ -->
+<div id="qrShareModal" role="dialog" aria-modal="true" aria-labelledby="qrShareTitle"
+     style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(6,17,33,0.78); backdrop-filter:blur(4px); align-items:center; justify-content:center; padding:20px;">
+  <div style="background:var(--card-bg, #0f1f3d); border:1px solid var(--card-border, rgba(148,163,184,0.25)); border-radius:16px; max-width:360px; width:100%; padding:22px 22px 18px; box-shadow:0 20px 60px rgba(0,0,0,0.6);">
+    <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
+      <span style="font-size:1.4rem;">📱</span>
+      <h2 id="qrShareTitle" style="margin:0; font-size:1.05rem; font-family:'JetBrains Mono', monospace; color:var(--text-primary, #e6eef9);">Open on your phone</h2>
+      <button id="qrShareClose" type="button" aria-label="Close"
+              style="margin-left:auto; background:none; border:none; color:var(--text-secondary, #93a8c4); font-size:1.5rem; line-height:1; cursor:pointer; padding:0 4px;">×</button>
+    </div>
+    <div id="qrShareCanvas"
+         style="background:#fff; padding:14px; border-radius:10px; display:flex; align-items:center; justify-content:center; min-height:240px;"></div>
+    <div style="display:flex; align-items:center; gap:8px; margin-top:14px; font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--text-secondary, #93a8c4); word-break:break-all;">
+      <span id="qrShareUrl" style="flex:1; user-select:all;">https://abourdim.github.io/maqueen-lab/</span>
+      <button id="qrShareCopy" type="button" title="Copy URL"
+              style="background:var(--accent, #38bdf8); color:var(--bg-deep, #061121); border:none; border-radius:6px; padding:6px 10px; font-size:11px; font-weight:700; cursor:pointer;">copy</button>
+    </div>
+    <div style="margin-top:10px; font-size:11px; color:var(--text-secondary, #93a8c4); text-align:center;">
+      Scan with your phone camera — Chrome / Edge required for BLE.
+    </div>
+  </div>
+</div>
+
+<script src="js/qrcode.min.js"></script>
+<script>
+(function () {
+  'use strict';
+  const SHARE_URL = 'https://abourdim.github.io/maqueen-lab/';
+  const btn      = document.getElementById('qrShareBtn');
+  const modal    = document.getElementById('qrShareModal');
+  const closeBtn = document.getElementById('qrShareClose');
+  const canvas   = document.getElementById('qrShareCanvas');
+  const copyBtn  = document.getElementById('qrShareCopy');
+  if (!btn || !modal || typeof qrcode !== 'function') return;
+
+  let rendered = false;
+  function renderQR() {
+    if (rendered) return;
+    // Type 0 = auto-detect smallest version that fits the data; 'M' =
+    // medium error correction (good for camera scans on a screen).
+    const qr = qrcode(0, 'M');
+    qr.addData(SHARE_URL);
+    qr.make();
+    // 6 px per module, 4-module quiet zone — large enough to scan from
+    // ~30 cm with a phone camera.
+    canvas.innerHTML = qr.createSvgTag({ cellSize: 6, margin: 4, scalable: true });
+    const svg = canvas.querySelector('svg');
+    if (svg) {
+      svg.setAttribute('width', '240');
+      svg.setAttribute('height', '240');
+      svg.style.display = 'block';
+    }
+    rendered = true;
+  }
+
+  function open() {
+    renderQR();
+    modal.style.display = 'flex';
+  }
+  function close() { modal.style.display = 'none'; }
+
+  btn.addEventListener('click', open);
+  closeBtn.addEventListener('click', close);
+  modal.addEventListener('click', (e) => { if (e.target === modal) close(); });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal.style.display !== 'none') close();
+  });
+  copyBtn.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(SHARE_URL);
+      const old = copyBtn.textContent;
+      copyBtn.textContent = '✓ copied';
+      setTimeout(() => { copyBtn.textContent = old; }, 1400);
+    } catch {
+      copyBtn.textContent = 'select & ⌘C';
+    }
+  });
+})();
 </script>
 
 </body>
