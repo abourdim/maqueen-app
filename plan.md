@@ -1,7 +1,7 @@
 # Maqueen-App — Build Plan
 
-**Target repo:** `https://github.com/abourdim/maqueen-app`
-**Local path:** `D:\work\dev\16_workshop\102_etsy\maqueen-app\`
+**Target repo:** `https://github.com/abourdim/maqueen-lab`
+**Local path:** `D:\work\dev\16_workshop\102_etsy\maqueen-lab\`
 **Strategy:** Fork bit-playground → strip → rebuild for Maqueen Lite v4 + Mechanic Kits.
 
 ---
@@ -372,7 +372,7 @@ Firmware ships with these verbs **stubbed** (return `none` / empty). Adding real
 ## 11. Phases & sign-off gates
 
 ### Phase 0 — Reset target dir
-- Delete `tobedeleted` placeholder. Keep `.git` (already wired to `github.com/abourdim/maqueen-app`).
+- Delete `tobedeleted` placeholder. Keep `.git` (already wired to `github.com/abourdim/maqueen-lab`).
 - Verify `git remote -v`.
 
 ### Phase 1 — Fork bit-playground
@@ -425,7 +425,7 @@ Firmware ships with these verbs **stubbed** (return `none` / empty). Adding real
 
 ### Phase 8 — Release v0.1.0
 - Bump version in `package.json` + `CHANGELOG.md`.
-- Push `main` to `https://github.com/abourdim/maqueen-app`.
+- Push `main` to `https://github.com/abourdim/maqueen-lab`.
 - (Separate later session) Generate `etsy-package/` via the etsy-package-template.
 
 ---

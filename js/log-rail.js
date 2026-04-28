@@ -186,6 +186,32 @@
       }
     }
     aside.appendChild(card);
+
+    // Move the live BLE connection-status pill (#connectionStatus) out
+    // of the CONNECT card and INTO the page header. Reasoning: when
+    // the rail is collapsed the CONNECT card is hidden, so the user
+    // had no big-text indicator of link state. The header is always
+    // visible — even on small screens — so docking the pill there
+    // keeps 'connected? disconnected?' answer one glance away.
+    // The static placeholder chip (".chip" with hardcoded 'Ready!') is
+    // now redundant — hide it and let the real pill take its place.
+    const header = document.querySelector('.header');
+    const statusPill = document.getElementById('connectionStatus');
+    if (header && statusPill && !header.contains(statusPill)) {
+      // Tag for header-specific compact styling.
+      statusPill.classList.add('in-header');
+      // Drop the wrapping .status-row so the pill sits inline-flex
+      // alongside the other header chips without inheriting block layout.
+      const row = statusPill.parentElement;
+      header.appendChild(statusPill);
+      if (row && row.classList.contains('status-row') && !row.children.length) {
+        row.remove();
+      }
+      // Hide the static 'Ready!' chip; the live pill supersedes it.
+      const staticChip = header.querySelector('.chip[role="status"]');
+      if (staticChip) staticChip.style.display = 'none';
+    }
+
     return aside;
   }
 
@@ -258,17 +284,52 @@
     btn.id = 'logRailCollapseBtn';
     btn.className = 'log-rail-collapse-btn';
     btn.type = 'button';
+    // Internal layout: chevron on top, BLE status dot underneath. The
+    // dot is the only connection-status surface visible when the rail
+    // is collapsed (CONNECT card is hidden), so a green/red pulse here
+    // tells the user 'still linked / link dropped' at a glance.
+    const chev = document.createElement('span');
+    chev.className = 'log-rail-collapse-chev';
+    const dot  = document.createElement('span');
+    dot.className = 'log-rail-status-dot';
+    dot.setAttribute('aria-hidden', 'true');
+    btn.appendChild(chev);
+    btn.appendChild(dot);
     document.body.appendChild(btn);
 
     function paint() {
       const collapsed = document.body.classList.contains('rail-collapsed');
       // ‹ when expanded (click to collapse → arrow points right-to-left)
       // › when collapsed (click to expand → arrow points left-to-right)
-      btn.textContent = collapsed ? '‹' : '›';
-      btn.title = collapsed
+      chev.textContent = collapsed ? '‹' : '›';
+      const linked = btn.classList.contains('is-connected');
+      const linkTxt = linked ? ' • BLE linked' : ' • BLE offline';
+      btn.title = (collapsed
         ? 'Expand the right rail (CONNECT, sensors, log)'
-        : 'Collapse the right rail to free up width for the main app';
+        : 'Collapse the right rail to free up width for the main app')
+        + linkTxt;
     }
+
+    // Wire the status dot to bleScheduler events. If the scheduler isn't
+    // up yet (script-order race), retry a couple of times.
+    function wireStatus(tries) {
+      const sch = window.bleScheduler;
+      if (!sch || typeof sch.on !== 'function') {
+        if (tries > 0) setTimeout(() => wireStatus(tries - 1), 200);
+        return;
+      }
+      sch.on('connected', () => {
+        btn.classList.add('is-connected');
+        btn.classList.remove('is-disconnected');
+        paint();
+      });
+      sch.on('disconnected', () => {
+        btn.classList.remove('is-connected');
+        btn.classList.add('is-disconnected');
+        paint();
+      });
+    }
+    wireStatus(20);
 
     function toggle() {
       const collapsed = !document.body.classList.contains('rail-collapsed');

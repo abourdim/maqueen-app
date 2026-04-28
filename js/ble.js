@@ -6,7 +6,7 @@
 
 const BLE_MTU_PAYLOAD = 20; // typical BLE ATT payload limit
 
-// Returns the writeValue() Promise so callers (notably the maqueen-app
+// Returns the writeValue() Promise so callers (notably the maqueen-lab
 // scheduler in js/ble-scheduler.js) can serialize properly by awaiting
 // completion. Web Bluetooth's GATT only allows one writeValue at a time,
 // so without an awaitable Promise the scheduler can only guess timing,

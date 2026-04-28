@@ -5220,6 +5220,7 @@ aside.log-rail .log-card #log {
   line-height: 1;
   padding: 0 0 0 2px;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   /* Gentle outward shadow + glow so the tab clearly 'lifts' off
@@ -5240,6 +5241,57 @@ aside.log-rail .log-card #log {
 }
 .log-rail-collapse-btn:active {
   transform: translateY(-50%) scale(0.96);
+}
+/* Connection-status pill, when relocated into the page header by
+   log-rail.js. It needs to read as 'one of the header chips' (compact
+   pill, sits inline) rather than a card-sized block. */
+.header #connectionStatus.status-pill.in-header {
+  margin: 0 4px;
+  padding: 4px 12px;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-weight: 700;
+  border-radius: 999px;
+  flex: 0 0 auto;
+}
+.header #connectionStatus.status-pill.in-header .status-dot {
+  width: 8px;
+  height: 8px;
+}
+/* Chevron + BLE status dot stack inside the collapse tab.
+   When the rail is collapsed the CONNECT card is hidden, so this dot
+   becomes the ONLY connection-state indicator on screen. Green pulse =
+   linked, red = offline. Amber/grey is the unknown default before the
+   first event fires. */
+.log-rail-collapse-chev {
+  display: block;
+  line-height: 1;
+}
+.log-rail-status-dot {
+  display: block;
+  width: 8px;
+  height: 8px;
+  margin-top: 4px;
+  border-radius: 50%;
+  background: #94a3b8;            /* unknown / pre-init */
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.35) inset;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+.log-rail-collapse-btn.is-connected .log-rail-status-dot {
+  background: #22c55e;
+  box-shadow: 0 0 6px rgba(34, 197, 94, 0.9),
+              0 0 0 1px rgba(0,0,0,0.35) inset;
+  animation: railStatusPulse 1.6s ease-in-out infinite;
+}
+.log-rail-collapse-btn.is-disconnected .log-rail-status-dot {
+  background: #ef4444;
+  box-shadow: 0 0 6px rgba(239, 68, 68, 0.85),
+              0 0 0 1px rgba(0,0,0,0.35) inset;
+}
+@keyframes railStatusPulse {
+  0%, 100% { opacity: 1;   transform: scale(1); }
+  50%      { opacity: 0.55; transform: scale(0.78); }
 }
 /* COLLAPSED state — rail width snaps to 0, aside hidden, button at edge */
 body.rail-collapsed {

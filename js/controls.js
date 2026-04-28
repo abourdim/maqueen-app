@@ -351,11 +351,13 @@ window.addEventListener('DOMContentLoaded', () => {
     themeBtns.forEach(btn => {
         btn.addEventListener('click', () => setTheme(btn.dataset.theme));
     });
-    // Restore saved theme
+    // Restore saved theme — falling back to 'cosmos' (galaxy purple) as
+    // the new default. Workshop is still the CSS :root base, but cosmos
+    // is now what first-time visitors land on.
     try {
         const saved = localStorage.getItem('mb_theme');
-        if (saved) setTheme(saved);
-    } catch {}
+        setTheme(saved || 'cosmos');
+    } catch { setTheme('cosmos'); }
 
     // Tabs
     tabButtons.forEach(btn => {

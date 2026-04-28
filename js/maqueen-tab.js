@@ -2611,7 +2611,7 @@
       ctx.fillStyle = '#93a8c4';
       ctx.font = '10px "JetBrains Mono", monospace';
       ctx.textBaseline = 'bottom';
-      ctx.fillText('maqueen-app · Web Bluetooth lab for DFRobot Maqueen Lite v4', 24, H - 18);
+      ctx.fillText('maqueen-lab · Web Bluetooth lab for DFRobot Maqueen Lite v4', 24, H - 18);
       // Build version on the right (if available)
       try {
         const ver = (window.BUILD_VERSION || '');

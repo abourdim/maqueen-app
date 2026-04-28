@@ -1,8 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="cosmos">
 <head>
     <meta charset="UTF-8">
     <title>Maqueen Lab</title>
+    <!-- Pre-paint theme bootstrap. Runs synchronously before stylesheet
+         resolves so first-paint is already in the right palette (no
+         workshop-orange flash on cold loads). Default = cosmos. Saved
+         preference (mb_theme) wins if present. Workshop is the CSS :root
+         base, so applying it means *removing* the data-theme attribute. -->
+    <script>
+      (function () {
+        try {
+          var saved = localStorage.getItem('mb_theme');
+          var theme = saved || 'cosmos';
+          if (theme === 'workshop' || theme === 'stealth') {
+            document.documentElement.removeAttribute('data-theme');
+          } else {
+            document.documentElement.setAttribute('data-theme', theme);
+          }
+        } catch (e) { /* keep cosmos default from <html data-theme> */ }
+      })();
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#0a1628">
     <meta name="description" content="BLE component lab for the DFRobot Maqueen Lite v4 — every actuator and sensor, live in your browser">
@@ -109,11 +127,11 @@ html[dir="rtl"] .hint ol { padding-left: 0; padding-right: 20px; }
         <div class="subtitle"><span data-i18n="app_subtitle">Play • Learn • Create</span> <span style="opacity:0.4; font-size:0.75em;">v0.1.0</span></div>
     </div>
     <div class="theme-picker" aria-label="Theme selector">
-        <button class="theme-btn active" data-theme="workshop" title="Workshop · warm maker bench">🛠️</button>
+        <button class="theme-btn" data-theme="workshop" title="Workshop · warm maker bench">🛠️</button>
         <button class="theme-btn" data-theme="sky" title="Sky · calm classroom blue">🌤️</button>
         <button class="theme-btn" data-theme="mint" title="Mint · soft sage learning">🌿</button>
         <button class="theme-btn" data-theme="forest" title="Forest · treehouse green (slightly darker)">🌳</button>
-        <button class="theme-btn" data-theme="cosmos" title="Cosmos · galaxy purple (slightly darker)">🌌</button>
+        <button class="theme-btn active" data-theme="cosmos" title="Cosmos · galaxy purple (slightly darker)">🌌</button>
         <button class="theme-btn" data-theme="night" title="Night · deep navy for low light">🌙</button>
     </div>
     <div style="width:1px; height:24px; background:var(--card-border, rgba(148,163,184,0.3)); margin:0 4px;"></div>
@@ -3644,7 +3662,7 @@ serial.writeLine("GRAPH:Force:" + force)</code></pre>
             <a href="pinout.html" style="color:#e6eef9; text-decoration:none; padding:4px 10px; border-radius:6px;">📌 Pinout reference</a>
             <a href="lab.html" style="color:#e6eef9; text-decoration:none; padding:4px 10px; border-radius:6px;">🧪 Component Lab</a>
             <a href="plan.html" style="color:#e6eef9; text-decoration:none; padding:4px 10px; border-radius:6px;">📋 Build plan</a>
-            <a href="https://github.com/abourdim/maqueen-app" target="_blank" rel="noopener" style="color:#e6eef9; text-decoration:none; padding:4px 10px; border-radius:6px;">⭐ GitHub</a>
+            <a href="https://github.com/abourdim/maqueen-lab" target="_blank" rel="noopener" style="color:#e6eef9; text-decoration:none; padding:4px 10px; border-radius:6px;">⭐ GitHub</a>
             <span style="margin-left:auto; font-size:11px; color:var(--text-secondary, #93a8c4);">v0.1.0 · forked from <a href="https://github.com/abourdim/bit-playground" style="color:#00d4ff;">bit-playground</a></span>
         </div>
 
