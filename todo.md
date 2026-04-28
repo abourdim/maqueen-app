@@ -26,7 +26,7 @@ hard ordering — pick whichever fits the next session.
 - [x] 2. Tilt-to-drive
 - [ ] 3. AI session summary
 - [x] 4. Time-lapse export
-- [ ] 5. Drag-to-trace autopilot
+- [x] 5. Drag-to-trace autopilot
 - [ ] 6. AR webcam overlay
 - [x] 7. Robot personalities
 - [ ] 8. Battery indicator
@@ -52,12 +52,12 @@ hard ordering — pick whichever fits the next session.
 
 ### Checklist
 - [x] 1. SLAM the Room
-- [ ] 2. Echo Hunt
-- [ ] 3. Maze Runner
+- [x] 2. Echo Hunt
+- [x] 3. Maze Runner
 - [x] 4. Buzz the Tune
 - [x] 5. Simon Says — NeoPixel
 - [x] 6. Math the Distance
-- [ ] 7. Robot Soccer
+- [x] 7. Robot Soccer
 - [x] 8. Line Follower Race
 - [x] 9. PWM Lab
 - [x] 10. Morse Decoder

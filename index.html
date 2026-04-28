@@ -71,6 +71,8 @@
     <script src="js/slam-game.js" defer></script>
     <script src="js/line-race.js" defer></script>
     <script src="js/timelapse.js" defer></script>
+    <script src="js/autopilot.js" defer></script>
+    <script src="js/mini-games.js" defer></script>
 <style>
 .lang-picker { display: flex; gap: 2px; }
 .lang-picker .lang-btn { border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.7rem; font-weight: 600; background: transparent; color: inherit; opacity: 0.5; }
@@ -1123,6 +1125,38 @@ html[dir="rtl"] .hint ol { padding-left: 0; padding-right: 20px; }
                                     </div>
 
                                     <!-- ============================================================
+                                         🎯 ECHO HUNT + 🧱 MAZE RUNNER + ⚽ SOCCER — three mini-games
+                                         that share one strip. Each one is a minimal launcher: light
+                                         logic, the heavy lifting (motion / sonar / score) reuses
+                                         existing app subsystems.
+                                         ============================================================ -->
+                                    <div id="mqMiniGames" style="margin-top:10px; padding:10px 12px; background:rgba(192,132,252,0.06); border:1px solid rgba(192,132,252,0.3); border-radius:10px;">
+                                      <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+                                        <span style="font-weight:700; color:#c084fc;" data-i18n="mq_minigames_label">MINI-GAMES</span>
+                                        <button id="mqEchoHuntBtn" type="button" title="Hidden virtual treasure on the map. Robot drives blind; only feedback is the audio ping rate getting faster as it gets closer." style="padding:6px 10px; background:transparent; color:#c084fc; border:1px solid rgba(192,132,252,0.4); border-radius:8px; cursor:pointer; font-size:11px;" data-i18n="mq_echo_btn">🎯 Echo Hunt</button>
+                                        <button id="mqMazeBtn"     type="button" title="Maze Runner mode — bundles tight wander threshold + slow speed so the robot can squeeze through cardboard mazes." style="padding:6px 10px; background:transparent; color:#c084fc; border:1px solid rgba(192,132,252,0.4); border-radius:8px; cursor:pointer; font-size:11px;" data-i18n="mq_maze_btn">🧱 Maze mode</button>
+                                        <button id="mqSoccerBtn"   type="button" title="Robot Soccer scoreboard — track goals between two robots / two players." style="padding:6px 10px; background:transparent; color:#c084fc; border:1px solid rgba(192,132,252,0.4); border-radius:8px; cursor:pointer; font-size:11px;" data-i18n="mq_soccer_btn">⚽ Soccer</button>
+                                        <span id="mqMiniStatus" style="margin-left:auto; font-family:monospace; font-size:11px; color:var(--text-secondary, #93a8c4);"></span>
+                                      </div>
+                                      <div id="mqSoccerPanel" style="display:none; margin-top:10px; padding:10px; background:var(--card-bg-2, #0a1628); border-radius:8px;">
+                                        <div style="display:flex; align-items:center; gap:14px; flex-wrap:wrap; justify-content:center;">
+                                          <div style="text-align:center;">
+                                            <div style="font-size:11px; color:#ef4444; font-weight:700;" data-i18n="mq_soccer_red">RED</div>
+                                            <div style="font-family:'JetBrains Mono', monospace; font-size:36px; color:#ef4444; font-weight:700; min-width:60px;" id="mqSoccerRed">0</div>
+                                            <button id="mqSoccerRedPlus" type="button" style="padding:4px 12px; background:#ef4444; color:#fff; border:none; border-radius:6px; cursor:pointer; font-weight:700;">+1</button>
+                                          </div>
+                                          <div style="font-size:24px; opacity:0.5;">vs</div>
+                                          <div style="text-align:center;">
+                                            <div style="font-size:11px; color:#38bdf8; font-weight:700;" data-i18n="mq_soccer_blue">BLUE</div>
+                                            <div style="font-family:'JetBrains Mono', monospace; font-size:36px; color:#38bdf8; font-weight:700; min-width:60px;" id="mqSoccerBlue">0</div>
+                                            <button id="mqSoccerBluePlus" type="button" style="padding:4px 12px; background:#38bdf8; color:#fff; border:none; border-radius:6px; cursor:pointer; font-weight:700;">+1</button>
+                                          </div>
+                                          <button id="mqSoccerReset" type="button" style="margin-left:auto; padding:6px 10px; background:transparent; color:var(--text-secondary, #93a8c4); border:1px solid var(--border, #1d3556); border-radius:8px; cursor:pointer; font-size:11px;" data-i18n="mq_soccer_reset">↺ Reset match</button>
+                                        </div>
+                                      </div>
+                                    </div>
+
+                                    <!-- ============================================================
                                          📏 MATH THE DISTANCE — game: predict v×t.
                                          Random speed/time challenge, kid types the cm prediction,
                                          optionally hits RUN to physically drive it (BLE) and see
@@ -1366,6 +1400,7 @@ html[dir="rtl"] .hint ol { padding-left: 0; padding-right: 20px; }
                                             </span>
                                             <button id="mqOdoSnap" type="button" title="Save the current path map + dashboard stats as a PNG. Great for classroom show-and-tell or sharing your run." style="margin-right:4px;">📸 <span data-i18n="mq_odo_snap">snap</span></button>
                                             <button id="mqTimelapseBtn" type="button" title="Export a 10× speed time-lapse of your trail + SLAM map evolving — saves as WebM video for sharing." style="margin-right:4px;">🎬 <span data-i18n="mq_odo_timelapse">timelapse</span></button>
+                                            <button id="mqAutopilotBtn" type="button" title="Drag-to-trace: draw a path on the map with your finger or mouse, robot follows it autonomously using PID over odometry." style="margin-right:4px;">🖍 <span data-i18n="mq_odo_autopilot">draw &amp; go</span></button>
                                             <button id="mqOdoReset" type="button" title="Erase trail + obstacle map and re-center the robot at origin">↺ <span data-i18n="mq_odo_reset">reset</span></button>
                                         </div>
                                         <!-- 🎯 Challenge selector — pick a target shape (square / circle /
