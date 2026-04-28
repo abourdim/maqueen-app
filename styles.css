@@ -4933,11 +4933,10 @@ aside.log-rail > .rail-robot > div .card-subtitle {
 }
 aside.log-rail > .rail-robot > svg {
   width: 100% !important;
-  /* Fill the rail card edge-to-edge. No max-width cap — let the
-     SVG scale with the rail width (user can resize via drag handle
-     to control overall size). Card padding shrunk to 8/6 so the
-     robot has minimal margin around it. */
-  max-width: none !important;
+  /* ~2/3 of the edge-to-edge size. Bigger than the original 220 px,
+     smaller than the full-width 360 px. Lands at a comfortable 240
+     px max — robot reads as 'subject of the rail' without dominating. */
+  max-width: 240px !important;
   height: auto !important;
   display: block;
   align-self: center;
