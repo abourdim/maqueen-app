@@ -21,7 +21,9 @@
         } catch (e) { /* keep cosmos default from <html data-theme> */ }
       })();
     </script>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- Allow pinch-zoom — phones need it for the gauges and SVG details
+         (and forcing user-scalable=no is an accessibility anti-pattern). -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#0a1628">
     <meta name="description" content="BLE component lab for the DFRobot Maqueen Lite v4 — every actuator and sensor, live in your browser">
     <meta name="mobile-web-app-capable" content="yes">
