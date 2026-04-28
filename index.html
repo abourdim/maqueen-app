@@ -59,6 +59,11 @@
     <script src="js/maqueen-tab.js" defer></script>
     <script src="js/stack-flow.js" defer></script>
     <script src="js/log-rail.js" defer></script>
+    <script src="js/personality.js" defer></script>
+    <script src="js/telemetry-export.js" defer></script>
+    <script src="js/voice-commands.js" defer></script>
+    <script src="js/pwm-lab.js" defer></script>
+    <script src="js/morse-decoder.js" defer></script>
 <style>
 .lang-picker { display: flex; gap: 2px; }
 .lang-picker .lang-btn { border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.7rem; font-weight: 600; background: transparent; color: inherit; opacity: 0.5; }
@@ -457,6 +462,14 @@ html[dir="rtl"] .hint ol { padding-left: 0; padding-right: 20px; }
                             <button id="exportLogBtn" class="small" aria-label="Export log">
                                 <span class="btn-icon">⬇</span>
                                 <span data-i18n="export">Export</span>
+                            </button>
+                            <button id="exportTelemetryBtn" class="small secondary" aria-label="Export session telemetry as JSON" title="Download a JSON snapshot of this session: pose, trail, sonar obstacles, dashboard stats, settings, sensor history. Open in Excel/Python.">
+                                <span class="btn-icon">📊</span>
+                                <span data-i18n="export_telemetry">Telemetry</span>
+                            </button>
+                            <button id="exportTelemetryCsvBtn" class="small secondary" aria-label="Export trail as CSV" title="Download just the trail (timestamps + x,y in cm) as a CSV — easy to plot in Excel.">
+                                <span class="btn-icon">📈</span>
+                                <span data-i18n="export_csv">CSV</span>
                             </button>
                         </div>
                     </div>
@@ -1056,6 +1069,20 @@ html[dir="rtl"] .hint ol { padding-left: 0; padding-right: 20px; }
                                             </div>
                                             <div style="font-size:10px; color:var(--text-secondary, #93a8c4); text-align:center;">drag to drive · release = stop</div>
                                         </div>
+                                    </div>
+
+                                    <!-- 🎭 Robot personality presets — one-tap bundle that
+                                         sets speed + wander threshold + sweep range + sweep
+                                         period + audio in a single character swap. Pure
+                                         config (no firmware changes); each chip writes to
+                                         the existing inputs and dispatches 'input' so all
+                                         downstream listeners (persistence, paint) fire. -->
+                                    <div id="mqPersonalityBar" style="display:flex; gap:6px; flex-wrap:wrap; align-items:center; padding:6px 8px; margin-bottom:8px; background:rgba(192,132,252,0.06); border:1px solid rgba(192,132,252,0.2); border-radius:8px;">
+                                        <span style="font-size:11px; color:#c084fc; font-weight:700; letter-spacing:0.05em; padding-right:4px;" data-i18n="mq_personality_label">PERSONALITY</span>
+                                        <button class="mq-personality-btn" type="button" data-personality="speedy"   title="Fast and brave: high speed, narrow obstacle margin, full wide sweep, fast scanning."><span>🏃</span> <span data-i18n="mq_personality_speedy">Speedy</span></button>
+                                        <button class="mq-personality-btn" type="button" data-personality="cautious" title="Safe and careful: low speed, wide obstacle margin, narrow front cone sweep, slow scanning."><span>🐢</span> <span data-i18n="mq_personality_cautious">Cautious</span></button>
+                                        <button class="mq-personality-btn" type="button" data-personality="curious"  title="Balanced explorer: medium speed, full sweep, medium scanning."><span>🔍</span> <span data-i18n="mq_personality_curious">Curious</span></button>
+                                        <button class="mq-personality-btn" type="button" data-personality="lazy"     title="Chill mode: very low speed, very wide obstacle margin, narrow sweep, very slow scanning."><span>😴</span> <span data-i18n="mq_personality_lazy">Lazy</span></button>
                                     </div>
 
                                     <!-- Speed + hold-to-drive + auto-wander (one row of motion controls) -->
@@ -1750,6 +1777,38 @@ html[dir="rtl"] .hint ol { padding-left: 0; padding-right: 20px; }
                                         </div>
                                         <pre id="mqServoCodeView" style="margin:0; padding:10px 12px; background:var(--bg-deep, #061121); border:1px solid var(--border, #1d3556); border-radius:6px; font-family:'JetBrains Mono', monospace; font-size:11.5px; color:var(--text, #b8c8e0); line-height:1.6; min-height:50px; white-space:pre-wrap;">maqueen.servoRun(maqueen.Servos.S1, <span style="color:#facc15; background:#fbbf2433; padding:0 4px; border-radius:3px;">90</span>)</pre>
                                     </div>
+
+                                    <!-- ============================================================
+                                         🧮 PWM LAB — game: hit a target servo angle.
+                                         Random target appears, kid drags the slider, submits.
+                                         Accuracy = 100 − |target − guess|. Persistent best
+                                         score. Teaches "the slider IS the pulse width — narrow
+                                         it down to within a degree." Uses S1 (real servo) so
+                                         attempts physically move the horn for instant feedback.
+                                         ============================================================ -->
+                                    <div id="mqPwmLab" style="margin-top:14px; padding:12px; background:rgba(192,132,252,0.06); border:1px solid rgba(192,132,252,0.3); border-radius:10px;">
+                                      <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
+                                        <span style="font-size:18px;">🧮</span>
+                                        <span style="font-weight:700; color:#c084fc;" data-i18n="mq_pwm_lab_title">PWM Lab</span>
+                                        <span style="color:var(--text-secondary, #93a8c4); font-size:11px;" data-i18n="mq_pwm_lab_sub">— hit the target servo angle</span>
+                                        <span style="margin-left:auto; font-family:monospace; font-size:11px; color:var(--text-secondary, #93a8c4);">
+                                          <span data-i18n="mq_pwm_lab_best">best:</span>
+                                          <span id="mqPwmBest" style="color:#fbbf24; font-weight:700;">—</span>
+                                        </span>
+                                      </div>
+                                      <div style="display:flex; align-items:center; gap:14px; flex-wrap:wrap;">
+                                        <div style="font-size:11px; color:var(--text-secondary, #93a8c4);">
+                                          <span data-i18n="mq_pwm_lab_target">target</span>:
+                                          <span id="mqPwmTarget" style="font-family:'JetBrains Mono', monospace; font-size:24px; font-weight:700; color:#c084fc; margin-left:6px;">—</span>°
+                                        </div>
+                                        <input type="range" id="mqPwmGuess" min="0" max="180" step="1" value="90" style="flex:1; min-width:180px; accent-color:#c084fc;"/>
+                                        <span id="mqPwmGuessRead" style="font-family:'JetBrains Mono', monospace; color:#c084fc; font-weight:700; min-width:40px; text-align:right;">90°</span>
+                                        <button id="mqPwmSubmit" type="button" style="padding:6px 14px; background:#c084fc; color:#1a0e2a; border:none; border-radius:8px; font-weight:700; cursor:pointer;" data-i18n="mq_pwm_lab_submit">Lock answer</button>
+                                        <button id="mqPwmReset"  type="button" style="padding:6px 10px; background:transparent; color:#c084fc; border:1px solid rgba(192,132,252,0.4); border-radius:8px; cursor:pointer; font-size:11px;" data-i18n="mq_pwm_lab_new">New round</button>
+                                      </div>
+                                      <div id="mqPwmFeedback" style="margin-top:8px; font-family:'JetBrains Mono', monospace; font-size:12px; min-height:18px; color:var(--text-secondary, #93a8c4);"></div>
+                                      <div style="margin-top:6px; font-size:10px; color:var(--text-secondary, #93a8c4); opacity:0.7;" data-i18n="mq_pwm_lab_hint">Tip: the closer your guess to the target, the higher your score. Connected? S1 actually moves to your guess.</div>
+                                    </div>
                                 </div>
 
                                 <!-- SIMPLE LEDS -->
@@ -2051,6 +2110,45 @@ html[dir="rtl"] .hint ol { padding-left: 0; padding-right: 20px; }
                                     <div style="display:flex; gap:6px;">
                                         <button id="mqBuzzPlay" style="flex:1; padding:8px; background:var(--card-bg-2, #0a1628); color:#fbbf24; border:1px solid #fbbf24; border-radius:6px; cursor:pointer; font-size:12px;">▶ Play</button>
                                         <button id="mqBuzzOff" style="flex:1; padding:8px; background:var(--card-bg-2, #0a1628); color:#f87171; border:1px solid #f87171; border-radius:6px; cursor:pointer; font-size:12px;">⏹ Off</button>
+                                    </div>
+
+                                    <!-- ============================================================
+                                         📡 MORSE DECODER game — buzzer transmits a hidden message,
+                                         kid types what they hear, score = exact letter matches.
+                                         Falls back to local Web Audio if BLE isn't connected so the
+                                         game works without the robot.
+                                         ============================================================ -->
+                                    <div id="mqMorseGame" style="margin-top:14px; padding:12px; background:rgba(0,212,255,0.06); border:1px solid rgba(0,212,255,0.3); border-radius:10px;">
+                                      <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px; flex-wrap:wrap;">
+                                        <span style="font-size:18px;">📡</span>
+                                        <span style="font-weight:700; color:#00d4ff;" data-i18n="mq_morse_title">Morse Decoder</span>
+                                        <span style="color:var(--text-secondary, #93a8c4); font-size:11px;" data-i18n="mq_morse_sub">— listen and type what you hear</span>
+                                        <span style="margin-left:auto; font-family:monospace; font-size:11px; color:var(--text-secondary, #93a8c4);">
+                                          <span data-i18n="mq_morse_best">best:</span>
+                                          <span id="mqMorseBest" style="color:#fbbf24; font-weight:700;">—</span>
+                                        </span>
+                                      </div>
+                                      <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:8px;">
+                                        <button id="mqMorseNew"  type="button" style="padding:8px 12px; background:#00d4ff; color:#01202b; border:none; border-radius:8px; font-weight:700; cursor:pointer;" data-i18n="mq_morse_new">🎲 New message</button>
+                                        <button id="mqMorsePlay" type="button" style="padding:8px 12px; background:transparent; color:#00d4ff; border:1px solid #00d4ff; border-radius:8px; cursor:pointer;" data-i18n="mq_morse_play">▶ Play again</button>
+                                        <select id="mqMorseLen" style="padding:6px 10px; background:var(--card-bg-2, #0a1628); color:var(--text, #b8c8e0); border:1px solid var(--border, #1d3556); border-radius:8px; font-family:inherit; font-size:12px;">
+                                          <option value="3">3 letters</option>
+                                          <option value="4" selected>4 letters</option>
+                                          <option value="5">5 letters</option>
+                                          <option value="6">6 letters</option>
+                                        </select>
+                                        <select id="mqMorseSpeed" style="padding:6px 10px; background:var(--card-bg-2, #0a1628); color:var(--text, #b8c8e0); border:1px solid var(--border, #1d3556); border-radius:8px; font-family:inherit; font-size:12px;">
+                                          <option value="160">slow (160 ms dot)</option>
+                                          <option value="100" selected>medium (100 ms)</option>
+                                          <option value="60">fast (60 ms)</option>
+                                        </select>
+                                      </div>
+                                      <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+                                        <input id="mqMorseGuess" type="text" maxlength="12" autocomplete="off" placeholder="type what you heard…" style="flex:1; min-width:160px; padding:8px 10px; background:var(--bg-deep, #061121); color:#00d4ff; border:1px solid var(--border, #1d3556); border-radius:8px; font-family:'JetBrains Mono', monospace; font-size:14px; letter-spacing:0.2em; text-transform:uppercase;"/>
+                                        <button id="mqMorseSubmit" type="button" style="padding:8px 14px; background:#4ade80; color:#01202b; border:none; border-radius:8px; font-weight:700; cursor:pointer;" data-i18n="mq_morse_check">Check</button>
+                                      </div>
+                                      <div id="mqMorseFeedback" style="margin-top:8px; font-family:'JetBrains Mono', monospace; font-size:12px; min-height:20px; color:var(--text-secondary, #93a8c4);"></div>
+                                      <div style="margin-top:6px; font-size:10px; color:var(--text-secondary, #93a8c4); opacity:0.7;" data-i18n="mq_morse_hint">A=•— · E=• · S=••• · O=——— · T=— · I=•• · N=—• …  ( • = short, — = long )</div>
                                     </div>
                                 </div>
 

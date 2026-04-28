@@ -48,6 +48,8 @@
       clear:              "Clear",
       message_log:        "Message Log",
       export:             "Export",
+      export_telemetry:   "Telemetry",
+      export_csv:         "CSV",
 
       // Maqueen-tab specific (added in v0.1.5x)
       mq_servo_180:       "180° position",
@@ -97,6 +99,11 @@
       mq_drive_wander_stop: "⏹ Stop wander",
       mq_drive_wander_scan: "🔍 Scanning…",
       mq_drive_wander_turn: "↺ Turning…",
+      mq_personality_label:    "PERSONALITY",
+      mq_personality_speedy:   "Speedy",
+      mq_personality_cautious: "Cautious",
+      mq_personality_curious:  "Curious",
+      mq_personality_lazy:     "Lazy",
       mq_dist_audio:        "🔊 audio",
       mq_chal_label:        "Challenge",
       mq_chal_none:         "— none —",
@@ -546,6 +553,8 @@
       clear:              "Effacer",
       message_log:        "Journal des messages",
       export:             "Exporter",
+      export_telemetry:   "Télémétrie",
+      export_csv:         "CSV",
 
       // Maqueen-tab specific (added in v0.1.5x)
       mq_servo_180:       "180° position",
@@ -593,6 +602,11 @@
       mq_dash_no_link:      "⚠ HORS LIGNE",
       mq_drive_wander:      "🚦 Errance auto",
       mq_drive_wander_stop: "⏹ Stop errance",
+      mq_personality_label:    "PERSONNALITÉ",
+      mq_personality_speedy:   "Rapide",
+      mq_personality_cautious: "Prudent",
+      mq_personality_curious:  "Curieux",
+      mq_personality_lazy:     "Paresseux",
       mq_drive_wander_scan: "🔍 Sondage…",
       mq_drive_wander_turn: "↺ Virage…",
       mq_dist_audio:        "🔊 son",
@@ -1044,6 +1058,8 @@
       clear:              "\u0645\u0633\u062d",
       message_log:        "\u0633\u062c\u0644 \u0627\u0644\u0631\u0633\u0627\u0626\u0644",
       export:             "\u062a\u0635\u062f\u064a\u0631",
+      export_telemetry:   "\u0628\u064a\u0627\u0646\u0627\u062a",
+      export_csv:         "CSV",
 
       // Maqueen-tab specific (added in v0.1.5x)
       mq_servo_180:       "180\u00b0 \u0648\u0636\u0639\u064a\u0629",
@@ -1093,6 +1109,11 @@
       mq_drive_wander_stop: "\u23f9 \u0625\u064a\u0642\u0627\u0641 \u0627\u0644\u062a\u062c\u0648\u0627\u0644",
       mq_drive_wander_scan: "\ud83d\udd0d \u064a\u0633\u062a\u0643\u0634\u0641\u2026",
       mq_drive_wander_turn: "\u21ba \u064a\u0633\u062a\u062f\u064a\u0631\u2026",
+      mq_personality_label:    "\u0627\u0644\u0634\u062e\u0635\u064a\u0629",
+      mq_personality_speedy:   "\u0633\u0631\u064a\u0639",
+      mq_personality_cautious: "\u062d\u0630\u0631",
+      mq_personality_curious:  "\u0641\u0636\u0648\u0644\u064a",
+      mq_personality_lazy:     "\u0643\u0633\u0648\u0644",
       mq_dist_audio:        "\ud83d\udd0a \u0635\u0648\u062a",
       mq_chal_label:        "\u062a\u062d\u062f\u064a",
       mq_chal_none:         "\u2014 \u0644\u0627 \u0634\u064a\u0621 \u2014",

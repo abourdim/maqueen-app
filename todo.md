@@ -22,15 +22,15 @@ hard ordering — pick whichever fits the next session.
 | 10 | 🤝 **2-robot pairing** *(WebRTC peer-to-peer)* | Two Maqueens, two browser tabs, one mirrors the other. No server needed. _"Look mom, they're dancing together!"_ |
 
 ### Checklist
-- [ ] 1. Voice commands
+- [x] 1. Voice commands
 - [ ] 2. Tilt-to-drive
 - [ ] 3. AI session summary
 - [ ] 4. Time-lapse export
 - [ ] 5. Drag-to-trace autopilot
 - [ ] 6. AR webcam overlay
-- [ ] 7. Robot personalities
+- [x] 7. Robot personalities
 - [ ] 8. Battery indicator
-- [ ] 9. Telemetry export
+- [x] 9. Telemetry export
 - [ ] 10. 2-robot pairing
 
 ---
@@ -59,5 +59,5 @@ hard ordering — pick whichever fits the next session.
 - [ ] 6. Math the Distance
 - [ ] 7. Robot Soccer
 - [ ] 8. Line Follower Race
-- [ ] 9. PWM Lab
-- [ ] 10. Morse Decoder
+- [x] 9. PWM Lab
+- [x] 10. Morse Decoder

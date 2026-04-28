@@ -5304,6 +5304,52 @@ body.rail-collapsed .log-rail-collapse-btn {
   right: 0;
 }
 
+/* Voice command toggle in the macro bar — pulses red when actively
+   listening so the user can never miss that the mic is hot. */
+.mq-voice-btn { color: #c084fc; border-color: rgba(192,132,252,0.4); }
+.mq-voice-btn.mq-voice-on {
+  color: #fff;
+  background: #ef4444;
+  border-color: #ef4444;
+  animation: mqVoicePulse 1.4s ease-in-out infinite;
+}
+@keyframes mqVoicePulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0.7); }
+  50%      { box-shadow: 0 0 0 6px rgba(239,68,68,0); }
+}
+
+/* ============================================================
+   ROBOT PERSONALITY chips — purple-violet to read as 'character /
+   personality' (vs the radar-style chips' green and the sweep-range
+   chips' gold). Single tap = bundle of settings applied + persisted.
+   ============================================================ */
+.mq-personality-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  font-size: 11px;
+  font-family: inherit;
+  font-weight: 600;
+  background: var(--card-bg-2, #0a1628);
+  color: #c084fc;
+  border: 1px solid rgba(192,132,252,0.3);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s, box-shadow 0.12s, transform 0.08s;
+}
+.mq-personality-btn:hover {
+  background: rgba(192,132,252,0.1);
+  border-color: rgba(192,132,252,0.6);
+}
+.mq-personality-btn:active { transform: scale(0.96); }
+.mq-personality-btn.mq-personality-active {
+  background: rgba(192,132,252,0.18);
+  border-color: #c084fc;
+  color: #f3e8ff;
+  box-shadow: 0 0 12px rgba(192,132,252,0.45);
+}
+
 /* Auto-stack on narrow viewports — single column. The rail flows
    ABOVE the main app so CONNECT (which lives in the rail) is the
    first thing visible. The drag-handle and collapse button are

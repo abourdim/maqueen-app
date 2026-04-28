@@ -2942,7 +2942,15 @@
       raf = requestAnimationFrame(tick);
     }
 
-    return { update, recordAngle, recordDistance, reset, start };
+    // Read-only accessors for telemetry export — return shallow copies
+    // so the caller can mutate freely without disturbing live state.
+    function getTrail()     { return trail.map(p => ({ x: p.x, y: p.y })); }
+    function getObstacles() { return obstacles.map(o => ({ x: o.x, y: o.y, cm: o.cm, t: o.t })); }
+    function getPose()      { return { x, y, theta }; }
+    function getTotalDist() { return totalDist; }
+
+    return { update, recordAngle, recordDistance, reset, start,
+             getTrail, getObstacles, getPose, getTotalDist };
   })();
 
   // -------- 📡 SWEEP RADAR --------------------------------
