@@ -933,6 +933,40 @@
         paintSweepReadout();
       });
     }
+    // Shared sweep-RANGE control — start/end angles for the sweep.
+    // Default 0..180 (full range). User can narrow to e.g. 60..120 to
+    // sweep only the front cone, or 0..90 for left half. Persisted.
+    let sweepFromDeg = 0;
+    let sweepToDeg   = 180;
+    try {
+      const f = +localStorage.getItem('maqueen.sweepFrom');
+      const t = +localStorage.getItem('maqueen.sweepTo');
+      if (f >= 0 && f <= 180) sweepFromDeg = f;
+      if (t >= 0 && t <= 180) sweepToDeg = t;
+    } catch {}
+    function clampSweepRange() {
+      sweepFromDeg = Math.max(0, Math.min(180, sweepFromDeg));
+      sweepToDeg   = Math.max(0, Math.min(180, sweepToDeg));
+      // Allow from > to (reversed sweep direction). User intent preserved.
+    }
+    const sweepFromInput = document.getElementById('mqServoSweepFrom');
+    const sweepToInput   = document.getElementById('mqServoSweepTo');
+    if (sweepFromInput) {
+      sweepFromInput.value = sweepFromDeg;
+      sweepFromInput.addEventListener('input', e => {
+        sweepFromDeg = +e.target.value || 0;
+        clampSweepRange();
+        try { localStorage.setItem('maqueen.sweepFrom', String(sweepFromDeg)); } catch {}
+      });
+    }
+    if (sweepToInput) {
+      sweepToInput.value = sweepToDeg;
+      sweepToInput.addEventListener('input', e => {
+        sweepToDeg = +e.target.value || 180;
+        clampSweepRange();
+        try { localStorage.setItem('maqueen.sweepTo', String(sweepToDeg)); } catch {}
+      });
+    }
 
     // Sweep — uses scheduler.animate so it's properly rate-limited.
     // Reads sweepPeriodMs LIVE on each tick so the slider can adjust speed
@@ -955,18 +989,24 @@
       // cycleT ∈ [0, 1) — one full back-and-forth.
       // Layout:  [dwell-low]  ↗ rise ↗  [dwell-high]  ↘ fall ↘
       //          [0,    D]   [D, 0.5-D]  [0.5-D, 0.5+D] [0.5+D, 1-D] [1-D, 1)
+      // Endpoints are sweepFromDeg → sweepToDeg (live values, so the user
+      // can re-tune the range mid-sweep). Quintic smoothstep on the
+      // [0..1] progress, then linearly remapped to [from..to].
       const D = SWEEP_DWELL_FRAC;
-      if (cycleT < D) return 0;                              // dwell at 0°
+      const from = sweepFromDeg, to = sweepToDeg;
+      if (cycleT < D) return from;                            // dwell at 'from'
       if (cycleT < 0.5 - D) {
-        const u = (cycleT - D) / (0.5 - 2 * D);              // 0..1
-        return (u * u * u * (u * (u * 6 - 15) + 10)) * 180;  // quintic smoothstep × 180
+        const u = (cycleT - D) / (0.5 - 2 * D);               // 0..1
+        const e = u * u * u * (u * (u * 6 - 15) + 10);        // quintic smoothstep
+        return from + (to - from) * e;
       }
-      if (cycleT < 0.5 + D) return 180;                      // dwell at 180°
+      if (cycleT < 0.5 + D) return to;                        // dwell at 'to'
       if (cycleT < 1 - D) {
         const u = (cycleT - (0.5 + D)) / (0.5 - 2 * D);
-        return 180 - (u * u * u * (u * (u * 6 - 15) + 10)) * 180;
+        const e = u * u * u * (u * (u * 6 - 15) + 10);
+        return to - (to - from) * e;
       }
-      return 0;                                              // dwell at 0° (wraps to start)
+      return from;                                            // dwell at 'from' (wraps)
     }
     // Helpers exposed so setMode() can stop a sweep BEFORE it tears down
     // the quick-buttons innerHTML — otherwise the BLE animate keeps firing
@@ -1076,8 +1116,15 @@
         if (window.bleScheduler) window.bleScheduler.stop(`servo-sweep-${port}`);
       }
       if (m === '360') {
-        // Rebuild slider as bipolar -100..+100, default 0 (stop)
-        slider.min = '-100'; slider.max = '100'; slider.value = '0';
+        // Rebuild slider as bipolar -100..+100, default 0 (stop).
+        // Use setAttribute (not property assignment) — some browser
+        // engines don't reliably refresh the draggable range when
+        // min/max are set via property after initialization. The
+        // attribute path forces a full re-evaluation.
+        slider.setAttribute('min', '-100');
+        slider.setAttribute('max', '100');
+        slider.setAttribute('value', '0');
+        slider.value = '0';
         if (readout) readout.textContent = '0%';
         if (big) big.textContent = '0%';
         // Quick presets become STOP / FWD / REV
@@ -1097,8 +1144,11 @@
         updateServoScope(90);
         renderCode();
       } else {
-        // Restore positional defaults
-        slider.min = '0'; slider.max = '180'; slider.value = '90';
+        // Restore positional defaults — same setAttribute pattern as 360°.
+        slider.setAttribute('min', '0');
+        slider.setAttribute('max', '180');
+        slider.setAttribute('value', '90');
+        slider.value = '90';
         if (readout) readout.textContent = '90°';
         if (big) big.textContent = '90°';
         // Re-enable the smooth snap transition for positional moves

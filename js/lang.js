@@ -120,6 +120,9 @@
       mq_sweep_rays:        "─── rays",
       mq_sweep_stars:       "✦✦✦ stars",
       mq_sweep_emoji:       "💥⚠✨ emoji",
+      mq_servo_sweep_range: "Sweep range",
+      mq_servo_sweep_from:  "from",
+      mq_servo_sweep_to:    "to",
 
       // Tabs
       tab_maqueen:        "Maqueen",
@@ -609,6 +612,9 @@
       mq_sweep_rays:        "─── rayons",
       mq_sweep_stars:       "✦✦✦ étoiles",
       mq_sweep_emoji:       "💥⚠✨ emoji",
+      mq_servo_sweep_range: "Plage balayage",
+      mq_servo_sweep_from:  "de",
+      mq_servo_sweep_to:    "à",
 
       // Tabs
       tab_maqueen:        "Maqueen",
@@ -1098,6 +1104,9 @@
       mq_sweep_rays:        "\u2500\u2500\u2500 \u0623\u0634\u0639\u0629",
       mq_sweep_stars:       "\u2726\u2726\u2726 \u0646\u062c\u0648\u0645",
       mq_sweep_emoji:       "\ud83d\udca5\u26a0\u2728 \u0631\u0645\u0648\u0632",
+      mq_servo_sweep_range: "\u0646\u0637\u0627\u0642 \u0627\u0644\u0645\u0633\u062d",
+      mq_servo_sweep_from:  "\u0645\u0646",
+      mq_servo_sweep_to:    "\u0625\u0644\u0649",
 
       // Tabs
       tab_maqueen:        "Maqueen",

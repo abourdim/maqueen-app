@@ -1635,13 +1635,24 @@ html[dir="rtl"] .hint ol { padding-left: 0; padding-right: 20px; }
                                     </div>
 
                                     <!-- Kit presets (apply both servos at once) -->
-                                    <!-- Shared sweep-speed control — both Sweep buttons read this -->
-                                    <div style="display:flex; align-items:center; gap:8px; margin-top:10px; padding:6px 10px; background:var(--bg-deep, #061121); border:1px solid var(--border, #1d3556); border-radius:6px; font-size:10px; color:var(--text-secondary, #93a8c4); font-family:'JetBrains Mono', monospace;">
-                                        <span>▶ Sweep speed</span>
-                                        <span style="opacity:0.7;">slow</span>
-                                        <input type="range" id="mqServoSweepSpeed" min="500" max="6000" step="100" value="2000" style="flex:1; accent-color:#facc15;"/>
-                                        <span style="opacity:0.7;">fast</span>
-                                        <span id="mqServoSweepSpeedRead" style="color:#facc15; min-width:62px; text-align:right;">2.0 s/cycle</span>
+                                    <!-- Shared sweep-speed + range controls — both Sweep buttons read these -->
+                                    <div style="display:flex; flex-direction:column; gap:6px; margin-top:10px; padding:6px 10px; background:var(--bg-deep, #061121); border:1px solid var(--border, #1d3556); border-radius:6px; font-size:10px; color:var(--text-secondary, #93a8c4); font-family:'JetBrains Mono', monospace;">
+                                        <div style="display:flex; align-items:center; gap:8px;">
+                                            <span>▶ Sweep speed</span>
+                                            <span style="opacity:0.7;">slow</span>
+                                            <input type="range" id="mqServoSweepSpeed" min="500" max="6000" step="100" value="2000" style="flex:1; accent-color:#facc15;"/>
+                                            <span style="opacity:0.7;">fast</span>
+                                            <span id="mqServoSweepSpeedRead" style="color:#facc15; min-width:62px; text-align:right;">2.0 s/cycle</span>
+                                        </div>
+                                        <div style="display:flex; align-items:center; gap:8px;" title="Limit the sweep range. Default 0..180 = full sweep. Use e.g. 60..120 to scan only the front cone, or 0..90 for the left half.">
+                                            <span>↔ <span data-i18n="mq_servo_sweep_range">Sweep range</span></span>
+                                            <span style="opacity:0.7;" data-i18n="mq_servo_sweep_from">from</span>
+                                            <input type="number" id="mqServoSweepFrom" min="0" max="180" step="1" value="0" style="width:54px; padding:2px 6px; background:var(--card-bg-2, #0a1628); color:#facc15; border:1px solid var(--border, #1d3556); border-radius:4px; font-family:inherit; font-size:11px; text-align:right;"/>
+                                            <span style="opacity:0.7;">°</span>
+                                            <span style="opacity:0.7;" data-i18n="mq_servo_sweep_to">to</span>
+                                            <input type="number" id="mqServoSweepTo" min="0" max="180" step="1" value="180" style="width:54px; padding:2px 6px; background:var(--card-bg-2, #0a1628); color:#facc15; border:1px solid var(--border, #1d3556); border-radius:4px; font-family:inherit; font-size:11px; text-align:right;"/>
+                                            <span style="opacity:0.7;">°</span>
+                                        </div>
                                     </div>
                                     <div id="mqServoPresets" style="display:flex; gap:6px; flex-wrap:wrap; margin-top:10px;"></div>
 
