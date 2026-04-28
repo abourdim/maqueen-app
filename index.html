@@ -2000,6 +2000,28 @@ html[dir="rtl"] .hint ol { padding-left: 0; padding-right: 20px; }
                                         <button class="mq-radar-pick" data-style="heat" title="Heatmap — horizontal proximity bar" style="flex:1; min-width:70px; padding:5px 8px; background:var(--card-bg-2, #0a1628); color:var(--text-secondary, #93a8c4); border:1px solid var(--border, #1d3556); border-radius:6px; cursor:pointer; font-size:11px;">🔥 Heat</button>
                                         <button class="mq-radar-pick" data-style="sweep" title="Arduino sweep radar — real (servo angle × distance) blips on phosphor CRT" style="flex:1; min-width:70px; padding:5px 8px; background:var(--card-bg-2, #0a1628); color:var(--text-secondary, #93a8c4); border:1px solid var(--border, #1d3556); border-radius:6px; cursor:pointer; font-size:11px;">📡 Sweep</button>
                                     </div>
+                                    <!-- Distance legend — same color thresholds across all 5 radar
+                                         styles (and the dashboard SONAR gauge, the mascot eyes, etc.).
+                                         One legend bar so the user never has to wonder what red/amber/
+                                         green dots mean. -->
+                                    <div class="mq-dist-legend" style="display:flex; flex-wrap:wrap; gap:6px 14px; align-items:center; justify-content:center; padding:5px 8px; margin-bottom:8px; background:var(--bg-deep, #061121); border:1px solid var(--border, #1d3556); border-radius:6px; font-family:'JetBrains Mono', monospace; font-size:10px; color:var(--text-secondary, #93a8c4);">
+                                        <span style="display:inline-flex; align-items:center; gap:4px;">
+                                            <span style="display:inline-block; width:9px; height:9px; border-radius:50%; background:#f87171; box-shadow:0 0 5px #f87171;"></span>
+                                            <span data-i18n="mq_dist_leg_obstacle">&lt; 10 cm · obstacle</span>
+                                        </span>
+                                        <span style="display:inline-flex; align-items:center; gap:4px;">
+                                            <span style="display:inline-block; width:9px; height:9px; border-radius:50%; background:#fbbf24; box-shadow:0 0 5px #fbbf24;"></span>
+                                            <span data-i18n="mq_dist_leg_close">&lt; 30 cm · close</span>
+                                        </span>
+                                        <span style="display:inline-flex; align-items:center; gap:4px;">
+                                            <span style="display:inline-block; width:9px; height:9px; border-radius:50%; background:#4ade80; box-shadow:0 0 5px #4ade80;"></span>
+                                            <span data-i18n="mq_dist_leg_safe">&ge; 30 cm · safe</span>
+                                        </span>
+                                        <span style="display:inline-flex; align-items:center; gap:4px;">
+                                            <span style="display:inline-block; width:9px; height:9px; border-radius:50%; background:#1d3556; border:1px solid #93a8c4;"></span>
+                                            <span data-i18n="mq_dist_leg_noecho">— · no echo</span>
+                                        </span>
+                                    </div>
 
                                     <!-- BAT ECHOLOCATION SCOPE — same physics as HC-SR04: emit chirp,
                                          time the echo, divide by 2, multiply by speed of sound. -->

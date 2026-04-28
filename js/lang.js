@@ -110,6 +110,10 @@
       mq_macro_stop_play:   "Stop",
       mq_macro_idle:        "— no recording —",
       mq_odo_snap:          "snap",
+      mq_dist_leg_obstacle: "< 10 cm · obstacle",
+      mq_dist_leg_close:    "< 30 cm · close",
+      mq_dist_leg_safe:     "≥ 30 cm · safe",
+      mq_dist_leg_noecho:   "— · no echo",
 
       // Tabs
       tab_maqueen:        "Maqueen",
@@ -589,6 +593,10 @@
       mq_macro_stop_play:   "Stop",
       mq_macro_idle:        "— aucun enregistrement —",
       mq_odo_snap:          "capture",
+      mq_dist_leg_obstacle: "< 10 cm · obstacle",
+      mq_dist_leg_close:    "< 30 cm · proche",
+      mq_dist_leg_safe:     "≥ 30 cm · sûr",
+      mq_dist_leg_noecho:   "— · pas d'écho",
 
       // Tabs
       tab_maqueen:        "Maqueen",
@@ -1068,6 +1076,10 @@
       mq_macro_stop_play:   "\u0625\u064a\u0642\u0627\u0641",
       mq_macro_idle:        "\u2014 \u0644\u0627 \u064a\u0648\u062c\u062f \u062a\u0633\u062c\u064a\u0644 \u2014",
       mq_odo_snap:          "\u0644\u0642\u0637\u0629",
+      mq_dist_leg_obstacle: "< 10 \u0633\u0645 \u00b7 \u0639\u0627\u0626\u0642",
+      mq_dist_leg_close:    "< 30 \u0633\u0645 \u00b7 \u0642\u0631\u064a\u0628",
+      mq_dist_leg_safe:     "\u2265 30 \u0633\u0645 \u00b7 \u0622\u0645\u0646",
+      mq_dist_leg_noecho:   "\u2014 \u00b7 \u0644\u0627 \u0635\u062f\u0649",
 
       // Tabs
       tab_maqueen:        "Maqueen",
