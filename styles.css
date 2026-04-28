@@ -5196,45 +5196,50 @@ aside.log-rail .log-card #log {
   left: -5px;
 }
 
-/* Floating collapse / expand chevron — visually ATTACHED to the
-   rail's left edge as a small tab. Compact (14 × 36), low-key by
-   default, lights up cyan on hover. Slides with the rail width
-   so it always rides the rail boundary. */
+/* Collapse / expand chevron — KID-FRIENDLY: big enough to spot,
+   high contrast, clearly tappable. Sits on the rail's left edge
+   like a tab. Cyan accent fill so it stands out against the dark
+   rail without being garish. */
 .log-rail-collapse-btn {
   position: fixed;
   top: 50%;
   transform: translateY(-50%);
   right: var(--log-rail-w, 380px);
   z-index: 100;
-  width: 14px;
-  height: 36px;
-  background: var(--card-bg-2, #0a1628);
-  color: var(--text-secondary, #93a8c4);
-  border: 1px solid var(--border, #1d3556);
+  width: 26px;
+  height: 60px;
+  background: var(--accent, #38bdf8);
+  color: var(--bg-deep, #061121);
+  border: 2px solid var(--accent, #38bdf8);
   border-right: none;
-  border-radius: 6px 0 0 6px;
+  border-radius: 10px 0 0 10px;
   cursor: pointer;
   font-family: 'JetBrains Mono', ui-monospace, monospace;
-  font-size: 12px;
-  font-weight: 700;
+  font-size: 22px;
+  font-weight: 900;
   line-height: 1;
-  padding: 0;
+  padding: 0 0 0 2px;
   display: flex;
   align-items: center;
   justify-content: center;
-  opacity: 0.55;
-  /* Subtle shadow on the LEFT only so the button reads as a tab
-     attached to the rail (the rail itself is to the right). */
-  box-shadow: -2px 0 4px rgba(0, 0, 0, 0.3);
-  transition: right 0.22s ease-out, opacity 0.15s, background 0.12s,
-              color 0.12s, width 0.15s, transform 0.15s;
+  /* Gentle outward shadow + glow so the tab clearly 'lifts' off
+     the rail edge — instantly readable as a button, not a stripe. */
+  box-shadow:
+    -3px 0 8px rgba(0, 0, 0, 0.45),
+    0 0 12px rgba(56, 189, 248, 0.35);
+  transition: right 0.22s ease-out, transform 0.15s, background 0.12s,
+              box-shadow 0.15s;
 }
 .log-rail-collapse-btn:hover {
-  opacity: 1;
-  background: var(--accent, #38bdf8);
-  color: var(--bg-deep, #061121);
-  width: 18px;
-  box-shadow: -3px 0 8px rgba(0, 0, 0, 0.45);
+  background: #7dd3fc;
+  border-color: #7dd3fc;
+  transform: translateY(-50%) scale(1.08);
+  box-shadow:
+    -3px 0 12px rgba(0, 0, 0, 0.6),
+    0 0 18px rgba(125, 211, 252, 0.6);
+}
+.log-rail-collapse-btn:active {
+  transform: translateY(-50%) scale(0.96);
 }
 /* COLLAPSED state — rail width snaps to 0, aside hidden, button at edge */
 body.rail-collapsed {
