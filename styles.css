@@ -6675,8 +6675,23 @@ body.mq-density-demo .mq-mode-dial {
   display: flex !important; flex-direction: row !important;
   align-items: center !important; gap: 6px !important;
 }
-#mqConnectPanel #firmwareBtn,
-#mqConnectPanel #mq-streams-toggle      { padding: 3px 10px !important; font-size: 11px !important; }
+/* Streams toggle — small, muted */
+#mqConnectPanel #mq-streams-toggle {
+  padding: 3px 10px !important;
+  font-size: 11px !important;
+}
+/* Firmware button — outstanding, primary accent */
+#mqConnectPanel #firmwareBtn {
+  padding: 5px 14px !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  background: linear-gradient(135deg, #38bdf8 0%, #6366f1 100%) !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 20px !important;
+  box-shadow: 0 0 10px rgba(56,189,248,0.45) !important;
+  letter-spacing: 0.04em !important;
+}
 /* Stack flow: compact + calm — scale down the SVG, suppress particles */
 #mqConnectPanel #mqStackFlow {
   flex: 1 !important;
