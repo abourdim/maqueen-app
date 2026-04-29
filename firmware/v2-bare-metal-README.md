@@ -27,7 +27,7 @@ Replies (`ECHO:n verb`, `DIST:cm`, `LINE:l,r`, `IR:code`, `INFO:CONNECTED`, `ERR
 
 ## What's BETTER in v2
 
-- **🌈 NeoPixels actually light up.** v1 ships with the standalone `neopixel` extension *commented out* because it's incompatible with `bluetooth`. v2 uses `light.createStrip` (DMA-driven on micro:bit V2) → coexists cleanly. `RGB:i,r,g,b` lights the real on-bot pearls.
+- **🌈 NeoPixels actually light up.** v1 ships with the standalone `neopixel` extension *commented out* because Microsoft's stock `neopixel` is incompatible with `bluetooth` (CPU spin-wait timing is blown apart by BLE radio interrupts). v2 pulls in **[Bohwaz/pxt-neopixel](https://github.com/Bohwaz/pxt-neopixel)** — a fork with timing tweaked to coexist with `bluetooth`. Drop-in API. `RGB:i,r,g,b` lights the real on-bot pearls without BLE drops.
 - **⚡ Motor latency.** v1's extension wraps each motor write in defensive sleeps (≈25 ms per `motorRun`). v2 issues both motor writes via direct I²C in ≈8 ms.
 - **🛡️ Hard safety stop on disconnect.** Both firmwares stop motors on BLE drop; v2 does it via direct I²C so it can't be blocked by the extension's queue.
 
@@ -53,7 +53,11 @@ I²C  motor driver TB6612FNG @ 0x10
 2. New Project → switch to **JavaScript** view
 3. Paste the contents of `v2-bare-metal.ts`
 4. Add extension: **`bluetooth`** (Settings → Extensions → search "bluetooth")
-5. Add extension: **`light`** (search "light")
+5. Add extension: **Bohwaz's BLE-safe NeoPixel fork** — Settings → Extensions → paste this URL into the search box:
+   ```
+   https://github.com/Bohwaz/pxt-neopixel
+   ```
+   It exposes the standard `neopixel` API but with BLE-coexistence timing. (Fallback if Bohwaz's repo is unreachable: `https://github.com/openblockcc/pxt-neopixel-ble` — same idea.)
 6. **Edit Project Settings** (gear icon → Project Settings):
    - "No pairing required" = **on** (otherwise the browser pairing prompt asks for a 6-digit PIN)
    - "Connection Event events" = **on**
