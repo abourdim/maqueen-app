@@ -171,8 +171,14 @@ function setLED(side: number, state: number) {
 //  BUZZER — straight PWM tone
 // ============================================================
 function buzz(hz: number, ms: number) {
-    music.setVolume(255)
-    music.pitch(hz, ms)
+    // music.playTone(freqHz, durationMs) is the right MakeCode API on
+    // micro:bit. (music.pitch is a Circuit Playground thing.) freq=0
+    // is treated as silence so we explicitly rest in that case.
+    if (hz <= 0) {
+        music.rest(ms)
+    } else {
+        music.playTone(hz, ms)
+    }
 }
 
 // ============================================================
@@ -378,7 +384,13 @@ function handleHead() {
 }
 function handleBat() {
     const v = readBatteryV()
-    send("BAT:" + v.toFixed(2) + "," + batteryPct(v))
+    // MakeCode's TS subset doesn't expose Number.prototype.toFixed.
+    // Format manually: integer + 2-digit decimal padding.
+    const cents = Math.round(v * 100)
+    const whole = Math.idiv(cents, 100)
+    const frac  = cents - whole * 100
+    const fracStr = (frac < 10) ? ("0" + frac) : ("" + frac)
+    send("BAT:" + whole + "." + fracStr + "," + batteryPct(v))
 }
 function handleCal() {
     calibrateCompass()
@@ -454,11 +466,11 @@ bluetooth.startUartService()
 basic.showIcon(IconNames.Heart)         // ready, awaiting connection
 startIRBackgroundDecoder()
 
-// Nice-to-have: kick a compass calibration prompt on first boot if
-// the magnetometer is uncalibrated. The user can skip it.
-if (!input.isCalibrated && false) {     // disabled by default — `CAL!` triggers it
-    input.calibrateCompass()
-}
+// Compass calibration: NOT auto-triggered. The browser sends the
+// 'CAL!' verb when the user explicitly asks for it via the app
+// (path card → 🧭 calibrate). MakeCode's `input` namespace doesn't
+// expose an isCalibrated getter, so we can't conditionally prompt
+// — we just wait for the explicit verb.
 
 // Periodic stream task — when streamsEnabled, push acc/temp/light
 // at 5 Hz so the Playground tabs populate. Same as v1.
