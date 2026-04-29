@@ -24,22 +24,32 @@
     //    that ble.js already wired up. The originals live inside the
     //    rail's CONNECT card; they may not be in the DOM yet on first
     //    paint (rail relocates them post-DOMContentLoaded), so retry.
+    // Attach click handlers EAGERLY on the header buttons; resolve the
+    // originals lazily at click time. This avoids losing the user's
+    // first click when the originals aren't yet in DOM (ble.js relocates
+    // them post-DOMContentLoaded). Web Bluetooth's user-gesture
+    // requirement is preserved because oConn.click() is dispatched
+    // synchronously inside the user's own click handler.
+    const hConn = document.getElementById('headerConnectBtn');
+    const hDisc = document.getElementById('headerDisconnectBtn');
+    if (hConn) hConn.addEventListener('click', () => {
+      const o = document.getElementById('connectBtn');
+      if (o) o.click();
+    });
+    if (hDisc) hDisc.addEventListener('click', () => {
+      const o = document.getElementById('disconnectBtn');
+      if (o) o.click();
+    });
+
     function wireProxies() {
-      const hConn = document.getElementById('headerConnectBtn');
-      const hDisc = document.getElementById('headerDisconnectBtn');
       const oConn = document.getElementById('connectBtn');
       const oDisc = document.getElementById('disconnectBtn');
       if (!hConn || !hDisc) return false;
-      // Mirror disabled state from the originals so the header reflects link state.
       function syncDisabled() {
         if (oConn) hConn.disabled = oConn.disabled;
         if (oDisc) hDisc.disabled = oDisc.disabled;
       }
       if (oConn && oDisc) {
-        hConn.addEventListener('click', () => oConn.click());
-        hDisc.addEventListener('click', () => oDisc.click());
-        // Watch the originals for state changes so the header pair
-        // always tracks. MutationObserver on disabled attribute.
         const mo = new MutationObserver(syncDisabled);
         mo.observe(oConn, { attributes: true, attributeFilter: ['disabled'] });
         mo.observe(oDisc, { attributes: true, attributeFilter: ['disabled'] });

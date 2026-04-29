@@ -98,6 +98,7 @@
     <script src="js/settings-panel.js" defer></script>
     <script src="js/header-cleanup.js" defer></script>
     <script src="js/settings-help-inline.js" defer></script>
+    <script src="js/slide-drawers.js" defer></script>
 <style>
 .lang-picker { display: flex; gap: 2px; }
 .lang-picker .lang-btn { border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.7rem; font-weight: 600; background: transparent; color: inherit; opacity: 0.5; }
@@ -297,14 +298,14 @@ html[dir="rtl"] .hint ol { padding-left: 0; padding-right: 20px; }
                     <div class="connection-grid">
                         <div class="connection-main">
                             <div class="connection-status-block">
-                                <div class="status-row">
-                                    <div id="connectionStatus" class="status-pill">
+                                <div class="status-row" style="display:none;">
+                                    <div id="connectionStatus" class="status-pill" style="display:none !important;">
                                         <span class="status-dot"></span>
                                         <span data-i18n="ready_to_connect">Ready to connect</span>
                                     </div>
                                 </div>
 
-                                <div class="button-row">
+                                <div class="button-row" style="display:none;">
                                     <button id="connectBtn" class="primary" aria-label="Connect to micro:bit">
                                         <span class="btn-icon">🔗</span>
                                         <span data-i18n="connect_btn">Connect</span>
@@ -4005,14 +4006,16 @@ serial.writeLine("GRAPH:Force:" + force)</code></pre>
         </div>
 
         <!-- ============================================================
-             ROW: SETTINGS + HELP — two collapsible sections, side by side
-             on wide screens, stacked on phones. Both use <details> so
-             they work with zero JS for the open/close state. The
-             populated content (radio buttons, etc.) is wired by
-             js/settings-panel.js (mirrors the modal it powers, same
-             persistence keys).
+             SETTINGS + HELP slide-out drawers — same pattern as the log
+             rail (always-on right-edge panel that can be collapsed).
+             Markup lives at the END of <body>, not here, so they
+             overlay the page from outside the .app-shell layout.
+             Triggered by the ⚙ Settings + 📖 Help buttons in the header.
+             See js/slide-drawers.js for wiring.
              ============================================================ -->
-        <div id="mqSettingsHelpRow" style="margin-top:18px; display:grid; grid-template-columns:repeat(auto-fit, minmax(360px, 1fr)); gap:14px;">
+        <!-- Inline Settings/Help removed — content now lives in slide-out
+             drawers at the end of <body>. See js/slide-drawers.js. -->
+        <div id="mqSettingsHelpRow" style="display:none;"><!-- content stash — moved to slide-out drawers at runtime -->
 
           <!-- ⚙ SETTINGS — preferences (sweep mode, density, future params) -->
           <details id="mqSettingsSection" style="background:rgba(56,189,248,0.05); border:1px solid rgba(56,189,248,0.25); border-radius:12px; padding:0; overflow:hidden;">

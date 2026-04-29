@@ -5310,6 +5310,92 @@ body.rail-collapsed .log-rail-collapse-btn {
   box-shadow: 0 0 10px rgba(56,189,248,0.5);
 }
 /* ============================================================
+   WAVE 9.6 — Slide-out drawers for Settings & Help
+   Pattern matches the message log rail: fixed right-edge panel
+   that slides in/out. Triggered by ⚙ + 📖 header icon buttons.
+   ============================================================ */
+.mq-drawer-backdrop {
+  position: fixed; inset: 0; z-index: 9990;
+  background: rgba(6, 17, 33, 0.4);
+  backdrop-filter: blur(2px);
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+.mq-drawer-backdrop.mq-backdrop-open {
+  opacity: 1; pointer-events: auto;
+}
+.mq-drawer {
+  position: fixed; top: 0; right: 0;
+  width: 420px; max-width: 95vw; height: 100vh;
+  z-index: 9995;
+  background: linear-gradient(180deg, var(--card-bg, #0f1f3d), var(--bg, #0a0e2e));
+  border-left: 2px solid var(--drawer-accent, #38bdf8);
+  box-shadow: -10px 0 40px rgba(0,0,0,0.5);
+  transform: translateX(100%);
+  transition: transform 0.28s cubic-bezier(0.32, 0.72, 0, 1);
+  display: flex; flex-direction: column;
+  font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
+}
+.mq-drawer.mq-drawer-open { transform: translateX(0); }
+.mq-drawer-header {
+  display: flex; align-items: center; gap: 10px;
+  padding: 14px 18px;
+  border-bottom: 1px solid rgba(148,163,184,0.15);
+  background: linear-gradient(180deg, rgba(56,189,248,0.06), transparent);
+}
+.mq-drawer-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 16px; font-weight: 800;
+  letter-spacing: 0.06em;
+  color: var(--drawer-accent, #38bdf8);
+  text-transform: uppercase;
+}
+.mq-drawer-close {
+  margin-left: auto;
+  background: none; border: none;
+  color: var(--text-secondary, #94a3b8);
+  font-size: 26px; line-height: 1; cursor: pointer;
+  padding: 0 6px; border-radius: 6px;
+  transition: color 0.12s, background 0.12s;
+}
+.mq-drawer-close:hover {
+  color: var(--text, #e6eef9);
+  background: rgba(255,255,255,0.06);
+}
+.mq-drawer-body {
+  padding: 16px 18px;
+  overflow-y: auto;
+  flex: 1;
+  font-size: 14px;
+  color: var(--text, #e6eef9);
+}
+/* Header icon buttons (⚙ Settings + 📖 Help) — small, opacity 0.7,
+   hover full opacity. Matches the Connect/Disconnect button pair
+   in size so the row stays tidy. */
+.mq-header-icon-btn {
+  background: rgba(56,189,248,0.08);
+  border: 1px solid rgba(56,189,248,0.25);
+  border-radius: 8px;
+  padding: 6px 10px;
+  cursor: pointer;
+  font-size: 1rem;
+  opacity: 0.85;
+  margin-left: 4px;
+  transition: opacity 0.12s, background 0.12s, transform 0.1s;
+}
+.mq-header-icon-btn:hover {
+  opacity: 1;
+  background: rgba(56,189,248,0.18);
+  transform: scale(1.05);
+}
+.mq-header-icon-btn:active { transform: scale(0.95); }
+
+/* On phones the drawer takes the full width */
+@media (max-width: 480px) {
+  .mq-drawer { width: 100vw; max-width: 100vw; border-left: none; }
+}
+
+/* ============================================================
    WAVE 9.4 — RADAR: GO BIG OR GO HOME.
    User: "we have place, bigger radar, it shall be impressionnant".
    Drop the size cap, beef up the phosphor, scale HUD text up,
