@@ -6756,6 +6756,30 @@ body.mq-density-demo .mq-mode-dial {
 }
 /* BLE particle animations are visible in the connect panel */
 
+/* ── Robot anatomy SVG — absolutely centred in the header ─────────────
+   #mqHeaderRobot sits inside .header (position:relative set by JS).
+   pointer-events:none lets clicks pass through to title & buttons.   */
+#mqHeaderRobot {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+}
+#mqHeaderRobot #mqAnatomy {
+  height: 58px !important;
+  width: auto !important;
+  /* breathing animation already declared on #mqAnatomy */
+  filter: drop-shadow(0 0 10px rgba(56,189,248,0.35));
+}
+/* On very narrow viewports hide it so Connect button stays accessible */
+@media (max-width: 600px) {
+  #mqHeaderRobot { display: none; }
+}
+
 /* Header proxy buttons: hide the disabled one — no JS timing needed.
    disabled = disconnected → hide Disconnect; connected → hide Connect */
 #headerDisconnectBtn:disabled { display: none !important; }

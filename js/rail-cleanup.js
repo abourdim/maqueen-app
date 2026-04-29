@@ -76,7 +76,31 @@
       }
     }
 
-    // 2b) Robot identity → TOP of Settings drawer (below Appearance).
+    // 2b) Robot anatomy SVG → header (absolutely centred, animated).
+    //     The kit-picker + title stay in the Settings drawer under 🤖 Robot.
+    const anatomySvg = document.getElementById('mqAnatomy');
+    const header = document.querySelector('.header');
+    if (anatomySvg && header && !header.dataset.robotLifted) {
+      header.dataset.robotLifted = '1';
+      header.style.position = 'relative'; // anchor for the abs-centred SVG
+      let wrap = document.getElementById('mqHeaderRobot');
+      if (!wrap) {
+        wrap = document.createElement('div');
+        wrap.id = 'mqHeaderRobot';
+        wrap.className = 'mq-header-robot';
+        header.appendChild(wrap);
+      }
+      // Clear any inline width so CSS governs size.
+      anatomySvg.style.width  = '';
+      anatomySvg.style.height = '';
+      anatomySvg.style.maxWidth = '';
+      wrap.appendChild(anatomySvg);
+      moved++;
+    }
+
+    // 2c) Robot identity (title + kit picker) → Settings drawer (below Appearance).
+    //     #mqAnatomy has already been extracted; only the title-block and
+    //     kit picker remain in .rail-robot now.
     if (drawerBody && robotCard && !robotCard.dataset.relocated) {
       const sec = ensureSection(drawerBody, 'mqDrawerRobot', '🤖 Robot');
       robotCard.dataset.relocated = '1';
@@ -93,14 +117,14 @@
     //    Firmware/Streams buttons and BLE stack-flow dots remain visible
     //    in a single tight flex row — no expand/collapse needed.
     if (connectCard && !connectCard.dataset.relocated) {
-      const header = document.querySelector('.header');
-      if (header) {
+      const hdr = document.querySelector('.header');
+      if (hdr) {
         let wrap = document.getElementById('mqConnectPanel');
         if (!wrap) {
           wrap = document.createElement('div');
           wrap.id = 'mqConnectPanel';
           wrap.className = 'mq-connect-panel';
-          header.insertAdjacentElement('afterend', wrap);
+          hdr.insertAdjacentElement('afterend', wrap);
         }
         connectCard.dataset.relocated = '1';
         wrap.appendChild(connectCard);
