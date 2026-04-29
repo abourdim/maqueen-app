@@ -5310,6 +5310,212 @@ body.rail-collapsed .log-rail-collapse-btn {
   box-shadow: 0 0 10px rgba(56,189,248,0.5);
 }
 /* ============================================================
+   WAVE 9.2 — BREATHING ROOM. User: "aere plus la page".
+   Cumulative changes packed every section tight. This block
+   increases padding, gaps, and margins across every major
+   surface so the page can BREATHE.
+   ============================================================ */
+
+/* Sub-tab pages — generous interior padding */
+.mq-sub-page {
+  padding: 22px !important;
+  margin-top: 8px;
+}
+/* Header zone of each sub-tab — breathe below it */
+.mq-sub-page > div:first-child {
+  margin-bottom: 16px !important;
+}
+
+/* Servo cards — bigger gap between S1 and S2, more inner padding */
+[data-mq-sub="servos"] > div:first-of-type ~ div[style*="grid-template-columns"] {
+  gap: 22px !important;
+}
+.mq-servo-mode-group,
+.mq-servo-controls-group {
+  padding: 14px !important;
+}
+.mq-servo-mode-group { margin-top: 14px !important; }
+.mq-servo-controls-group { margin-top: 14px !important; }
+
+/* MODE buttons row — taller pills */
+.mq-servo-mode {
+  padding: 10px 8px !important;
+}
+
+/* Quick-angle button row — taller, with breathing space */
+#mqS1Quick, #mqS2Quick {
+  gap: 8px !important;
+  margin-top: 10px !important;
+}
+.mq-servo-quick {
+  padding: 9px 6px !important;
+  min-height: 36px;
+}
+.mq-servo-sweep {
+  padding: 9px 6px !important;
+  min-height: 36px;
+}
+
+/* Sweep speed + range bar — taller, more padding */
+[data-mq-sub="servos"] > div[style*="font-family:'JetBrains Mono'"] {
+  padding: 14px 16px !important;
+  gap: 12px !important;
+  margin-top: 18px !important;
+}
+
+/* Sweep range chips — more spread */
+.mq-sweep-preset {
+  padding: 7px 14px !important;
+  margin: 2px;
+}
+
+/* fine-tune disclosure spacing */
+details {
+  margin-top: 10px;
+}
+details[open] {
+  padding-bottom: 6px;
+}
+
+/* PWM scope card — more padding inside */
+[data-mq-sub="servos"] details[style*="background:var(--bg-deep"] {
+  margin-top: 18px !important;
+}
+
+/* Code preview block — more breathing room */
+[data-mq-sub="servos"] > div:last-child {
+  margin-top: 18px !important;
+}
+
+/* PWM Lab game card — breathe before it */
+#mqPwmLab {
+  margin-top: 22px !important;
+  padding: 18px !important;
+}
+
+/* Drive sub-tab — same generosity */
+[data-mq-sub="drive"] > div[style*="display:flex"] {
+  gap: 14px;
+}
+.mq-macro-bar {
+  padding: 10px 12px !important;
+  gap: 8px !important;
+  margin-top: 14px !important;
+}
+.mq-mode-dial {
+  padding: 8px 12px !important;
+  gap: 6px !important;
+  margin-bottom: 10px !important;
+}
+.mq-mode-pill {
+  padding: 7px 12px !important;
+  font-size: 12.5px !important;
+}
+#mqPersonalityBar {
+  padding: 10px 14px !important;
+  margin-bottom: 14px !important;
+  gap: 8px !important;
+}
+.mq-personality-btn {
+  padding: 7px 14px !important;
+  font-size: 12px !important;
+}
+
+/* Mini-games strip — air */
+#mqMiniGames {
+  padding: 14px 16px !important;
+  margin-top: 14px !important;
+}
+#mqMiniGames > div:first-child {
+  gap: 14px !important;
+}
+
+/* Math the Distance + Drift Champion + SLAM bar — all airier */
+#mqMathGame, #mqDriftBar, #mqSlamBar {
+  padding: 14px 16px !important;
+  margin-top: 14px !important;
+}
+#mqMathGame > div:first-child,
+#mqDriftBar,
+#mqSlamBar {
+  gap: 12px !important;
+}
+
+/* Path card — air around the buttons */
+.mq-odo-header {
+  gap: 10px !important;
+  padding: 14px 16px !important;
+}
+.mq-odo-header button {
+  padding: 7px 12px !important;
+}
+.mq-chal-bar {
+  padding: 12px 16px !important;
+  gap: 14px !important;
+}
+
+/* Dashboard cluster — gauges have room */
+.mq-dashboard {
+  padding: 22px !important;
+}
+.mq-gauges-grid {
+  gap: 18px !important;
+}
+
+/* Top-level row container — bigger gap between rows */
+.rows-container {
+  gap: 24px !important;
+}
+
+/* Cards in general — softer hairline border instead of hard 1 px */
+[data-mq-sub] {
+  border-width: 1px !important;
+}
+
+/* Section headings inside cards — actual breathing room above */
+[data-mq-sub] h3,
+[data-mq-sub] > div[style*="font-weight:700"] {
+  letter-spacing: 0.04em;
+}
+
+/* The buzzer / NeoPixel / line / etc. games inside their cards — air */
+#mqMorseGame, #mqSimonGame, #mqTuneGame, #mqLineRace {
+  padding: 18px !important;
+  margin-top: 18px !important;
+}
+#mqMorseGame > div:first-child,
+#mqSimonGame > div:first-child,
+#mqTuneGame > div:first-child,
+#mqLineRace > div:first-child {
+  margin-bottom: 14px !important;
+  gap: 12px !important;
+}
+#mqMorseGame > div:nth-child(2),
+#mqLineRace > div:nth-child(2) {
+  gap: 10px !important;
+  margin-bottom: 10px !important;
+}
+
+/* Live sensor strip in the rail — slightly more breathing */
+#maqueen-panel {
+  padding: 12px 16px !important;
+  gap: 14px !important;
+}
+
+/* CONNECT card — generous padding */
+.connection-card {
+  padding: 18px !important;
+}
+.connection-grid {
+  gap: 14px !important;
+}
+
+/* Section divider — actual visible space + a hairline */
+hr.div, .section-divider {
+  margin: 36px 0 !important;
+}
+
+/* ============================================================
    WAVE 9.1 — SERVOS PANEL: typography + life.
    User feedback: "still overlapping, texts too small, no animations,
    boring not funny". Punchy hierarchy + micro-interactions on every
