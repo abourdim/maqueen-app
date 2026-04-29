@@ -1082,19 +1082,24 @@
       if (!window.bleScheduler) return;
       if (sweeping[port]) return;
       sweeping[port] = true;
-      // Tick rate: 20 Hz floor (matches BLE SRV cap) up to 30 Hz for
-      // very fast sweeps. At 20 Hz the servo gets a target every 50 ms
-      // — fine-grained enough that the quintic-smoothstep curve produces
-      // visibly smooth horn motion instead of stepping in chunks.
-      const hz = Math.min(30, Math.max(20, Math.round(30000 / sweepPeriodMs)));
-      // Track the last sent angle so we skip frames that would resend the
-      // same integer degree. Avoids spamming SRV:1,90 dozens of times
-      // during the 8 % endpoint dwell.
+      // ===== TWO RATES =====
+      // Visual ticks fire at 30 Hz so the on-screen dial / readout /
+      // radar update smoothly. BUT we only emit SRV: every ~85 ms
+      // (≈12 Hz), matching the BLE SRV rate cap and the SG90 servo's
+      // ~100 ms physical slew time. Sending faster than the servo can
+      // mechanically reach the target causes its internal PID to
+      // overshoot, then reverse — visible as 'small back, forward'
+      // micro-jitter during a sweep cycle. Slower commands let each
+      // step blend into the next without contention.
+      const VISUAL_HZ = 30;
+      const SEND_INTERVAL_MS = 85;
       let lastSent = null;
+      let lastSendT = 0;
       window.bleScheduler.animate(`servo-sweep-${port}`, t => {
         // Read sweepPeriodMs LIVE so slider adjusts speed mid-sweep.
         const cycleT = (t % sweepPeriodMs) / sweepPeriodMs;
         const a = Math.round(sweepAngle(cycleT));
+        // === VISUAL UPDATE (every tick, 30 Hz) ===
         rotateDial(port, a);
         setBigReadout(port, a);
         const slider = port === 1 ? s1 : s2;
@@ -1104,16 +1109,19 @@
         lastShown = { port, angle: a };
         updateServoScope(a);
         renderCode();
-        // Feed the visualizers (sweep bypasses setAngle so do it here).
         try { if (port === 1) mqSweepRadar.recordAngle(a); } catch {}
         try { if (port === 1) mqOdometry.recordAngle(a); } catch {}
         try { if (port === 1) mqMascot.sonarServo(a); } catch {}
-        // Dedup: don't resend the same integer angle. Returning null tells
-        // the scheduler 'no command this tick' (frees the BLE slot).
+        // === BLE SEND GATE ===
+        // Dedup: same integer? skip. Else: throttle so we don't out-pace
+        // the servo's mechanical response time. Returning null = skip
+        // tick without stopping the loop.
         if (a === lastSent) return null;
+        if ((t - lastSendT) < SEND_INTERVAL_MS) return null;
         lastSent = a;
+        lastSendT = t;
         return `SRV:${port},${a}`;
-      }, hz);
+      }, VISUAL_HZ);
       paintSweepButton(port);
     }
     function stopSweep(port) {

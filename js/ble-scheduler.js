@@ -330,11 +330,14 @@
   // Defaults: sensible rate limits for the heavy verbs
   // ---------------------------------------------------------------
   setRate('M', 8);      // motors — joystick drag
-  setRate('SRV', 20);   // servo — slider drag + sweep mode. Bumped 8 → 20 Hz
-                        // (every 50 ms vs every 125 ms) so sweep mode looks
-                        // physically smooth on the horn instead of stepping
-                        // in 10° chunks. The micro:bit BLE UART handles
-                        // ~25 Hz comfortably; 20 leaves headroom.
+  setRate('SRV', 12);   // servo — 12 Hz = every ~83 ms. Matches the SG90's
+                        // physical slew time (~100 ms for a small step).
+                        // Higher rates (we tried 20 Hz) cause the servo's
+                        // internal PID to be yanked off mid-slew → visible
+                        // micro-reversals during sweep. Sweep code samples
+                        // the angle at 30 Hz (smooth UI) but only sends a
+                        // new SRV: when ~80 ms has elapsed since the last
+                        // send, dovetailing with this rate cap.
   setRate('RGB', 8);    // RGB animations
   setRate('LED', 30);   // simple LED toggles — fast L+R pairs
   setRate('BUZZ', 5);   // buzzer
