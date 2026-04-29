@@ -78,7 +78,7 @@
     helpBtn.type = 'button';
     helpBtn.className = 'mq-header-icon-btn mq-header-icon-left';
     helpBtn.title = 'Help';
-    helpBtn.innerHTML = '<span style="font-size:18px;">🤓</span>';
+    helpBtn.innerHTML = '<span style="font-size:18px; font-weight:700; font-family:Inter,system-ui,sans-serif;">?</span>';
     // Help on the LEFT — insert right after the title-block.
     const titleBlock = header.querySelector('.title-block');
     if (titleBlock && titleBlock.nextSibling) {
