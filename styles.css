@@ -6647,6 +6647,8 @@ body.mq-density-demo .mq-mode-dial {
   background: rgba(15,23,42,0.55);
   border-bottom: 1px solid rgba(56,189,248,0.12);
   padding: 4px 18px;
+  overflow: hidden !important;
+  max-height: 42px !important;   /* one-row cap */
 }
 #mqConnectPanel .connection-card {
   background: none !important; border: none !important;
@@ -6706,9 +6708,31 @@ body.mq-density-demo .mq-mode-dial {
   letter-spacing: 0.04em !important;
 }
 /* Stack flow: compact + calm — scale down the SVG, suppress particles */
-/* BLE stack flow hidden in the compact bar — takes too much space.
-   It still lives in the DOM so the animator keeps running. */
-#mqConnectPanel #mqStackFlow { display: none !important; }
+/* BLE stack flow — inline on the same row.
+   Hide the text header/stats; keep only the scaled SVG nodes. */
+#mqConnectPanel #mqStackFlow {
+  display: flex !important;
+  align-items: center !important;
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+  border-left: 1px solid rgba(148,163,184,0.25) !important;
+  padding-left: 10px !important;
+  margin-left: 4px !important;
+  height: 34px !important;     /* clamp to one bar row */
+}
+/* Hide the "BLE stack flow" label row — only the SVG stays */
+#mqConnectPanel #mqStackFlow > *:not(svg):not(#mqStackFlowSvg) {
+  display: none !important;
+}
+#mqConnectPanel #mqStackFlowStats { display: none !important; }
+#mqConnectPanel #mqStackFlowSvg {
+  transform: scale(0.45) !important;
+  transform-origin: left center !important;
+  flex-shrink: 0 !important;
+  height: 34px !important;
+}
+#mqConnectPanel #mqStackFlowParticles { opacity: 0 !important; }
 
 /* Header proxy buttons: hide the disabled one — no JS timing needed.
    disabled = disconnected → hide Disconnect; connected → hide Connect */
