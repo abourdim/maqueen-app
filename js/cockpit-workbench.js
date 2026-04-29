@@ -25,11 +25,11 @@
     // (always visible) — they're behavior settings that apply to every
     // activity, not Drive-specific. They sit above the pill-bar.
     drive: [
-      '.mq-macro-bar',                    // INPUT modes + Macro Rec/Replay
       '.mq-dash-panel',                   // dashboard (controls feedback)
     ],
     map: [
       '.mq-odo-panel',                    // path + nested SLAM + Drift
+      '.mq-macro-bar',                    // Record/Replay — path recording belongs here
     ],
     games: [
       '#mqMiniGames',
