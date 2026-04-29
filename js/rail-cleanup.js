@@ -75,25 +75,32 @@
       moved++;
     }
 
-    // 3) CONNECT card → header area, just below .header bar.
-    //    Gives instant access to firmware version + BLE stack without
-    //    opening any drawer. Wrapped in a <details> so it stays tidy.
+    // 3) CONNECT card → compact always-visible bar just below .header.
+    //    The card's chrome is stripped by CSS; only version, fw, the
+    //    Firmware/Streams buttons and BLE stack-flow dots remain visible
+    //    in a single tight flex row — no expand/collapse needed.
     if (connectCard && !connectCard.dataset.relocated) {
       const header = document.querySelector('.header');
       if (header) {
         let wrap = document.getElementById('mqConnectPanel');
         if (!wrap) {
-          wrap = document.createElement('details');
+          wrap = document.createElement('div');
           wrap.id = 'mqConnectPanel';
           wrap.className = 'mq-connect-panel';
-          const sum = document.createElement('summary');
-          sum.className = 'mq-connect-panel-summary';
-          sum.textContent = '🔌 Connection details';
-          wrap.appendChild(sum);
           header.insertAdjacentElement('afterend', wrap);
         }
         connectCard.dataset.relocated = '1';
         wrap.appendChild(connectCard);
+
+        // Rescue #fwVersionLine from inside #appBuildInfo so we can
+        // hide the build-info block (bare text nodes can't be CSS-targeted).
+        const buildInfo  = connectCard.querySelector('#appBuildInfo');
+        const fwLine     = connectCard.querySelector('#fwVersionLine');
+        const statusBlk  = connectCard.querySelector('.connection-status-block');
+        if (buildInfo && fwLine && statusBlk) {
+          statusBlk.insertBefore(fwLine, buildInfo); // move fw line before build info
+          buildInfo.style.display = 'none';          // now safe to collapse
+        }
         moved++;
       }
     }

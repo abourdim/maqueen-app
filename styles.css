@@ -6639,26 +6639,45 @@ body.mq-density-demo .mq-mode-dial {
   width: 100%;
 }
 
-/* ── Connection-details panel (below the .header bar) ──────────────── */
-.mq-connect-panel {
-  background: rgba(30,41,59,0.7);
-  border-bottom: 1px solid rgba(56,189,248,0.15);
-  padding: 0 18px;
+/* ── Compact always-visible connection bar (below .header) ────────────
+   The full .connection-card is moved here by rail-cleanup.js.
+   CSS strips the card chrome and lays out version + fw + action
+   buttons + BLE stack-flow dots in a single tight flex row.       */
+#mqConnectPanel {
+  background: rgba(15,23,42,0.55);
+  border-bottom: 1px solid rgba(56,189,248,0.12);
+  padding: 4px 18px;
 }
-.mq-connect-panel-summary {
-  cursor: pointer;
-  list-style: none;
-  padding: 7px 0;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text-secondary, #93a8c4);
-  letter-spacing: 0.04em;
-  user-select: none;
+#mqConnectPanel .connection-card {
+  background: none !important; border: none !important;
+  box-shadow: none !important; padding: 0 !important;
+  margin: 0 !important;        border-radius: 0 !important;
 }
-.mq-connect-panel-summary::-webkit-details-marker { display: none; }
-.mq-connect-panel[open] .mq-connect-panel-summary { color: #38bdf8; padding-bottom: 6px; }
-/* CONNECT card inside the panel — full width, no extra margin */
-.mq-connect-panel .connection-card { margin: 0 0 12px; width: 100%; }
+#mqConnectPanel .card-header { display: none !important; }
+#mqConnectPanel .connection-grid {
+  display: flex !important; flex-direction: row !important;
+  align-items: center !important; gap: 10px !important; flex-wrap: wrap !important;
+}
+#mqConnectPanel .connection-main        { display: contents !important; }
+#mqConnectPanel .connection-status-block {
+  display: flex !important; flex-direction: row !important;
+  align-items: center !important; gap: 8px !important;
+}
+#mqConnectPanel .button-row             { display: none !important; }
+/* appBuildInfo hidden by JS (rail-cleanup.js rescues #fwVersionLine first) */
+#mqConnectPanel #appBuildInfo           { display: none !important; }
+#mqConnectPanel #fwVersionLine {
+  display: inline-flex !important; align-items: center !important;
+  font-size: 11px !important; white-space: nowrap !important; opacity: 0.8 !important;
+}
+#mqConnectPanel .connection-details     { display: none !important; }
+#mqConnectPanel .connection-footer {
+  display: flex !important; flex-direction: row !important;
+  align-items: center !important; gap: 6px !important;
+}
+#mqConnectPanel #firmwareBtn,
+#mqConnectPanel #mq-streams-toggle      { padding: 3px 10px !important; font-size: 11px !important; }
+#mqConnectPanel #mqStackFlow            { flex: 1 !important; min-width: 180px !important; }
 
 /* Header proxy buttons: hide the disabled one — no JS timing needed.
    disabled = disconnected → hide Disconnect; connected → hide Connect */
