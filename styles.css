@@ -5309,6 +5309,160 @@ body.rail-collapsed .log-rail-collapse-btn {
   background: #38bdf8; color: #01202b; border-color: #38bdf8;
   box-shadow: 0 0 10px rgba(56,189,248,0.5);
 }
+/* ============================================================
+   WAVE 9 — Mode dial · Floating STOP · Density profiles.
+   See js/mode-dial.js + js/cockpit-redesign.js for behavior.
+   ============================================================ */
+
+/* --- MODE DIAL --- the segmented input selector ---------------- */
+.mq-mode-dial {
+  display: flex; align-items: center; gap: 4px;
+  flex-wrap: wrap;
+  padding: 4px 8px;
+  background: rgba(56,189,248,0.04);
+  border: 1px solid rgba(56,189,248,0.18);
+  border-radius: 10px;
+  width: 100%;
+  margin-bottom: 6px;
+}
+.mq-mode-dial-label {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  color: #94a3b8;
+  padding: 0 8px 0 4px;
+  text-transform: uppercase;
+}
+.mq-mode-pill {
+  padding: 5px 10px;
+  background: transparent;
+  color: var(--text-secondary, #94a3b8);
+  border: 1px solid transparent;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 12px;
+  font-family: inherit;
+  font-weight: 600;
+  transition: background 0.12s, color 0.12s, border-color 0.12s;
+  white-space: nowrap;
+}
+.mq-mode-pill:hover {
+  background: rgba(255,255,255,0.04);
+  color: var(--text, #e6eef9);
+}
+.mq-mode-pill.mq-mode-pill-active {
+  background: var(--mode-color, #38bdf8);
+  color: #0a1628;
+  border-color: var(--mode-color, #38bdf8);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--mode-color, #38bdf8) 40%, transparent);
+  font-weight: 800;
+}
+
+/* --- FLOATING STOP --- big red safety button ------------------- */
+#mqFabStop {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 9000;
+  width: 84px; height: 84px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #fca5a5, #dc2626 60%, #7f1d1d);
+  color: #fff;
+  border: 4px solid #fff;
+  cursor: pointer;
+  box-shadow: 0 8px 28px rgba(220,38,38,0.55), 0 0 0 4px rgba(0,0,0,0.3);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 900;
+  transition: transform 0.1s, box-shadow 0.15s;
+  animation: mqFabPulse 2.4s ease-in-out infinite;
+}
+#mqFabStop:hover {
+  transform: scale(1.08);
+  box-shadow: 0 12px 36px rgba(220,38,38,0.75), 0 0 0 4px rgba(0,0,0,0.3);
+}
+#mqFabStop:active { transform: scale(0.94); }
+#mqFabStop.mq-fab-flash {
+  background: radial-gradient(circle at 30% 30%, #fff, #fca5a5 60%, #dc2626);
+}
+#mqFabStop .mq-fab-icon { font-size: 28px; line-height: 1; }
+#mqFabStop .mq-fab-label { font-size: 11px; letter-spacing: 0.12em; margin-top: 2px; }
+@keyframes mqFabPulse {
+  0%, 100% { box-shadow: 0 8px 28px rgba(220,38,38,0.55), 0 0 0 4px rgba(0,0,0,0.3); }
+  50%      { box-shadow: 0 8px 28px rgba(220,38,38,0.55), 0 0 0 4px rgba(0,0,0,0.3), 0 0 0 14px rgba(220,38,38,0.18); }
+}
+@media (max-width: 640px) {
+  #mqFabStop { width: 72px; height: 72px; right: 12px; bottom: 12px; }
+}
+
+/* --- DENSITY PICKER MENU -------------------------------------- */
+.mq-density-menu {
+  background: var(--card-bg, #0f1f3d);
+  border: 1px solid rgba(56,189,248,0.3);
+  border-radius: 10px;
+  padding: 6px;
+  min-width: 220px;
+  box-shadow: 0 10px 32px rgba(0,0,0,0.5);
+  z-index: 9100;
+}
+.mq-density-item {
+  display: block; width: 100%; text-align: left;
+  background: transparent; border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  color: var(--text, #e6eef9);
+  font-family: inherit;
+}
+.mq-density-item:hover { background: rgba(56,189,248,0.12); }
+.mq-density-item-label { font-size: 14px; font-weight: 700; }
+.mq-density-item-desc {
+  font-size: 11px; color: var(--text-secondary, #94a3b8);
+  margin-top: 2px;
+}
+.mq-density-btn:hover { opacity: 1; }
+
+/* --- DENSITY-PROFILE rules — what each level hides ------------ */
+/* 🐣 BEGINNER: just keypad + speed + STOP. Hide everything advanced. */
+body.mq-density-beginner #mqPersonalityBar,
+body.mq-density-beginner #mqMiniGames,
+body.mq-density-beginner #mqMathGame,
+body.mq-density-beginner #mqSlamBar,
+body.mq-density-beginner #mqDriftBar,
+body.mq-density-beginner #mqMacroBar .mq-macro-rec,
+body.mq-density-beginner #mqMacroBar .mq-macro-play,
+body.mq-density-beginner .mq-mode-dial,
+body.mq-density-beginner #mqHeadBlock,
+body.mq-density-beginner #mqBatBlock,
+body.mq-density-beginner #mqDashboardCard .mq-lcd-strip,
+body.mq-density-beginner #mqDriveAutoWander,
+body.mq-density-beginner #mqWanderObstacle,
+body.mq-density-beginner [data-i18n="mq_wander_obstacle"] {
+  display: none !important;
+}
+
+/* 🥷 HACKER: surface everything that's normally hidden — re-show
+   the FX/hacker buttons that mode-dial.js stuffed away in the
+   macro bar. */
+body.mq-density-hacker #mqSynBtn,
+body.mq-density-hacker #mqFuzzBtn,
+body.mq-density-hacker #mqFencingBtn {
+  display: inline-flex !important;
+}
+
+/* 🎬 DEMO: same as beginner but keep wander button visible (auto-
+   armed by JS on profile switch). */
+body.mq-density-demo #mqPersonalityBar,
+body.mq-density-demo #mqMiniGames,
+body.mq-density-demo #mqMathGame,
+body.mq-density-demo #mqSlamBar,
+body.mq-density-demo #mqDriftBar,
+body.mq-density-demo #mqMacroBar .mq-macro-rec,
+body.mq-density-demo #mqMacroBar .mq-macro-play,
+body.mq-density-demo .mq-mode-dial {
+  display: none !important;
+}
+
 .mq-claude-btn { color: #38bdf8; border-color: rgba(56,189,248,0.5); }
 .mq-claude-btn.mq-claude-on {
   background: #38bdf8; color: #01202b; border-color: #38bdf8;

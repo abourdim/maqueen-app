@@ -793,6 +793,15 @@
     document.getElementById('mqS2Label').textContent = kit.s2Label;
     const presetEl = document.getElementById('mqServoPresets');
     presetEl.innerHTML = '';
+    // Cleanup: for the Base (generic) kit, the 3 default presets
+    // (0°/90°/180° on both servos) are pure duplication of the
+    // per-servo quick-buttons inside each S1/S2 card. Hide the
+    // whole row in that case to remove the visual overlap.
+    if (kitKey === 'base') {
+      presetEl.style.display = 'none';
+      return;
+    }
+    presetEl.style.display = 'flex';
     kit.presets.forEach(p => {
       const b = document.createElement('button');
       b.textContent = p.label;
@@ -893,6 +902,10 @@
         lbl.textContent = pwMs.toFixed(2) + ' ms';
       }
       if (info) info.textContent = pwMs.toFixed(2) + ' ms HIGH every 20 ms';
+      // Mirror the summary inside the collapsed <details> so kids see
+      // it update even when the full scope is folded.
+      const infoSum = document.getElementById('mqServoScopeInfoSummary');
+      if (infoSum) infoSum.textContent = pwMs.toFixed(2) + ' ms HIGH every 20 ms';
     }
 
     function setAngle(port, angle, opts) {

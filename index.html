@@ -89,6 +89,8 @@
     <script src="js/buzzer-modem.js" defer></script>
     <script src="js/fencing-mode.js" defer></script>
     <script src="js/whistle-joystick.js" defer></script>
+    <script src="js/cockpit-redesign.js" defer></script>
+    <script src="js/mode-dial.js" defer></script>
 <style>
 .lang-picker { display: flex; gap: 2px; }
 .lang-picker .lang-btn { border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.7rem; font-weight: 600; background: transparent; color: inherit; opacity: 0.5; }
@@ -1857,23 +1859,35 @@ html[dir="rtl"] .hint ol { padding-left: 0; padding-right: 20px; }
                                                 <button class="mq-sweep-preset" data-from="90" data-to="180" type="button" title="90° to 180° — right half" data-i18n="mq_sweep_preset_right">Right</button>
                                                 <button class="mq-sweep-preset" data-from="30" data-to="150" type="button" title="30° to 150° — wide front" data-i18n="mq_sweep_preset_wide">Wide</button>
                                             </div>
-                                            <div style="display:flex; align-items:center; gap:8px;">
-                                                <span style="opacity:0.7;" data-i18n="mq_servo_sweep_from">from</span>
-                                                <input type="range" id="mqServoSweepFrom" min="0" max="180" step="1" value="0" style="flex:1; accent-color:#facc15;"/>
-                                                <span id="mqServoSweepFromRead" style="color:#facc15; min-width:42px; text-align:right; font-weight:700;">0°</span>
-                                            </div>
-                                            <div style="display:flex; align-items:center; gap:8px;">
-                                                <span style="opacity:0.7;" data-i18n="mq_servo_sweep_to">to</span>
-                                                <input type="range" id="mqServoSweepTo" min="0" max="180" step="1" value="180" style="flex:1; accent-color:#facc15;"/>
-                                                <span id="mqServoSweepToRead" style="color:#facc15; min-width:42px; text-align:right; font-weight:700;">180°</span>
-                                            </div>
+                                            <!-- Fine-tune sliders collapsed by default — the preset chips
+                                                 above cover 99% of cases. Disclosure summary shows the
+                                                 currently-resolved range so kids see what's set. -->
+                                            <details style="margin-top:2px;">
+                                                <summary style="cursor:pointer; opacity:0.65; font-size:9px; user-select:none;">
+                                                    ⚙ fine-tune (<span id="mqServoSweepFromRead" style="color:#facc15; font-weight:700;">0°</span>–<span id="mqServoSweepToRead" style="color:#facc15; font-weight:700;">180°</span>)
+                                                </summary>
+                                                <div style="display:flex; align-items:center; gap:8px; margin-top:6px;">
+                                                    <span style="opacity:0.7;" data-i18n="mq_servo_sweep_from">from</span>
+                                                    <input type="range" id="mqServoSweepFrom" min="0" max="180" step="1" value="0" style="flex:1; accent-color:#facc15;"/>
+                                                </div>
+                                                <div style="display:flex; align-items:center; gap:8px; margin-top:4px;">
+                                                    <span style="opacity:0.7;" data-i18n="mq_servo_sweep_to">to</span>
+                                                    <input type="range" id="mqServoSweepTo" min="0" max="180" step="1" value="180" style="flex:1; accent-color:#facc15;"/>
+                                                </div>
+                                            </details>
                                         </div>
                                     </div>
                                     <div id="mqServoPresets" style="display:flex; gap:6px; flex-wrap:wrap; margin-top:10px;"></div>
 
-                                    <!-- 📟 PWM oscilloscope — pulse width SETS the angle.
-                                         1.0 ms = 0°, 1.5 ms = 90°, 2.0 ms = 180°. Refresh every 20 ms (50 Hz). -->
-                                    <div style="margin-top:12px; background:var(--bg-deep, #061121); border:1px solid var(--border, #1d3556); border-radius:8px; padding:10px;">
+                                    <!-- 📟 PWM oscilloscope — collapsible.
+                                         Most of the time the kid just wants to drag the slider. The
+                                         scope is for moments when they ask 'how does the servo
+                                         actually know what angle to go to?' — opt-in via summary. -->
+                                    <details style="margin-top:12px; background:var(--bg-deep, #061121); border:1px solid var(--border, #1d3556); border-radius:8px;">
+                                        <summary style="cursor:pointer; padding:10px; font-size:10px; color:var(--text-secondary, #93a8c4); user-select:none; list-style:none;">
+                                            📟 view PWM signal · <span id="mqServoScopeInfoSummary" style="color:#facc15; font-family:'JetBrains Mono', monospace;">1.50 ms HIGH every 20 ms</span>
+                                        </summary>
+                                    <div style="padding:10px; border-top:1px solid var(--border, #1d3556);">
                                         <div style="display:flex; align-items:center; gap:6px; margin-bottom:6px; font-size:10px; color:var(--text-secondary, #93a8c4);">
                                             <span>📟 PWM signal · pulse width sets the angle</span>
                                             <span id="mqServoScopeInfo" style="margin-left:auto; font-family:'JetBrains Mono', monospace; color:#facc15;">1.50 ms HIGH every 20 ms</span>
@@ -1910,8 +1924,9 @@ html[dir="rtl"] .hint ol { padding-left: 0; padding-right: 20px; }
                                             <span>60 ms (50 Hz × 3)</span>
                                         </div>
                                     </div>
+                                    </details>
 
-                                                                        <!-- Code preview — what the firmware does when you move the slider -->
+                                    <!-- Code preview — what the firmware does when you move the slider -->
                                     <div style="margin-top:12px;">
                                         <div style="display:flex; align-items:center; gap:6px; margin-bottom:6px;">
                                             <span style="font-size:10px; color:var(--text-secondary, #93a8c4);">🧱 Code that runs on the micro:bit</span>
