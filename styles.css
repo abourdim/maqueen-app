@@ -5310,6 +5310,194 @@ body.rail-collapsed .log-rail-collapse-btn {
   box-shadow: 0 0 10px rgba(56,189,248,0.5);
 }
 /* ============================================================
+   WAVE 9.3 — KID-FRIENDLY TYPOGRAPHY (target age 10).
+   User: "small fonts not very kids friendly (10 years old)".
+   Every visible label in the servos panel gets BIGGER and BOLDER.
+   No more 8 / 10 / 11 px text in kid-facing positions.
+   ============================================================ */
+
+/* MODE buttons (180° position / 360° speed) — these are PRIMARY
+   mode switches, they should look like real chunky tabs. */
+.mq-servo-mode {
+  font-size: 14px !important;
+  padding: 12px 8px !important;
+  letter-spacing: 0.02em !important;
+  min-height: 44px !important;
+}
+
+/* S1 / S2 port labels — primary identity */
+#mqS1Label, #mqS2Label {
+  font-size: 18px !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.05em !important;
+}
+
+/* Readouts (+65 %, 90°, 0%) — the LIVE NUMBER, must be big */
+#mqS1Readout, #mqS2Readout {
+  font-size: 22px !important;
+  font-weight: 900 !important;
+  min-width: 56px !important;
+  text-shadow: 0 0 14px currentColor;
+}
+
+/* Quick buttons (0°, 90°, 180°, ▶ Sweep) and 360-mode buttons
+   (-100%, STOP, +100%, ▶ Sweep) — taller, bigger text */
+.mq-servo-quick, .mq-servo-sweep {
+  font-size: 14px !important;
+  font-weight: 800 !important;
+  padding: 11px 8px !important;
+  min-height: 42px !important;
+  letter-spacing: 0.04em;
+}
+
+/* Section labels (MODE / CONTROLS) — small but distinctly colored,
+   positioned to read as a chip-tag, not body text */
+.mq-servo-mode-group > div:first-child,
+.mq-servo-controls-group > div:first-child {
+  font-size: 11px !important;
+  padding: 4px 10px !important;
+  background: rgba(56,189,248,0.12);
+  border-radius: 999px;
+  display: inline-block !important;
+  width: auto !important;
+}
+
+/* "Sweep speed slow ... fast 1.4 s/cycle" — bump those labels */
+[id="mqServoSweepSpeed"] {
+  flex: 1; min-height: 28px;
+}
+[id="mqServoSweepSpeedRead"] {
+  font-size: 14px !important;
+  font-weight: 800 !important;
+  min-width: 80px !important;
+}
+
+/* The whole "Sweep speed + Sweep range" global panel — labels bumped */
+[data-mq-sub="servos"] div[style*="font-family:'JetBrains Mono'"] {
+  font-size: 13px !important;
+  color: var(--text, #e6eef9) !important;
+}
+/* "▶ Sweep speed" / "↔ Sweep range" tags — make them real titles */
+[data-mq-sub="servos"] div[style*="font-family:'JetBrains Mono'"] > div > span:first-child {
+  font-size: 13px !important;
+  font-weight: 800 !important;
+  color: #fbbf24 !important;
+  letter-spacing: 0.04em;
+}
+
+/* "slow" / "fast" mini-labels around the speed slider */
+[id="mqServoSweepSpeed"] ~ span,
+span[style*="opacity:0.7"] {
+  font-size: 12px !important;
+  font-weight: 700 !important;
+}
+
+/* Sweep preset chips — already sized but the font was 11 px */
+.mq-sweep-preset {
+  font-size: 13px !important;
+  padding: 8px 16px !important;
+}
+
+/* fine-tune disclosure — make it a real button, not gray fine print */
+details summary {
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  padding: 8px 12px !important;
+  background: rgba(250,204,21,0.08);
+  border-radius: 8px;
+  border: 1px solid rgba(250,204,21,0.25);
+  display: inline-block;
+  margin: 6px 0;
+}
+details summary:hover {
+  background: rgba(250,204,21,0.18);
+  border-color: rgba(250,204,21,0.5);
+}
+details[open] summary {
+  background: rgba(250,204,21,0.2);
+  border-color: rgba(250,204,21,0.6);
+  margin-bottom: 12px;
+}
+details summary::-webkit-details-marker { color: #fbbf24; }
+
+/* "view PWM signal · 1.83 ms HIGH every 20 ms" — make it a clear button */
+[data-mq-sub="servos"] details > summary[style*="📟"],
+details > summary:has(+ * #mqServoScopeInfoSummary),
+[data-mq-sub="servos"] > details > summary {
+  font-size: 14px !important;
+  padding: 12px 16px !important;
+  background: rgba(74,222,128,0.08) !important;
+  border-color: rgba(74,222,128,0.3) !important;
+  border-radius: 10px !important;
+  width: 100%;
+  display: block;
+}
+#mqServoScopeInfoSummary {
+  font-size: 13px !important;
+  font-weight: 800 !important;
+}
+
+/* "Code that runs on the micro:bit" + the language tabs — bump */
+[data-mq-sub="servos"] > div:last-child > div:first-child > span:first-child {
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  color: var(--text, #e6eef9) !important;
+}
+.mq-servo-codetab {
+  font-size: 12px !important;
+  padding: 6px 12px !important;
+}
+#mqServoCodeView {
+  font-size: 14px !important;
+  line-height: 1.7 !important;
+  padding: 14px 16px !important;
+}
+#mqServoCodeStatus {
+  font-size: 12px !important;
+}
+
+/* PWM Lab card — bump game text */
+#mqPwmLab > div:first-child > span:nth-child(2) {
+  font-size: 16px !important;
+}
+#mqPwmTarget {
+  font-size: 32px !important;
+}
+#mqPwmGuessRead {
+  font-size: 18px !important;
+}
+#mqPwmSubmit, #mqPwmReset {
+  font-size: 13px !important;
+  padding: 10px 18px !important;
+}
+#mqPwmFeedback {
+  font-size: 13px !important;
+  font-weight: 600;
+}
+#mqPwmLab > div:last-child {
+  font-size: 12px !important;
+}
+
+/* HIERARCHY divider — visually separate the "per-servo cards"
+   block from the "global sweep" panel below. A subtle but
+   clear bar with a label so kids see the boundary. */
+[data-mq-sub="servos"] > div[style*="font-family:'JetBrains Mono'"]::before {
+  content: '⚙ shared sweep settings';
+  display: block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  color: #fbbf24;
+  text-transform: uppercase;
+  padding: 6px 12px;
+  background: rgba(251,191,36,0.1);
+  border-radius: 999px;
+  width: fit-content;
+  margin-bottom: 10px;
+}
+
+/* ============================================================
    WAVE 9.2 — BREATHING ROOM. User: "aere plus la page".
    Cumulative changes packed every section tight. This block
    increases padding, gaps, and margins across every major
