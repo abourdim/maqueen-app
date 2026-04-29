@@ -5323,11 +5323,12 @@ body.rail-collapsed .log-rail-collapse-btn {
   border-width: 2px !important;
   margin-bottom: 16px !important;
 }
-/* Scope: only the FIRST (main) SVG in each radar block — not the tiny
-   sparkline SVG inside the Bat-mode 'last 30 pings' panel which has
-   its own fixed 24 px height and was being blown up to 360 px by an
-   over-greedy selector. */
-[data-mq-sub="ultrasonic"] .mq-radar-style > div > svg:first-of-type {
+/* Scope: only the SVG inside the FIRST direct-child div of each
+   .mq-radar-style block. The sparkline SVG (Bat-mode 'last 30
+   pings') is in a SECOND direct-child div sibling — must NOT
+   match this rule, or it gets stretched from 32 px → 360 px and
+   becomes a giant black box. */
+[data-mq-sub="ultrasonic"] .mq-radar-style > div:first-child > svg {
   width: 100% !important;
   min-height: 360px;
   max-height: 560px;
