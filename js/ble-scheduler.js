@@ -253,10 +253,18 @@
     stop(id);
     const intervalMs = 1000 / (hz || DEFAULT_RATE_HZ);
     const start = performance.now();
+    // Tick semantics:
+    //   - returns a non-empty string  → send that verb (rate-limited)
+    //   - returns null                → SKIP this tick, keep the animation
+    //                                   running (used by sweep dedup to
+    //                                   skip same-angle frames without
+    //                                   killing the loop)
+    //   - returns false / undefined   → STOP the animation
     const tick = () => {
       const t = performance.now() - start;
       const verb = verbFn(t);
-      if (verb == null) { stop(id); return; }
+      if (verb === false || verb === undefined) { stop(id); return; }
+      if (verb === null) return;             // skip-this-tick
       send(verb, { coalesce: true }).catch(() => {});
     };
     const timer = setInterval(tick, intervalMs);
@@ -322,7 +330,11 @@
   // Defaults: sensible rate limits for the heavy verbs
   // ---------------------------------------------------------------
   setRate('M', 8);      // motors — joystick drag
-  setRate('SRV', 8);    // servo — slider drag
+  setRate('SRV', 20);   // servo — slider drag + sweep mode. Bumped 8 → 20 Hz
+                        // (every 50 ms vs every 125 ms) so sweep mode looks
+                        // physically smooth on the horn instead of stepping
+                        // in 10° chunks. The micro:bit BLE UART handles
+                        // ~25 Hz comfortably; 20 leaves headroom.
   setRate('RGB', 8);    // RGB animations
   setRate('LED', 30);   // simple LED toggles — fast L+R pairs
   setRate('BUZZ', 5);   // buzzer
