@@ -54,8 +54,12 @@
  *
  * BUILD STAMP — edit these two lines before flashing:
  */
-const BUILD_VERSION = "0.1.54"
-const BUILD_DATE = "2026-04-27 07:46 UTC"
+const BUILD_VERSION = "0.1.56"
+const BUILD_DATE = "2026-04-29 06:16 UTC"
+// Capabilities advertised on FW? verb. Comma-separated string the
+// browser uses to pick code paths (e.g. firmware-side sweep vs
+// browser-side). Same protocol as v2 bare-metal.
+const BUILD_CAPS = "sweep"
 
 // ---------- state ----------
 let btConnected = false
@@ -239,6 +243,8 @@ function handleRGB(arg: string) {
 function handleServo(arg: string) {
     let v = splitInts(arg)
     if (v.length < 2) return
+    // Direct SRV: cancels any active sweep on that port (user grabbed the wheel).
+    sweepStop(v[0])
     let port = v[0] == 1 ? maqueen.Servos.S1 : maqueen.Servos.S2
     let angle = Math.constrain(v[1], 0, 180)
     maqueen.servoRun(port, angle)
@@ -246,6 +252,107 @@ function handleServo(arg: string) {
     if (v[0] == 1) send("SERVO1_POS:" + angle)
     else send("SERVO2_POS:" + angle)
     execlog("SRV " + v[0] + "=" + angle)
+}
+
+// ============================================================
+//  AUTONOMOUS SWEEP — same protocol as v2-bare-metal.
+//  SWEEP:port,from,to,period[,ease]    start
+//  SWEEP:port,STOP                     stop
+//  Pushes 'SWP:port,angle' at ~20 Hz so browser visuals follow.
+// ============================================================
+class SweepState {
+    active: boolean = false
+    fromDeg: number = 0
+    toDeg: number = 180
+    periodMs: number = 2000
+    ease: number = 1
+    startMs: number = 0
+    lastEmitMs: number = 0
+    lastEmitAngle: number = -1
+}
+const sweep1 = new SweepState()
+const sweep2 = new SweepState()
+
+function getSweepState(p: number): SweepState { return p == 1 ? sweep1 : sweep2 }
+
+function sweepAngleAt(s: SweepState, t: number): number {
+    const D = 8                                    // 8% endpoint dwell, integer math
+    const tx = Math.idiv(t * 1000, 10)             // 0..100
+    if (tx < D) return s.fromDeg
+    if (tx > 100 - D) return s.fromDeg
+    if (tx >= 50 - D && tx <= 50 + D) return s.toDeg
+    let u: number
+    if (tx < 50) u = (tx - D) / (50 - 2 * D)
+    else         u = (tx - (50 + D)) / (50 - 2 * D)
+    if (u < 0) u = 0
+    if (u > 1) u = 1
+    let e = s.ease == 0 ? u : u * u * u * (u * (u * 6 - 15) + 10)
+    if (tx < 50) return Math.round(s.fromDeg + (s.toDeg - s.fromDeg) * e)
+    return Math.round(s.toDeg - (s.toDeg - s.fromDeg) * e)
+}
+
+function sweepStop(port: number) {
+    let s = getSweepState(port)
+    s.active = false
+    s.lastEmitAngle = -1
+}
+
+function sweepStart(port: number, from: number, to: number, periodMs: number, ease: number) {
+    let s = getSweepState(port)
+    s.fromDeg = Math.constrain(from, 0, 180)
+    s.toDeg = Math.constrain(to, 0, 180)
+    s.periodMs = Math.max(300, Math.min(20000, periodMs))
+    s.ease = ease == 0 ? 0 : 1
+    s.startMs = control.millis()
+    s.lastEmitMs = 0
+    s.lastEmitAngle = -1
+    s.active = true
+}
+
+// SWEEP:port,from,to,period[,ease] | SWEEP:port,STOP
+function handleSweep(arg: string) {
+    let firstComma = arg.indexOf(",")
+    if (firstComma < 1) return
+    let port = parseInt(arg.substr(0, firstComma))
+    if (port != 1 && port != 2) return
+    let rest = arg.substr(firstComma + 1)
+    if (rest == "STOP") {
+        sweepStop(port)
+        execlog("SWEEP " + port + " STOP")
+        return
+    }
+    let v = splitInts(rest)
+    if (v.length < 3) return
+    let ease = v.length >= 4 ? v[3] : 1
+    sweepStart(port, v[0], v[1], v[2], ease)
+    execlog("SWEEP " + port + " " + v[0] + "-" + v[1] + " in " + v[2] + "ms ease=" + ease)
+}
+
+// 50 Hz sweep loop — runs both ports' state machines, drives the
+// servos via maqueen.servoRun (uses pxt-maqueen extension under the
+// hood; same hardware result as v2's direct pins.servoWritePin).
+// Pushes SWP: at most every 50 ms per port and only on integer change.
+function startSweepFiber() {
+    control.inBackground(function () {
+        while (true) {
+            let now = control.millis()
+            for (let port = 1; port <= 2; port++) {
+                let s = getSweepState(port)
+                if (!s.active) continue
+                let elapsed = now - s.startMs
+                let t = (elapsed % s.periodMs) / s.periodMs
+                let angle = sweepAngleAt(s, t)
+                let servo = port == 1 ? maqueen.Servos.S1 : maqueen.Servos.S2
+                maqueen.servoRun(servo, angle)
+                if (angle != s.lastEmitAngle && (now - s.lastEmitMs) >= 50) {
+                    if (btConnected) bluetooth.uartWriteLine("SWP:" + port + "," + angle)
+                    s.lastEmitAngle = angle
+                    s.lastEmitMs = now
+                }
+            }
+            basic.pause(20)
+        }
+    })
 }
 
 // BUZZ:f,ms
@@ -386,6 +493,8 @@ bluetooth.onUartDataReceived(serial.delimiters(Delimiters.NewLine), function () 
         handleRGB(verb.substr(4))
     } else if (verb.substr(0, 4) == "SRV:") {
         handleServo(verb.substr(4))
+    } else if (verb.substr(0, 6) == "SWEEP:") {
+        handleSweep(verb.substr(6))
     } else if (verb.substr(0, 5) == "BUZZ:") {
         handleBuzz(verb.substr(5))
     } else if (verb == "LINE?") {
@@ -404,6 +513,8 @@ bluetooth.onUartDataReceived(serial.delimiters(Delimiters.NewLine), function () 
         handleI2C(verb.substr(4))
     } else if (verb == "HELLO") {
         send("HELLO:" + BUILD_VERSION)
+    } else if (verb == "FW?") {
+        send("FW:" + BUILD_VERSION + "," + BUILD_CAPS)
     } else if (verb == "STREAM:on") {
         streamsEnabled = true
         send("STREAM:on")
@@ -656,4 +767,5 @@ basic.forever(function () {
 bluetooth.startUartService()
 basic.showIcon(IconNames.No)
 setupIR()
+startSweepFiber()                      // 50 Hz autonomous sweep loop
 bootBanner()
