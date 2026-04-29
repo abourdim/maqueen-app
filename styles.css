@@ -6817,17 +6817,16 @@ body.mq-density-demo .mq-mode-dial {
   min-width: 0 !important;
   overflow: hidden !important;
   border-left: 1px solid rgba(148,163,184,0.25) !important;
-  padding-left: 10px !important;
-  margin-left: 4px !important;
-  height: 34px !important;     /* clamp to one bar row */
+  padding-left: 12px !important;
+  margin-left: 6px !important;
+  height: 52px !important;
 }
 /* Hide the "BLE stack flow" label + stats — SVG scales itself via viewBox */
 #mqConnectPanel #mqStackFlowStats { display: none !important; }
-/* SVG has viewBox="0 0 600 80" — set height only; width:100% already set by JS.
-   The viewBox handles aspect-ratio scaling automatically — no transform needed. */
+/* viewBox="0 0 600 80" — height drives proportional width via auto */
 #mqConnectPanel #mqStackFlowSvg {
-  height: 34px !important;
-  width: auto !important;   /* let viewBox aspect-ratio breathe — no stretch */
+  height: 52px !important;
+  width: auto !important;
 }
 /* BLE particle animations are visible in the connect panel */
 
