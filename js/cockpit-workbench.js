@@ -35,17 +35,16 @@
       '#mqMiniGames',
       '#mqMathGame',
     ],
-    learn: [
-      // The "How does this work?" details — last <details> in the
-      // Drive sub-page; tag it by walking siblings of mqMathGame.
-    ],
+    // 'learn' bench dropped — the "How does this work?" <details>
+    // panel is now always-visible at the bottom of the tab. It's a
+    // passive physics reference that doesn't compete with any other
+    // panel; kids should be able to peek at it from any workbench.
   };
 
   const PILL_DEFS = [
     { key: 'drive', label: '🚗 Drive',   color: '#a78bfa' },
     { key: 'map',   label: '🗺️ Map',    color: '#38bdf8' },
     { key: 'games', label: '🎮 Games',  color: '#c084fc' },
-    { key: 'learn', label: '🎓 Learn',  color: '#4ade80' },
   ];
 
   const STORAGE_KEY = 'maqueen.workbench';
@@ -54,6 +53,8 @@
     try {
       const v = localStorage.getItem(STORAGE_KEY);
       if (PILL_DEFS.some(p => p.key === v)) return v;
+      // Old 'learn' value from before learn-bench was retired —
+      // silently fall back to drive.
     } catch {}
     return 'drive';
   }
@@ -72,20 +73,6 @@
         }
       });
     });
-    // Tag the "How does this work?" <details> — walk forward from
-    // mqMathGame to find the next <details> sibling.
-    const math = document.getElementById('mqMathGame');
-    if (math) {
-      let n = math.nextElementSibling;
-      while (n) {
-        if (n.tagName === 'DETAILS' && !n.dataset.bench) {
-          n.dataset.bench = 'learn';
-          tagged++;
-          break;
-        }
-        n = n.nextElementSibling;
-      }
-    }
     return tagged;
   }
 
@@ -131,10 +118,7 @@
       const tagged = tagPanels();
       const pills  = document.getElementById('mqWorkbenchPills');
       if (tagged > 0 && !pills) buildPillbar();
-      // Stop once we have the pill-bar AND learn was tagged
-      // (the math game appears slightly later than the rest).
-      const haveLearn = !!document.querySelector('[data-bench="learn"]');
-      if ((document.getElementById('mqWorkbenchPills') && haveLearn) || ++tries > 30) {
+      if (document.getElementById('mqWorkbenchPills') || ++tries > 30) {
         clearInterval(t);
         activate(getActive());
       }
