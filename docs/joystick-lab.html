@@ -340,6 +340,8 @@
 
   // ============================================================
   // MODE 2 — D-Pad (8-dir tap, hold for continuous)
+  // Tap = minimum 350 ms drive pulse so motors have time to overcome
+  // friction. Hold = sustained drive (extends pulse on each pointermove).
   // ============================================================
   function installDPad(host) {
     host.innerHTML = '';
@@ -350,19 +352,24 @@
       ['◀', -1, 0],     ['', 0, 0],   ['▶', 1, 0],
       ['↙', -0.7, -0.7], ['▼', 0, -1], ['↘', 0.7, -0.7],
     ];
+    let stopTimer = null;
+    function scheduleStop() {
+      clearTimeout(stopTimer);
+      stopTimer = setTimeout(() => stop(), 350); // motor torque settling
+    }
     dirs.forEach((d, i) => {
       const b = document.createElement('button');
       if (!d[0]) { b.className = 'empty'; b.disabled = true; }
       b.textContent = d[0];
-      const fire = () => { b.classList.add('held'); fireVec(d[1], d[2]); };
-      const release = () => { b.classList.remove('held'); stop(); };
+      const fire = () => { clearTimeout(stopTimer); b.classList.add('held'); fireVec(d[1], d[2]); };
+      const release = () => { b.classList.remove('held'); scheduleStop(); };
       b.addEventListener('pointerdown', fire);
       b.addEventListener('pointerup', release);
       b.addEventListener('pointerleave', release);
       dpad.appendChild(b);
     });
     host.appendChild(dpad);
-    return () => { host.innerHTML = ''; stop(); };
+    return () => { clearTimeout(stopTimer); host.innerHTML = ''; stop(); };
   }
 
   // ============================================================
