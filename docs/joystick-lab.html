@@ -242,10 +242,13 @@
     lastVerb = verb;
     verbFeed.textContent = verb;
     const isStop = verb === 'STOP';
-    pushLog((window.isConnected ? '→ ' : '· ') + verb, isStop ? 'var(--danger)' : 'var(--neon)');
-    if (window.isConnected && typeof window.sendLine === 'function') {
+    // Bare-name lookups: isConnected and sendLine are declared at
+    // script-top by ble-shim.js / ble.js, NOT on window. Reading
+    // window.isConnected returns undefined and shows wrong prefix.
+    pushLog((isConnected ? '→ ' : '· ') + verb, isStop ? 'var(--danger)' : 'var(--neon)');
+    if (isConnected && typeof sendLine === 'function') {
       // ble.js's sendLine handles encoding + chunking + serialization
-      window.sendLine(verb);
+      sendLine(verb);
     }
   }
   function stop() { send('STOP'); }
@@ -708,26 +711,27 @@
   document.getElementById('stopBtn').addEventListener('click', stop);
   document.getElementById('speedKnob').addEventListener('input', e => { document.getElementById('speedVal').textContent = e.target.value; });
 
-  // Connect / Disconnect — delegate to ble.js's globals
+  // Connect / Disconnect — bare-name lookups resolve to ble.js's
+  // script-top declarations (NOT to window.*).
   connectBtn.addEventListener('click', () => {
-    if (window.isConnected) {
-      if (typeof window.disconnect === 'function') window.disconnect();
+    if (isConnected) {
+      if (typeof disconnect === 'function') disconnect();
     } else {
-      if (typeof window.connect === 'function') window.connect();
+      if (typeof connect === 'function') connect();
       else pushLog('· ble.js connect() not available', 'var(--danger)');
     }
   });
 
-  // Debug — dumps live state from ble.js's globals
+  // Debug — dumps live state from ble.js's script-globals (bare names).
   document.getElementById('debugBtn').addEventListener('click', () => {
     [
       '🐞 BUILD-CHECK ' + new Date().toISOString(),
-      '🐞 isConnected = ' + window.isConnected,
-      '🐞 btDevice = ' + (window.btDevice ? window.btDevice.name + ' (gatt.connected=' + window.btDevice.gatt.connected + ')' : 'null'),
-      '🐞 writeChar = ' + (window.writeChar ? window.writeChar.uuid.slice(0,8) : 'null'),
-      '🐞 notifyChar = ' + (window.notifyChar ? window.notifyChar.uuid.slice(0,8) : 'null'),
+      '🐞 isConnected = ' + isConnected,
+      '🐞 btDevice = ' + (btDevice ? btDevice.name + ' (gatt.connected=' + btDevice.gatt.connected + ')' : 'null'),
+      '🐞 writeChar = ' + (writeChar ? writeChar.uuid.slice(0,8) : 'null'),
+      '🐞 notifyChar = ' + (notifyChar ? notifyChar.uuid.slice(0,8) : 'null'),
       '🐞 page URL = ' + location.href,
-    ].forEach(t => pushLog(t, 'var(--amber)'));
+    ].forEach(line => pushLog(line, 'var(--amber)'));
   });
 
   // Restore last mode
