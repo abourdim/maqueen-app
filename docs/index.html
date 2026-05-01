@@ -22,10 +22,35 @@
   .wrap { max-width: 1100px; margin: 0 auto; padding: 0 22px; }
   .hero {
     text-align: center;
-    padding: 50px 22px 24px;
+    padding: 36px 22px 24px;
     max-width: 900px;
     margin: 0 auto;
   }
+  /* Hub-style pill badge above the title (same vocabulary as hub.html) */
+  .hero .badge-line {
+    display: inline-block;
+    background: var(--bg-card);
+    border: 2px solid var(--neon);
+    color: var(--neon);
+    padding: 6px 16px;
+    border-radius: 999px;
+    font-family: var(--font-tech);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow);
+  }
+  /* Robi-9 mascot — same SVG + animations as hub.html */
+  .hero .robi { width: 140px; height: 140px; margin: 6px auto 14px; }
+  .hero .robi svg { width: 100%; height: 100%; filter: drop-shadow(0 6px 22px var(--hero-glow)); }
+  @keyframes robi-blink { 0%, 92%, 100% { opacity: 1; } 95% { opacity: 0; } }
+  @keyframes robi-antenna { 0%, 100% { transform: scale(1); fill: var(--amber); } 50% { transform: scale(1.4); fill: var(--orange); } }
+  @keyframes robi-led { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+  .hero .robi .eyes circle { animation: robi-blink 4s ease-in-out infinite; transform-origin: center; }
+  .hero .robi .antenna { animation: robi-antenna 1.6s ease-in-out infinite; transform-origin: center; transform-box: fill-box; }
+  .hero .robi .led-l { animation: robi-led 1.4s ease-in-out infinite; }
+  .hero .robi .led-r { animation: robi-led 1.4s ease-in-out 0.7s infinite; }
   .hero h1 {
     font-family: var(--font-display);
     font-size: clamp(2rem, 5vw, 3rem);
@@ -210,6 +235,42 @@
 </header>
 
 <section class="hero">
+  <span class="badge-line">▸ DOCUMENTATION HUB</span>
+  <div class="robi" aria-hidden="true">
+    <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+      <!-- antenna -->
+      <line x1="60" y1="6" x2="60" y2="22" stroke="var(--cyan)" stroke-width="3" stroke-linecap="round"/>
+      <circle class="antenna" cx="60" cy="5" r="4" fill="var(--amber)"/>
+      <circle cx="60" cy="5" r="7" fill="none" stroke="var(--amber)" stroke-width="1" opacity="0.5"/>
+      <!-- head -->
+      <rect x="26" y="22" width="68" height="50" rx="14" fill="var(--bg-soft)" stroke="var(--neon)" stroke-width="2.5"/>
+      <rect x="34" y="34" width="52" height="24" rx="6" fill="var(--ink)" stroke="var(--cyan)" stroke-width="2"/>
+      <g class="eyes">
+        <circle cx="46" cy="46" r="3.5" fill="var(--neon)"/>
+        <circle cx="74" cy="46" r="3.5" fill="var(--neon)"/>
+      </g>
+      <circle cx="46" cy="46" r="6" fill="var(--neon)" opacity="0.15"/>
+      <circle cx="74" cy="46" r="6" fill="var(--neon)" opacity="0.15"/>
+      <!-- mouth -->
+      <path d="M 42 66 L 78 66" stroke="var(--cyan)" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="48" cy="66" r="1.2" fill="var(--cyan)"/>
+      <circle cx="60" cy="66" r="1.2" fill="var(--cyan)"/>
+      <circle cx="72" cy="66" r="1.2" fill="var(--cyan)"/>
+      <!-- body -->
+      <rect x="32" y="72" width="56" height="28" rx="6" fill="var(--bg-soft)" stroke="var(--neon)" stroke-width="2"/>
+      <rect x="38" y="78" width="44" height="14" rx="3" fill="var(--ink)" stroke="var(--border)"/>
+      <line x1="42" y1="85" x2="56" y2="85" stroke="var(--neon)" stroke-width="1.5"/>
+      <line x1="42" y1="88" x2="62" y2="88" stroke="var(--cyan)" stroke-width="1.2" opacity="0.7"/>
+      <circle class="led-l" cx="44" cy="96" r="2" fill="var(--amber)"/>
+      <circle class="led-r" cx="76" cy="96" r="2" fill="var(--orange)"/>
+      <!-- arms -->
+      <rect x="14" y="76" width="14" height="18" rx="4" fill="var(--steel)" stroke="var(--ink)" stroke-width="1"/>
+      <rect x="92" y="76" width="14" height="18" rx="4" fill="var(--steel)" stroke="var(--ink)" stroke-width="1"/>
+      <!-- feet -->
+      <ellipse cx="40" cy="106" rx="8" ry="4" fill="var(--ink)" stroke="var(--neon)" stroke-width="1.5"/>
+      <ellipse cx="80" cy="106" rx="8" ry="4" fill="var(--ink)" stroke="var(--neon)" stroke-width="1.5"/>
+    </svg>
+  </div>
   <h1>Documentation Catalog</h1>
   <p class="sub">All Robi-9 Lab pages, sorted by audience. Pick the right entry point so a 10-year-old isn't dumped in the engineer schematic, and a teacher isn't hunting for the printable journal.</p>
   <div class="toc">
