@@ -5,7 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Maqueen Lab — Guide complet · Robi-9 Lab</title>
 <link rel="stylesheet" href="../workshops/theme.css">
+<link rel="stylesheet" href="doc-shell.css">
 <script src="../workshops/newtab.js" defer></script>
+<style>
+  /* Override doc-shell defaults that would clash with the rich bespoke layout below */
+  .gh-langbar { display: flex; gap: 8px; flex-wrap: wrap; padding: 14px 22px 0; max-width: 1180px; margin: 0 auto; font-size: 13px; }
+  .gh-langbar a { padding: 5px 12px; border: 1.5px solid var(--border); border-radius: 999px; color: var(--steel); text-decoration: none; background: var(--bg-card); font-weight: 600; transition: border-color 0.15s, color 0.15s; }
+  .gh-langbar a:hover { border-color: var(--neon); color: var(--text); }
+  .gh-langbar a.active { color: var(--ink); background: var(--neon); border-color: var(--neon); }
+  .gh-langbar .grow { flex: 1; }
+</style>
 <style>
 :root {
   --bg:#050e1f; --card:#0b1a33; --card2:#0f2040;
@@ -256,28 +265,15 @@ footer{text-align:center;padding:24px 20px;border-top:1px solid var(--border);
 <body>
 
 <div class="wd-band wd-band-top"></div>
-<header class="wd-header">
-  <div class="title-block">
-    <div class="logo-mark">▣</div>
-    <div>
-      <h1>Robi-9 Lab // Guide</h1>
-      <div class="subtitle">Manuel du pilote · Maqueen Lab</div>
-    </div>
-  </div>
-  <div class="wd-header-right">
-    <a href="guide.html" class="wd-select" style="text-decoration:none;">🇬🇧 EN</a>
-    <a href="guide.fr.html" class="wd-select" style="text-decoration:none; border-color:var(--neon); color:var(--neon);">🇫🇷 FR</a>
-    <a href="guide.ar.html" class="wd-select" style="text-decoration:none;">🇩🇿 AR</a>
-    <select class="wd-select" id="themeSelect" aria-label="Thème">
-      <option value="carbon">▣ Carbon</option>
-      <option value="forest">▣ Forest</option>
-      <option value="steel">▣ Steel</option>
-      <option value="paper">☼ Paper</option>
-      <option value="pearl">☼ Pearl</option>
-    </select>
-    <a class="wd-select" href="../index.html" style="text-decoration:none;">🤖 App</a>
-  </div>
-</header>
+
+<div class="gh-langbar">
+  <a href="guide.html">🇬🇧 EN</a>
+  <a href="guide.fr.html" class="active">🇫🇷 FR</a>
+  <a href="guide.ar.html">🇩🇿 AR</a>
+  <span class="grow"></span>
+  <a href="../index.html">🤖 App Robot</a>
+  <a href="https://github.com/abourdim/maqueen-lab" target="_blank" rel="noopener">⭐ GitHub</a>
+</div>
 
 <div class="hero">
   <span class="hero-icon">🤖</span>

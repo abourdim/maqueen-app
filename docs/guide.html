@@ -564,13 +564,6 @@
     <a href="guide.html"    class="lang-pill active">🇬🇧 EN</a>
     <a href="guide.fr.html" class="lang-pill">🇫🇷 FR</a>
     <a href="guide.ar.html" class="lang-pill">🇩🇿 AR</a>
-    <select class="wd-select" id="themeSelect" aria-label="Theme" style="margin-left:8px;">
-      <option value="carbon">▣ Carbon</option>
-      <option value="forest">▣ Forest</option>
-      <option value="steel">▣ Steel</option>
-      <option value="paper">☼ Paper</option>
-      <option value="pearl">☼ Pearl</option>
-    </select>
     <a href="https://github.com/abourdim/maqueen-lab" target="_blank" rel="noopener" class="gh-link">⭐ GitHub</a>
   </nav>
 </header>
@@ -2107,20 +2100,11 @@
 </footer>
 
 <script>
-  // Theme picker — inherit from main app, persist locally
-  (function () {
-    const sel = document.getElementById('themeSelect');
-    function apply(t) {
-      document.documentElement.setAttribute('data-theme', t);
-      if (sel) sel.value = t;
-      try { localStorage.setItem('robi.theme', t); } catch (e) {}
-    }
-    try {
-      const t = localStorage.getItem('robi.theme') || localStorage.getItem('mb_theme');
-      if (t) apply(t);
-    } catch (e) {}
-    if (sel) sel.addEventListener('change', e => apply(e.target.value));
-  })();
+  // Theme inherit from main app (no picker on guide — too many native styles)
+  try {
+    const t = localStorage.getItem('robi.theme') || localStorage.getItem('mb_theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
 </script>
 
 </body>
