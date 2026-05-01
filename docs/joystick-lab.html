@@ -35,16 +35,21 @@
   .conn-bar button.disconnect { background: var(--danger); color: white; }
   .conn-bar .verb-feed { font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: var(--cyan); padding: 4px 12px; background: var(--ink); border-radius: 6px; min-width: 160px; text-align: center; }
 
-  /* MODE GRID — collapsible categories via <details>/<summary> */
-  .mode-cat { margin: 22px 0 8px; }
-  .mode-cat > .cat-label { display: flex; align-items: center; gap: 8px; padding: 4px 0 6px; color: var(--cyan); font-family: var(--font-tech); font-weight: 700; letter-spacing: 0.08em; font-size: 0.76rem; text-transform: uppercase; border-bottom: 1px solid var(--border); margin-bottom: 8px; cursor: pointer; list-style: none; user-select: none; }
-  .mode-cat > .cat-label::-webkit-details-marker { display: none; }
-  .mode-cat > .cat-label::before { content: '▼'; font-size: 0.7rem; color: var(--steel); transition: transform 0.18s; display: inline-block; }
-  .mode-cat:not([open]) > .cat-label::before { transform: rotate(-90deg); }
-  .mode-cat:not([open]) > .cat-label { color: var(--steel); border-bottom-style: dashed; }
-  .mode-cat .cat-label .cat-icon { font-size: 1rem; }
-  .mode-cat .cat-count { color: var(--steel); font-size: 0.72rem; margin-left: 6px; opacity: 0.7; }
-  .mode-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; }
+  /* MODE PICKER — sidebar tabs + content panel */
+  .picker { display: grid; grid-template-columns: 220px 1fr; gap: 16px; margin: 18px 0 26px; }
+  @media (max-width: 720px) { .picker { grid-template-columns: 1fr; } }
+  .cat-sidebar { display: flex; flex-direction: column; gap: 6px; padding: 8px; background: var(--bg-card); border: 1.5px solid var(--border); border-radius: 14px; align-self: start; position: sticky; top: 12px; }
+  @media (max-width: 720px) { .cat-sidebar { flex-direction: row; flex-wrap: wrap; position: static; } }
+  .cat-tab { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 10px; background: transparent; border: 1.5px solid transparent; color: var(--steel); font-family: var(--font-tech); font-weight: 700; letter-spacing: 0.06em; font-size: 0.78rem; text-transform: uppercase; cursor: pointer; text-align: left; transition: all 0.12s; width: 100%; }
+  @media (max-width: 720px) { .cat-tab { width: auto; flex: 1; min-width: 130px; } }
+  .cat-tab:hover { background: var(--bg-soft); color: var(--text); }
+  .cat-tab.active { background: linear-gradient(135deg, var(--bg-soft), var(--bg-card)); border-color: var(--neon); color: var(--neon); box-shadow: 0 4px 14px var(--hero-glow); }
+  .cat-tab .cat-icon { font-size: 1.1rem; }
+  .cat-tab .cat-count { margin-left: auto; font-size: 0.7rem; opacity: 0.6; font-weight: 400; }
+  .cat-tab.active .cat-count { color: var(--cyan); opacity: 0.9; }
+  .cat-content { min-height: 200px; }
+  .mode-grid { display: none; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; }
+  .mode-grid.active { display: grid; }
   .mode-card { background: var(--bg-card); border: 2px solid var(--border); border-radius: 14px; padding: 14px 12px; cursor: pointer; text-align: center; transition: transform 0.12s, border-color 0.12s; user-select: none; }
   .mode-card:hover { transform: translateY(-2px); border-color: var(--cyan); }
   .mode-card.active { border-color: var(--neon); background: linear-gradient(135deg, var(--bg-card), var(--bg-soft)); box-shadow: 0 6px 18px var(--hero-glow); }
@@ -171,34 +176,32 @@
   <button id="debugBtn" style="padding:6px 12px; border-radius:8px; background:var(--bg-soft); border:1px solid var(--border); color:var(--text); cursor:pointer; font-size:12px;">🐞 Debug</button>
 </div>
 
-<details class="mode-cat" id="cat-touch" open>
-  <summary class="cat-label"><span class="cat-icon">🕹</span><span data-i18n="cat_touch">Touch &amp; Pointer</span><span class="cat-count">(4)</span></summary>
-  <div class="mode-grid">
+<div class="picker">
+<nav class="cat-sidebar" aria-label="Mode categories">
+  <button class="cat-tab active" data-target="grid-touch" type="button"><span class="cat-icon">🕹</span><span data-i18n="cat_touch">Touch &amp; Pointer</span><span class="cat-count">(4)</span></button>
+  <button class="cat-tab" data-target="grid-hw" type="button"><span class="cat-icon">⌨️</span><span data-i18n="cat_hw">Hardware</span><span class="cat-count">(3)</span></button>
+  <button class="cat-tab" data-target="grid-audio" type="button"><span class="cat-icon">🎤</span><span data-i18n="cat_audio">Audio</span><span class="cat-count">(3)</span></button>
+  <button class="cat-tab" data-target="grid-game" type="button"><span class="cat-icon">🎮</span><span data-i18n="cat_game">Gaming-Inspired</span><span class="cat-count">(10)</span></button>
+  <button class="cat-tab" data-target="grid-cam" type="button"><span class="cat-icon">📷</span><span data-i18n="cat_cam">Camera</span><span class="cat-count">(10)</span></button>
+</nav>
+<div class="cat-content">
+  <div class="mode-grid active" id="grid-touch">
     <div class="mode-card" data-mode="classic"><div class="mode-icon">🕹</div><div class="mode-title" data-i18n="m_classic_t">Classic Pad</div><div class="mode-sub" data-i18n="m_classic_s">drag knob</div></div>
     <div class="mode-card" data-mode="dpad"><div class="mode-icon">🎮</div><div class="mode-title" data-i18n="m_dpad_t">D-Pad</div><div class="mode-sub" data-i18n="m_dpad_s">8-dir taps</div></div>
     <div class="mode-card" data-mode="twin"><div class="mode-icon">🎚</div><div class="mode-title" data-i18n="m_twin_t">Twin Sticks</div><div class="mode-sub" data-i18n="m_twin_s">tank drive</div></div>
     <div class="mode-card" data-mode="painter"><div class="mode-icon">✏️</div><div class="mode-title" data-i18n="m_painter_t">Path Painter</div><div class="mode-sub" data-i18n="m_painter_s">draw → follow</div></div>
   </div>
-</details>
-<details class="mode-cat" id="cat-hw">
-  <summary class="cat-label"><span class="cat-icon">⌨️</span><span data-i18n="cat_hw">Hardware</span><span class="cat-count">(3)</span></summary>
-  <div class="mode-grid">
+  <div class="mode-grid" id="grid-hw">
     <div class="mode-card" data-mode="tilt"><div class="mode-icon">📱</div><div class="mode-title" data-i18n="m_tilt_t">Tilt</div><div class="mode-sub" data-i18n="m_tilt_s">phone tip</div></div>
     <div class="mode-card" data-mode="keyboard"><div class="mode-icon">⌨️</div><div class="mode-title" data-i18n="m_keyboard_t">Keyboard</div><div class="mode-sub" data-i18n="m_keyboard_s">WASD desktop</div></div>
     <div class="mode-card" data-mode="gamepad"><div class="mode-icon">🎮</div><div class="mode-title" data-i18n="m_gamepad_t">Gamepad</div><div class="mode-sub" data-i18n="m_gamepad_s">USB controller</div></div>
   </div>
-</details>
-<details class="mode-cat" id="cat-audio">
-  <summary class="cat-label"><span class="cat-icon">🎤</span><span data-i18n="cat_audio">Audio</span><span class="cat-count">(3)</span></summary>
-  <div class="mode-grid">
+  <div class="mode-grid" id="grid-audio">
     <div class="mode-card" data-mode="voice"><div class="mode-icon">🎤</div><div class="mode-title" data-i18n="m_voice_t">Voice</div><div class="mode-sub" data-i18n="m_voice_s">say it</div></div>
     <div class="mode-card" data-mode="whistle"><div class="mode-icon">🎺</div><div class="mode-title" data-i18n="m_whistle_t">Whistle</div><div class="mode-sub" data-i18n="m_whistle_s">pitch → dir</div></div>
     <div class="mode-card" data-mode="beat"><div class="mode-icon">🥁</div><div class="mode-title" data-i18n="m_beat_t">BeatBox</div><div class="mode-sub" data-i18n="m_beat_s">clap → step</div></div>
   </div>
-</details>
-<details class="mode-cat" id="cat-game">
-  <summary class="cat-label"><span class="cat-icon">🎮</span><span data-i18n="cat_game">Gaming-Inspired</span><span class="cat-count">(10)</span></summary>
-  <div class="mode-grid">
+  <div class="mode-grid" id="grid-game">
     <div class="mode-card" data-mode="aim"><div class="mode-icon">🎯</div><div class="mode-title" data-i18n="m_aim_t">Aim &amp; Click</div><div class="mode-sub" data-i18n="m_aim_s">click-to-move</div></div>
     <div class="mode-card" data-mode="wheel"><div class="mode-icon">🏎️</div><div class="mode-title" data-i18n="m_wheel_t">Wheel + Pedals</div><div class="mode-sub" data-i18n="m_wheel_s">arcade racer</div></div>
     <div class="mode-card" data-mode="spring"><div class="mode-icon">🪂</div><div class="mode-title" data-i18n="m_spring_t">Spring Stick</div><div class="mode-sub" data-i18n="m_spring_s">physics return</div></div>
@@ -210,10 +213,7 @@
     <div class="mode-card" data-mode="pendulum"><div class="mode-icon">🪀</div><div class="mode-title" data-i18n="m_pen_t">Pendulum</div><div class="mode-sub" data-i18n="m_pen_s">swing physics</div></div>
     <div class="mode-card" data-mode="polar"><div class="mode-icon">🎡</div><div class="mode-title" data-i18n="m_polar_t">Polar Pad</div><div class="mode-sub" data-i18n="m_polar_s">radial joystick</div></div>
   </div>
-</details>
-<details class="mode-cat" id="cat-cam">
-  <summary class="cat-label"><span class="cat-icon">📷</span><span data-i18n="cat_cam">Camera</span><span class="cat-count">(10)</span></summary>
-  <div class="mode-grid">
+  <div class="mode-grid" id="grid-cam">
     <div class="mode-card" data-mode="colortrack"><div class="mode-icon">🎨</div><div class="mode-title" data-i18n="m_colortrack_t">Color Tracker</div><div class="mode-sub" data-i18n="m_colortrack_s">follow a color</div></div>
     <div class="mode-card" data-mode="facesteer"><div class="mode-icon">👤</div><div class="mode-title" data-i18n="m_facesteer_t">Face Steer</div><div class="mode-sub" data-i18n="m_facesteer_s">head + size</div></div>
     <div class="mode-card" data-mode="handwave"><div class="mode-icon">👋</div><div class="mode-title" data-i18n="m_handwave_t">Hand Wave</div><div class="mode-sub" data-i18n="m_handwave_s">motion blob</div></div>
@@ -225,7 +225,8 @@
     <div class="mode-card" data-mode="lean"><div class="mode-icon">🫷</div><div class="mode-title" data-i18n="m_lean_t">Lean Forward</div><div class="mode-sub" data-i18n="m_lean_s">closer = faster</div></div>
     <div class="mode-card" data-mode="colorwand"><div class="mode-icon">🌈</div><div class="mode-title" data-i18n="m_colorwand_t">Color Wand</div><div class="mode-sub" data-i18n="m_colorwand_s">trace + replay</div></div>
   </div>
-</details>
+</div>
+</div>
 
 <div class="stage">
   <h2 id="stageTitle" data-i18n="stage_pick">Pick a mode</h2>
@@ -417,19 +418,21 @@
   }
   window.setL = setL; // exposed so the <select onchange> can call it
 
-  // ---- Collapsible category persistence ----------------------------
+  // ---- Sidebar category tabs — single active category at a time ----
   function wireCatPersistence() {
-    document.querySelectorAll('details.mode-cat').forEach(d => {
-      const id = d.id;
-      try {
-        const saved = localStorage.getItem('robi.cat.' + id);
-        if (saved === 'closed') d.removeAttribute('open');
-        else if (saved === 'open') d.setAttribute('open', '');
-      } catch (e) {}
-      d.addEventListener('toggle', () => {
-        try { localStorage.setItem('robi.cat.' + id, d.open ? 'open' : 'closed'); } catch (e) {}
-      });
-    });
+    const tabs = document.querySelectorAll('.cat-tab');
+    const grids = document.querySelectorAll('.mode-grid');
+    function activate(target) {
+      tabs.forEach(t => t.classList.toggle('active', t.dataset.target === target));
+      grids.forEach(g => g.classList.toggle('active', g.id === target));
+      try { localStorage.setItem('robi.cat.active', target); } catch (e) {}
+    }
+    tabs.forEach(t => t.addEventListener('click', () => activate(t.dataset.target)));
+    // Restore last-active or fall back to grid-touch
+    let last = null;
+    try { last = localStorage.getItem('robi.cat.active'); } catch (e) {}
+    const exists = last && document.getElementById(last);
+    if (exists) activate(last);
   }
 
   // ---- BLE bridge — uses the main app's js/ble.js via ble-shim.js ----
@@ -956,6 +959,14 @@
     document.querySelectorAll('.mode-card').forEach(c => c.classList.toggle('active', c.dataset.mode === mode));
     teardown = m.install(stageBody);
     try { localStorage.setItem('robi.joystick.mode', mode); } catch (e) {}
+    // If the activated mode lives in a hidden category, auto-switch the
+    // sidebar to that category so the card stays visible.
+    const card = document.querySelector('.mode-card[data-mode="' + mode + '"]');
+    const grid = card && card.closest('.mode-grid');
+    if (grid && !grid.classList.contains('active')) {
+      const tab = document.querySelector('.cat-tab[data-target="' + grid.id + '"]');
+      if (tab) tab.click();
+    }
   }
 
   document.querySelectorAll('.mode-card').forEach(c => {
