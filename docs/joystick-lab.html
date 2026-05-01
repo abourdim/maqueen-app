@@ -7,6 +7,9 @@
 <link rel="stylesheet" href="../workshops/theme.css">
 <link rel="stylesheet" href="doc-shell.css">
 <script src="../workshops/newtab.js" defer></script>
+<!-- Reuse the main app's BLE module (ble.js) via a tiny shim. -->
+<script src="../js/ble-shim.js"></script>
+<script src="../js/ble.js"></script>
 <style>
   body { margin: 0; min-height: 100vh; background: var(--bg); color: var(--text); font-family: var(--font-body); }
   .lab-wrap { max-width: 1100px; margin: 0 auto; padding: 28px 22px 60px; }
@@ -194,14 +197,9 @@
 (function () {
   'use strict';
 
-  // ---- BLE bridge — direct Web Bluetooth from this page ---------
-  // Uses Nordic UART (same as main app: service 6e400001..., RX 6e400002).
-  // Verb gets written as ASCII + '\n'. Echo replies are not used here.
-  const UART_SVC = '6e400001-b5a3-f393-e0a9-e50e24dcca9e';
-  const UART_RX  = '6e400002-b5a3-f393-e0a9-e50e24dcca9e'; // write
-  let btDev = null, btSrv = null, rxChar = null;
-  let writeChain = Promise.resolve();
-  let connected = false;
+  // ---- BLE bridge — uses the main app's js/ble.js via ble-shim.js ----
+  // The shim provides addLogLine / setConnectionStatus / handleUartLine
+  // hooks that we redirect into the on-page UI here.
   let lastVerb = null;
   const verbFeed = document.getElementById('verbFeed');
   const verbLog = document.getElementById('verbLog');
@@ -209,147 +207,46 @@
   const connStatus = document.getElementById('connStatus');
   const connectBtn = document.getElementById('connectBtn');
 
-  function setConnected(state) {
-    connected = state;
-    connBar.classList.toggle('connected', state);
-    if (state) {
-      connStatus.innerHTML = '<span class="dot"></span>CONNECTED · ' + (btDev ? btDev.name : '');
-      connectBtn.textContent = '⏏ Disconnect';
-      connectBtn.classList.add('disconnect');
-    } else {
-      connStatus.innerHTML = '<span class="dot"></span>NOT CONNECTED';
-      connectBtn.textContent = '▶ Connect to robot';
-      connectBtn.classList.remove('disconnect');
-    }
+  function pushLog(text, color) {
+    const el = document.createElement('div');
+    if (color) el.style.color = color;
+    el.textContent = text;
+    verbLog.appendChild(el);
+    verbLog.scrollTop = verbLog.scrollHeight;
+    while (verbLog.children.length > 40) verbLog.removeChild(verbLog.firstChild);
   }
 
-  async function connect() {
-    if (!navigator.bluetooth) {
-      alert('Web Bluetooth not available. Use Chrome or Edge on desktop or Android.');
-      return;
-    }
-    try {
-      btDev = await navigator.bluetooth.requestDevice({
-        filters: [
-          { namePrefix: 'BBC micro:bit' },
-          { namePrefix: 'BBC Micro:Bit' },
-          { namePrefix: 'uBit' },
-          { namePrefix: 'Ubit' },
-          { namePrefix: 'micro:bit' },
-          { services: [UART_SVC] }
-        ],
-        optionalServices: [UART_SVC]
-      });
-      btDev.addEventListener('gattserverdisconnected', () => setConnected(false));
-      const server = await btDev.gatt.connect();
-      btSrv = await server.getPrimaryService(UART_SVC);
-      const chars = await btSrv.getCharacteristics();
-      for (const c of chars) {
-        if (c.uuid.toLowerCase().includes('6e400002')) rxChar = c;
-      }
-      // Build a debug summary visible in the verb log
-      const dbg = document.createElement('div');
-      dbg.style.color = 'var(--amber)';
-      dbg.textContent = '🐞 chars=' + chars.length + ' uuids=' + chars.map(c => c.uuid.slice(0, 8)).join(',');
-      verbLog.appendChild(dbg);
-      if (!rxChar) { alert('UART RX characteristic not found.'); return; }
-      // Also subscribe to the TX characteristic so we can SEE the firmware's
-      // ECHO replies — proves whether bytes are reaching the parser.
-      window._txChar = null;
-      for (const c of chars) {
-        if (c.uuid.toLowerCase().includes('6e400003')) window._txChar = c;
-      }
-      const txChar = window._txChar;
-      if (txChar) {
-        try {
-          await txChar.startNotifications();
-          const dbg2 = document.createElement('div');
-          dbg2.style.color = 'var(--amber)';
-          dbg2.textContent = '🐞 TX notifications subscribed OK (uuid=' + txChar.uuid.slice(0,8) + ')';
-          verbLog.appendChild(dbg2);
-          txChar.addEventListener('characteristicvaluechanged', e => {
-            const txt = new TextDecoder().decode(e.target.value);
-            txt.split(/\r?\n/).forEach(line => {
-              if (!line.trim()) return;
-              const el = document.createElement('div');
-              el.style.color = 'var(--cyan)';
-              el.textContent = '← ' + line;
-              verbLog.appendChild(el);
-              verbLog.scrollTop = verbLog.scrollHeight;
-              while (verbLog.children.length > 30) verbLog.removeChild(verbLog.firstChild);
-            });
-          });
-        } catch (e) {
-          console.warn('TX notify subscribe failed', e);
-          const dbg3 = document.createElement('div');
-          dbg3.style.color = 'var(--danger)';
-          dbg3.textContent = '🐞 TX subscribe FAILED: ' + e.message;
-          verbLog.appendChild(dbg3);
-        }
+  // Wire shim hooks → our UI
+  if (window.RobiBle) {
+    window.RobiBle.onStatus = (state, name) => {
+      connBar.classList.toggle('connected', state);
+      if (state) {
+        connStatus.innerHTML = '<span class="dot"></span>CONNECTED · ' + (name || '');
+        connectBtn.textContent = '⏏ Disconnect';
+        connectBtn.classList.add('disconnect');
       } else {
-        const dbg3 = document.createElement('div');
-        dbg3.style.color = 'var(--danger)';
-        dbg3.textContent = '🐞 TX char NOT FOUND (no 6e400003 in chars)';
-        verbLog.appendChild(dbg3);
+        connStatus.innerHTML = '<span class="dot"></span>NOT CONNECTED';
+        connectBtn.textContent = '▶ Connect to robot';
+        connectBtn.classList.remove('disconnect');
       }
-      setConnected(true);
-      writeRaw('HELLO');
-    } catch (e) {
-      console.warn('connect failed', e);
-      // user cancelled the chooser is the most common case; ignore silently
-    }
-  }
-  function disconnect() {
-    try { if (btDev && btDev.gatt && btDev.gatt.connected) btDev.gatt.disconnect(); } catch (e) {}
-    setConnected(false);
-  }
-
-  // Serialize writes (Web Bluetooth's GATT allows only one in-flight).
-  // CRITICAL: firmware expects every command prefixed with '#N ' where
-  // N is an incrementing sequence number — that's the contract documented
-  // in firmware/v1-maqueen-lib.ts and implemented by js/ble-scheduler.js.
-  // Without the prefix the parser rejects the line and motors stay still.
-  let nextSeq = 1;
-  function writeRaw(verb) {
-    if (!rxChar) return Promise.resolve();
-    const seq = nextSeq++;
-    const line = `#${seq} ${verb}`;
-    const data = new TextEncoder().encode(line + '\n');
-    writeChain = writeChain.then(async () => {
-      try {
-        // Use plain writeValue (waits for ack) — same as main app's ble.js
-        // line 25. writeValueWithoutResponse silently succeeds even when
-        // the write didn't reach the device.
-        await rxChar.writeValue(data);
-      } catch (e) {
-        console.error('writeValue failed', line, e);
-        const el = document.createElement('div');
-        el.style.color = 'var(--danger)';
-        el.textContent = '✗ ' + line + ' — ' + e.message;
-        verbLog.appendChild(el);
-        verbLog.scrollTop = verbLog.scrollHeight;
-      }
-    });
-    return writeChain;
+    };
+    window.RobiBle.onLog = (line, level) => {
+      const c = level === 'error' ? 'var(--danger)' : level === 'success' ? 'var(--neon)' : 'var(--steel)';
+      pushLog('· ' + line, c);
+    };
+    window.RobiBle.onRxLine = (line) => pushLog('← ' + line, 'var(--cyan)');
   }
 
   function send(verb) {
     if (verb === lastVerb) return;
     lastVerb = verb;
     verbFeed.textContent = verb;
-    const line = document.createElement('div');
-    line.className = (verb === 'STOP') ? 'stop' : 'send';
-    line.textContent = (connected ? '→ ' : '· ') + verb;
-    verbLog.appendChild(line);
-    verbLog.scrollTop = verbLog.scrollHeight;
-    while (verbLog.children.length > 30) verbLog.removeChild(verbLog.firstChild);
-    if (connected) writeRaw(verb);
-    // Also try opener if this page was launched from the main app
-    try {
-      if (window.opener && window.opener.bleScheduler && typeof window.opener.bleScheduler.send === 'function') {
-        window.opener.bleScheduler.send(verb).catch(() => {});
-      }
-    } catch (e) {}
+    const isStop = verb === 'STOP';
+    pushLog((window.isConnected ? '→ ' : '· ') + verb, isStop ? 'var(--danger)' : 'var(--neon)');
+    if (window.isConnected && typeof window.sendLine === 'function') {
+      // ble.js's sendLine handles encoding + chunking + serialization
+      window.sendLine(verb);
+    }
   }
   function stop() { send('STOP'); }
 
@@ -811,29 +708,26 @@
   document.getElementById('stopBtn').addEventListener('click', stop);
   document.getElementById('speedKnob').addEventListener('input', e => { document.getElementById('speedVal').textContent = e.target.value; });
 
-  // Connect button — direct Web Bluetooth pairing with the micro:bit
+  // Connect / Disconnect — delegate to ble.js's globals
   connectBtn.addEventListener('click', () => {
-    if (connected) disconnect(); else connect();
+    if (window.isConnected) {
+      if (typeof window.disconnect === 'function') window.disconnect();
+    } else {
+      if (typeof window.connect === 'function') window.connect();
+      else pushLog('· ble.js connect() not available', 'var(--danger)');
+    }
   });
 
-  // Debug button — dumps live state into verb log
+  // Debug — dumps live state from ble.js's globals
   document.getElementById('debugBtn').addEventListener('click', () => {
-    const lines = [
+    [
       '🐞 BUILD-CHECK ' + new Date().toISOString(),
-      '🐞 connected = ' + connected,
-      '🐞 btDev = ' + (btDev ? btDev.name + ' (gatt.connected=' + btDev.gatt.connected + ')' : 'null'),
-      '🐞 rxChar = ' + (rxChar ? rxChar.uuid.slice(0,8) : 'null'),
-      '🐞 txChar = ' + (window._txChar ? window._txChar.uuid.slice(0,8) : 'null'),
-      '🐞 nextSeq = ' + nextSeq,
+      '🐞 isConnected = ' + window.isConnected,
+      '🐞 btDevice = ' + (window.btDevice ? window.btDevice.name + ' (gatt.connected=' + window.btDevice.gatt.connected + ')' : 'null'),
+      '🐞 writeChar = ' + (window.writeChar ? window.writeChar.uuid.slice(0,8) : 'null'),
+      '🐞 notifyChar = ' + (window.notifyChar ? window.notifyChar.uuid.slice(0,8) : 'null'),
       '🐞 page URL = ' + location.href,
-    ];
-    lines.forEach(t => {
-      const el = document.createElement('div');
-      el.style.color = 'var(--amber)';
-      el.textContent = t;
-      verbLog.appendChild(el);
-    });
-    verbLog.scrollTop = verbLog.scrollHeight;
+    ].forEach(t => pushLog(t, 'var(--amber)'));
   });
 
   // Restore last mode
