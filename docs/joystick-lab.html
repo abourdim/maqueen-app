@@ -258,11 +258,30 @@
     setConnected(false);
   }
 
-  // Serialize writes (Web Bluetooth's GATT allows only one in-flight)
+  // Serialize writes (Web Bluetooth's GATT allows only one in-flight).
+  // micro:bit Nordic UART RX advertises WRITE_WITHOUT_RESPONSE — using the
+  // explicit writeValueWithoutResponse avoids the silent-failure mode some
+  // browsers fall into when given the deprecated writeValue() catch-all.
+  // We surface errors via the verb log + console so future bugs are visible.
   function writeRaw(verb) {
     if (!rxChar) return Promise.resolve();
     const data = new TextEncoder().encode(verb + '\n');
-    writeChain = writeChain.then(() => rxChar.writeValue(data)).catch(() => {});
+    writeChain = writeChain.then(async () => {
+      try {
+        if (typeof rxChar.writeValueWithoutResponse === 'function') {
+          await rxChar.writeValueWithoutResponse(data);
+        } else {
+          await rxChar.writeValue(data);
+        }
+      } catch (e) {
+        console.error('writeValue failed', verb, e);
+        const line = document.createElement('div');
+        line.style.color = 'var(--danger)';
+        line.textContent = '✗ ' + verb + ' — ' + e.message;
+        verbLog.appendChild(line);
+        verbLog.scrollTop = verbLog.scrollHeight;
+      }
+    });
     return writeChain;
   }
 
