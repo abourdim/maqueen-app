@@ -193,24 +193,91 @@
 (function () {
   'use strict';
 
-  // ---- BLE bridge ------------------------------------------------
-  // Honor an existing window.bleScheduler if this page is opened
-  // from the main app (won't be, since we're standalone). Otherwise
-  // the verb just lights up in the on-page feed (educational).
+  // ---- BLE bridge — direct Web Bluetooth from this page ---------
+  // Uses Nordic UART (same as main app: service 6e400001..., RX 6e400002).
+  // Verb gets written as ASCII + '\n'. Echo replies are not used here.
+  const UART_SVC = '6e400001-b5a3-f393-e0a9-e50e24dcca9e';
+  const UART_RX  = '6e400002-b5a3-f393-e0a9-e50e24dcca9e'; // write
+  let btDev = null, btSrv = null, rxChar = null;
+  let writeChain = Promise.resolve();
+  let connected = false;
   let lastVerb = null;
   const verbFeed = document.getElementById('verbFeed');
   const verbLog = document.getElementById('verbLog');
+  const connBar = document.getElementById('connBar');
+  const connStatus = document.getElementById('connStatus');
+  const connectBtn = document.getElementById('connectBtn');
+
+  function setConnected(state) {
+    connected = state;
+    connBar.classList.toggle('connected', state);
+    if (state) {
+      connStatus.innerHTML = '<span class="dot"></span>CONNECTED · ' + (btDev ? btDev.name : '');
+      connectBtn.textContent = '⏏ Disconnect';
+      connectBtn.classList.add('disconnect');
+    } else {
+      connStatus.innerHTML = '<span class="dot"></span>NOT CONNECTED';
+      connectBtn.textContent = '▶ Connect to robot';
+      connectBtn.classList.remove('disconnect');
+    }
+  }
+
+  async function connect() {
+    if (!navigator.bluetooth) {
+      alert('Web Bluetooth not available. Use Chrome or Edge on desktop or Android.');
+      return;
+    }
+    try {
+      btDev = await navigator.bluetooth.requestDevice({
+        filters: [
+          { namePrefix: 'BBC micro:bit' },
+          { namePrefix: 'BBC Micro:Bit' },
+          { namePrefix: 'uBit' },
+          { namePrefix: 'Ubit' },
+          { namePrefix: 'micro:bit' },
+          { services: [UART_SVC] }
+        ],
+        optionalServices: [UART_SVC]
+      });
+      btDev.addEventListener('gattserverdisconnected', () => setConnected(false));
+      const server = await btDev.gatt.connect();
+      btSrv = await server.getPrimaryService(UART_SVC);
+      const chars = await btSrv.getCharacteristics();
+      for (const c of chars) {
+        if (c.uuid.toLowerCase().includes('6e400002')) rxChar = c;
+      }
+      if (!rxChar) { alert('UART RX characteristic not found.'); return; }
+      setConnected(true);
+    } catch (e) {
+      console.warn('connect failed', e);
+      // user cancelled the chooser is the most common case; ignore silently
+    }
+  }
+  function disconnect() {
+    try { if (btDev && btDev.gatt && btDev.gatt.connected) btDev.gatt.disconnect(); } catch (e) {}
+    setConnected(false);
+  }
+
+  // Serialize writes (Web Bluetooth's GATT allows only one in-flight)
+  function writeRaw(verb) {
+    if (!rxChar) return Promise.resolve();
+    const data = new TextEncoder().encode(verb + '\n');
+    writeChain = writeChain.then(() => rxChar.writeValue(data)).catch(() => {});
+    return writeChain;
+  }
+
   function send(verb) {
     if (verb === lastVerb) return;
     lastVerb = verb;
     verbFeed.textContent = verb;
     const line = document.createElement('div');
     line.className = (verb === 'STOP') ? 'stop' : 'send';
-    line.textContent = '→ ' + verb;
+    line.textContent = (connected ? '→ ' : '· ') + verb;
     verbLog.appendChild(line);
     verbLog.scrollTop = verbLog.scrollHeight;
-    // Keep log to last 30 lines
     while (verbLog.children.length > 30) verbLog.removeChild(verbLog.firstChild);
+    if (connected) writeRaw(verb);
+    // Also try opener if this page was launched from the main app
     try {
       if (window.opener && window.opener.bleScheduler && typeof window.opener.bleScheduler.send === 'function') {
         window.opener.bleScheduler.send(verb).catch(() => {});
@@ -670,10 +737,9 @@
   document.getElementById('stopBtn').addEventListener('click', stop);
   document.getElementById('speedKnob').addEventListener('input', e => { document.getElementById('speedVal').textContent = e.target.value; });
 
-  // Connect button — opens index.html in a window so this page can use its bleScheduler.
-  document.getElementById('connectBtn').addEventListener('click', () => {
-    window.open('../index.html', 'robiApp');
-    document.getElementById('connStatus').innerHTML = '<span class="dot"></span>OPEN MAIN APP & PAIR';
+  // Connect button — direct Web Bluetooth pairing with the micro:bit
+  connectBtn.addEventListener('click', () => {
+    if (connected) disconnect(); else connect();
   });
 
   // Restore last mode
