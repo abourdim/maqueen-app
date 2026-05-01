@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-<title>Joystick Lab — 10 ways to drive your robot · Robi-9 Lab</title>
+<title>Joystick Lab · Robi-9 Lab</title>
 <link rel="stylesheet" href="../workshops/theme.css">
 <link rel="stylesheet" href="doc-shell.css">
 <script src="../workshops/newtab.js" defer></script>
@@ -32,10 +32,15 @@
   .conn-bar button.disconnect { background: var(--danger); color: white; }
   .conn-bar .verb-feed { font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: var(--cyan); padding: 4px 12px; background: var(--ink); border-radius: 6px; min-width: 160px; text-align: center; }
 
-  /* MODE GRID */
+  /* MODE GRID — collapsible categories via <details>/<summary> */
   .mode-cat { margin: 22px 0 8px; }
-  .mode-cat .cat-label { display: flex; align-items: center; gap: 8px; padding: 4px 0 6px; color: var(--cyan); font-family: var(--font-tech); font-weight: 700; letter-spacing: 0.08em; font-size: 0.76rem; text-transform: uppercase; border-bottom: 1px solid var(--border); margin-bottom: 8px; }
+  .mode-cat > .cat-label { display: flex; align-items: center; gap: 8px; padding: 4px 0 6px; color: var(--cyan); font-family: var(--font-tech); font-weight: 700; letter-spacing: 0.08em; font-size: 0.76rem; text-transform: uppercase; border-bottom: 1px solid var(--border); margin-bottom: 8px; cursor: pointer; list-style: none; user-select: none; }
+  .mode-cat > .cat-label::-webkit-details-marker { display: none; }
+  .mode-cat > .cat-label::before { content: '▼'; font-size: 0.7rem; color: var(--steel); transition: transform 0.18s; display: inline-block; }
+  .mode-cat:not([open]) > .cat-label::before { transform: rotate(-90deg); }
+  .mode-cat:not([open]) > .cat-label { color: var(--steel); border-bottom-style: dashed; }
   .mode-cat .cat-label .cat-icon { font-size: 1rem; }
+  .mode-cat .cat-count { color: var(--steel); font-size: 0.72rem; margin-left: 6px; opacity: 0.7; }
   .mode-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; }
   .mode-card { background: var(--bg-card); border: 2px solid var(--border); border-radius: 14px; padding: 14px 12px; cursor: pointer; text-align: center; transition: transform 0.12s, border-color 0.12s; user-select: none; }
   .mode-card:hover { transform: translateY(-2px); border-color: var(--cyan); }
@@ -134,77 +139,82 @@
   <div class="title-block">
     <div class="logo-mark">▣</div>
     <div>
-      <h1>Robi-9 Lab // Joystick Lab</h1>
-      <div class="subtitle">10 ways to drive your robot · pick your favorite</div>
+      <h1 data-i18n="header_title">Robi-9 Lab // Joystick Lab</h1>
+      <div class="subtitle" data-i18n="header_sub">20 ways to drive your robot · pick your favorite</div>
     </div>
   </div>
   <div class="wd-header-right">
-    <a class="wd-select" href="../index.html" style="text-decoration:none; border-bottom:none;">🤖 Robot App</a>
-    <a class="wd-select" href="index.html" style="text-decoration:none; border-bottom:none;">🗂️ Catalog</a>
+    <select class="wd-select" id="langSelect" aria-label="Language" onchange="setL(this.value)">
+      <option value="en" selected>🇬🇧 EN</option>
+      <option value="fr">🇫🇷 FR</option>
+      <option value="ar">🇩🇿 AR</option>
+    </select>
+    <a class="wd-select" href="../index.html" style="text-decoration:none; border-bottom:none;" data-i18n="header_robot_app">🤖 Robot App</a>
+    <a class="wd-select" href="index.html" style="text-decoration:none; border-bottom:none;" data-i18n="header_catalog">🗂️ Catalog</a>
   </div>
 </header>
 
 <div class="lab-wrap">
 
 <section class="lab-hero">
-  <h1>🕹️ Joystick Lab</h1>
-  <p>Ten different ways to pilot your Robi-9 — from classic pads to whistling, beatboxing, and drawing on canvas. Pick one, drive your robot, then pick another. Each input fires the same <code>M:L,R</code> verb under the hood.</p>
+  <h1 data-i18n="hero_title">🕹️ Joystick Lab</h1>
+  <p data-i18n-html="hero_pitch">Twenty different ways to pilot your Robi-9 — from classic pads to whistling, beatboxing, drawing on canvas, and full webcam-driven gestures. Pick one, drive your robot, then pick another. Each input fires the same <code>M:L,R</code> verb under the hood.</p>
 </section>
 
 <div class="conn-bar" id="connBar">
-  <span class="status" id="connStatus"><span class="dot"></span>NOT CONNECTED</span>
-  <button id="connectBtn">▶ Connect to robot</button>
+  <span class="status" id="connStatus"><span class="dot"></span><span data-i18n="not_connected">NOT CONNECTED</span></span>
+  <button id="connectBtn" data-i18n="btn_connect">▶ Connect to robot</button>
   <span class="verb-feed" id="verbFeed">M:0,0</span>
   <button id="debugBtn" style="padding:6px 12px; border-radius:8px; background:var(--bg-soft); border:1px solid var(--border); color:var(--text); cursor:pointer; font-size:12px;">🐞 Debug</button>
 </div>
 
-<div class="mode-cat">
-  <div class="cat-label"><span class="cat-icon">🕹</span><span>Touch &amp; Pointer</span></div>
+<details class="mode-cat" id="cat-touch" open>
+  <summary class="cat-label"><span class="cat-icon">🕹</span><span data-i18n="cat_touch">Touch &amp; Pointer</span><span class="cat-count">(4)</span></summary>
   <div class="mode-grid">
-    <div class="mode-card" data-mode="classic"><div class="mode-icon">🕹</div><div class="mode-title">Classic Pad</div><div class="mode-sub">drag knob</div></div>
-    <div class="mode-card" data-mode="dpad"><div class="mode-icon">🎮</div><div class="mode-title">D-Pad</div><div class="mode-sub">8-dir taps</div></div>
-    <div class="mode-card" data-mode="twin"><div class="mode-icon">🎚</div><div class="mode-title">Twin Sticks</div><div class="mode-sub">tank drive</div></div>
-    <div class="mode-card" data-mode="painter"><div class="mode-icon">✏️</div><div class="mode-title">Path Painter</div><div class="mode-sub">draw → follow</div></div>
+    <div class="mode-card" data-mode="classic"><div class="mode-icon">🕹</div><div class="mode-title" data-i18n="m_classic_t">Classic Pad</div><div class="mode-sub" data-i18n="m_classic_s">drag knob</div></div>
+    <div class="mode-card" data-mode="dpad"><div class="mode-icon">🎮</div><div class="mode-title" data-i18n="m_dpad_t">D-Pad</div><div class="mode-sub" data-i18n="m_dpad_s">8-dir taps</div></div>
+    <div class="mode-card" data-mode="twin"><div class="mode-icon">🎚</div><div class="mode-title" data-i18n="m_twin_t">Twin Sticks</div><div class="mode-sub" data-i18n="m_twin_s">tank drive</div></div>
+    <div class="mode-card" data-mode="painter"><div class="mode-icon">✏️</div><div class="mode-title" data-i18n="m_painter_t">Path Painter</div><div class="mode-sub" data-i18n="m_painter_s">draw → follow</div></div>
   </div>
-</div>
-<div class="mode-cat">
-  <div class="cat-label"><span class="cat-icon">⌨️</span><span>Hardware</span></div>
+</details>
+<details class="mode-cat" id="cat-hw" open>
+  <summary class="cat-label"><span class="cat-icon">⌨️</span><span data-i18n="cat_hw">Hardware</span><span class="cat-count">(3)</span></summary>
   <div class="mode-grid">
-    <div class="mode-card" data-mode="tilt"><div class="mode-icon">📱</div><div class="mode-title">Tilt</div><div class="mode-sub">phone tip</div></div>
-    <div class="mode-card" data-mode="keyboard"><div class="mode-icon">⌨️</div><div class="mode-title">Keyboard</div><div class="mode-sub">WASD desktop</div></div>
-    <div class="mode-card" data-mode="gamepad"><div class="mode-icon">🎮</div><div class="mode-title">Gamepad</div><div class="mode-sub">USB controller</div></div>
+    <div class="mode-card" data-mode="tilt"><div class="mode-icon">📱</div><div class="mode-title" data-i18n="m_tilt_t">Tilt</div><div class="mode-sub" data-i18n="m_tilt_s">phone tip</div></div>
+    <div class="mode-card" data-mode="keyboard"><div class="mode-icon">⌨️</div><div class="mode-title" data-i18n="m_keyboard_t">Keyboard</div><div class="mode-sub" data-i18n="m_keyboard_s">WASD desktop</div></div>
+    <div class="mode-card" data-mode="gamepad"><div class="mode-icon">🎮</div><div class="mode-title" data-i18n="m_gamepad_t">Gamepad</div><div class="mode-sub" data-i18n="m_gamepad_s">USB controller</div></div>
   </div>
-</div>
-<div class="mode-cat">
-  <div class="cat-label"><span class="cat-icon">🎤</span><span>Audio</span></div>
+</details>
+<details class="mode-cat" id="cat-audio" open>
+  <summary class="cat-label"><span class="cat-icon">🎤</span><span data-i18n="cat_audio">Audio</span><span class="cat-count">(3)</span></summary>
   <div class="mode-grid">
-    <div class="mode-card" data-mode="voice"><div class="mode-icon">🎤</div><div class="mode-title">Voice</div><div class="mode-sub">say it</div></div>
-    <div class="mode-card" data-mode="whistle"><div class="mode-icon">🎺</div><div class="mode-title">Whistle</div><div class="mode-sub">pitch → dir</div></div>
-    <div class="mode-card" data-mode="beat"><div class="mode-icon">🥁</div><div class="mode-title">BeatBox</div><div class="mode-sub">clap → step</div></div>
+    <div class="mode-card" data-mode="voice"><div class="mode-icon">🎤</div><div class="mode-title" data-i18n="m_voice_t">Voice</div><div class="mode-sub" data-i18n="m_voice_s">say it</div></div>
+    <div class="mode-card" data-mode="whistle"><div class="mode-icon">🎺</div><div class="mode-title" data-i18n="m_whistle_t">Whistle</div><div class="mode-sub" data-i18n="m_whistle_s">pitch → dir</div></div>
+    <div class="mode-card" data-mode="beat"><div class="mode-icon">🥁</div><div class="mode-title" data-i18n="m_beat_t">BeatBox</div><div class="mode-sub" data-i18n="m_beat_s">clap → step</div></div>
   </div>
-</div>
-<div class="mode-cat">
-  <div class="cat-label"><span class="cat-icon">📷</span><span>Camera</span></div>
+</details>
+<details class="mode-cat" id="cat-cam" open>
+  <summary class="cat-label"><span class="cat-icon">📷</span><span data-i18n="cat_cam">Camera</span><span class="cat-count">(10)</span></summary>
   <div class="mode-grid">
-    <div class="mode-card" data-mode="colortrack"><div class="mode-icon">🎨</div><div class="mode-title">Color Tracker</div><div class="mode-sub">follow a color</div></div>
-    <div class="mode-card" data-mode="facesteer"><div class="mode-icon">👤</div><div class="mode-title">Face Steer</div><div class="mode-sub">head + size</div></div>
-    <div class="mode-card" data-mode="handwave"><div class="mode-icon">👋</div><div class="mode-title">Hand Wave</div><div class="mode-sub">motion blob</div></div>
-    <div class="mode-card" data-mode="light"><div class="mode-icon">💡</div><div class="mode-title">Light Sensor</div><div class="mode-sub">brightness</div></div>
-    <div class="mode-card" data-mode="cards"><div class="mode-icon">🃏</div><div class="mode-title">Card Reader</div><div class="mode-sub">show QR cards</div></div>
-    <div class="mode-card" data-mode="mirror"><div class="mode-icon">🪞</div><div class="mode-title">Mirror Mode</div><div class="mode-sub">motion echo</div></div>
-    <div class="mode-card" data-mode="twohand"><div class="mode-icon">✋</div><div class="mode-title">Two-Hand Tank</div><div class="mode-sub">L/R wheel</div></div>
-    <div class="mode-card" data-mode="pose"><div class="mode-icon">🤸</div><div class="mode-title">Pose</div><div class="mode-sub">arms up = drive</div></div>
-    <div class="mode-card" data-mode="lean"><div class="mode-icon">🫷</div><div class="mode-title">Lean Forward</div><div class="mode-sub">closer = faster</div></div>
-    <div class="mode-card" data-mode="colorwand"><div class="mode-icon">🌈</div><div class="mode-title">Color Wand</div><div class="mode-sub">trace + replay</div></div>
+    <div class="mode-card" data-mode="colortrack"><div class="mode-icon">🎨</div><div class="mode-title" data-i18n="m_colortrack_t">Color Tracker</div><div class="mode-sub" data-i18n="m_colortrack_s">follow a color</div></div>
+    <div class="mode-card" data-mode="facesteer"><div class="mode-icon">👤</div><div class="mode-title" data-i18n="m_facesteer_t">Face Steer</div><div class="mode-sub" data-i18n="m_facesteer_s">head + size</div></div>
+    <div class="mode-card" data-mode="handwave"><div class="mode-icon">👋</div><div class="mode-title" data-i18n="m_handwave_t">Hand Wave</div><div class="mode-sub" data-i18n="m_handwave_s">motion blob</div></div>
+    <div class="mode-card" data-mode="light"><div class="mode-icon">💡</div><div class="mode-title" data-i18n="m_light_t">Light Sensor</div><div class="mode-sub" data-i18n="m_light_s">brightness</div></div>
+    <div class="mode-card" data-mode="cards"><div class="mode-icon">🃏</div><div class="mode-title" data-i18n="m_cards_t">Card Reader</div><div class="mode-sub" data-i18n="m_cards_s">show QR cards</div></div>
+    <div class="mode-card" data-mode="mirror"><div class="mode-icon">🪞</div><div class="mode-title" data-i18n="m_mirror_t">Mirror Mode</div><div class="mode-sub" data-i18n="m_mirror_s">motion echo</div></div>
+    <div class="mode-card" data-mode="twohand"><div class="mode-icon">✋</div><div class="mode-title" data-i18n="m_twohand_t">Two-Hand Tank</div><div class="mode-sub" data-i18n="m_twohand_s">L/R wheel</div></div>
+    <div class="mode-card" data-mode="pose"><div class="mode-icon">🤸</div><div class="mode-title" data-i18n="m_pose_t">Pose</div><div class="mode-sub" data-i18n="m_pose_s">arms up = drive</div></div>
+    <div class="mode-card" data-mode="lean"><div class="mode-icon">🫷</div><div class="mode-title" data-i18n="m_lean_t">Lean Forward</div><div class="mode-sub" data-i18n="m_lean_s">closer = faster</div></div>
+    <div class="mode-card" data-mode="colorwand"><div class="mode-icon">🌈</div><div class="mode-title" data-i18n="m_colorwand_t">Color Wand</div><div class="mode-sub" data-i18n="m_colorwand_s">trace + replay</div></div>
   </div>
-</div>
+</details>
 
 <div class="stage">
-  <h2 id="stageTitle">Pick a mode</h2>
-  <div class="stage-sub" id="stageSub">Click any card above to start.</div>
+  <h2 id="stageTitle" data-i18n="stage_pick">Pick a mode</h2>
+  <div class="stage-sub" id="stageSub" data-i18n="stage_pick_sub">Click any card above to start.</div>
   <div class="stage-body" id="stageBody"></div>
   <div class="stop-row">
-    <span class="speed-knob">Max speed: <input type="range" id="speedKnob" min="40" max="200" value="120"><output id="speedVal">120</output></span>
+    <span class="speed-knob"><span data-i18n="max_speed">Max speed:</span> <input type="range" id="speedKnob" min="40" max="200" value="120"><output id="speedVal">120</output></span>
     <button class="stop-btn" id="stopBtn">⏹ STOP</button>
   </div>
   <div class="verb-log" id="verbLog"></div>
@@ -229,6 +239,150 @@
  * ============================================================ */
 (function () {
   'use strict';
+
+  // ---- i18n table (EN / FR / AR) ----------------------------------
+  // Inline because the joystick-lab is a single page; same pattern as
+  // start.html. setL(lang) walks data-i18n / data-i18n-html elements
+  // and replaces text. Persisted to localStorage.robi.lang (matches
+  // the main app key so language carries across pages).
+  const T = {
+    en: {
+      header_title: 'Robi-9 Lab // Joystick Lab',
+      header_sub: '20 ways to drive your robot · pick your favorite',
+      header_robot_app: '🤖 Robot App',
+      header_catalog: '🗂️ Catalog',
+      hero_title: '🕹️ Joystick Lab',
+      hero_pitch: 'Twenty different ways to pilot your Robi-9 — from classic pads to whistling, beatboxing, drawing on canvas, and full webcam-driven gestures. Pick one, drive your robot, then pick another. Each input fires the same <code>M:L,R</code> verb under the hood.',
+      not_connected: 'NOT CONNECTED',
+      btn_connect: '▶ Connect to robot',
+      btn_disconnect: '⏏ Disconnect',
+      cat_touch: 'Touch & Pointer', cat_hw: 'Hardware', cat_audio: 'Audio', cat_cam: 'Camera',
+      stage_pick: 'Pick a mode', stage_pick_sub: 'Click any card above to start.',
+      max_speed: 'Max speed:',
+      m_classic_t:'Classic Pad',     m_classic_s:'drag knob',
+      m_dpad_t:'D-Pad',              m_dpad_s:'8-dir taps',
+      m_twin_t:'Twin Sticks',        m_twin_s:'tank drive',
+      m_painter_t:'Path Painter',    m_painter_s:'draw → follow',
+      m_tilt_t:'Tilt',               m_tilt_s:'phone tip',
+      m_keyboard_t:'Keyboard',       m_keyboard_s:'WASD desktop',
+      m_gamepad_t:'Gamepad',         m_gamepad_s:'USB controller',
+      m_voice_t:'Voice',             m_voice_s:'say it',
+      m_whistle_t:'Whistle',         m_whistle_s:'pitch → dir',
+      m_beat_t:'BeatBox',            m_beat_s:'clap → step',
+      m_colortrack_t:'Color Tracker',m_colortrack_s:'follow a color',
+      m_facesteer_t:'Face Steer',    m_facesteer_s:'head + size',
+      m_handwave_t:'Hand Wave',      m_handwave_s:'motion blob',
+      m_light_t:'Light Sensor',      m_light_s:'brightness',
+      m_cards_t:'Card Reader',       m_cards_s:'show QR cards',
+      m_mirror_t:'Mirror Mode',      m_mirror_s:'motion echo',
+      m_twohand_t:'Two-Hand Tank',   m_twohand_s:'L/R wheel',
+      m_pose_t:'Pose',               m_pose_s:'arms up = drive',
+      m_lean_t:'Lean Forward',       m_lean_s:'closer = faster',
+      m_colorwand_t:'Color Wand',    m_colorwand_s:'trace + replay',
+    },
+    fr: {
+      header_title: 'Robi-9 Lab // Joystick Lab',
+      header_sub: '20 façons de piloter ton robot · choisis ta préférée',
+      header_robot_app: '🤖 App Robot',
+      header_catalog: '🗂️ Catalogue',
+      hero_title: '🕹️ Joystick Lab',
+      hero_pitch: 'Vingt façons différentes de piloter ton Robi-9 — du pad classique au sifflement, beatbox, dessin sur canvas, et gestes par webcam. Choisis-en une, conduis ton robot, puis change. Chaque entrée envoie le même verbe <code>M:L,R</code> sous le capot.',
+      not_connected: 'NON CONNECTÉ',
+      btn_connect: '▶ Connecter le robot',
+      btn_disconnect: '⏏ Déconnecter',
+      cat_touch: 'Tactile & Pointeur', cat_hw: 'Matériel', cat_audio: 'Audio', cat_cam: 'Caméra',
+      stage_pick: 'Choisis un mode', stage_pick_sub: 'Tape une carte ci-dessus pour commencer.',
+      max_speed: 'Vitesse max :',
+      m_classic_t:'Pad classique',   m_classic_s:'glisser le bouton',
+      m_dpad_t:'Croix dir.',         m_dpad_s:'8 directions',
+      m_twin_t:'Deux manches',       m_twin_s:'mode char',
+      m_painter_t:'Peintre chemin',  m_painter_s:'dessine → suit',
+      m_tilt_t:'Inclinaison',        m_tilt_s:'incliner phone',
+      m_keyboard_t:'Clavier',        m_keyboard_s:'WASD desktop',
+      m_gamepad_t:'Manette',         m_gamepad_s:'manette USB',
+      m_voice_t:'Voix',              m_voice_s:'parle-lui',
+      m_whistle_t:'Sifflet',         m_whistle_s:'aigu → dir',
+      m_beat_t:'BeatBox',            m_beat_s:'tape → pas',
+      m_colortrack_t:'Suiveur couleur', m_colortrack_s:'suit une couleur',
+      m_facesteer_t:'Direction visage', m_facesteer_s:'tête + taille',
+      m_handwave_t:'Geste main',     m_handwave_s:'tache de mvt',
+      m_light_t:'Capteur lumière',   m_light_s:'luminosité',
+      m_cards_t:'Lecteur cartes',    m_cards_s:'cartes QR',
+      m_mirror_t:'Mode miroir',      m_mirror_s:'écho mouvement',
+      m_twohand_t:'Char 2-mains',    m_twohand_s:'roue G/D',
+      m_pose_t:'Posture',            m_pose_s:'bras levés = roule',
+      m_lean_t:'Penche-toi',         m_lean_s:'plus près = +rapide',
+      m_colorwand_t:'Baguette couleur', m_colorwand_s:'trace + rejoue',
+    },
+    ar: {
+      header_title: 'Robi-9 Lab // مختبر الجويستيك',
+      header_sub: '20 طريقة لقيادة روبوتك · اختر المفضّلة',
+      header_robot_app: '🤖 تطبيق الروبوت',
+      header_catalog: '🗂️ الفهرس',
+      hero_title: '🕹️ مختبر الجويستيك',
+      hero_pitch: 'عشرون طريقة مختلفة لقيادة روبوتك Robi-9 — من اللوحة الكلاسيكيّة إلى الصفير، البيت بوكس، الرسم على لوح، والإيماءات بالكاميرا. اختر واحدة، قُد روبوتك، ثمّ بدّل. كلّ مدخل يُرسل نفس الفعل <code>M:L,R</code> تحت الغطاء.',
+      not_connected: 'غير متّصل',
+      btn_connect: '▶ اتّصل بالروبوت',
+      btn_disconnect: '⏏ اقطع',
+      cat_touch: 'اللمس والمؤشّر', cat_hw: 'العتاد', cat_audio: 'الصوت', cat_cam: 'الكاميرا',
+      stage_pick: 'اختر وضعاً', stage_pick_sub: 'انقر بطاقة من الأعلى للبدء.',
+      max_speed: 'السرعة القصوى:',
+      m_classic_t:'لوح كلاسيكيّ', m_classic_s:'اسحب الزرّ',
+      m_dpad_t:'D-Pad',             m_dpad_s:'8 اتّجاهات',
+      m_twin_t:'عصاتان',             m_twin_s:'وضع دبّابة',
+      m_painter_t:'رسّام المسار',    m_painter_s:'ارسم → اتبع',
+      m_tilt_t:'الإمالة',            m_tilt_s:'أمِل الهاتف',
+      m_keyboard_t:'لوحة المفاتيح',  m_keyboard_s:'WASD',
+      m_gamepad_t:'يد ألعاب',        m_gamepad_s:'USB',
+      m_voice_t:'الصوت',             m_voice_s:'قل الكلمة',
+      m_whistle_t:'الصفير',           m_whistle_s:'حدّة → اتجاه',
+      m_beat_t:'BeatBox',            m_beat_s:'صفّقة → خطوة',
+      m_colortrack_t:'متتبّع لون',     m_colortrack_s:'يتبع لوناً',
+      m_facesteer_t:'توجيه بالوجه',    m_facesteer_s:'رأس + حجم',
+      m_handwave_t:'تلويح',           m_handwave_s:'كتلة حركة',
+      m_light_t:'حسّاس ضوء',          m_light_s:'سطوع',
+      m_cards_t:'قارئ بطاقات',        m_cards_s:'بطاقات QR',
+      m_mirror_t:'وضع المرآة',         m_mirror_s:'صدى الحركة',
+      m_twohand_t:'دبّابة بيدَين',     m_twohand_s:'عجلة يسار/يمين',
+      m_pose_t:'وضعيّة',              m_pose_s:'يدان أعلى = قيادة',
+      m_lean_t:'اقترب',               m_lean_s:'أقرب = أسرع',
+      m_colorwand_t:'عصا اللون',       m_colorwand_s:'أثر + إعادة',
+    },
+  };
+  let curLang = 'en';
+  function setL(lang) {
+    if (!T[lang]) lang = 'en';
+    curLang = lang;
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const k = el.dataset.i18n;
+      if (T[lang][k]) el.textContent = T[lang][k];
+    });
+    document.querySelectorAll('[data-i18n-html]').forEach(el => {
+      const k = el.dataset.i18nHtml;
+      if (T[lang][k]) el.innerHTML = T[lang][k];
+    });
+    document.documentElement.lang = lang;
+    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+    const sel = document.getElementById('langSelect');
+    if (sel) sel.value = lang;
+    try { localStorage.setItem('robi.lang', lang); } catch (e) {}
+  }
+  window.setL = setL; // exposed so the <select onchange> can call it
+
+  // ---- Collapsible category persistence ----------------------------
+  function wireCatPersistence() {
+    document.querySelectorAll('details.mode-cat').forEach(d => {
+      const id = d.id;
+      try {
+        const saved = localStorage.getItem('robi.cat.' + id);
+        if (saved === 'closed') d.removeAttribute('open');
+        else if (saved === 'open') d.setAttribute('open', '');
+      } catch (e) {}
+      d.addEventListener('toggle', () => {
+        try { localStorage.setItem('robi.cat.' + id, d.open ? 'open' : 'closed'); } catch (e) {}
+      });
+    });
+  }
 
   // ---- BLE bridge — uses the main app's js/ble.js via ble-shim.js ----
   // The shim provides addLogLine / setConnectionStatus / handleUartLine
@@ -791,11 +945,16 @@
     else activate('classic');
   } catch (e) { activate('classic'); }
 
-  // Theme inherit
+  // Theme + lang inherit + persist category collapse states
   try {
     const t = localStorage.getItem('robi.theme') || localStorage.getItem('mb_theme');
     if (t) document.documentElement.setAttribute('data-theme', t);
   } catch (e) {}
+  try {
+    const lang = localStorage.getItem('robi.lang') || 'en';
+    setL(lang);
+  } catch (e) { setL('en'); }
+  wireCatPersistence();
 
   // Spacebar = STOP everywhere
   document.addEventListener('keydown', e => { if (e.key === ' ' && document.activeElement.tagName !== 'INPUT') { stop(); e.preventDefault(); } });
