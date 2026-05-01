@@ -180,10 +180,10 @@
       // with a cyan/amber gradient so they stand out from the engineer-only
       // tools below (lab/schematic/pinout).
       const workshopLinks = [
-        { href: 'workshops-hub.html', label: '🏠 Workshops' },
+        { href: 'workshops/hub.html', label: '🏠 Workshops' },
         { href: 'start.html',         label: '🚀 First Day' },
-        { href: 'workshops.html',     label: '📚 Missions' },
-        { href: 'workshop-booklet.html', label: '🎒 Journal' }
+        { href: 'workshops/manual.html',     label: '📚 Missions' },
+        { href: 'workshops/booklet.html', label: '🎒 Journal' }
       ];
       workshopLinks.forEach(({ href, label }) => {
         // Avoid duplicates if the link is already a visible header button

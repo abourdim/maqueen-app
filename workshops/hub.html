@@ -4,7 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Robi-9 // Robi-9 Lab</title>
-<link rel="stylesheet" href="workshops-theme.css">
+<link rel="stylesheet" href="theme.css">
+<script src="newtab.js" defer></script>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { background: var(--bg); color: var(--text); }
@@ -492,9 +493,9 @@
     <span data-i18n="meta_count">🚀 <b>12 missions</b></span>
   </div>
   <div class="ctas">
-    <a href="start.html" data-i18n="cta_start">▶ First Day Setup</a>
-    <a href="workshops.html" class="alt" data-i18n="cta_manual">📖 Field Manual</a>
-    <a href="index.html" class="alt" data-i18n="cta_app">🤖 Robot App</a>
+    <a href="../start.html" data-i18n="cta_start">▶ First Day Setup</a>
+    <a href="manual.html" class="alt" data-i18n="cta_manual">📖 Field Manual</a>
+    <a href="../index.html" class="alt" data-i18n="cta_app">🤖 Robot App</a>
   </div>
 </section>
 
@@ -507,10 +508,10 @@
     <p data-i18n="qs_help">Tap each step as you go. Saved in your browser.</p>
     <ol id="qsl">
       <li onclick="this.classList.toggle('checked')" data-i18n="qs1">Charge your robots overnight (or 1+ hour) so they're ready to go.</li>
-      <li onclick="this.classList.toggle('checked')" data-i18n="qs2">Print a few <a href="workshop-booklet.html">Agent Journals</a> + a <a href="workshop-cheatcards.html">Cheat Card</a> for the mission.</li>
+      <li onclick="this.classList.toggle('checked')" data-i18n="qs2">Print a few <a href="booklet.html">Agent Journals</a> + a <a href="cheatcards.html">Cheat Card</a> for the mission.</li>
       <li onclick="this.classList.toggle('checked')" data-i18n="qs3">Set up: 1 robot per 2-3 kids, 1 tablet per group, Bluetooth on.</li>
-      <li onclick="this.classList.toggle('checked')" data-i18n="qs4">Open <a href="workshops.html">Field Manual</a> on the laptop, pick Mission 1.</li>
-      <li onclick="this.classList.toggle('checked')" data-i18n="qs5">Open <a href="index.html">Robot App</a> on tablets, tap Connect, mission begins!</li>
+      <li onclick="this.classList.toggle('checked')" data-i18n="qs4">Open <a href="manual.html">Field Manual</a> on the laptop, pick Mission 1.</li>
+      <li onclick="this.classList.toggle('checked')" data-i18n="qs5">Open <a href="../index.html">Robot App</a> on tablets, tap Connect, mission begins!</li>
     </ol>
   </div>
 </section>
@@ -519,42 +520,42 @@
 <section class="section" id="assets">
   <h2 data-i18n="assets_title">📦 Your Workshop Toolkit</h2>
   <div class="cards">
-    <a class="card" href="workshops.html">
+    <a class="card" href="manual.html">
       <div class="ic">📖</div>
       <span class="who" data-i18n="for_facil">FOR THE GROWN-UP</span>
       <h3 data-i18n="a1_title">Field Manual</h3>
       <div class="desc" data-i18n="a1_desc">All 12 missions step-by-step. Comic-style instructions with timelines, science breaks, and 5 mini-labs you can play right in the page.</div>
       <div class="meta" data-i18n="a1_meta">▸ workshops.html · 12 missions · 5 demos</div>
     </a>
-    <a class="card cyan" href="workshop-booklet.html">
+    <a class="card cyan" href="booklet.html">
       <div class="ic">🎒</div>
       <span class="who" data-i18n="for_kids">FOR KIDS</span>
       <h3 data-i18n="a2_title">Agent Journal</h3>
       <div class="desc" data-i18n="a2_desc">Printable journal kids fill in across all 12 missions. Drawings, badges, and a certificate at the end. They take it home!</div>
       <div class="meta" data-i18n="a2_meta">▸ workshop-booklet.html · 17 pages · A4 print</div>
     </a>
-    <a class="card amber" href="workshop-cheatcards.html">
+    <a class="card amber" href="cheatcards.html">
       <div class="ic">🃏</div>
       <span class="who" data-i18n="for_facil">FOR THE GROWN-UP</span>
       <h3 data-i18n="a3_title">Cheat Cards</h3>
       <div class="desc" data-i18n="a3_desc">Pocket-size A5 cards · one per mission · timeline · pitfalls · magic questions · success criteria. Keep one in hand during sessions.</div>
       <div class="meta" data-i18n="a3_meta">▸ workshop-cheatcards.html · 12 cards · A4 print</div>
     </a>
-    <a class="card orange" href="workshop-energizers.html">
+    <a class="card orange" href="energizers.html">
       <div class="ic">⚡</div>
       <span class="who" data-i18n="for_facil">FOR THE GROWN-UP</span>
       <h3 data-i18n="a4_title">Energizer Drills</h3>
       <div class="desc" data-i18n="a4_desc">25 short games to use between mission phases. Wake-up · brain · team-builder · laughs · calm-down. 2-5 min each.</div>
       <div class="meta" data-i18n="a4_meta">▸ workshop-energizers.html · 25 games · 5 categories</div>
     </a>
-    <a class="card" href="index.html">
+    <a class="card" href="../index.html">
       <div class="ic">🤖</div>
       <span class="who" data-i18n="for_all">FOR EVERYONE</span>
       <h3 data-i18n="a5_title">Robot App</h3>
       <div class="desc" data-i18n="a5_desc">The actual Maqueen Lab app — what kids use to drive, sense, draw paths, code servos, play games. Bluetooth-connected.</div>
       <div class="meta" data-i18n="a5_meta">▸ index.html · main app</div>
     </a>
-    <a class="card cyan" href="start.html">
+    <a class="card cyan" href="../start.html">
       <div class="ic">🚀</div>
       <span class="who" data-i18n="for_first">FIRST-TIMERS</span>
       <h3 data-i18n="a6_title">First Day Setup</h3>
@@ -684,7 +685,7 @@
     </details>
     <details>
       <summary data-i18n="faq4q">What if a kid loses focus?</summary>
-      <p data-i18n="faq4a">Use an energizer game! Open the <a href="workshop-energizers.html">Energizer Drills</a> page. Match: bored = wake-up · wild = calm-down · stuck = brain game.</p>
+      <p data-i18n="faq4a">Use an energizer game! Open the <a href="energizers.html">Energizer Drills</a> page. Match: bored = wake-up · wild = calm-down · stuck = brain game.</p>
     </details>
     <details>
       <summary data-i18n="faq5q">Do I need 12 robots for 12 kids?</summary>
@@ -727,10 +728,10 @@ const T = {
     qs_title: '⚡ First time? 5 quick steps',
     qs_help: 'Tap each step as you go. Saved in your browser.',
     qs1: 'Charge your robots overnight (or 1+ hour) so they\'re ready to go.',
-    qs2: 'Print a few <a href="workshop-booklet.html">Agent Journals</a> + a <a href="workshop-cheatcards.html">Cheat Card</a> for the mission.',
+    qs2: 'Print a few <a href="booklet.html">Agent Journals</a> + a <a href="cheatcards.html">Cheat Card</a> for the mission.',
     qs3: 'Set up: 1 robot per 2-3 kids, 1 tablet per group, Bluetooth on.',
-    qs4: 'Open <a href="workshops.html">Field Manual</a> on the laptop, pick Mission 1.',
-    qs5: 'Open <a href="index.html">Robot App</a> on tablets, tap Connect, mission begins!',
+    qs4: 'Open <a href="manual.html">Field Manual</a> on the laptop, pick Mission 1.',
+    qs5: 'Open <a href="../index.html">Robot App</a> on tablets, tap Connect, mission begins!',
     assets_title: '📦 Your Workshop Toolkit',
     for_facil: 'FOR THE GROWN-UP', for_kids: 'FOR KIDS', for_all: 'FOR EVERYONE', for_first: 'FIRST-TIMERS',
     a1_title: 'Field Manual',
@@ -765,7 +766,7 @@ const T = {
     faq3q: 'Can I skip missions or change the order?',
     faq3a: 'Most missions can run alone. Mission 1 (Wake The Robot) is essential first. Mission 10 needs 5 + 6 done. Mission 12 (Final) wants 1-6 minimum.',
     faq4q: 'What if a kid loses focus?',
-    faq4a: 'Use an energizer game! Open the <a href="workshop-energizers.html">Energizer Drills</a> page. Match: bored = wake-up · wild = calm-down · stuck = brain game.',
+    faq4a: 'Use an energizer game! Open the <a href="energizers.html">Energizer Drills</a> page. Match: bored = wake-up · wild = calm-down · stuck = brain game.',
     faq5q: 'Do I need 12 robots for 12 kids?',
     faq5a: 'No. 1 robot per 2-3 kids. So 4-6 robots for 12 kids. Only Mission 11 (Robot Duels) needs 2+ robots paired.',
     faq6q: 'How long to prepare a session?',
@@ -785,10 +786,10 @@ const T = {
     qs_title: '⚡ Première fois ? 5 étapes rapides',
     qs_help: 'Coche chaque étape. Sauvegardé dans ton navigateur.',
     qs1: 'Charge tes robots la veille (ou au moins 1h) pour qu\'ils soient prêts.',
-    qs2: 'Imprime quelques <a href="workshop-booklet.html">Journaux d\'Agent</a> + une <a href="workshop-cheatcards.html">Fiche Mémo</a> pour la mission.',
+    qs2: 'Imprime quelques <a href="booklet.html">Journaux d\'Agent</a> + une <a href="cheatcards.html">Fiche Mémo</a> pour la mission.',
     qs3: 'Installation : 1 robot pour 2-3 kids, 1 tablette par groupe, Bluetooth ON.',
-    qs4: 'Ouvre le <a href="workshops.html">Manuel Terrain</a> sur le laptop, choisis Mission 1.',
-    qs5: 'Ouvre l\'<a href="index.html">App Robot</a> sur les tablettes, appuie Connect, c\'est parti !',
+    qs4: 'Ouvre le <a href="manual.html">Manuel Terrain</a> sur le laptop, choisis Mission 1.',
+    qs5: 'Ouvre l\'<a href="../index.html">App Robot</a> sur les tablettes, appuie Connect, c\'est parti !',
     assets_title: '📦 Ton Kit d\'Atelier',
     for_facil: 'INSTRUCTEURS', for_kids: 'POUR LES KIDS', for_all: 'POUR TOUS', for_first: 'PREMIÈRE FOIS',
     a1_title: 'Manuel Terrain',
@@ -823,7 +824,7 @@ const T = {
     faq3q: 'Peut-on sauter ou changer l\'ordre ?',
     faq3a: 'La plupart des missions sont autonomes. Mission 1 (Réveil) est obligatoire en premier. Mission 10 nécessite 5 + 6. Mission 12 (Finale) veut 1-6 minimum.',
     faq4q: 'Si un kid perd l\'attention ?',
-    faq4a: 'Joue à un drill énergisant ! Ouvre <a href="workshop-energizers.html">Drills Énergisants</a>. Match : ennuyé = réveil · agité = calme · bloqué = jeu cérébral.',
+    faq4a: 'Joue à un drill énergisant ! Ouvre <a href="energizers.html">Drills Énergisants</a>. Match : ennuyé = réveil · agité = calme · bloqué = jeu cérébral.',
     faq5q: 'Faut-il 12 robots pour 12 kids ?',
     faq5a: 'Non. 1 robot pour 2-3 kids. Donc 4-6 robots pour 12 kids. Seule Mission 11 (Duels) nécessite 2+ robots appairés.',
     faq6q: 'Combien de temps pour préparer ?',
@@ -843,10 +844,10 @@ const T = {
     qs_title: '⚡ أوّل مرّة ؟ 5 خطوات سريعة',
     qs_help: 'انقر كل خطوة. محفوظة في متصفّحك.',
     qs1: 'اشحن روبوتاتك ليلة قبل (أو ساعة على الأقلّ).',
-    qs2: 'اطبع بضعة <a href="workshop-booklet.html">مفكّرات عميل</a> + <a href="workshop-cheatcards.html">بطاقة مهمّة</a> للمهمّة.',
+    qs2: 'اطبع بضعة <a href="booklet.html">مفكّرات عميل</a> + <a href="cheatcards.html">بطاقة مهمّة</a> للمهمّة.',
     qs3: 'الإعداد: روبوت لكل 2-3 أطفال، لوح لكل مجموعة، بلوتوث مُشَغَّل.',
-    qs4: 'افتح <a href="workshops.html">دليل الميدان</a> على الحاسوب، اختر المهمّة 1.',
-    qs5: 'افتح <a href="index.html">تطبيق الروبوت</a> على اللوحات، اضغط Connect، تبدأ المهمّة !',
+    qs4: 'افتح <a href="manual.html">دليل الميدان</a> على الحاسوب، اختر المهمّة 1.',
+    qs5: 'افتح <a href="../index.html">تطبيق الروبوت</a> على اللوحات، اضغط Connect، تبدأ المهمّة !',
     assets_title: '📦 أدوات الورشة',
     for_facil: 'للمدرّبين', for_kids: 'للأطفال', for_all: 'للجميع', for_first: 'لأوّل مرّة',
     a1_title: 'دليل الميدان',
@@ -881,7 +882,7 @@ const T = {
     faq3q: 'هل يمكن تخطّي المهمّات أو تغيير الترتيب ؟',
     faq3a: 'معظم المهمّات مستقلّة. المهمّة 1 (إيقاظ) أساسيّة أوّلاً. المهمّة 10 تحتاج 5 + 6. المهمّة 12 (النهائية) تريد 1-6 كحدّ أدنى.',
     faq4q: 'ماذا لو فقد طفل تركيزه ؟',
-    faq4a: 'العب لعبة منشّطة ! افتح <a href="workshop-energizers.html">التدريبات المنشّطة</a>. ملّ = إيقاظ · جامح = تهدئة · عالق = لعبة ذهنية.',
+    faq4a: 'العب لعبة منشّطة ! افتح <a href="energizers.html">التدريبات المنشّطة</a>. ملّ = إيقاظ · جامح = تهدئة · عالق = لعبة ذهنية.',
     faq5q: 'هل أحتاج 12 روبوتاً لـ12 طفل ؟',
     faq5a: 'لا. روبوت لكل 2-3 أطفال. أيّ 4-6 روبوتات لـ12 طفل. فقط المهمّة 11 (المبارزات) تحتاج 2+ روبوتات مقترنة.',
     faq6q: 'كم وقت لتحضير الجلسة ؟',
