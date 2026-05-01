@@ -40,7 +40,7 @@
 </div>
 
 <h1>Maqueen Lite v4 — Référence des broches</h1>
-<div class="subtitle">Source de vérité pour chaque broche utilisée par le firmware Maqueen Lab et l'extension <code>pxt-maqueen</code> sous-jacente.</div>
+<div class="subtitle">Source de vérité pour chaque broche utilisée par le firmware Robi-9 Lab et l'extension <code>pxt-maqueen</code> sous-jacente.</div>
 
 <h2>Références</h2>
 <ul class="ref-list">
@@ -65,7 +65,7 @@
     <li><code>maqueen.IR_read()</code> — lit les codes NEC depuis le récepteur IR embarqué via le wrapper C++ <code>maqueenIR.cpp</code>.</li>
     <li>LEDs RGB pilotées en I2C (4 pixels d'ambiance) accessibles au registre <code>0x32</code> du même chip <code>0x10</code> — <strong>ce ne sont pas</strong> des NeoPixels standards.</li>
   </ul>
-  <p>Le firmware v1 de Maqueen Lab (<code>firmware/v1-maqueen-lib.ts</code>) utilise ces appels <code>maqueen.*</code> directement. Le futur firmware v2 les remplacera par des appels bruts <code>pins.*</code> et I2C — même protocole filaire, même app web, code bas-niveau affiché côte à côte dans chaque Component Explorer pour une progression pédagogique.</p>
+  <p>Le firmware v1 de Robi-9 Lab (<code>firmware/v1-maqueen-lib.ts</code>) utilise ces appels <code>maqueen.*</code> directement. Le futur firmware v2 les remplacera par des appels bruts <code>pins.*</code> et I2C — même protocole filaire, même app web, code bas-niveau affiché côte à côte dans chaque Component Explorer pour une progression pédagogique.</p>
 </div>
 
 <div class="legend">
@@ -163,7 +163,7 @@
 <pre><code>git clone https://github.com/DFRobot/pxt-maqueen
 grep -nE "DigitalPin\.|0x10|0x14|0x15|0x32" pxt-maqueen/maqueen.ts</code></pre>
 
-<h2>Comment le firmware Maqueen Lab les utilise</h2>
+<h2>Comment le firmware Robi-9 Lab les utilise</h2>
 <table>
   <tr><th>Verbe (par BLE)</th><th>Code micro:bit</th></tr>
   <tr><td><code>M:L,R</code></td><td><code>maqueen.motorRun(M1, dir, |L|)</code> + idem pour M2</td></tr>

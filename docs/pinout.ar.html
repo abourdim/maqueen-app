@@ -40,7 +40,7 @@
 </div>
 
 <h1>Maqueen Lite v4 — مرجع المنافذ</h1>
-<div class="subtitle">مصدر الحقيقة لكل منفذ يستخدمه firmware Maqueen Lab وامتداد <code>pxt-maqueen</code> الكامن وراءه.</div>
+<div class="subtitle">مصدر الحقيقة لكل منفذ يستخدمه firmware Robi-9 Lab وامتداد <code>pxt-maqueen</code> الكامن وراءه.</div>
 
 <h2>المراجع</h2>
 <ul class="ref-list">
@@ -65,7 +65,7 @@
     <li><code>maqueen.IR_read()</code> — يقرأ رموز NEC من مستقبل IR المدمج عبر وسيط C++ <code>maqueenIR.cpp</code>.</li>
     <li>LEDs RGB مُتحكّم بها عبر I2C (4 بكسل محيطيّ) في السجلّ <code>0x32</code> من نفس الشريحة <code>0x10</code> — <strong>ليست</strong> NeoPixels قياسيّة.</li>
   </ul>
-  <p>firmware v1 الخاصّ بـ Maqueen Lab (<code>firmware/v1-maqueen-lib.ts</code>) يستخدم استدعاءات <code>maqueen.*</code> هذه مباشرةً. firmware v2 المستقبليّ سيستبدلها باستدعاءات <code>pins.*</code> و I2C خامة — نفس البروتوكول السلكيّ، نفس تطبيق الويب، كود منخفض المستوى يُعرَض جنباً إلى جنب في كلّ Component Explorer للتقدّم التعليميّ.</p>
+  <p>firmware v1 الخاصّ بـ Robi-9 Lab (<code>firmware/v1-maqueen-lib.ts</code>) يستخدم استدعاءات <code>maqueen.*</code> هذه مباشرةً. firmware v2 المستقبليّ سيستبدلها باستدعاءات <code>pins.*</code> و I2C خامة — نفس البروتوكول السلكيّ، نفس تطبيق الويب، كود منخفض المستوى يُعرَض جنباً إلى جنب في كلّ Component Explorer للتقدّم التعليميّ.</p>
 </div>
 
 <div class="legend">
@@ -163,7 +163,7 @@
 <pre><code>git clone https://github.com/DFRobot/pxt-maqueen
 grep -nE "DigitalPin\.|0x10|0x14|0x15|0x32" pxt-maqueen/maqueen.ts</code></pre>
 
-<h2>كيف يستخدمها firmware Maqueen Lab</h2>
+<h2>كيف يستخدمها firmware Robi-9 Lab</h2>
 <table>
   <tr><th>الفعل (عبر BLE)</th><th>كود micro:bit</th></tr>
   <tr><td><code>M:L,R</code></td><td><code>maqueen.motorRun(M1, dir, |L|)</code> + كذلك لـ M2</td></tr>
