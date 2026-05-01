@@ -27,7 +27,16 @@
     <meta name="theme-color" content="#0a1628">
     <meta name="description" content="BLE component lab for the DFRobot Maqueen Lite v4 — every actuator and sensor, live in your browser">
     <meta name="mobile-web-app-capable" content="yes">
-    <link rel="manifest" href="manifest.json">
+    <!-- PWA manifest. Chrome blocks file:// access by CORS, so we load it
+         dynamically only on http(s) origins to keep the dev console clean
+         when developers preview the app via a file:// path. -->
+    <script>
+      if (location.protocol === 'http:' || location.protocol === 'https:') {
+        const m = document.createElement('link');
+        m.rel = 'manifest'; m.href = 'manifest.json';
+        document.head.appendChild(m);
+      }
+    </script>
     <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="delight.css">
@@ -359,20 +368,27 @@ html[dir="rtl"] .hint ol { padding-left: 0; padding-right: 20px; }
                                     </div>
                                 </div>
                                 <script>
-                                  // App build/commit/version
+                                  // App build/commit/version. Chrome blocks fetch() to
+                                  // local JSON when the page is opened via file:// (CORS
+                                  // policy treats file:// as a unique origin), which spews
+                                  // red errors in the dev console. Skip the fetches on
+                                  // file:// — these JSONs only carry build metadata, the
+                                  // app works fine without them. On http(s) we still load.
                                   let expectedFwVersion = null;
-                                  fetch('product.json').then(r => r.json()).then(j => {
-                                    const v = document.getElementById('appVersion');
-                                    if (v && j.VERSION_PLAIN) v.textContent = j.VERSION_PLAIN;
-                                    expectedFwVersion = j.VERSION_PLAIN || null;
-                                  }).catch(()=>{});
-                                  fetch('build-info.json').then(r => r.json()).then(b => {
-                                    const d = document.getElementById('appBuildDate');
-                                    const c = document.getElementById('appCommit');
-                                    if (d && b.builtAt) d.textContent = b.builtAt;
-                                    if (c && b.commit) c.textContent = b.commit;
-                                    if (b.version) expectedFwVersion = b.version;
-                                  }).catch(()=>{});
+                                  if (location.protocol === 'http:' || location.protocol === 'https:') {
+                                    fetch('product.json').then(r => r.json()).then(j => {
+                                      const v = document.getElementById('appVersion');
+                                      if (v && j.VERSION_PLAIN) v.textContent = j.VERSION_PLAIN;
+                                      expectedFwVersion = j.VERSION_PLAIN || null;
+                                    }).catch(()=>{});
+                                    fetch('build-info.json').then(r => r.json()).then(b => {
+                                      const d = document.getElementById('appBuildDate');
+                                      const c = document.getElementById('appCommit');
+                                      if (d && b.builtAt) d.textContent = b.builtAt;
+                                      if (c && b.commit) c.textContent = b.commit;
+                                      if (b.version) expectedFwVersion = b.version;
+                                    }).catch(()=>{});
+                                  }
 
                                   // Listen for HELLO:<ver> reply from firmware on connect.
                                   // Compare to expectedFwVersion (the version embedded in this app build)
@@ -4421,7 +4437,13 @@ document.getElementById('clearCacheBtn')?.addEventListener('click', () => {
                 return;
             } catch(e) {}
         }
-        // Fallback: fetch (works on http://)
+        // Fallback: fetch (works on http://). Skip on file:// since
+        // Chrome's CORS policy blocks the request and logs a red error
+        // — show the helpful 'open via http server' message immediately.
+        if (location.protocol === 'file:') {
+            codeEl.textContent = '// Open this page via a local web server to view firmware code.\n// Example: python3 -m http.server';
+            return;
+        }
         fetch('firmware/v1-maqueen-lib.ts')
             .then(r => r.text())
             .then(code => { codeEl.textContent = code; codeLoaded = true; })
