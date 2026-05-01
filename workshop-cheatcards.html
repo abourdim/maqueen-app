@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="carbon">
+<head>
+<meta charset="UTF-8">
+<title>ROBI-9 // OP Mission Cards · Grown-up Quick-Ref</title>
+<link rel="stylesheet" href="workshops-theme.css">
+<style>
+/* Theme variables defined in workshops-theme.css per [data-theme] */
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: var(--ink); }
+body {
+  font-family: 'JetBrains Mono', 'Consolas', monospace;
+  color: var(--ink); font-size: 11px; line-height: 1.4;
+}
+body.rtl { direction: rtl; font-family: 'Tajawal', 'Cairo', system-ui, sans-serif; }
+
+.lang-bar {
+  position: fixed; top: 8px; right: 12px; z-index: 200;
+  display: flex; gap: 4px;
+  background: var(--bg-card); border: 1px solid var(--neon);
+  padding: 4px;
+}
+body.rtl .lang-bar { left: 12px; right: auto; }
+.lang-bar a {
+  color: var(--steel); cursor: pointer;
+  padding: 4px 10px; font-size: 11px; font-weight: 700;
+}
+.lang-bar a.active { background: var(--neon); color: var(--ink); }
+
+.sheet {
+  width: 297mm; height: 210mm;
+  background: var(--paper);
+  margin: 8mm auto; padding: 6mm;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6mm;
+  page-break-after: always;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  position: relative;
+}
+.sheet::before {
+  content: '✂'; position: absolute;
+  left: 50%; top: 6mm; bottom: 6mm;
+  width: 0;
+  border-left: 1px dashed #888;
+  font-size: 8px; color: #888;
+}
+.card {
+  background: #fff; color: var(--ink);
+  border: 1.5px solid var(--ink);
+  padding: 8px 12px;
+  display: flex; flex-direction: column;
+  font-size: 10px; line-height: 1.4;
+  position: relative; overflow: hidden;
+}
+.card::before {
+  content: ''; position: absolute;
+  top: 0; left: 0; right: 0; height: 5px;
+  background: var(--neon);
+}
+.card.c2::before  { background: var(--cyan); }
+.card.c3::before  { background: var(--amber); }
+.card.c4::before  { background: var(--orange); }
+.card.c5::before  { background: var(--neon); }
+.card.c6::before  { background: var(--cyan); }
+.card.c7::before  { background: var(--amber); }
+.card.c8::before  { background: var(--orange); }
+.card.c9::before  { background: var(--neon); }
+.card.c10::before { background: var(--cyan); }
+.card.c11::before { background: var(--amber); }
+.card.c12::before { background: var(--danger); }
+
+.card .head {
+  display: flex; align-items: center; gap: 8px;
+  margin: 4px 0 6px;
+  border-bottom: 1px solid var(--ink);
+  padding-bottom: 4px;
+}
+.card .head .id {
+  background: var(--ink); color: var(--neon);
+  padding: 3px 8px; font-weight: 800;
+  font-size: 10px; letter-spacing: 0.05em;
+}
+.card.c2 .head .id  { color: var(--cyan); }
+.card.c3 .head .id  { color: var(--amber); }
+.card.c4 .head .id  { color: var(--orange); }
+.card.c12 .head .id { color: var(--danger); }
+.card .head .title {
+  font-size: 13px; font-weight: 800;
+  flex: 1; letter-spacing: 0.02em;
+}
+.card .head .lvl {
+  color: var(--orange); font-size: 10px;
+  letter-spacing: 0.05em;
+}
+.meta-row {
+  display: flex; gap: 4px;
+  margin-bottom: 4px; font-size: 9px;
+  flex-wrap: wrap;
+}
+.meta-row span {
+  background: #f0f0f0; border: 1px solid #ccc;
+  padding: 1px 5px;
+}
+.codename {
+  background: var(--ink); color: var(--cyan);
+  border-left: 3px solid var(--orange);
+  padding: 4px 8px;
+  margin: 4px 0;
+  font-style: italic;
+  font-size: 10px;
+}
+body.rtl .codename { border-left: none; border-right: 3px solid var(--orange); }
+.codename b { color: var(--amber); }
+.card h4 {
+  margin: 6px 0 2px;
+  font-size: 9px;
+  color: var(--orange);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border-bottom: 1px dotted var(--orange);
+  padding-bottom: 1px;
+}
+.card .mat {
+  font-size: 10px; margin: 0;
+}
+.card .mat span {
+  display: inline-block;
+  margin-right: 6px;
+  margin-bottom: 2px;
+}
+body.rtl .card .mat span { margin-right: 0; margin-left: 6px; }
+.timeline {
+  display: flex; height: 22px;
+  border: 1px solid var(--ink);
+  margin: 4px 0;
+}
+.timeline div {
+  display: flex; align-items: center; justify-content: center;
+  font-size: 8px; font-weight: 800; color: #fff;
+  border-right: 1px solid rgba(0,0,0,0.2);
+  white-space: nowrap; overflow: hidden;
+  padding: 0 2px; letter-spacing: 0.05em;
+}
+.tl-tick {
+  display: flex; font-size: 8px;
+  color: #888; margin-bottom: 4px;
+}
+.card ul, .card ol {
+  margin: 2px 0;
+  padding-left: 16px;
+  font-size: 10px;
+}
+body.rtl .card ul, body.rtl .card ol {
+  padding-left: 0; padding-right: 16px;
+}
+.card ul li, .card ol li { margin: 2px 0; }
+.card ul.wow li b {
+  background: var(--neon); color: var(--ink);
+  padding: 0 3px; font-weight: 800;
+}
+.card ul.pit li {
+  color: #b91c1c;
+}
+.card ul.pit li b { color: var(--ink); }
+.card ul.q li {
+  background: #e0f2fe;
+  border-left: 2px solid var(--cyan);
+  padding: 2px 6px;
+  margin: 2px 0;
+  list-style: none;
+  color: var(--ink);
+}
+body.rtl .card ul.q li { border-left: none; border-right: 2px solid var(--cyan); }
+.card ul.s li::before {
+  content: '✓ '; color: var(--neon); font-weight: 800;
+}
+.card ul.s li {
+  list-style: none; font-size: 10px;
+}
+.card .next {
+  margin-top: auto; padding-top: 4px;
+  border-top: 1px dotted #ccc;
+  font-size: 9px; font-style: italic;
+  color: #555;
+}
+.card .next b { color: var(--orange); font-style: normal; }
+
+/* COVER */
+.cover {
+  width: 297mm; height: 210mm;
+  background: var(--ink); color: var(--text);
+  margin: 8mm auto; padding: 26mm 22mm;
+  display: flex; flex-direction: column;
+  justify-content: center; align-items: center;
+  text-align: center;
+  page-break-after: always;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  background-image:
+    repeating-linear-gradient(0deg, transparent 0 39px, rgba(34,197,94,0.06) 39px 40px),
+    repeating-linear-gradient(90deg, transparent 0 39px, rgba(34,197,94,0.06) 39px 40px);
+}
+.cover .clearance {
+  display: inline-block;
+  background: var(--orange); color: var(--ink);
+  padding: 6px 14px; font-size: 11px;
+  font-weight: 800; letter-spacing: 0.15em;
+  margin-bottom: 16px;
+}
+.cover h1 {
+  font-size: 56px; margin: 0;
+  color: var(--neon); letter-spacing: -1px;
+  text-shadow: 0 0 30px rgba(34,197,94,0.4);
+}
+.cover .sub {
+  font-size: 18px; color: var(--cyan);
+  margin: 14px 0 24px;
+  font-style: italic;
+}
+.cover .info {
+  background: var(--bg-card); color: var(--text);
+  border: 2px solid var(--neon);
+  padding: 18px 28px;
+  font-size: 12px;
+  max-width: 500px;
+  text-align: left;
+  line-height: 1.6;
+}
+.cover.rtl .info { text-align: right; }
+.cover .info h3 {
+  margin: 0 0 8px; color: var(--amber);
+  font-size: 14px; letter-spacing: 0.04em;
+}
+.cover .info b { color: var(--orange); }
+
+@media print {
+  body { background: #fff; }
+  .sheet, .cover { margin: 0; box-shadow: none; }
+  .lang-bar { display: none; }
+  @page { size: A4 landscape; margin: 0; }
+}
+</style>
+</head>
+<body>
+
+<div class="lang-bar">
+  <a onclick="setL('en')" id="langEn" class="active">EN</a>
+  <a onclick="setL('fr')" id="langFr">FR</a>
+  <a onclick="setL('ar')" id="langAr">AR</a>
+  <select class="wd-select" id="themeSelect" aria-label="Theme" style="font-size:11px; padding:2px 6px; margin-left:4px;">
+    <option value="carbon">▣ Carbon</option>
+    <option value="forest">▣ Forest</option>
+    <option value="steel">▣ Steel</option>
+    <option value="paper">☼ Paper</option>
+    <option value="pearl">☼ Pearl</option>
+  </select>
+</div>
+
+<!-- COVER -->
+<div class="cover">
+  <span class="clearance" data-i18n="cover_tag">▸ TEACHER POCKET CARDS</span>
+  <h1 data-i18n="cover_title">Mission Cards</h1>
+  <div class="sub" data-i18n="cover_sub">// 12 missions · pocket reference</div>
+  <div class="info">
+    <h3 data-i18n="cover_h3">▸ HOW TO USE THESE</h3>
+    <p data-i18n="cover_p1">Print 2-sided · A4 landscape · 6 sheets. Cut on the dashed lines = 12 A5 cards. Keep one in your pocket during each mission.</p>
+    <p style="margin-top: 10px;" data-i18n="cover_p2">⏱️ Each mission = 90 minutes · 👤 kids 10+ · 🤖 1 robot per 2-3 kids</p>
+  </div>
+</div>
+
+<!-- SHEET 1: OP01, OP02 -->
+<div class="sheet">
+  <div class="card">
+    <div class="head">
+      <span class="id">M-01</span>
+      <span class="title" data-i18n="op01_title">⌘ WAKE THE UNIT</span>
+      <span class="lvl">▰▱▱▱▱</span>
+    </div>
+    <div class="meta-row"><span>⏱ 90 min</span><span>👤 10+</span><span data-i18n="prereq_none">NEED FIRST: none</span></div>
+    <div class="codename" data-i18n="op01_code"><b>GOAL:</b> establish connection · master STOP button · earn [CONNECTOR]</div>
+    <h4 data-i18n="materials">▶ MATERIALS</h4>
+    <p class="mat"><span data-i18n="mat_robot">🤖 1 robot/2-3</span><span data-i18n="mat_tab">📱 1 tablet/grp</span><span data-i18n="mat_cone">🚧 4-6 cones</span><span data-i18n="mat_timer">⏱ stopwatch</span></p>
+    <h4 data-i18n="timeline">▶ TIMELINE</h4>
+    <div class="tl-tick"><span style="flex:10;">10'</span><span style="flex:10;">10'</span><span style="flex:20;">20'</span><span style="flex:10;">10'</span><span style="flex:25;">25'</span><span style="flex:15;">15'</span></div>
+    <div class="timeline">
+      <div style="flex:10; background:var(--cyan);" data-i18n="op01_t1">CONTACT</div>
+      <div style="flex:10; background:var(--neon);" data-i18n="op01_t2">HANDSHAKE</div>
+      <div style="flex:20; background:var(--amber); color:var(--ink);" data-i18n="op01_t3">FREE RECON</div>
+      <div style="flex:10; background:var(--orange);" data-i18n="op01_t4">STOP</div>
+      <div style="flex:25; background:var(--neon);" data-i18n="op01_t5">SLALOM</div>
+      <div style="flex:15; background:var(--cyan);" data-i18n="op01_t6">DEBRIEF</div>
+    </div>
+    <h4 data-i18n="dont_miss">▶ KEY MOMENTS</h4>
+    <ul class="wow">
+      <li data-i18n="op01_w1"><b>BEAT</b> when first robot wakes — pause for the cheer</li>
+      <li data-i18n="op01_w2"><b>BEAT</b> when ⏹ saves a near-impact — make it dramatic</li>
+      <li data-i18n="op01_w3"><b>BEAT</b> blindfolded slalom = pure chaos</li>
+    </ul>
+    <h4 data-i18n="pitfalls">▶ PITFALLS</h4>
+    <ul class="pit">
+      <li data-i18n="op01_p1">Pair fails → <b>fix:</b> toggle device BT off/on</li>
+      <li data-i18n="op01_p2">Drives at face → <b>fix:</b> rehearse safety code early</li>
+      <li data-i18n="op01_p3">Free recon chaos → <b>fix:</b> grown-up stays HANDS OFF</li>
+    </ul>
+    <h4 data-i18n="questions">▶ MAGIC QUESTIONS</h4>
+    <ul class="q">
+      <li data-i18n="op01_q1">"How does this thing receive orders?"</li>
+      <li data-i18n="op01_q2">"Where's the red ⏹? Point!"</li>
+    </ul>
+    <h4 data-i18n="success">▶ SUCCESS CRITERIA</h4>
+    <ul class="s">
+      <li data-i18n="op01_s1">Each kid connects solo at least once</li>
+      <li data-i18n="op01_s2">Each hits ⏹ in real scenario</li>
+    </ul>
+    <div class="next" data-i18n="op01_next">→ Next: <b>M-02 Velocity Lab</b> · master throttle</div>
+  </div>
+
+  <div class="card c2">
+    <div class="head">
+      <span class="id">M-02</span>
+      <span class="title" data-i18n="op02_title">▶ VELOCITY LAB</span>
+      <span class="lvl">▰▱▱▱▱</span>
+    </div>
+    <div class="meta-row"><span>⏱ 90 min</span><span>👤 10+</span><span>NEED FIRST: M-01</span></div>
+    <div class="codename" data-i18n="op02_code"><b>GOAL:</b> calibrate throttle · profile braking · build chart</div>
+    <h4 data-i18n="materials">▶ MATERIALS</h4>
+    <p class="mat"><span data-i18n="mat_robot">🤖 robots</span><span data-i18n="mat_tape">📏 tape measure</span><span data-i18n="mat_paper">📒 graph paper</span><span data-i18n="mat_dock">🎯 dock zone</span></p>
+    <h4 data-i18n="timeline">▶ TIMELINE</h4>
+    <div class="tl-tick"><span style="flex:5;">5'</span><span style="flex:15;">15'</span><span style="flex:20;">20'</span><span style="flex:25;">25'</span><span style="flex:15;">15'</span><span style="flex:10;">10'</span></div>
+    <div class="timeline">
+      <div style="flex:5; background:var(--cyan);" data-i18n="op02_t1">RECAP</div>
+      <div style="flex:15; background:var(--neon);" data-i18n="op02_t2">3-VEL TRIAL</div>
+      <div style="flex:20; background:var(--amber); color:var(--ink);" data-i18n="op02_t3">BRAKE PROF</div>
+      <div style="flex:25; background:var(--orange);" data-i18n="op02_t4">DOCKING</div>
+      <div style="flex:15; background:var(--cyan);" data-i18n="op02_t5">DATA PLOT</div>
+      <div style="flex:10; background:var(--neon);" data-i18n="op02_t6">WRAP</div>
+    </div>
+    <h4 data-i18n="dont_miss">▶ KEY MOMENTS</h4>
+    <ul class="wow">
+      <li data-i18n="op02_w1"><b>BEAT</b> measure brake distance with tape!</li>
+      <li data-i18n="op02_w2"><b>BEAT</b> chart curve BENDS (not straight!)</li>
+      <li data-i18n="op02_w3"><b>BEAT</b> first successful dock</li>
+    </ul>
+    <h4 data-i18n="pitfalls">▶ PITFALLS</h4>
+    <ul class="pit">
+      <li data-i18n="op02_p1">Only tries 100% → <b>fix:</b> require 3 different speeds</li>
+      <li data-i18n="op02_p2">Chart rushed → <b>fix:</b> demo axes labeling first</li>
+    </ul>
+    <h4 data-i18n="questions">▶ MAGIC QUESTIONS</h4>
+    <ul class="q">
+      <li data-i18n="op02_q1">"Why isn't your chart straight?"</li>
+      <li data-i18n="op02_q2">"Why do schools have speed bumps?"</li>
+    </ul>
+    <h4 data-i18n="success">▶ SUCCESS CRITERIA</h4>
+    <ul class="s">
+      <li data-i18n="op02_s1">Hand-drawn chart per kid</li>
+      <li data-i18n="op02_s2">Verbalises trade-off</li>
+    </ul>
+    <div class="next" data-i18n="op02_next">→ Next: <b>M-03 Sensor Recon</b> · meet sensors</div>
+  </div>
+</div>
+
+<!-- SHEET 2: OP03, OP04 -->
+<div class="sheet">
+  <div class="card c3">
+    <div class="head">
+      <span class="id">M-03</span>
+      <span class="title" data-i18n="op03_title">⊙ SENSOR RECON</span>
+      <span class="lvl">▰▰▱▱▱</span>
+    </div>
+    <div class="meta-row"><span>⏱ 90 min</span><span>👤 10+</span><span>NEED FIRST: M-01</span></div>
+    <div class="codename" data-i18n="op03_code"><b>GOAL:</b> profile sonar · line · IR · build sensor map</div>
+    <h4 data-i18n="materials">▶ MATERIALS</h4>
+    <p class="mat"><span>🤖 robots</span><span data-i18n="mat_obj">🎁 objects (book, pillow)</span><span data-i18n="mat_btape">📏 black tape</span><span>📒 paper</span></p>
+    <h4 data-i18n="timeline">▶ TIMELINE</h4>
+    <div class="tl-tick"><span style="flex:10;">10'</span><span style="flex:20;">20'</span><span style="flex:15;">15'</span><span style="flex:25;">25'</span><span style="flex:10;">10'</span><span style="flex:10;">10'</span></div>
+    <div class="timeline">
+      <div style="flex:10; background:var(--orange);" data-i18n="op03_t1">BLIND DRILL</div>
+      <div style="flex:20; background:var(--amber); color:var(--ink);" data-i18n="op03_t2">CH-A SONAR</div>
+      <div style="flex:15; background:var(--neon);" data-i18n="op03_t3">CH-B LINE</div>
+      <div style="flex:25; background:var(--cyan);" data-i18n="op03_t4">DOC NETWORK</div>
+      <div style="flex:10; background:var(--orange);" data-i18n="op03_t5">PREDICT</div>
+      <div style="flex:10; background:var(--neon);" data-i18n="op03_t6">FIELD</div>
+    </div>
+    <h4 data-i18n="dont_miss">▶ KEY MOMENTS</h4>
+    <ul class="wow">
+      <li data-i18n="op03_w1"><b>BEAT</b> blindfold empathy walk BEFORE sonar reveal</li>
+      <li data-i18n="op03_w2"><b>BEAT</b> sonar number tracking hand live</li>
+      <li data-i18n="op03_w3"><b>BEAT</b> pillow anomaly = soft = bad echo</li>
+    </ul>
+    <h4 data-i18n="pitfalls">▶ PITFALLS</h4>
+    <ul class="pit">
+      <li data-i18n="op03_p1">Sonar reads 0 sometimes → <b>normal:</b> too close = no echo</li>
+      <li data-i18n="op03_p2">Line confusing → <b>fix:</b> use stark black/white only</li>
+    </ul>
+    <h4 data-i18n="questions">▶ MAGIC QUESTIONS</h4>
+    <ul class="q">
+      <li data-i18n="op03_q1">"How does a bat hunt in the dark?"</li>
+      <li data-i18n="op03_q2">"What sensor would YOU add?"</li>
+    </ul>
+    <h4 data-i18n="success">▶ SUCCESS CRITERIA</h4>
+    <ul class="s">
+      <li data-i18n="op03_s1">Labelled sensor map per kid</li>
+      <li data-i18n="op03_s2">Names 3 sensors + robots</li>
+    </ul>
+    <div class="next" data-i18n="op03_next">→ Next: <b>M-04 Behaviour Core</b> · does it think?</div>
+  </div>
+
+  <div class="card c4">
+    <div class="head">
+      <span class="id">M-04</span>
+      <span class="title" data-i18n="op04_title">▣ BEHAVIOUR CORE</span>
+      <span class="lvl">▰▰▱▱▱</span>
+    </div>
+    <div class="meta-row"><span>⏱ 90 min</span><span>👤 10+</span><span>NEED FIRST: M-01, M-03</span></div>
+    <div class="codename" data-i18n="op04_code"><b>GOAL:</b> probe autonomy stack · decode "AI" = sensors + rules + speed</div>
+    <h4 data-i18n="materials">▶ MATERIALS</h4>
+    <p class="mat"><span data-i18n="mat_wander">🤖 robots (wander)</span><span>📒 paper</span><span data-i18n="mat_arena">🏟️ open arena</span></p>
+    <h4 data-i18n="timeline">▶ TIMELINE</h4>
+    <div class="tl-tick"><span style="flex:10;">10'</span><span style="flex:15;">15'</span><span style="flex:20;">20'</span><span style="flex:10;">10'</span><span style="flex:15;">15'</span><span style="flex:15;">15'</span><span style="flex:5;">5'</span></div>
+    <div class="timeline">
+      <div style="flex:10; background:var(--cyan);" data-i18n="op04_t1">DEMO</div>
+      <div style="flex:15; background:var(--amber); color:var(--ink);" data-i18n="op04_t2">TOUR 4 PROFILES</div>
+      <div style="flex:20; background:var(--neon);" data-i18n="op04_t3">SCI OBS</div>
+      <div style="flex:10; background:var(--cyan);" data-i18n="op04_t4">BRIEF</div>
+      <div style="flex:15; background:var(--orange);" data-i18n="op04_t5">DEBATE</div>
+      <div style="flex:15; background:var(--neon);" data-i18n="op04_t6">DESIGN</div>
+      <div style="flex:5; background:var(--ink); color:var(--neon);" data-i18n="op04_t7">END</div>
+    </div>
+    <h4 data-i18n="dont_miss">▶ KEY MOMENTS</h4>
+    <ul class="wow">
+      <li data-i18n="op04_w1"><b>BEAT</b> hold "is it intelligent?" question OPEN</li>
+      <li data-i18n="op04_w2"><b>BEAT</b> reveal rule table only AFTER debate</li>
+      <li data-i18n="op04_w3"><b>BEAT</b> link to ChatGPT / Netflix / autocorrect</li>
+    </ul>
+    <h4 data-i18n="pitfalls">▶ PITFALLS</h4>
+    <ul class="pit">
+      <li data-i18n="op04_p1">STRIKE → robot crashes → <b>fix:</b> bigger arena, embrace it</li>
+      <li data-i18n="op04_p2">Debate one-sided → <b>fix:</b> assign sides if needed</li>
+    </ul>
+    <h4 data-i18n="questions">▶ MAGIC QUESTIONS</h4>
+    <ul class="q">
+      <li data-i18n="op04_q1">"Is wander INTELLIGENCE?"</li>
+      <li data-i18n="op04_q2">"3 adjectives for this profile?"</li>
+    </ul>
+    <h4 data-i18n="success">▶ SUCCESS CRITERIA</h4>
+    <ul class="s">
+      <li data-i18n="op04_s1">Custom profile-5 designed on paper</li>
+      <li data-i18n="op04_s2">Verbalises IF/THEN rule</li>
+    </ul>
+    <div class="next" data-i18n="op04_next">→ Next: <b>M-05 Cartography</b> · robot remembers</div>
+  </div>
+</div>
+
+<!-- SHEET 3: OP05, OP06 -->
+<div class="sheet">
+  <div class="card c5">
+    <div class="head">
+      <span class="id">M-05</span>
+      <span class="title" data-i18n="op05_title">▦ CARTOGRAPHY</span>
+      <span class="lvl">▰▰▰▱▱</span>
+    </div>
+    <div class="meta-row"><span>⏱ 90 min</span><span>👤 10+</span><span>NEED FIRST: M-01, M-03</span></div>
+    <div class="codename" data-i18n="op05_code"><b>GOAL:</b> watch SLAM build live · profile drift · understand GPS need</div>
+    <h4 data-i18n="materials">▶ MATERIALS</h4>
+    <p class="mat"><span>🤖 robots</span><span data-i18n="mat_start">📍 tape (start mark)</span><span data-i18n="mat_ruler">📏 measure</span><span>📒 paper</span></p>
+    <h4 data-i18n="timeline">▶ TIMELINE</h4>
+    <div class="tl-tick"><span style="flex:10;">10'</span><span style="flex:20;">20'</span><span style="flex:15;">15'</span><span style="flex:15;">15'</span><span style="flex:10;">10'</span><span style="flex:15;">15'</span></div>
+    <div class="timeline">
+      <div style="flex:10; background:var(--cyan);" data-i18n="op05_t1">MAP SEM</div>
+      <div style="flex:20; background:var(--amber); color:var(--ink);" data-i18n="op05_t2">LIVE BUILD</div>
+      <div style="flex:15; background:var(--orange);" data-i18n="op05_t3">DRIFT PROF</div>
+      <div style="flex:15; background:var(--neon);" data-i18n="op05_t4">2 UNITS</div>
+      <div style="flex:10; background:var(--orange);" data-i18n="op05_t5">GPS DOC</div>
+      <div style="flex:15; background:var(--cyan);" data-i18n="op05_t6">MY MAP</div>
+    </div>
+    <h4 data-i18n="dont_miss">▶ KEY MOMENTS</h4>
+    <ul class="wow">
+      <li data-i18n="op05_w1"><b>BEAT</b> first time map renders LIVE as kid drives</li>
+      <li data-i18n="op05_w2"><b>BEAT</b> measuring drift gap (cm of error)</li>
+      <li data-i18n="op05_w3"><b>BEAT</b> 2 identical paths = 2 different maps!</li>
+    </ul>
+    <h4 data-i18n="pitfalls">▶ PITFALLS</h4>
+    <ul class="pit">
+      <li data-i18n="op05_p1">Drift confusing → <b>fix:</b> visualize with floor tape</li>
+      <li data-i18n="op05_p2">Map "doesn't close" → that's the WHOLE point!</li>
+    </ul>
+    <h4 data-i18n="questions">▶ MAGIC QUESTIONS</h4>
+    <ul class="q">
+      <li data-i18n="op05_q1">"Why aren't the 2 maps identical?"</li>
+      <li data-i18n="op05_q2">"Where could a robot get lost using only this?"</li>
+    </ul>
+    <h4 data-i18n="success">▶ SUCCESS CRITERIA</h4>
+    <ul class="s">
+      <li data-i18n="op05_s1">SLAM-style sketch produced</li>
+      <li data-i18n="op05_s2">Names "drift" + 1 cause</li>
+    </ul>
+    <div class="next" data-i18n="op05_next">→ Next: <b>M-06 Trajectory Code</b> · first program</div>
+  </div>
+
+  <div class="card c6">
+    <div class="head">
+      <span class="id">M-06</span>
+      <span class="title" data-i18n="op06_title">⌒ TRAJECTORY CODE</span>
+      <span class="lvl">▰▰▰▱▱</span>
+    </div>
+    <div class="meta-row"><span>⏱ 90 min</span><span>👤 10+</span><span>NEED FIRST: M-05</span></div>
+    <div class="codename" data-i18n="op06_code"><b>GOAL:</b> first program · no code · save · replay</div>
+    <h4 data-i18n="materials">▶ MATERIALS</h4>
+    <p class="mat"><span>🤖 robots</span><span data-i18n="mat_canvas">📜 floor canvas</span><span data-i18n="mat_templates">📒 templates</span></p>
+    <h4 data-i18n="timeline">▶ TIMELINE</h4>
+    <div class="tl-tick"><span style="flex:10;">10'</span><span style="flex:20;">20'</span><span style="flex:10;">10'</span><span style="flex:25;">25'</span><span style="flex:10;">10'</span><span style="flex:10;">10'</span><span style="flex:5;">5'</span></div>
+    <div class="timeline">
+      <div style="flex:10; background:var(--cyan);" data-i18n="op06_t1">DEMO</div>
+      <div style="flex:20; background:var(--neon);" data-i18n="op06_t2">SHAPES</div>
+      <div style="flex:10; background:var(--amber); color:var(--ink);" data-i18n="op06_t3">SAVE</div>
+      <div style="flex:25; background:var(--orange);" data-i18n="op06_t4">INITIAL OP</div>
+      <div style="flex:10; background:var(--cyan);" data-i18n="op06_t5">SWAP</div>
+      <div style="flex:10; background:var(--neon);" data-i18n="op06_t6">BATTLE</div>
+      <div style="flex:5; background:var(--ink); color:var(--neon);" data-i18n="op06_t7">END</div>
+    </div>
+    <h4 data-i18n="dont_miss">▶ KEY MOMENTS</h4>
+    <ul class="wow">
+      <li data-i18n="op06_w1"><b>BEAT</b> first time path is followed autonomously</li>
+      <li data-i18n="op06_w2"><b>BEAT</b> opening JSON = "this is code!"</li>
+      <li data-i18n="op06_w3"><b>BEAT</b> swap files = different result on diff robot</li>
+    </ul>
+    <h4 data-i18n="pitfalls">▶ PITFALLS</h4>
+    <ul class="pit">
+      <li data-i18n="op06_p1">Path inaccurate → <b>fix:</b> link to drift from M-05</li>
+      <li data-i18n="op06_p2">JSON scary → <b>fix:</b> show 2-3 lines max</li>
+    </ul>
+    <h4 data-i18n="questions">▶ MAGIC QUESTIONS</h4>
+    <ul class="q">
+      <li data-i18n="op06_q1">"Difference between driving and programming?"</li>
+      <li data-i18n="op06_q2">"Whose path looks coolest?"</li>
+    </ul>
+    <h4 data-i18n="success">▶ SUCCESS CRITERIA</h4>
+    <ul class="s">
+      <li data-i18n="op06_s1">Each kid saves ≥ 1 JSON</li>
+      <li data-i18n="op06_s2">Replays partner's saved file</li>
+    </ul>
+    <div class="next" data-i18n="op06_next">→ Next: <b>M-07 Signal Lab</b> · buzzer composer</div>
+  </div>
+</div>
+
+<!-- SHEET 4: OP07, OP08 -->
+<div class="sheet">
+  <div class="card c7">
+    <div class="head">
+      <span class="id">M-07</span>
+      <span class="title" data-i18n="op07_title">≋ SIGNAL LAB</span>
+      <span class="lvl">▰▰▱▱▱</span>
+    </div>
+    <div class="meta-row"><span>⏱ 90 min</span><span>👤 10+</span><span>NEED FIRST: M-01</span></div>
+    <div class="codename" data-i18n="op07_code"><b>GOAL:</b> 4-tone signature · Morse decode · sound = numbers</div>
+    <h4 data-i18n="materials">▶ MATERIALS</h4>
+    <p class="mat"><span data-i18n="mat_buz">🤖 robots (buzzer)</span><span data-i18n="mat_score">📒 score paper</span></p>
+    <h4 data-i18n="timeline">▶ TIMELINE</h4>
+    <div class="tl-tick"><span style="flex:10;">10'</span><span style="flex:20;">20'</span><span style="flex:25;">25'</span><span style="flex:15;">15'</span><span style="flex:10;">10'</span><span style="flex:10;">10'</span></div>
+    <div class="timeline">
+      <div style="flex:10; background:var(--cyan);" data-i18n="op07_t1">PROBE</div>
+      <div style="flex:20; background:var(--neon);" data-i18n="op07_t2">PIANO</div>
+      <div style="flex:25; background:var(--amber); color:var(--ink);" data-i18n="op07_t3">COMPOSE</div>
+      <div style="flex:15; background:var(--orange);" data-i18n="op07_t4">CONCERT</div>
+      <div style="flex:10; background:var(--cyan);" data-i18n="op07_t5">MORSE</div>
+      <div style="flex:10; background:var(--neon);" data-i18n="op07_t6">FIELD</div>
+    </div>
+    <h4 data-i18n="dont_miss">▶ KEY MOMENTS</h4>
+    <ul class="wow">
+      <li data-i18n="op07_w1"><b>BEAT</b> concert moment — every pair performs</li>
+      <li data-i18n="op07_w2"><b>BEAT</b> Morse SOS transmission</li>
+      <li data-i18n="op07_w3"><b>BEAT</b> "MP3 = same numbers" reveal</li>
+    </ul>
+    <h4 data-i18n="pitfalls">▶ PITFALLS</h4>
+    <ul class="pit">
+      <li data-i18n="op07_p1">Buzzer too loud → <b>fix:</b> set noise rules</li>
+      <li data-i18n="op07_p2">Signature won't replay → <b>fix:</b> write notes first</li>
+    </ul>
+    <h4 data-i18n="questions">▶ MAGIC QUESTIONS</h4>
+    <ul class="q">
+      <li data-i18n="op07_q1">"Smallest pitch difference you can hear?"</li>
+      <li data-i18n="op07_q2">"Why do MP3 files exist?"</li>
+    </ul>
+    <h4 data-i18n="success">▶ SUCCESS CRITERIA</h4>
+    <ul class="s">
+      <li data-i18n="op07_s1">Each pair performs signature</li>
+      <li data-i18n="op07_s2">≥ 1 group decodes Morse</li>
+    </ul>
+    <div class="next" data-i18n="op07_next">→ Next: <b>M-08 Servo Eng</b> · engineer</div>
+  </div>
+
+  <div class="card c8">
+    <div class="head">
+      <span class="id">M-08</span>
+      <span class="title" data-i18n="op08_title">⊕ SERVO ENGINEERING</span>
+      <span class="lvl">▰▰▰▱▱</span>
+    </div>
+    <div class="meta-row"><span>⏱ 90 min</span><span>👤 10+</span><span>NEED FIRST: M-01</span></div>
+    <div class="codename" data-i18n="op08_code"><b>GOAL:</b> master 0-180° · design payload</div>
+    <h4 data-i18n="materials">▶ MATERIALS</h4>
+    <p class="mat"><span data-i18n="mat_serv">🤖 robots + S1/S2</span><span data-i18n="mat_paper2">📒 paper, scissors, tape</span><span data-i18n="mat_real">🦾 real SG90</span></p>
+    <h4 data-i18n="timeline">▶ TIMELINE</h4>
+    <div class="tl-tick"><span style="flex:10;">10'</span><span style="flex:15;">15'</span><span style="flex:10;">10'</span><span style="flex:30;">30'</span><span style="flex:15;">15'</span><span style="flex:10;">10'</span></div>
+    <div class="timeline">
+      <div style="flex:10; background:var(--cyan);" data-i18n="op08_t1">INTRO</div>
+      <div style="flex:15; background:var(--neon);" data-i18n="op08_t2">REACTION</div>
+      <div style="flex:10; background:var(--amber); color:var(--ink);" data-i18n="op08_t3">SWEEP</div>
+      <div style="flex:30; background:var(--orange);" data-i18n="op08_t4">DESIGN</div>
+      <div style="flex:15; background:var(--cyan);" data-i18n="op08_t5">PITCH</div>
+      <div style="flex:10; background:var(--neon);" data-i18n="op08_t6">FIELD</div>
+    </div>
+    <h4 data-i18n="dont_miss">▶ KEY MOMENTS</h4>
+    <ul class="wow">
+      <li data-i18n="op08_w1"><b>BEAT</b> first 0°/90°/180° snap on screen + servo</li>
+      <li data-i18n="op08_w2"><b>BEAT</b> reaction-time game (kids love it)</li>
+      <li data-i18n="op08_w3"><b>BEAT</b> pitch presentation = Shark Tank</li>
+    </ul>
+    <h4 data-i18n="pitfalls">▶ PITFALLS</h4>
+    <ul class="pit">
+      <li data-i18n="op08_p1">Servo not connected → <b>fix:</b> on-screen still works</li>
+      <li data-i18n="op08_p2">Pitch goes long → <b>fix:</b> 60s MAX timer</li>
+    </ul>
+    <h4 data-i18n="questions">▶ MAGIC QUESTIONS</h4>
+    <ul class="q">
+      <li data-i18n="op08_q1">"Servo or motor — better for arm?"</li>
+      <li data-i18n="op08_q2">"What real-world thing oscillates 0↔180?"</li>
+    </ul>
+    <h4 data-i18n="success">▶ SUCCESS CRITERIA</h4>
+    <ul class="s">
+      <li data-i18n="op08_s1">Each kid designs payload</li>
+      <li data-i18n="op08_s2">Distinguishes motor vs servo</li>
+    </ul>
+    <div class="next" data-i18n="op08_next">→ Next: <b>M-09 Telemetry</b> · scientist</div>
+  </div>
+</div>
+
+<!-- SHEET 5: OP09, OP10 -->
+<div class="sheet">
+  <div class="card c9">
+    <div class="head">
+      <span class="id">M-09</span>
+      <span class="title" data-i18n="op09_title">∿ TELEMETRY</span>
+      <span class="lvl">▰▰▰▱▱</span>
+    </div>
+    <div class="meta-row"><span>⏱ 90 min</span><span>👤 10+</span><span>NEED FIRST: M-02, M-03</span></div>
+    <div class="codename" data-i18n="op09_code"><b>GOAL:</b> scientific method on real experiment (carpet vs hard)</div>
+    <h4 data-i18n="materials">▶ MATERIALS</h4>
+    <p class="mat"><span>🤖 robots</span><span data-i18n="mat_carpet">🟫 1m carpet</span><span data-i18n="mat_log">📒 logsheet</span><span>📏 tape</span></p>
+    <h4 data-i18n="timeline">▶ TIMELINE</h4>
+    <div class="tl-tick"><span style="flex:10;">10'</span><span style="flex:15;">15'</span><span style="flex:20;">20'</span><span style="flex:20;">20'</span><span style="flex:15;">15'</span><span style="flex:10;">10'</span></div>
+    <div class="timeline">
+      <div style="flex:10; background:var(--cyan);" data-i18n="op09_t1">BRIEF</div>
+      <div style="flex:15; background:var(--neon);" data-i18n="op09_t2">READ CHART</div>
+      <div style="flex:20; background:var(--amber); color:var(--ink);" data-i18n="op09_t3">HYPOTHESIS</div>
+      <div style="flex:20; background:var(--orange);" data-i18n="op09_t4">TEST</div>
+      <div style="flex:15; background:var(--cyan);" data-i18n="op09_t5">CONCLUDE</div>
+      <div style="flex:10; background:var(--neon);" data-i18n="op09_t6">FIELD</div>
+    </div>
+    <h4 data-i18n="dont_miss">▶ KEY MOMENTS</h4>
+    <ul class="wow">
+      <li data-i18n="op09_w1"><b>BEAT</b> kids WRITE hypothesis BEFORE testing</li>
+      <li data-i18n="op09_w2"><b>BEAT</b> chart reveals difference</li>
+      <li data-i18n="op09_w3"><b>BEAT</b> CSV export = "what doctors keep"</li>
+    </ul>
+    <h4 data-i18n="pitfalls">▶ PITFALLS</h4>
+    <ul class="pit">
+      <li data-i18n="op09_p1">Skip hypothesis → <b>fix:</b> WRITE before test</li>
+      <li data-i18n="op09_p2">Wrong = sad → <b>fix:</b> "wrong = science wins"</li>
+    </ul>
+    <h4 data-i18n="questions">▶ MAGIC QUESTIONS</h4>
+    <ul class="q">
+      <li data-i18n="op09_q1">"Your guess BEFORE we measure?"</li>
+      <li data-i18n="op09_q2">"Were you right? How do you know?"</li>
+    </ul>
+    <h4 data-i18n="success">▶ SUCCESS CRITERIA</h4>
+    <ul class="s">
+      <li data-i18n="op09_s1">Hypothesis written pre-test</li>
+      <li data-i18n="op09_s2">3 trials averaged</li>
+    </ul>
+    <div class="next" data-i18n="op09_next">→ Next: <b>M-10 Pathfinder</b> · A* algorithm</div>
+  </div>
+
+  <div class="card c10">
+    <div class="head">
+      <span class="id">M-10</span>
+      <span class="title" data-i18n="op10_title">⌬ PATHFINDER</span>
+      <span class="lvl">▰▰▰▰▱</span>
+    </div>
+    <div class="meta-row"><span>⏱ 90 min</span><span>👤 10+</span><span>NEED FIRST: M-05, M-06</span></div>
+    <div class="codename" data-i18n="op10_code"><b>GOAL:</b> see A* solve mazes · same logic as Google Maps</div>
+    <h4 data-i18n="materials">▶ MATERIALS</h4>
+    <p class="mat"><span data-i18n="mat_slam">🤖 robots (SLAM)</span><span data-i18n="mat_maze">📒 printed mazes</span><span data-i18n="mat_card">📦 cardboard</span></p>
+    <h4 data-i18n="timeline">▶ TIMELINE</h4>
+    <div class="tl-tick"><span style="flex:15;">15'</span><span style="flex:10;">10'</span><span style="flex:20;">20'</span><span style="flex:15;">15'</span><span style="flex:15;">15'</span><span style="flex:15;">15'</span></div>
+    <div class="timeline">
+      <div style="flex:15; background:var(--cyan);" data-i18n="op10_t1">PAPER MAZE</div>
+      <div style="flex:10; background:var(--neon);" data-i18n="op10_t2">STRATEGY</div>
+      <div style="flex:20; background:var(--amber); color:var(--ink);" data-i18n="op10_t3">A* DEMO</div>
+      <div style="flex:15; background:var(--orange);" data-i18n="op10_t4">COMPARE</div>
+      <div style="flex:15; background:var(--cyan);" data-i18n="op10_t5">REAL MAZE</div>
+      <div style="flex:15; background:var(--neon);" data-i18n="op10_t6">EVERYWHERE</div>
+    </div>
+    <h4 data-i18n="dont_miss">▶ KEY MOMENTS</h4>
+    <ul class="wow">
+      <li data-i18n="op10_w1"><b>BEAT</b> kids solve maze BEFORE A* reveal</li>
+      <li data-i18n="op10_w2"><b>BEAT</b> A* exploring (cyan/amber/green) live</li>
+      <li data-i18n="op10_w3"><b>BEAT</b> Google Maps connection!</li>
+    </ul>
+    <h4 data-i18n="pitfalls">▶ PITFALLS</h4>
+    <ul class="pit">
+      <li data-i18n="op10_p1">A* needs SLAM data → <b>fix:</b> drive 2 min first</li>
+      <li data-i18n="op10_p2">Real maze too small → <b>fix:</b> 80×80cm min</li>
+    </ul>
+    <h4 data-i18n="questions">▶ MAGIC QUESTIONS</h4>
+    <ul class="q">
+      <li data-i18n="op10_q1">"What was YOUR strategy?"</li>
+      <li data-i18n="op10_q2">"Did A* find a better path?"</li>
+    </ul>
+    <h4 data-i18n="success">▶ SUCCESS CRITERIA</h4>
+    <ul class="s">
+      <li data-i18n="op10_s1">Solves paper maze &lt; 60 sec</li>
+      <li data-i18n="op10_s2">Verbalises A* in plain words</li>
+    </ul>
+    <div class="next" data-i18n="op10_next">→ Next: <b>M-11 Multi-Unit</b> · 2-player</div>
+  </div>
+</div>
+
+<!-- SHEET 6: OP11, OP12 -->
+<div class="sheet">
+  <div class="card c11">
+    <div class="head">
+      <span class="id">M-11</span>
+      <span class="title" data-i18n="op11_title">◇ MULTI-UNIT OPS</span>
+      <span class="lvl">▰▰▰▱▱</span>
+    </div>
+    <div class="meta-row"><span>⏱ 90 min</span><span>👤 10+</span><span data-i18n="prereq_2robots">⚠️ NEEDS 2+ ROBOTS</span></div>
+    <div class="codename" data-i18n="op11_code"><b>GOAL:</b> compete + cooperate · discover latency</div>
+    <h4 data-i18n="materials">▶ MATERIALS</h4>
+    <p class="mat"><span data-i18n="mat_pair">🤖 2+ paired robots</span><span>📱 2 devices</span><span data-i18n="mat_target">🎯 floor target</span></p>
+    <h4 data-i18n="timeline">▶ TIMELINE</h4>
+    <div class="tl-tick"><span style="flex:10;">10'</span><span style="flex:10;">10'</span><span style="flex:25;">25'</span><span style="flex:25;">25'</span><span style="flex:10;">10'</span><span style="flex:10;">10'</span></div>
+    <div class="timeline">
+      <div style="flex:10; background:var(--cyan);" data-i18n="op11_t1">PAIR</div>
+      <div style="flex:10; background:var(--neon);" data-i18n="op11_t2">SYNC</div>
+      <div style="flex:25; background:var(--orange);" data-i18n="op11_t3">FENCING</div>
+      <div style="flex:25; background:var(--amber); color:var(--ink);" data-i18n="op11_t4">COOP</div>
+      <div style="flex:10; background:var(--cyan);" data-i18n="op11_t5">STRATEGY</div>
+      <div style="flex:10; background:var(--neon);" data-i18n="op11_t6">AWARDS</div>
+    </div>
+    <h4 data-i18n="dont_miss">▶ KEY MOMENTS</h4>
+    <ul class="wow">
+      <li data-i18n="op11_w1"><b>BEAT</b> 2 robots syncing for first time</li>
+      <li data-i18n="op11_w2"><b>BEAT</b> fencing hit + auto-buzzer + tilt boost</li>
+      <li data-i18n="op11_w3"><b>BEAT</b> coop silent vs talking comparison</li>
+    </ul>
+    <h4 data-i18n="pitfalls">▶ PITFALLS</h4>
+    <ul class="pit">
+      <li data-i18n="op11_p1">Pair fails → <b>fix:</b> both press PAIR same time</li>
+      <li data-i18n="op11_p2">Sore losers → <b>fix:</b> emphasize sportsmanship</li>
+    </ul>
+    <h4 data-i18n="questions">▶ MAGIC QUESTIONS</h4>
+    <ul class="q">
+      <li data-i18n="op11_q1">"Why isn't sync perfect?"</li>
+      <li data-i18n="op11_q2">"Coop harder than fighting? Why?"</li>
+    </ul>
+    <h4 data-i18n="success">▶ SUCCESS CRITERIA</h4>
+    <ul class="s">
+      <li data-i18n="op11_s1">Both robots paired</li>
+      <li data-i18n="op11_s2">Each kid wins ≥ 1 fencing match</li>
+    </ul>
+    <div class="next" data-i18n="op11_next">→ Next: <b>M-12 FINAL OP</b> · capstone</div>
+  </div>
+
+  <div class="card c12">
+    <div class="head">
+      <span class="id">M-12</span>
+      <span class="title" data-i18n="op12_title">★ FINAL OPERATION</span>
+      <span class="lvl">▰▰▰▰▰</span>
+    </div>
+    <div class="meta-row"><span>⏱ 90 min</span><span>👤 10+</span><span>NEED FIRST: M-01 thru M-06 min</span></div>
+    <div class="codename" data-i18n="op12_code"><b>GOAL:</b> capstone · synthesize 12 ops into 1 mission + brief</div>
+    <h4 data-i18n="materials">▶ MATERIALS</h4>
+    <p class="mat"><span>🤖 robots</span><span data-i18n="mat_scen">📜 scenarios</span><span data-i18n="mat_plan">📒 plan sheets</span><span>📱 phone for video</span></p>
+    <h4 data-i18n="timeline">▶ TIMELINE</h4>
+    <div class="tl-tick"><span style="flex:10;">10'</span><span style="flex:15;">15'</span><span style="flex:35;">35'</span><span style="flex:10;">10'</span><span style="flex:20;">20'</span></div>
+    <div class="timeline">
+      <div style="flex:10; background:var(--cyan);" data-i18n="op12_t1">BRIEF</div>
+      <div style="flex:15; background:var(--neon);" data-i18n="op12_t2">PLAN</div>
+      <div style="flex:35; background:var(--orange);" data-i18n="op12_t3">BUILD &amp; ITER</div>
+      <div style="flex:10; background:var(--amber); color:var(--ink);" data-i18n="op12_t4">DRY RUN</div>
+      <div style="flex:20; background:var(--danger);" data-i18n="op12_t5">DEMO</div>
+    </div>
+    <h4 data-i18n="dont_miss">▶ KEY MOMENTS</h4>
+    <ul class="wow">
+      <li data-i18n="op12_w1"><b>BEAT</b> teams plan on PAPER first</li>
+      <li data-i18n="op12_w2"><b>BEAT</b> live demos under pressure</li>
+      <li data-i18n="op12_w3"><b>BEAT</b> graduation — Field Commander</li>
+    </ul>
+    <h4 data-i18n="pitfalls">▶ PITFALLS</h4>
+    <ul class="pit">
+      <li data-i18n="op12_p1">Skip plan → <b>fix:</b> grown-up validates first</li>
+      <li data-i18n="op12_p2">Build over time → <b>fix:</b> demo whatever state</li>
+    </ul>
+    <h4 data-i18n="questions">▶ MAGIC QUESTIONS</h4>
+    <ul class="q">
+      <li data-i18n="op12_q1">"What modules will you combine?"</li>
+      <li data-i18n="op12_q2">"What's your Plan B if it fails?"</li>
+    </ul>
+    <h4 data-i18n="success">▶ SUCCESS CRITERIA</h4>
+    <ul class="s">
+      <li data-i18n="op12_s1">Plan written BEFORE building</li>
+      <li data-i18n="op12_s2">≥ 2 modules used · safe stop · all team speak</li>
+    </ul>
+    <div class="next" data-i18n="op12_next">→ <b>GRADUATION!</b> All earn FIELD COMMANDER</div>
+  </div>
+</div>
+
+<div class="wd-band wd-band-bottom" style="margin-top:0;"></div>
+<footer class="wd-footer">
+  <span>powered by <a href="https://workshop-diy.org" target="_blank" rel="noopener">workshop-diy.org</a></span>
+  <span class="sep">·</span>
+  <span>ROBI-9 OPS COMMAND</span>
+  <span class="sep">·</span>
+  <span class="badge">v1.2</span>
+</footer>
+
+<script>
+const T = {
+  en: {
+    cover_tag:'▸ TEACHER POCKET CARDS',
+    cover_title:'Mission Cards',
+    cover_sub:'// 12 missions · pocket reference',
+    cover_h3:'▸ HOW TO USE THESE',
+    cover_p1:'Print 2-sided · A4 landscape · 6 sheets. Cut on the dashed lines = 12 A5 cards. Keep one in your pocket during each mission.',
+    cover_p2:'⏱️ Each mission = 90 minutes · 👤 kids 10+ · 🤖 1 robot per 2-3 kids',
+    materials:'▶ MATERIALS', timeline:'▶ TIMELINE', dont_miss:'▶ KEY MOMENTS',
+    pitfalls:'▶ PITFALLS', questions:'▶ MAGIC QUESTIONS', success:'▶ SUCCESS CRITERIA',
+    prereq_none:'NEED FIRST: none', prereq_2robots:'⚠️ NEEDS 2+ ROBOTS',
+    mat_robot:'🤖 1 robot/2-3', mat_tab:'📱 1 tablet/grp', mat_cone:'🚧 4-6 cones', mat_timer:'⏱ stopwatch',
+    mat_tape:'📏 tape measure', mat_paper:'📒 graph paper', mat_dock:'🎯 dock zone',
+    mat_obj:'🎁 objects (book, pillow)', mat_btape:'📏 black tape',
+    mat_wander:'🤖 robots (wander)', mat_arena:'🏟️ open arena',
+    mat_start:'📍 tape (start mark)', mat_ruler:'📏 measure',
+    mat_canvas:'📜 floor canvas', mat_templates:'📒 templates',
+    mat_buz:'🤖 robots (buzzer)', mat_score:'📒 score paper',
+    mat_serv:'🤖 robots + S1/S2', mat_paper2:'📒 paper, scissors, tape', mat_real:'🦾 real SG90',
+    mat_carpet:'🟫 1m carpet', mat_log:'📒 logsheet',
+    mat_slam:'🤖 robots (SLAM)', mat_maze:'📒 printed mazes', mat_card:'📦 cardboard',
+    mat_pair:'🤖 2+ paired robots', mat_target:'🎯 floor target',
+    mat_scen:'📜 scenarios', mat_plan:'📒 plan sheets',
+    op01_title:'⌘ WAKE THE UNIT', op01_code:'<b>GOAL:</b> establish connection · master STOP button · earn [CONNECTOR]',
+    op01_t1:'CONTACT',op01_t2:'HANDSHAKE',op01_t3:'FREE RECON',op01_t4:'STOP',op01_t5:'SLALOM',op01_t6:'DEBRIEF',
+    op01_w1:'<b>BEAT</b> when first robot wakes — pause for the cheer',
+    op01_w2:'<b>BEAT</b> when ⏹ saves a near-impact — make it dramatic',
+    op01_w3:'<b>BEAT</b> blindfolded slalom = pure chaos',
+    op01_p1:'Pair fails → <b>fix:</b> toggle device BT off/on',
+    op01_p2:'Drives at face → <b>fix:</b> rehearse safety code early',
+    op01_p3:'Free recon chaos → <b>fix:</b> grown-up stays HANDS OFF',
+    op01_q1:'"How does this thing receive orders?"', op01_q2:'"Where\'s the red ⏹? Point!"',
+    op01_s1:'Each kid connects solo at least once', op01_s2:'Each hits ⏹ in real scenario',
+    op01_next:'→ Next: <b>M-02 Velocity Lab</b> · master throttle',
+    op02_title:'▶ VELOCITY LAB', op02_code:'<b>GOAL:</b> calibrate throttle · profile braking · build chart',
+    op02_t1:'RECAP',op02_t2:'3-VEL TRIAL',op02_t3:'BRAKE PROF',op02_t4:'DOCKING',op02_t5:'DATA PLOT',op02_t6:'WRAP',
+    op02_w1:'<b>BEAT</b> measure brake distance with tape!', op02_w2:'<b>BEAT</b> chart curve BENDS (not straight!)', op02_w3:'<b>BEAT</b> first successful dock',
+    op02_p1:'Only tries 100% → <b>fix:</b> require 3 different speeds', op02_p2:'Chart rushed → <b>fix:</b> demo axes labeling first',
+    op02_q1:'"Why isn\'t your chart straight?"', op02_q2:'"Why do schools have speed bumps?"',
+    op02_s1:'Hand-drawn chart per kid', op02_s2:'Verbalises trade-off',
+    op02_next:'→ Next: <b>M-03 Sensor Recon</b> · meet sensors',
+    op03_title:'⊙ SENSOR RECON', op03_code:'<b>GOAL:</b> profile sonar · line · IR · build sensor map',
+    op03_t1:'BLIND DRILL',op03_t2:'CH-A SONAR',op03_t3:'CH-B LINE',op03_t4:'DOC NETWORK',op03_t5:'PREDICT',op03_t6:'FIELD',
+    op03_w1:'<b>BEAT</b> blindfold empathy walk BEFORE sonar reveal', op03_w2:'<b>BEAT</b> sonar number tracking hand live', op03_w3:'<b>BEAT</b> pillow anomaly = soft = bad echo',
+    op03_p1:'Sonar reads 0 sometimes → <b>normal:</b> too close = no echo', op03_p2:'Line confusing → <b>fix:</b> use stark black/white only',
+    op03_q1:'"How does a bat hunt in the dark?"', op03_q2:'"What sensor would YOU add?"',
+    op03_s1:'Labelled sensor map per kid', op03_s2:'Names 3 sensors + robots',
+    op03_next:'→ Next: <b>M-04 Behaviour Core</b> · does it think?',
+    op04_title:'▣ BEHAVIOUR CORE', op04_code:'<b>GOAL:</b> probe autonomy stack · decode "AI" = sensors + rules + speed',
+    op04_t1:'DEMO',op04_t2:'TOUR 4 PROFILES',op04_t3:'SCI OBS',op04_t4:'BRIEF',op04_t5:'DEBATE',op04_t6:'DESIGN',op04_t7:'END',
+    op04_w1:'<b>BEAT</b> hold "is it intelligent?" question OPEN', op04_w2:'<b>BEAT</b> reveal rule table only AFTER debate', op04_w3:'<b>BEAT</b> link to ChatGPT / Netflix / autocorrect',
+    op04_p1:'STRIKE → robot crashes → <b>fix:</b> bigger arena, embrace it', op04_p2:'Debate one-sided → <b>fix:</b> assign sides if needed',
+    op04_q1:'"Is wander INTELLIGENCE?"', op04_q2:'"3 adjectives for this profile?"',
+    op04_s1:'Custom profile-5 designed on paper', op04_s2:'Verbalises IF/THEN rule',
+    op04_next:'→ Next: <b>M-05 Cartography</b> · robot remembers',
+    op05_title:'▦ CARTOGRAPHY', op05_code:'<b>GOAL:</b> watch SLAM build live · profile drift · understand GPS need',
+    op05_t1:'MAP SEM',op05_t2:'LIVE BUILD',op05_t3:'DRIFT PROF',op05_t4:'2 UNITS',op05_t5:'GPS DOC',op05_t6:'MY MAP',
+    op05_w1:'<b>BEAT</b> first time map renders LIVE as kid drives', op05_w2:'<b>BEAT</b> measuring drift gap (cm of error)', op05_w3:'<b>BEAT</b> 2 identical paths = 2 different maps!',
+    op05_p1:'Drift confusing → <b>fix:</b> visualize with floor tape', op05_p2:'Map "doesn\'t close" → that\'s the WHOLE point!',
+    op05_q1:'"Why aren\'t the 2 maps identical?"', op05_q2:'"Where could a robot get lost using only this?"',
+    op05_s1:'SLAM-style sketch produced', op05_s2:'Names "drift" + 1 cause',
+    op05_next:'→ Next: <b>M-06 Trajectory Code</b> · first program',
+    op06_title:'⌒ TRAJECTORY CODE', op06_code:'<b>GOAL:</b> first program · no code · save · replay',
+    op06_t1:'DEMO',op06_t2:'SHAPES',op06_t3:'SAVE',op06_t4:'INITIAL OP',op06_t5:'SWAP',op06_t6:'BATTLE',op06_t7:'END',
+    op06_w1:'<b>BEAT</b> first time path is followed autonomously', op06_w2:'<b>BEAT</b> opening JSON = "this is code!"', op06_w3:'<b>BEAT</b> swap files = different result on diff robot',
+    op06_p1:'Path inaccurate → <b>fix:</b> link to drift from M-05', op06_p2:'JSON scary → <b>fix:</b> show 2-3 lines max',
+    op06_q1:'"Difference between driving and programming?"', op06_q2:'"Whose path looks coolest?"',
+    op06_s1:'Each kid saves ≥ 1 JSON', op06_s2:'Replays partner\'s saved file',
+    op06_next:'→ Next: <b>M-07 Signal Lab</b> · buzzer composer',
+    op07_title:'≋ SIGNAL LAB', op07_code:'<b>GOAL:</b> 4-tone signature · Morse decode · sound = numbers',
+    op07_t1:'PROBE',op07_t2:'PIANO',op07_t3:'COMPOSE',op07_t4:'CONCERT',op07_t5:'MORSE',op07_t6:'FIELD',
+    op07_w1:'<b>BEAT</b> concert moment — every pair performs', op07_w2:'<b>BEAT</b> Morse SOS transmission', op07_w3:'<b>BEAT</b> "MP3 = same numbers" reveal',
+    op07_p1:'Buzzer too loud → <b>fix:</b> set noise rules', op07_p2:'Signature won\'t replay → <b>fix:</b> write notes first',
+    op07_q1:'"Smallest pitch difference you can hear?"', op07_q2:'"Why do MP3 files exist?"',
+    op07_s1:'Each pair performs signature', op07_s2:'≥ 1 group decodes Morse',
+    op07_next:'→ Next: <b>M-08 Servo Eng</b> · engineer',
+    op08_title:'⊕ SERVO ENGINEERING', op08_code:'<b>GOAL:</b> master 0-180° · design payload',
+    op08_t1:'INTRO',op08_t2:'REACTION',op08_t3:'SWEEP',op08_t4:'DESIGN',op08_t5:'PITCH',op08_t6:'FIELD',
+    op08_w1:'<b>BEAT</b> first 0°/90°/180° snap on screen + servo', op08_w2:'<b>BEAT</b> reaction-time game (kids love it)', op08_w3:'<b>BEAT</b> pitch presentation = Shark Tank',
+    op08_p1:'Servo not connected → <b>fix:</b> on-screen still works', op08_p2:'Pitch goes long → <b>fix:</b> 60s MAX timer',
+    op08_q1:'"Servo or motor — better for arm?"', op08_q2:'"What real-world thing oscillates 0↔180?"',
+    op08_s1:'Each kid designs payload', op08_s2:'Distinguishes motor vs servo',
+    op08_next:'→ Next: <b>M-09 Telemetry</b> · scientist',
+    op09_title:'∿ TELEMETRY', op09_code:'<b>GOAL:</b> scientific method on real experiment (carpet vs hard)',
+    op09_t1:'BRIEF',op09_t2:'READ CHART',op09_t3:'HYPOTHESIS',op09_t4:'TEST',op09_t5:'CONCLUDE',op09_t6:'FIELD',
+    op09_w1:'<b>BEAT</b> kids WRITE hypothesis BEFORE testing', op09_w2:'<b>BEAT</b> chart reveals difference', op09_w3:'<b>BEAT</b> CSV export = "what doctors keep"',
+    op09_p1:'Skip hypothesis → <b>fix:</b> WRITE before test', op09_p2:'Wrong = sad → <b>fix:</b> "wrong = science wins"',
+    op09_q1:'"Your guess BEFORE we measure?"', op09_q2:'"Were you right? How do you know?"',
+    op09_s1:'Hypothesis written pre-test', op09_s2:'3 trials averaged',
+    op09_next:'→ Next: <b>M-10 Pathfinder</b> · A* algorithm',
+    op10_title:'⌬ PATHFINDER', op10_code:'<b>GOAL:</b> see A* solve mazes · same logic as Google Maps',
+    op10_t1:'PAPER MAZE',op10_t2:'STRATEGY',op10_t3:'A* DEMO',op10_t4:'COMPARE',op10_t5:'REAL MAZE',op10_t6:'EVERYWHERE',
+    op10_w1:'<b>BEAT</b> kids solve maze BEFORE A* reveal', op10_w2:'<b>BEAT</b> A* exploring (cyan/amber/green) live', op10_w3:'<b>BEAT</b> Google Maps connection!',
+    op10_p1:'A* needs SLAM data → <b>fix:</b> drive 2 min first', op10_p2:'Real maze too small → <b>fix:</b> 80×80cm min',
+    op10_q1:'"What was YOUR strategy?"', op10_q2:'"Did A* find a better path?"',
+    op10_s1:'Solves paper maze &lt; 60 sec', op10_s2:'Verbalises A* in plain words',
+    op10_next:'→ Next: <b>M-11 Multi-Unit</b> · 2-player',
+    op11_title:'◇ MULTI-UNIT OPS', op11_code:'<b>GOAL:</b> compete + cooperate · discover latency',
+    op11_t1:'PAIR',op11_t2:'SYNC',op11_t3:'FENCING',op11_t4:'COOP',op11_t5:'STRATEGY',op11_t6:'AWARDS',
+    op11_w1:'<b>BEAT</b> 2 robots syncing for first time', op11_w2:'<b>BEAT</b> fencing hit + auto-buzzer + tilt boost', op11_w3:'<b>BEAT</b> coop silent vs talking comparison',
+    op11_p1:'Pair fails → <b>fix:</b> both press PAIR same time', op11_p2:'Sore losers → <b>fix:</b> emphasize sportsmanship',
+    op11_q1:'"Why isn\'t sync perfect?"', op11_q2:'"Coop harder than fighting? Why?"',
+    op11_s1:'Both robots paired', op11_s2:'Each kid wins ≥ 1 fencing match',
+    op11_next:'→ Next: <b>M-12 FINAL OP</b> · capstone',
+    op12_title:'★ FINAL OPERATION', op12_code:'<b>GOAL:</b> capstone · synthesize 12 ops into 1 mission + brief',
+    op12_t1:'BRIEF',op12_t2:'PLAN',op12_t3:'BUILD &amp; ITER',op12_t4:'DRY RUN',op12_t5:'DEMO',
+    op12_w1:'<b>BEAT</b> teams plan on PAPER first', op12_w2:'<b>BEAT</b> live demos under pressure', op12_w3:'<b>BEAT</b> graduation — Field Commander',
+    op12_p1:'Skip plan → <b>fix:</b> grown-up validates first', op12_p2:'Build over time → <b>fix:</b> demo whatever state',
+    op12_q1:'"What modules will you combine?"', op12_q2:'"What\'s your Plan B if it fails?"',
+    op12_s1:'Plan written BEFORE building', op12_s2:'≥ 2 modules used · safe stop · all team speak',
+    op12_next:'→ <b>GRADUATION!</b> All earn FIELD COMMANDER'
+  },
+  fr: {
+    cover_tag:'[ ▶ FICHE INSTRUCTEUR · CLASSIFIÉ ]',
+    cover_title:'FICHES MISSION',
+    cover_sub:'// RÉFÉRENCE RAPIDE 12 OPS',
+    cover_h3:'▶ INSTRUCTIONS DÉPLOIEMENT',
+    cover_p1:'Imprimer recto-verso · A4 paysage · 6 feuilles. Couper sur les pointillés = 12 fiches A5. Garder la fiche en poche pendant l\'op.',
+    cover_p2:'⏱️ Toutes ops = 90 min · 👤 kids 10+ · 🤖 1 roboté par 2-3 kids',
+    materials:'▶ MATÉRIEL', timeline:'▶ CHRONOLOGIE', dont_miss:'▶ MOMENTS CLÉS',
+    pitfalls:'▶ PIÈGES', questions:'▶ QUESTIONS MAGIQUES', success:'▶ CRITÈRES SUCCÈS',
+    prereq_none:'PRÉREQ : aucun', prereq_2robots:'⚠️ 2+ UNITÉS',
+    mat_robot:'🤖 1 roboté/2-3', mat_tab:'📱 1 tablette/grp', mat_cone:'🚧 4-6 cônes', mat_timer:'⏱ chrono',
+    mat_tape:'📏 mètre', mat_paper:'📒 papier millimétré', mat_dock:'🎯 zone',
+    mat_obj:'🎁 objets (livre, oreiller)', mat_btape:'📏 ruban noir',
+    mat_wander:'🤖 robotés (wander)', mat_arena:'🏟️ arène libre',
+    mat_start:'📍 ruban (départ)', mat_ruler:'📏 mesure',
+    mat_canvas:'📜 toile au sol', mat_templates:'📒 modèles',
+    mat_buz:'🤖 robotés (buzzer)', mat_score:'📒 papier partition',
+    mat_serv:'🤖 robotés + S1/S2', mat_paper2:'📒 papier, ciseaux, ruban', mat_real:'🦾 vrai SG90',
+    mat_carpet:'🟫 1m tapis', mat_log:'📒 fiche log',
+    mat_slam:'🤖 robotés (SLAM)', mat_maze:'📒 labyrinthes imprimés', mat_card:'📦 carton',
+    mat_pair:'🤖 2+ robotés appairées', mat_target:'🎯 cible au sol',
+    mat_scen:'📜 scénarios', mat_plan:'📒 fiches plan',
+    op01_title:'⌘ RÉVEIL UNITÉ', op01_code:'<b>OBJECTIF :</b> connection · maîtriser STOP button · gagner [CONNECTOR]',
+    op01_t1:'CONTACT',op01_t2:'HANDSHAKE',op01_t3:'RECON LIBRE',op01_t4:'STOP',op01_t5:'SLALOM',op01_t6:'DÉBRIEF',
+    op01_w1:'<b>BEAT</b> premier réveil roboté — pause pour la joie',
+    op01_w2:'<b>BEAT</b> ⏹ sauve d\'un quasi-impact — dramatique',
+    op01_w3:'<b>BEAT</b> slalom les yeux bandés = chaos',
+    op01_p1:'Pairage échoue → <b>fix :</b> toggle BT côté tablette',
+    op01_p2:'Conduit vers visage → <b>fix :</b> répéter code sécurité',
+    op01_p3:'Recon libre = chaos → <b>fix :</b> instructeur MAINS DANS LES POCHES',
+    op01_q1:'"Comment cette chose reçoit-elle ses ordres ?"', op01_q2:'"Où est le ⏹ rouge ? Pointez !"',
+    op01_s1:'Chaque kid connecte seul ≥ 1 fois', op01_s2:'Chaque utilise ⏹ en situation réelle',
+    op01_next:'→ Suivant : <b>M-02 Labo Vélocité</b> · maîtriser accélérateur',
+    op02_title:'▶ LABO VÉLOCITÉ', op02_code:'<b>OBJECTIF :</b> calibrer accélérateur · profiler freinage · construire courbe',
+    op02_t1:'RÉCAP',op02_t2:'TRIAL 3-VEL',op02_t3:'PROF FREIN',op02_t4:'STAT',op02_t5:'TRACÉ',op02_t6:'CLÔTURE',
+    op02_w1:'<b>BEAT</b> mesurer distance freinage avec ruban !', op02_w2:'<b>BEAT</b> la courbe S\'INCURVE (pas droite !)', op02_w3:'<b>BEAT</b> premier stationnement réussi',
+    op02_p1:'Essaie que 100% → <b>fix :</b> exiger 3 vitesses différentes', op02_p2:'Tracé bâclé → <b>fix :</b> démontrer axes étiquetés d\'abord',
+    op02_q1:'"Pourquoi ta courbe n\'est-elle pas droite ?"', op02_q2:'"Pourquoi des dos d\'âne dans les écoles ?"',
+    op02_s1:'Courbe dessinée par chaque kid', op02_s2:'Verbalise le compromis',
+    op02_next:'→ Suivant : <b>M-03 Recon Capteurs</b>',
+    op03_title:'⊙ RECON CAPTEURS', op03_code:'<b>OBJECTIF :</b> profiler sonar · ligne · IR · construire carte capteurs',
+    op03_t1:'DRILL AVEUGLE',op03_t2:'CH-A SONAR',op03_t3:'CH-B LIGNE',op03_t4:'DOC RÉSEAU',op03_t5:'PRÉDIRE',op03_t6:'TERRAIN',
+    op03_w1:'<b>BEAT</b> marche aveugle AVANT révélation sonar', op03_w2:'<b>BEAT</b> chiffre sonar suit la main en direct', op03_w3:'<b>BEAT</b> anomalie oreiller = mou = mauvais écho',
+    op03_p1:'Sonar lit 0 parfois → <b>normal :</b> trop près = pas d\'écho', op03_p2:'Ligne confuse → <b>fix :</b> noir/blanc francs uniquement',
+    op03_q1:'"Comment chasse une chauve-souris dans le noir ?"', op03_q2:'"Quel capteur AJOUTERIEZ-vous ?"',
+    op03_s1:'Carte capteurs étiquetée par kid', op03_s2:'Nomme 3 capteurs + robotés',
+    op03_next:'→ Suivant : <b>M-04 Cœur Comportement</b>',
+    op04_title:'▣ CŒUR COMPORTEMENT', op04_code:'<b>OBJECTIF :</b> sonder pile autonomie · décoder "IA" = capteurs + règles + vitesse',
+    op04_t1:'DÉMO',op04_t2:'TOUR 4 PROFILS',op04_t3:'OBS SCI',op04_t4:'BRIEF',op04_t5:'DÉBAT',op04_t6:'DESIGN',op04_t7:'FIN',
+    op04_w1:'<b>BEAT</b> garder "est-ce intelligent ?" OUVERT', op04_w2:'<b>BEAT</b> révéler le tableau APRÈS le débat', op04_w3:'<b>BEAT</b> lien à ChatGPT / Netflix / autocorrect',
+    op04_p1:'STRIKE → roboté crashe → <b>fix :</b> arène plus grande, accepter', op04_p2:'Débat unilatéral → <b>fix :</b> assigner camps si besoin',
+    op04_q1:'"Le wander est-il INTELLIGENCE ?"', op04_q2:'"3 adjectifs pour ce profil ?"',
+    op04_s1:'Profil-5 custom dessiné sur papier', op04_s2:'Verbalise règle SI/ALORS',
+    op04_next:'→ Suivant : <b>M-05 Cartographie</b>',
+    op05_title:'▦ CARTOGRAPHIE', op05_code:'<b>OBJECTIF :</b> voir SLAM construire en direct · profiler dérive · comprendre besoin GPS',
+    op05_t1:'SÉM CARTE',op05_t2:'CONSTRUCTION',op05_t3:'PROF DÉRIVE',op05_t4:'2 UNITÉS',op05_t5:'DOC GPS',op05_t6:'MA CARTE',
+    op05_w1:'<b>BEAT</b> première fois carte se trace en direct', op05_w2:'<b>BEAT</b> mesurer la dérive (cm d\'erreur)', op05_w3:'<b>BEAT</b> 2 chemins identiques = 2 cartes différentes !',
+    op05_p1:'Dérive confuse → <b>fix :</b> visualiser avec ruban', op05_p2:'Carte ne ferme pas → c\'est TOUT LE POINT !',
+    op05_q1:'"Pourquoi les 2 cartes ne sont-elles pas identiques ?"', op05_q2:'"Où une roboté pourrait-elle se perdre ?"',
+    op05_s1:'Esquisse style SLAM produite', op05_s2:'Nomme "dérive" + 1 cause',
+    op05_next:'→ Suivant : <b>M-06 Code Trajectoire</b>',
+    op06_title:'⌒ CODE TRAJECTOIRE', op06_code:'<b>OBJECTIF :</b> premier programme · pas de code · sauver · rejouer',
+    op06_t1:'DÉMO',op06_t2:'FORMES',op06_t3:'SAUVER',op06_t4:'OP INITIALE',op06_t5:'ÉCHANGE',op06_t6:'BATAILLE',op06_t7:'FIN',
+    op06_w1:'<b>BEAT</b> première fois chemin suivi en autonome', op06_w2:'<b>BEAT</b> ouvrir JSON = "c\'est du code !"', op06_w3:'<b>BEAT</b> échanger fichiers = résultat différent',
+    op06_p1:'Chemin imprécis → <b>fix :</b> lier à dérive M-05', op06_p2:'JSON effrayant → <b>fix :</b> 2-3 lignes max',
+    op06_q1:'"Différence conduire vs programmer ?"', op06_q2:'"Quel chemin est le plus cool ?"',
+    op06_s1:'Chaque kid sauve ≥ 1 JSON', op06_s2:'Rejoue fichier d\'un partenaire',
+    op06_next:'→ Suivant : <b>M-07 Labo Signal</b>',
+    op07_title:'≋ LABO SIGNAL', op07_code:'<b>OBJECTIF :</b> signature 4 tons · décoder Morse · son = nombres',
+    op07_t1:'SONDE',op07_t2:'PIANO',op07_t3:'COMPOSER',op07_t4:'CONCERT',op07_t5:'MORSE',op07_t6:'TERRAIN',
+    op07_w1:'<b>BEAT</b> moment concert — chaque paire performe', op07_w2:'<b>BEAT</b> transmission Morse SOS', op07_w3:'<b>BEAT</b> "MP3 = mêmes nombres" révélation',
+    op07_p1:'Buzzer trop fort → <b>fix :</b> régler règles bruit', op07_p2:'Signature ne reproduit pas → <b>fix :</b> écrire les notes',
+    op07_q1:'"Plus petite différence de hauteur audible ?"', op07_q2:'"Pourquoi des fichiers MP3 ?"',
+    op07_s1:'Chaque paire performe signature', op07_s2:'≥ 1 groupe décode Morse',
+    op07_next:'→ Suivant : <b>M-08 Ingé Servo</b>',
+    op08_title:'⊕ INGÉ SERVO', op08_code:'<b>OBJECTIF :</b> maîtriser 0-180° · designer payload',
+    op08_t1:'INTRO',op08_t2:'RÉACTION',op08_t3:'SWEEP',op08_t4:'DESIGN',op08_t5:'PITCH',op08_t6:'TERRAIN',
+    op08_w1:'<b>BEAT</b> premier snap 0/90/180° à l\'écran + servo', op08_w2:'<b>BEAT</b> jeu de réaction (les enfants adorent)', op08_w3:'<b>BEAT</b> présentation pitch = Shark Tank',
+    op08_p1:'Servo non connecté → <b>fix :</b> à l\'écran fonctionne', op08_p2:'Pitch trop long → <b>fix :</b> chrono 60 sec MAX',
+    op08_q1:'"Servo ou moteur — meilleur pour bras ?"', op08_q2:'"Quoi dans le réel oscille 0↔180 ?"',
+    op08_s1:'Chaque kid designe payload', op08_s2:'Distingue moteur vs servo',
+    op08_next:'→ Suivant : <b>M-09 Télémétrie</b>',
+    op09_title:'∿ TÉLÉMÉTRIE', op09_code:'<b>OBJECTIF :</b> méthode scientifique sur vraie expérience (tapis vs dur)',
+    op09_t1:'BRIEF',op09_t2:'LIRE COURBE',op09_t3:'HYPOTHÈSE',op09_t4:'TEST',op09_t5:'CONCLURE',op09_t6:'TERRAIN',
+    op09_w1:'<b>BEAT</b> kids ÉCRIVENT hypothèse AVANT test', op09_w2:'<b>BEAT</b> courbe révèle la différence', op09_w3:'<b>BEAT</b> export CSV = "ce que les médecins gardent"',
+    op09_p1:'Sauter hypothèse → <b>fix :</b> ÉCRIRE avant test', op09_p2:'Erreur = triste → <b>fix :</b> "erreur = science gagne"',
+    op09_q1:'"Ta supposition AVANT mesure ?"', op09_q2:'"Aviez-vous raison ? Comment savez-vous ?"',
+    op09_s1:'Hypothèse écrite avant test', op09_s2:'3 essais moyennés',
+    op09_next:'→ Suivant : <b>M-10 Pathfinder</b>',
+    op10_title:'⌬ PATHFINDER', op10_code:'<b>OBJECTIF :</b> voir A* résoudre · même logique que Google Maps',
+    op10_t1:'LAB PAPIER',op10_t2:'STRATÉGIE',op10_t3:'A* DÉMO',op10_t4:'COMPARER',op10_t5:'LAB RÉEL',op10_t6:'PARTOUT',
+    op10_w1:'<b>BEAT</b> kids résolvent labyrinthe AVANT révélation A*', op10_w2:'<b>BEAT</b> A* explorant (cyan/ambre/vert) en direct', op10_w3:'<b>BEAT</b> connexion Google Maps !',
+    op10_p1:'A* nécessite SLAM → <b>fix :</b> conduire 2 min avant', op10_p2:'Vrai labyrinthe trop petit → <b>fix :</b> 80×80cm min',
+    op10_q1:'"Quelle était VOTRE stratégie ?"', op10_q2:'"A* a-t-il trouvé un meilleur chemin ?"',
+    op10_s1:'Résout labyrinthe papier &lt; 60 sec', op10_s2:'Verbalise A* en mots simples',
+    op10_next:'→ Suivant : <b>M-11 Multi-Unité</b>',
+    op11_title:'◇ OPS MULTI-UNITÉ', op11_code:'<b>OBJECTIF :</b> compétition + coopération · découvrir latence',
+    op11_t1:'PAIR',op11_t2:'SYNC',op11_t3:'MBARRAGE',op11_t4:'COOP',op11_t5:'STRATÉGIE',op11_t6:'PRIX',
+    op11_w1:'<b>BEAT</b> 2 robotés syncing première fois', op11_w2:'<b>BEAT</b> hit mbarrage + buzzer auto + tilt boost', op11_w3:'<b>BEAT</b> coop silence vs voix comparison',
+    op11_p1:'Pair échoue → <b>fix :</b> les deux pressent PAIR même temps', op11_p2:'Mauvais perdants → <b>fix :</b> emphasize sportivité',
+    op11_q1:'"Pourquoi sync n\'est-il pas parfait ?"', op11_q2:'"Coop plus dure que combat ? Pourquoi ?"',
+    op11_s1:'Les deux robotés appairées', op11_s2:'Chaque kid gagne ≥ 1 match',
+    op11_next:'→ Suivant : <b>M-12 OP FINALE</b>',
+    op12_title:'★ OPÉRATION FINALE', op12_code:'<b>OBJECTIF :</b> capstone · synthétiser 12 ops en 1 mission + brief',
+    op12_t1:'BRIEF',op12_t2:'PLAN',op12_t3:'BUILD &amp; ITER',op12_t4:'DRY RUN',op12_t5:'DÉMO',
+    op12_w1:'<b>BEAT</b> équipes plan sur PAPIER d\'abord', op12_w2:'<b>BEAT</b> démos en direct sous pression', op12_w3:'<b>BEAT</b> remise des diplômes — Commandant',
+    op12_p1:'Sauter plan → <b>fix :</b> instructeur valide d\'abord', op12_p2:'Build dépasse → <b>fix :</b> demo état actuel',
+    op12_q1:'"Quels modules combinerez-vous ?"', op12_q2:'"Plan B si ça échoue ?"',
+    op12_s1:'Plan écrit AVANT construction', op12_s2:'≥ 2 modules · arrêt sûr · toute l\'équipe parle',
+    op12_next:'→ <b>REMISE !</b> Tous gagnent COMMANDANT TERRAIN'
+  },
+  ar: {
+    cover_tag:'[ ▶ مرجع المُدرِّب · سرّيّ ]',
+    cover_title:'بطاقات المهمات',
+    cover_sub:'// مرجع سريع لـ 12 عملية',
+    cover_h3:'▶ تعليمات النشر',
+    cover_p1:'طباعة على الوجهين · A4 أفقي · 6 أوراق. اِقطع على الخطوط المتقطّعة = 12 بطاقة A5. احتفظ بالبطاقة في الجيب أثناء العملية.',
+    cover_p2:'⏱️ كل العمليّات = 90 د · 👤 العملاء 10 سنوات+ · 🤖 وحدة لكل 2-3 عملاء',
+    materials:'▶ المعدات', timeline:'▶ الجدول الزمني', dont_miss:'▶ لحظات مفتاحية',
+    pitfalls:'▶ المزالق', questions:'▶ أسئلة سحرية', success:'▶ معايير النجاح',
+    prereq_none:'متطلبات : لا شيء', prereq_2robots:'⚠️ 2+ وحدات',
+    mat_robot:'🤖 وحدة/2-3', mat_tab:'📱 لوحي/مج', mat_cone:'🚧 4-6 أقماع', mat_timer:'⏱ ساعة',
+    mat_tape:'📏 شريط قياس', mat_paper:'📒 ورق بياني', mat_dock:'🎯 منطقة',
+    mat_obj:'🎁 أشياء (كتاب، وسادة)', mat_btape:'📏 شريط أسود',
+    mat_wander:'🤖 وحدات (تجوال)', mat_arena:'🏟️ ساحة مفتوحة',
+    mat_start:'📍 شريط (بداية)', mat_ruler:'📏 قياس',
+    mat_canvas:'📜 لوحة أرضية', mat_templates:'📒 قوالب',
+    mat_buz:'🤖 وحدات (صفّارة)', mat_score:'📒 ورق نوتة',
+    mat_serv:'🤖 وحدات + S1/S2', mat_paper2:'📒 ورق، مقصّ، لاصق', mat_real:'🦾 SG90 حقيقيّ',
+    mat_carpet:'🟫 1م سجادة', mat_log:'📒 ورقة سجلّ',
+    mat_slam:'🤖 وحدات (SLAM)', mat_maze:'📒 متاهات مطبوعة', mat_card:'📦 كرتون',
+    mat_pair:'🤖 2+ وحدات مُقتَرَنَة', mat_target:'🎯 هدف على الأرض',
+    mat_scen:'📜 سيناريوهات', mat_plan:'📒 أوراق خطّة',
+    op01_title:'⌘ إيقاظ الوحدة', op01_code:'<b>الهدف :</b> مصافحة · إتقان زرّ القتل · كسب [CONNECTOR]',
+    op01_t1:'تواصل',op01_t2:'مصافحة',op01_t3:'استكشاف حر',op01_t4:'زر قتل',op01_t5:'تعرّج',op01_t6:'استخلاص',
+    op01_w1:'<b>BEAT</b> أوّل إيقاظ — توقّف لردّ الفعل',
+    op01_w2:'<b>BEAT</b> ⏹ ينقذ من اصطدام وشيك — جعله دراميّاً',
+    op01_w3:'<b>BEAT</b> تعرّج بعصابة العين = فوضى',
+    op01_p1:'فشل اقتران → <b>إصلاح :</b> تبديل بلوتوث الجهاز',
+    op01_p2:'القيادة نحو الوجه → <b>إصلاح :</b> تكرار قانون السلامة',
+    op01_p3:'استكشاف حر فوضى → <b>إصلاح :</b> المُدرِّب يدا في الجيب',
+    op01_q1:'"كيف يستقبل هذا الشيء أوامره ؟"', op01_q2:'"أين ⏹ الأحمر ؟ أشِر !"',
+    op01_s1:'كل عميل يتّصل بمفرده ≥ 1', op01_s2:'كلٌّ يضغط ⏹ في موقف حقيقيّ',
+    op01_next:'→ التالي : <b>M-02 مختبر السرعة</b>',
+    op02_title:'▶ مختبر السرعة', op02_code:'<b>الهدف :</b> معايرة الدواسة · توصيف الكبح · بناء رسم بياني',
+    op02_t1:'استرجاع',op02_t2:'تجربة 3-سرعة',op02_t3:'توصيف كبح',op02_t4:'رسوّ',op02_t5:'تخطيط',op02_t6:'ختام',
+    op02_w1:'<b>BEAT</b> قياس مسافة الكبح بالشريط !', op02_w2:'<b>BEAT</b> المنحنى يَنحني (ليس مستقيماً !)', op02_w3:'<b>BEAT</b> أوّل رسوّ ناجح',
+    op02_p1:'يحاول 100% فقط → <b>إصلاح :</b> اطلب 3 سرعات مختلفة', op02_p2:'تخطيط متسرّع → <b>إصلاح :</b> اعرض المحاور أوّلاً',
+    op02_q1:'"لماذا منحناك ليس مستقيماً ؟"', op02_q2:'"لماذا توجد مطبّات السرعة في المدارس ؟"',
+    op02_s1:'منحنى مرسوم باليد لكلّ عميل', op02_s2:'يُصرّح بالمقايضة',
+    op02_next:'→ التالي : <b>M-03 استطلاع الحساسات</b>',
+    op03_title:'⊙ استطلاع الحساسات', op03_code:'<b>الهدف :</b> توصيف سونار · خط · IR · بناء خريطة حساسات',
+    op03_t1:'تدريب أعمى',op03_t2:'CH-A سونار',op03_t3:'CH-B خط',op03_t4:'توثيق',op03_t5:'تنبّؤ',op03_t6:'ميدان',
+    op03_w1:'<b>BEAT</b> مشية بعصابة قبل كشف السونار', op03_w2:'<b>BEAT</b> رقم السونار يتتبّع اليد حيّاً', op03_w3:'<b>BEAT</b> شذوذ الوسادة = ناعم = صدى سيّء',
+    op03_p1:'سونار يقرأ 0 أحياناً → <b>طبيعي :</b> قريب جدّاً = لا صدى', op03_p2:'الخط مربك → <b>إصلاح :</b> أسود/أبيض حادّ فقط',
+    op03_q1:'"كيف تصطاد الخفّاش في الظلام ؟"', op03_q2:'"أيّ حساس ستضيفه ؟"',
+    op03_s1:'خريطة حساسات مُسمّاة لكل عميل', op03_s2:'تسمية 3 حساسات + وحدات',
+    op03_next:'→ التالي : <b>M-04 قلب السلوك</b>',
+    op04_title:'▣ قلب السلوك', op04_code:'<b>الهدف :</b> سبر مكدس الذاتية · فك "AI" = حساسات + قواعد + سرعة',
+    op04_t1:'عرض',op04_t2:'جولة 4 ملفات',op04_t3:'مراقبة علميّة',op04_t4:'موجز',op04_t5:'نقاش',op04_t6:'تصميم',op04_t7:'نهاية',
+    op04_w1:'<b>BEAT</b> اِبقَ "أهو ذكاء ؟" مفتوحاً', op04_w2:'<b>BEAT</b> اِكشف جدول القواعد بعد النقاش فقط', op04_w3:'<b>BEAT</b> اِربط بـ ChatGPT / Netflix',
+    op04_p1:'STRIKE → الوحدة تتحطّم → <b>إصلاح :</b> ساحة أكبر، اقبَل', op04_p2:'نقاش أحادي → <b>إصلاح :</b> عيِّن جوانب',
+    op04_q1:'"التجوال = ذكاء ؟"', op04_q2:'"3 صفات لهذا الملف ؟"',
+    op04_s1:'ملف-5 مخصّص مُصمَّم على ورقة', op04_s2:'يُصرّح بقاعدة إذا/فإنّ',
+    op04_next:'→ التالي : <b>M-05 رسم الخرائط</b>',
+    op05_title:'▦ رسم الخرائط', op05_code:'<b>الهدف :</b> مشاهدة SLAM يبني حيّاً · توصيف انحراف · فهم حاجة GPS',
+    op05_t1:'دلالة',op05_t2:'بناء حيّ',op05_t3:'توصيف انحراف',op05_t4:'2 وحدات',op05_t5:'توثيق GPS',op05_t6:'خريطتي',
+    op05_w1:'<b>BEAT</b> أوّل مرّة تُرسم الخريطة حيّاً', op05_w2:'<b>BEAT</b> قياس فجوة الانحراف (سم خطأ)', op05_w3:'<b>BEAT</b> طريقان متطابقان = خريطتان مختلفتان !',
+    op05_p1:'انحراف مربك → <b>إصلاح :</b> تصوير بشريط أرضيّ', op05_p2:'الخريطة لا "تُغلَق" → هذه فكرة كل شيء !',
+    op05_q1:'"لماذا الخريطتان غير متطابقتين ؟"', op05_q2:'"أين قد تضيع وحدة بهذا فقط ؟"',
+    op05_s1:'مخطّط نمط SLAM مُنتَج', op05_s2:'يُسمّي "انحراف" + سبب',
+    op05_next:'→ التالي : <b>M-06 كود المسار</b>',
+    op06_title:'⌒ كود المسار', op06_code:'<b>الهدف :</b> أوّل برنامج · لا كود · حفظ · إعادة',
+    op06_t1:'عرض',op06_t2:'أشكال',op06_t3:'حفظ',op06_t4:'عمليّة حرف',op06_t5:'تبادل',op06_t6:'معركة',op06_t7:'نهاية',
+    op06_w1:'<b>BEAT</b> أوّل اتّباع للمسار ذاتيّاً', op06_w2:'<b>BEAT</b> فتح JSON = "هذا كود !"', op06_w3:'<b>BEAT</b> تبادل ملفّات = نتيجة مختلفة',
+    op06_p1:'مسار غير دقيق → <b>إصلاح :</b> اِربط بانحراف M-05', op06_p2:'JSON مخيف → <b>إصلاح :</b> 2-3 سطور كحدّ أقصى',
+    op06_q1:'"الفرق بين القيادة والبرمجة ؟"', op06_q2:'"أيّ مسار يبدو الأفضل ؟"',
+    op06_s1:'كل عميل يحفظ ≥ 1 JSON', op06_s2:'يُعيد ملفّ شريك',
+    op06_next:'→ التالي : <b>M-07 مختبر الإشارة</b>',
+    op07_title:'≋ مختبر الإشارة', op07_code:'<b>الهدف :</b> توقيع 4 نغمات · فك Morse · صوت = أرقام',
+    op07_t1:'سَبر',op07_t2:'بيانو',op07_t3:'تأليف',op07_t4:'حفلة',op07_t5:'مورس',op07_t6:'ميدان',
+    op07_w1:'<b>BEAT</b> لحظة الحفلة — كل زوج يُؤدّي', op07_w2:'<b>BEAT</b> بثّ Morse SOS', op07_w3:'<b>BEAT</b> "MP3 = نفس الأرقام" كَشف',
+    op07_p1:'صفّارة عالية → <b>إصلاح :</b> اِضبط قواعد الضوضاء', op07_p2:'التوقيع لا يُعاد → <b>إصلاح :</b> اكتب النغمات أوّلاً',
+    op07_q1:'"أصغر فرق طبقة تسمعه ؟"', op07_q2:'"لماذا توجد ملفات MP3 ؟"',
+    op07_s1:'كل زوج يُؤدّي توقيعاً', op07_s2:'≥ 1 مجموعة تفكّ Morse',
+    op07_next:'→ التالي : <b>M-08 هندسة سيرفو</b>',
+    op08_title:'⊕ هندسة السيرفو', op08_code:'<b>الهدف :</b> إتقان 0-180° · تصميم حِمل',
+    op08_t1:'مقدّمة',op08_t2:'ردّ فعل',op08_t3:'كنس',op08_t4:'تصميم',op08_t5:'عرض',op08_t6:'ميدان',
+    op08_w1:'<b>BEAT</b> أوّل صدمة 0/90/180° شاشة + سيرفو', op08_w2:'<b>BEAT</b> لعبة وقت ردّ الفعل (يحبّها الأطفال)', op08_w3:'<b>BEAT</b> عرض البيع = Shark Tank',
+    op08_p1:'سيرفو غير متّصل → <b>إصلاح :</b> الشاشة تعمل', op08_p2:'العرض يطول → <b>إصلاح :</b> 60 ث كحدّ أقصى',
+    op08_q1:'"سيرفو أم محرّك للذراع ؟"', op08_q2:'"ماذا في الواقع يتأرجح 0↔180 ؟"',
+    op08_s1:'كل عميل يُصمِّم حِملاً', op08_s2:'يُمَيّز محرّك من سيرفو',
+    op08_next:'→ التالي : <b>M-09 القياس عن بعد</b>',
+    op09_title:'∿ القياس عن بعد', op09_code:'<b>الهدف :</b> منهج علمي على تجربة حقيقيّة (سجادة vs صلب)',
+    op09_t1:'موجز',op09_t2:'قراءة رسم',op09_t3:'فرضية',op09_t4:'اختبار',op09_t5:'استنتاج',op09_t6:'ميدان',
+    op09_w1:'<b>BEAT</b> العملاء يَكتبون الفرضية قبل الاختبار', op09_w2:'<b>BEAT</b> الرسم يكشف الفرق', op09_w3:'<b>BEAT</b> تصدير CSV = "ما يحتفظ به الأطباء"',
+    op09_p1:'تخطّي فرضية → <b>إصلاح :</b> اكتب قبل الاختبار', op09_p2:'خطأ = حزن → <b>إصلاح :</b> "خطأ = العلم يفوز"',
+    op09_q1:'"تخمينك قبل القياس ؟"', op09_q2:'"كنت محقّاً ؟ كيف تعرف ؟"',
+    op09_s1:'فرضية مكتوبة قبل الاختبار', op09_s2:'3 محاولات بمتوسّط',
+    op09_next:'→ التالي : <b>M-10 مكتشف المسار</b>',
+    op10_title:'⌬ مكتشف المسار', op10_code:'<b>الهدف :</b> رؤية A* يحلّ متاهات · نفس منطق Google Maps',
+    op10_t1:'متاهة ورقيّة',op10_t2:'إستراتيجية',op10_t3:'A* عرض',op10_t4:'مقارنة',op10_t5:'متاهة فعليّة',op10_t6:'في كل مكان',
+    op10_w1:'<b>BEAT</b> العملاء يحلّون قبل كشف A*', op10_w2:'<b>BEAT</b> A* يستكشف (سماوي/كهرماني/أخضر) حيّاً', op10_w3:'<b>BEAT</b> ربط Google Maps !',
+    op10_p1:'A* يحتاج SLAM → <b>إصلاح :</b> قُد دقيقتين أوّلاً', op10_p2:'متاهة فعليّة صغيرة → <b>إصلاح :</b> 80×80 سم كحدّ أدنى',
+    op10_q1:'"ما كانت إستراتيجيّتك ؟"', op10_q2:'"هل وجد A* مساراً أفضل ؟"',
+    op10_s1:'يحلّ متاهة ورقيّة &lt; 60 ث', op10_s2:'يُصرّح بـ A* بكلمات بسيطة',
+    op10_next:'→ التالي : <b>M-11 مُتعدّد الوحدات</b>',
+    op11_title:'◇ عمليّات مُتعدّدة', op11_code:'<b>الهدف :</b> منافسة + تعاون · اكتشاف زمن الاستجابة',
+    op11_t1:'اقتران',op11_t2:'مزامنة',op11_t3:'مبارزة',op11_t4:'تعاون',op11_t5:'إستراتيجيّة',op11_t6:'جوائز',
+    op11_w1:'<b>BEAT</b> 2 وحدات تتزامنان أوّلاً', op11_w2:'<b>BEAT</b> ضربة مبارزة + صفّارة + إمالة', op11_w3:'<b>BEAT</b> صمت تعاوني vs محادثة',
+    op11_p1:'فشل اقتران → <b>إصلاح :</b> كلاهما تضغط PAIR في نفس الوقت', op11_p2:'خاسرون مُحبَطون → <b>إصلاح :</b> أكِّد الروح الرياضيّة',
+    op11_q1:'"لماذا المزامنة ليست مثاليّة ؟"', op11_q2:'"التعاون أصعب من القتال ؟ لماذا ؟"',
+    op11_s1:'كلتا الوحدتين مُقتَرَنَتان', op11_s2:'كل عميل يفوز ≥ 1 مباراة',
+    op11_next:'→ التالي : <b>M-12 العمليّة النهائيّة</b>',
+    op12_title:'★ العمليّة النهائيّة', op12_code:'<b>الهدف :</b> تتويج · تركيب 12 ع في مهمّة واحدة + موجز',
+    op12_t1:'موجز',op12_t2:'خطّة',op12_t3:'بناء وتكرار',op12_t4:'تجربة',op12_t5:'عرض',
+    op12_w1:'<b>BEAT</b> الفرق تخطّط على ورق أوّلاً', op12_w2:'<b>BEAT</b> عروض حيّة تحت ضغط', op12_w3:'<b>BEAT</b> التخرّج — قائد ميدان',
+    op12_p1:'تخطّي الخطّة → <b>إصلاح :</b> المُدرِّب يصادق أوّلاً', op12_p2:'بناء يفيض → <b>إصلاح :</b> اعرض الحالة الراهنة',
+    op12_q1:'"أيّ وحدات ستجمع ؟"', op12_q2:'"خطّة B إن فشل ؟"',
+    op12_s1:'الخطّة مكتوبة قبل البناء', op12_s2:'≥ 2 وحدات · إيقاف آمن · كل الفريق يتكلّم',
+    op12_next:'→ <b>التخرّج !</b> الجميع يكسب قائد ميدان'
+  }
+};
+
+function setL(lang) {
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const k = el.dataset.i18n;
+    if (T[lang] && T[lang][k]) el.innerHTML = T[lang][k];
+  });
+  document.querySelectorAll('.lang-bar a').forEach(a => a.classList.remove('active'));
+  document.getElementById('lang' + lang.charAt(0).toUpperCase() + lang.slice(1)).classList.add('active');
+  document.body.classList.toggle('rtl', lang === 'ar');
+  document.documentElement.lang = lang;
+  document.documentElement.dir = (lang === 'ar') ? 'rtl' : 'ltr';
+  try { localStorage.setItem('robi.cheatLang', lang); } catch (e) {}
+}
+try {
+  const saved = localStorage.getItem('robi.cheatLang');
+  if (saved && T[saved]) setL(saved);
+} catch (e) {}
+
+(function() {
+  const sel = document.getElementById('themeSelect');
+  function apply(t) {
+    document.documentElement.setAttribute('data-theme', t);
+    if (sel) sel.value = t;
+    try { localStorage.setItem('robi.theme', t); } catch (e) {}
+  }
+  if (sel) sel.addEventListener('change', e => apply(e.target.value));
+  try { const s = localStorage.getItem('robi.theme'); if (s) apply(s); } catch (e) {}
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="carbon">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ROBI-9 // Ops Mission · Manuel de Terrain (FR)</title>
+<link rel="stylesheet" href="workshops-theme.css">
+<style>
+/* Theme variables defined in workshops-theme.css per [data-theme] */
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
+    repeating-linear-gradient(0deg, transparent 0 39px, var(--grid) 39px 40px),
+    repeating-linear-gradient(90deg, transparent 0 39px, var(--grid) 39px 40px),
+    var(--bg);
+  color: var(--text); font-family: 'JetBrains Mono', 'Consolas', monospace;
+  line-height: 1.5; min-height: 100vh;
+}
+.lang-bar { position: fixed; top: 8px; right: 12px; z-index: 200; display: flex; gap: 4px; background: var(--bg-card); border: 1px solid var(--neon); padding: 4px; border-radius: 4px; }
+.lang-bar a { color: var(--steel); text-decoration: none; padding: 4px 10px; font-size: 11px; font-weight: 700; border-radius: 2px; }
+.lang-bar a.active { background: var(--neon); color: var(--ink); }
+.wrap { display: grid; grid-template-columns: 280px 1fr; min-height: 100vh; }
+aside.nav { background: rgba(5,8,16,0.92); border-right: 1px solid var(--neon); padding: 16px 12px; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+aside.nav .logo { background: var(--neon); color: var(--ink); padding: 8px 10px; border-radius: 2px; font-size: 0.85rem; font-weight: 800; margin-bottom: 4px; letter-spacing: 0.05em; }
+aside.nav .sub { font-size: 0.7rem; color: var(--steel); border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-bottom: 12px; letter-spacing: 0.08em; }
+aside.nav a.op { display: flex; gap: 8px; align-items: center; padding: 7px 10px; margin: 2px 0; color: var(--text); text-decoration: none; font-size: 0.78rem; font-weight: 600; border-left: 2px solid transparent; }
+aside.nav a.op:hover { background: rgba(34,197,94,0.08); border-left-color: var(--cyan); }
+aside.nav a.op.active { background: rgba(34,197,94,0.15); border-left-color: var(--neon); color: var(--neon); }
+aside.nav a.op .id { font-size: 0.68rem; background: var(--bg-soft); border: 1px solid var(--border); padding: 2px 6px; min-width: 38px; text-align: center; }
+aside.nav a.op.active .id { background: var(--neon); color: var(--ink); border-color: var(--neon); }
+main { padding: 26px 40px; max-width: 1100px; }
+.workshop { display: none; } .workshop.active { display: block; }
+.brief { border: 1px solid var(--neon); padding: 18px 22px; margin-bottom: 22px; position: relative; background: linear-gradient(135deg, rgba(34,197,94,0.04), transparent); }
+.brief::before { content: '[ CLASSIFIÉ // BRIEFING MISSION ]'; position: absolute; top: -10px; left: 14px; background: var(--bg); color: var(--neon); padding: 0 8px; font-size: 0.7rem; letter-spacing: 0.12em; }
+.brief .id { display: inline-block; background: var(--orange); color: var(--ink); padding: 3px 10px; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.1em; margin-bottom: 10px; }
+.brief h2 { font-size: 1.85rem; margin: 4px 0; color: var(--neon); }
+.brief .codename { color: var(--cyan); font-size: 1rem; font-style: italic; }
+.brief .specs { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; font-size: 0.78rem; }
+.brief .specs span { border: 1px solid var(--border); padding: 3px 8px; background: var(--bg-soft); color: var(--steel); }
+.brief .specs span b { color: var(--amber); }
+.section { border: 1px solid var(--border); background: var(--bg-card); padding: 18px 22px; margin-bottom: 18px; }
+.section h3 { margin: 0 0 12px; color: var(--cyan); font-size: 1.05rem; border-bottom: 1px dashed var(--border); padding-bottom: 6px; }
+.section h3 .tag { background: var(--cyan); color: var(--ink); font-size: 0.65rem; font-weight: 800; padding: 2px 7px; margin-right: 8px; letter-spacing: 0.1em; }
+.section h4 { margin: 14px 0 6px; color: var(--neon); font-size: 0.88rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.transmit { display: flex; gap: 12px; margin: 12px 0; border: 1px solid var(--cyan); background: linear-gradient(90deg, rgba(0,212,255,0.06), transparent); padding: 12px 14px; position: relative; }
+.transmit::before { content: '> RÉCEPTION'; position: absolute; top: -8px; left: 10px; background: var(--bg); color: var(--cyan); padding: 0 6px; font-size: 0.65rem; letter-spacing: 0.1em; }
+.transmit .src { flex-shrink: 0; width: 60px; padding-top: 6px; font-size: 0.7rem; color: var(--cyan); text-align: center; }
+.transmit .src .ico { font-size: 2rem; display: block; filter: drop-shadow(0 0 6px var(--cyan)); }
+.transmit .msg { flex: 1; padding: 4px 0; font-size: 0.92rem; }
+.transmit .msg b { color: var(--amber); }
+.steps { counter-reset: s; padding: 0; list-style: none; margin: 8px 0; }
+.steps li { counter-increment: s; background: var(--bg-soft); border: 1px solid var(--border); border-left: 3px solid var(--neon); padding: 10px 14px 10px 48px; margin: 6px 0; position: relative; font-size: 0.92rem; }
+.steps li::before { content: '[' counter(s, decimal-leading-zero) ']'; position: absolute; left: 8px; top: 10px; color: var(--neon); font-weight: 800; font-size: 0.78rem; }
+.steps li.crit { border-left-color: var(--orange); background: rgba(255,107,0,0.05); }
+.steps li.crit::before { color: var(--orange); }
+.steps li.exec { border-left-color: var(--amber); }
+.steps li.exec::before { color: var(--amber); }
+.steps li b { color: var(--amber); }
+.steps li code { background: var(--ink); color: var(--neon); padding: 1px 5px; border: 1px solid var(--neon); font-size: 0.85rem; }
+.alert { border: 1px solid var(--orange); background: rgba(255,107,0,0.08); padding: 10px 14px; margin: 12px 0; font-size: 0.9rem; }
+.alert::before { content: '! ALERTE'; background: var(--orange); color: var(--ink); padding: 1px 6px; font-size: 0.65rem; font-weight: 800; margin-right: 8px; }
+.intel { border: 1px solid var(--cyan); background: rgba(0,212,255,0.05); padding: 10px 14px; margin: 12px 0; font-size: 0.9rem; }
+.intel::before { content: '> INTEL'; background: var(--cyan); color: var(--ink); padding: 1px 6px; font-size: 0.65rem; font-weight: 800; margin-right: 8px; }
+.lab { border: 1px solid var(--amber); background: rgba(255,204,0,0.05); padding: 10px 14px; margin: 12px 0; font-size: 0.9rem; }
+.lab::before { content: '⚗ LABO'; background: var(--amber); color: var(--ink); padding: 1px 6px; font-size: 0.65rem; font-weight: 800; margin-right: 8px; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.objective { background: var(--bg-soft); border: 1px solid var(--border); border-top: 3px solid var(--neon); padding: 10px 14px; }
+.objective .lbl { color: var(--neon); font-size: 0.7rem; font-weight: 800; letter-spacing: 0.1em; margin-bottom: 4px; }
+.checklist { padding: 0; list-style: none; }
+.checklist li { padding: 4px 0 4px 22px; position: relative; font-size: 0.9rem; }
+.checklist li::before { content: '[ ]'; position: absolute; left: 0; top: 4px; color: var(--neon); }
+table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 0.88rem; }
+th, td { padding: 7px 10px; text-align: left; border: 1px solid var(--border); }
+th { background: var(--bg-soft); color: var(--neon); font-size: 0.74rem; text-transform: uppercase; }
+td b { color: var(--amber); }
+.handout { background: #f5f3e8; color: #0a1020; border: 2px dashed var(--orange); padding: 14px 18px; margin: 12px 0; font-family: monospace; }
+.handout h4 { color: var(--orange); margin: 0 0 10px; border-bottom: 1px dashed var(--orange); padding-bottom: 4px; }
+.handout .tear { border-top: 1px dashed var(--orange); margin: 10px 0 0; text-align: center; color: var(--orange); font-size: 0.7rem; }
+.nav-foot { display: flex; justify-content: space-between; margin: 26px 0 12px; }
+.nav-foot a { background: var(--bg-card); color: var(--neon); border: 1px solid var(--neon); padding: 8px 16px; text-decoration: none; font-size: 0.85rem; font-weight: 700; }
+.schematic { background: var(--ink); border: 1px solid var(--neon); padding: 14px; margin: 12px 0; position: relative; }
+.schematic::before { content: '[ DIAGRAMME ]'; position: absolute; top: -8px; left: 12px; background: var(--bg); color: var(--neon); padding: 0 6px; font-size: 0.65rem; }
+.schematic svg { width: 100%; height: auto; max-height: 280px; display: block; }
+.schematic .cap { margin-top: 8px; font-size: 0.78rem; color: var(--steel); font-style: italic; text-align: center; }
+@media print { aside.nav, .lang-bar { display: none; } .wrap { grid-template-columns: 1fr; } .workshop { display: block !important; page-break-after: always; } body { background: #fff; color: #000; } }
+@media (max-width: 800px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } .wrap { grid-template-columns: 1fr; } aside.nav { position: relative; height: auto; } main { padding: 18px; } }
+@keyframes spin { to { transform: rotate(360deg); } }
+.spin { animation: spin 2s linear infinite; transform-origin: center; transform-box: fill-box; }
+</style>
+</head>
+<body>
+
+<div class="wd-band wd-band-top"></div>
+<header class="wd-header">
+  <div class="title-block">
+    <div class="logo-mark">▣</div>
+    <div>
+      <h1>ROBI-9 // MANUEL DE TERRAIN</h1>
+      <div class="subtitle">// 12 OPS · AGENTS 10A+ · WORKSHOP DIY</div>
+    </div>
+  </div>
+  <div class="wd-header-right">
+    <select class="wd-select" id="themeSelect" aria-label="Theme">
+      <option value="carbon">▣ Carbon</option>
+      <option value="forest">▣ Forest</option>
+      <option value="steel">▣ Steel</option>
+      <option value="paper">☼ Paper</option>
+      <option value="pearl">☼ Pearl</option>
+    </select>
+    <select class="wd-select" id="langSelect" aria-label="Langue" onchange="if(this.value==='en')location.href='workshops.html';else if(this.value==='ar')location.href='workshops.ar.html';">
+      <option value="en">🇬🇧 EN</option>
+      <option value="fr" selected>🇫🇷 FR</option>
+      <option value="ar">🇩🇿 AR</option>
+    </select>
+  </div>
+</header>
+
+<div class="lang-bar" style="display:none;">
+  <a href="workshops.html">EN</a>
+  <a href="workshops.fr.html" class="active">FR</a>
+  <a href="workshops.ar.html">AR</a>
+</div>
+
+<div class="wrap">
+
+<aside class="nav">
+  <div class="logo">▶ ROBI-9 // OPS</div>
+  <div class="sub">12 OPÉRATIONS · AGENT NIV.1+</div>
+  <a class="op" href="#start"><span class="id">QG</span>QG Mission</a>
+  <a class="op" href="#op01"><span class="id">OP-01</span>Réveil de l'Unité</a>
+  <a class="op" href="#op02"><span class="id">OP-02</span>Labo Vélocité</a>
+  <a class="op" href="#op03"><span class="id">OP-03</span>Recon Capteurs</a>
+  <a class="op" href="#op04"><span class="id">OP-04</span>Cœur Comportement</a>
+  <a class="op" href="#op05"><span class="id">OP-05</span>Cartographie</a>
+  <a class="op" href="#op06"><span class="id">OP-06</span>Code Trajectoire</a>
+  <a class="op" href="#op07"><span class="id">OP-07</span>Labo Signal</a>
+  <a class="op" href="#op08"><span class="id">OP-08</span>Ingé Servo</a>
+  <a class="op" href="#op09"><span class="id">OP-09</span>Télémétrie</a>
+  <a class="op" href="#op10"><span class="id">OP-10</span>Pathfinder</a>
+  <a class="op" href="#op11"><span class="id">OP-11</span>Multi-Unité</a>
+  <a class="op" href="#op12"><span class="id">OP-12</span>OP FINALE</a>
+  <div style="margin-top:14px; padding-top:10px; border-top:1px solid var(--border); font-size:0.7rem; color:var(--steel);">
+    [ Ctrl+P ] export PDF<br>[ #op## ] lien direct
+  </div>
+</aside>
+
+<main>
+
+<section id="start" class="workshop active">
+<div class="brief">
+  <span class="id">▶ QUARTIER GÉNÉRAL</span>
+  <h2>ROBI-9 // MANUEL DE TERRAIN</h2>
+  <div class="codename">12 opérations · 1h30 chacune · agents 10+</div>
+  <div class="specs">
+    <span><b>HABILITATION:</b> AGENT NIV.1+</span>
+    <span><b>MATÉRIEL:</b> Maqueen Lite v4</span>
+    <span><b>OBJECTIF:</b> Construire · Hacker · Déployer</span>
+  </div>
+</div>
+
+<div class="transmit">
+  <div class="src"><span class="ico">▣</span>ROBI-9</div>
+  <div class="msg">
+    [SIGNAL ÉTABLI]<br>Bienvenue au Labo QG, agent. Tu vas réussir <b>12 opérations</b> sur <b>18 heures de terrain</b>.
+    Profil mission : <b>construire un stack opérationnel de robot tactique</b> du premier connect jusqu'au déploiement autonome.<br>
+    Même chaîne d'outils que les vrais ingénieurs au JPL, MIT, CERN. Échelle plus petite. Logique identique.
+  </div>
+</div>
+
+<div class="section">
+  <h3><span class="tag">DOC-01</span>CADENCE OPÉRATIONNELLE</h3>
+  <p>Chaque opération suit le cycle standard recon → exploit → fortifier → débrief.</p>
+  <div class="schematic">
+    <svg viewBox="0 0 700 140">
+      <defs><marker id="ar1" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#22c55e"/></marker></defs>
+      <line x1="50" y1="70" x2="650" y2="70" stroke="#22c55e" stroke-width="1" stroke-dasharray="3 3"/>
+      <g font-family="monospace" font-size="11" fill="#e2e8f0">
+        <g transform="translate(100 70)"><rect x="-40" y="-22" width="80" height="44" fill="#0e1424" stroke="#22c55e"/><text y="3" text-anchor="middle" fill="#22c55e" font-weight="700">[01] RECON</text><text y="40" text-anchor="middle" fill="#94a3b8">observer</text></g>
+        <g transform="translate(280 70)"><rect x="-40" y="-22" width="80" height="44" fill="#0e1424" stroke="#00d4ff"/><text y="3" text-anchor="middle" fill="#00d4ff" font-weight="700">[02] EXPLOIT</text><text y="40" text-anchor="middle" fill="#94a3b8">explorer</text></g>
+        <g transform="translate(460 70)"><rect x="-40" y="-22" width="80" height="44" fill="#0e1424" stroke="#ffcc00"/><text y="3" text-anchor="middle" fill="#ffcc00" font-weight="700">[03] DÉFI</text><text y="40" text-anchor="middle" fill="#94a3b8">objectif</text></g>
+        <g transform="translate(640 70)"><rect x="-40" y="-22" width="80" height="44" fill="#0e1424" stroke="#ff6b00"/><text y="3" text-anchor="middle" fill="#ff6b00" font-weight="700">[04] DÉBRIEF</text><text y="40" text-anchor="middle" fill="#94a3b8">extraire</text></g>
+      </g>
+    </svg>
+    <div class="cap">→ Cycle ops standard. Se répète dans chaque opération.</div>
+  </div>
+</div>
+
+<div class="section">
+  <h3><span class="tag">DOC-02</span>INDEX DES OPÉRATIONS</h3>
+  <table>
+    <tr><th>ID</th><th>Opération</th><th>Couche</th><th>Concept</th></tr>
+    <tr><td><b>OP-01</b></td><td>Réveil de l'Unité</td><td>FONDATION</td><td>Signal → commande → action</td></tr>
+    <tr><td><b>OP-02</b></td><td>Labo Vélocité</td><td>FONDATION</td><td>Compromis vitesse/contrôle</td></tr>
+    <tr><td><b>OP-03</b></td><td>Recon Capteurs</td><td>FONDATION</td><td>Capteurs = physique → numérique</td></tr>
+    <tr><td><b>OP-04</b></td><td>Cœur Comportement</td><td>PERCEPTION</td><td>Algorithme = capteur + règle</td></tr>
+    <tr><td><b>OP-05</b></td><td>Cartographie</td><td>PERCEPTION</td><td>Odométrie · dérive cumulative</td></tr>
+    <tr><td><b>OP-06</b></td><td>Code Trajectoire</td><td>PERCEPTION</td><td>Programmer = ops préplanifiées</td></tr>
+    <tr><td><b>OP-07</b></td><td>Labo Signal</td><td>LOGIQUE</td><td>Fréquence · signal = donnée</td></tr>
+    <tr><td><b>OP-08</b></td><td>Ingé Servo</td><td>LOGIQUE</td><td>Contrôle d'angle précis</td></tr>
+    <tr><td><b>OP-09</b></td><td>Télémétrie</td><td>LOGIQUE</td><td>Donnée → analyse → décision</td></tr>
+    <tr><td><b>OP-10</b></td><td>Pathfinder</td><td>AVANCÉ</td><td>Algorithme de recherche A*</td></tr>
+    <tr><td><b>OP-11</b></td><td>Ops Multi-Unité</td><td>AVANCÉ</td><td>Réseau · latence · coordination</td></tr>
+    <tr><td><b>OP-12</b></td><td>OPÉRATION FINALE</td><td>DÉPLOIEMENT</td><td>Synthèse + présentation</td></tr>
+  </table>
+</div>
+
+<div class="section">
+  <h3><span class="tag">DOC-03</span>KIT STANDARD</h3>
+  <div class="grid-2">
+    <div>
+      <h4>// MATÉRIEL</h4>
+      <ul class="checklist">
+        <li>1× unité Maqueen Lite v4 par 2-3 agents (chargée 100%)</li>
+        <li>1× micro:bit par unité (firmware flashé)</li>
+        <li>1× tablette/laptop par groupe (Bluetooth)</li>
+        <li>Câble USB-C (recharge urgence)</li>
+      </ul>
+    </div>
+    <div>
+      <h4>// CONSOMMABLES</h4>
+      <ul class="checklist">
+        <li>Ruban masking noir (lignes au sol)</li>
+        <li>Cônes / gobelets (slalom)</li>
+        <li>Papier A4 + stylos par agent</li>
+        <li>Chronomètres (1 par groupe)</li>
+      </ul>
+    </div>
+  </div>
+  <div class="alert"><b>PRÉ-VOL :</b> charger les unités 24h avant. Une unité morte tue la dynamique.</div>
+</div>
+
+<div class="section">
+  <h3><span class="tag">DOC-04</span>PROTOCOLE INSTRUCTEUR</h3>
+  <div class="grid-2">
+    <div class="objective"><div class="lbl">[01]</div>MAINS LOIN DU CLAVIER. Si tu cliques pour eux, ils n'apprennent pas.</div>
+    <div class="objective"><div class="lbl">[02]</div>ACCEPTER L'ÉCHEC FORT. "Excellente erreur — qu'est-ce qu'elle nous dit ?"</div>
+    <div class="objective"><div class="lbl">[03]</div>LE CHRONO EST LA LOI. Horloge visible. On avance même si certains sont en cours.</div>
+    <div class="objective"><div class="lbl">[04]</div>QUESTIONNER, PAS EXPLIQUER. "Que se passe-t-il si... ?" bat le cours magistral.</div>
+    <div class="objective"><div class="lbl">[05]</div>RÉCOMPENSER LES ESSAIS. L'agent qui a échoué 5 fois a plus appris que le premier.</div>
+    <div class="objective"><div class="lbl">[06]</div>DÉBRIEF SACRÉ. Toujours 10 min finales pour la réflexion. Jamais sur le rangement.</div>
+  </div>
+</div>
+</section>
+
+<!-- ═══ OP-01 FR ═══ -->
+<section id="op01" class="workshop">
+<div class="brief">
+  <span class="id">▶ OP-01 · NIVEAU: BASIQUE</span>
+  <h2>RÉVEIL DE L'UNITÉ</h2>
+  <div class="codename">"Établir le premier lien. Vérifier le protocole d'arrêt."</div>
+  <div class="specs"><span><b>DURÉE:</b> 90 min</span><span><b>DIFFICULTÉ:</b> ▰▱▱▱▱</span><span><b>PRÉREQUIS:</b> aucun</span></div>
+</div>
+<div class="transmit">
+  <div class="src"><span class="ico">▣</span>ROBI-9</div>
+  <div class="msg">[MODE VEILLE] Énergie: 100%. En attente du signal de réveil.<br>Ta mission, agent : envoyer le <b>handshake</b> Bluetooth et confirmer le <b>kill switch</b>. Procédure standard.</div>
+</div>
+<div class="section">
+  <h3><span class="tag">OBJ</span>OBJECTIFS</h3>
+  <div class="grid-3">
+    <div class="objective"><div class="lbl">CONCEPT</div>Contrôle sans-fil = chaîne signal → commande → action.</div>
+    <div class="objective"><div class="lbl">COMPÉTENCE</div>Pairage BLE en solo. Joystick. Réflexe STOP.</div>
+    <div class="objective"><div class="lbl">DOCTRINE</div>Calme, focus, sécurité d'abord. L'unité est un outil.</div>
+  </div>
+</div>
+<div class="section">
+  <h3><span class="tag">SOP</span>CHRONOLOGIE OPÉRATIONNELLE</h3>
+
+  <h4>// PHASE 1 · CONTACT (10 min)</h4>
+  <ul class="steps">
+    <li>Briefer en demi-cercle. Présenter l'unité endormie.</li>
+    <li>Sonder : "Comment l'ordre arrive-t-il à cette unité ?" Récolter les hypothèses (Wi-Fi, télépathie, magie). Toutes valides, valider <b>Bluetooth</b>.</li>
+    <li class="exec">Démo : tap <code>⌘ CONNECT</code>. LED de l'unité réagit. Avancer 1s. Halte.</li>
+    <li>Énoncer les deux contrôles : <b>bleu ⌘ = lien, rouge ⏹ = halte</b>. Tout pour aujourd'hui.</li>
+  </ul>
+
+  <h4>// PHASE 2 · DRILL HANDSHAKE (10 min)</h4>
+  <ul class="steps">
+    <li>Groupe scindé. Chacun prend tablette + unité.</li>
+    <li>Tap <code>⌘</code> → sélecteur BLE → choisir <b>"Maqueen…"</b> → confirmer <code>Pair</code>.</li>
+    <li>FAB se cache au succès = handshake confirmé.</li>
+    <li class="exec">Chaque groupe : <b>connecter, déconnecter, reconnecter ×2</b>. Mémoire musculaire.</li>
+  </ul>
+  <div class="alert">ÉCHEC PAIRAGE = côté tablette, pas l'unité. Toggle BT off/on. Relancer l'app.</div>
+
+  <h4>// PHASE 3 · RECONNAISSANCE LIBRE (20 min)</h4>
+  <ul class="steps">
+    <li class="exec">"20 minutes. Conduisez. Pas d'objectif. Ne cassez rien."</li>
+    <li><b>INSTRUCTEUR MAINS DANS LES POCHES.</b> Observer. Repérer qui aura besoin d'aide.</li>
+    <li>10 min in : "quelqu'un a testé le slider de vitesse ?"</li>
+    <li>5 min reste : "exécuter un 360° parfait."</li>
+  </ul>
+
+  <h4>// PHASE 4 · DOCTRINE KILL-SWITCH (10 min)</h4>
+  <ul class="steps">
+    <li>Toutes unités à l'arrêt. Tablettes posées.</li>
+    <li class="crit">Conduire à 100% vers ton pied. <b>Demi-seconde avant impact : tap ⏹.</b> Unité gèle.</li>
+    <li>Groupe répète en chœur : <b>"ROUGE = ARRÊT. TOUJOURS ACCESSIBLE."</b></li>
+    <li>Signature du Code de Conduite ci-dessous.</li>
+  </ul>
+  <div class="handout">
+    <h4>// CODE DE CONDUITE OPÉRATIVE</h4>
+    <p>L'agent <b>__________________________</b> s'engage à :</p>
+    <ol style="margin: 8px 0;">
+      <li>Maintenir une conscience de la position du <b>⏹ KILL SWITCH</b> rouge.</li>
+      <li>NE PAS diriger l'unité vers personnel, animal ou matériel.</li>
+      <li>Choisir HALTE par défaut en cas de doute.</li>
+    </ol>
+    <p>Signature : __________________________ &nbsp; Date : ____________</p>
+    <div class="tear">- - - - - - couper · agent garde la copie - - - - - -</div>
+  </div>
+
+  <h4>// PHASE 5 · EXERCICE SLALOM (25 min)</h4>
+  <ul class="steps">
+    <li>Disposer 4-6 cônes en zigzag, 50 cm d'écart.</li>
+    <li>Objectif : franchir sans contact.</li>
+    <li><b>RD-1 :</b> 1 run par agent. Chronométré. Disqualifié sur contact.</li>
+    <li><b>RD-2 :</b> agent choisit la vitesse (10/30/50/80%). Beaucoup ratent à 80%.</li>
+    <li class="crit"><b>RD-3 :</b> bandeau sur les yeux. Wingman dicte les vecteurs. Drill confiance + comms.</li>
+  </ul>
+
+  <h4>// PHASE 6 · DÉBRIEF (15 min)</h4>
+  <ul class="steps">
+    <li>Cercle. Unités HORS LIGNE. Tablettes rangées.</li>
+    <li>Chaque agent rapporte : 1× moment difficile, 1× découverte inattendue.</li>
+    <li class="exec">Instructeur : "Vous êtes maintenant <b>OPÉRATIFS</b>. Prochaine OP : pilotes."</li>
+  </ul>
+</div>
+<div class="nav-foot"><a href="#start">◀ QG</a><a href="#op02">OP-02 ▶</a></div>
+</section>
+
+<!-- ═══ OP-02 FR ═══ -->
+<section id="op02" class="workshop">
+<div class="brief">
+  <span class="id">▶ OP-02 · NIVEAU: BASIQUE</span>
+  <h2>LABO VÉLOCITÉ</h2>
+  <div class="codename">"Calibrer accélérateur. Profiler le freinage. Données pures."</div>
+  <div class="specs"><span><b>DURÉE:</b> 90 min</span><span><b>DIFFICULTÉ:</b> ▰▱▱▱▱</span><span><b>PRÉREQUIS:</b> OP-01</span></div>
+</div>
+<div class="transmit"><div class="src"><span class="ico">▣</span>ROBI-9</div><div class="msg">[TÉLÉMÉTRIE ACTIVE] Tu vas profiler mon enveloppe d'accélération et freinage à plusieurs niveaux d'accélérateur. Tracer la courbe. Découverte : <b>vélocité vs contrôle</b>. Ingénierie 101.</div></div>
+<div class="section"><h3><span class="tag">OBJ</span>OBJECTIFS</h3>
+  <div class="grid-3">
+    <div class="objective"><div class="lbl">CONCEPT</div>Compromis : chaque gain coûte. Vélocité coûte précision.</div>
+    <div class="objective"><div class="lbl">COMPÉTENCE</div>Calibrer accélérateur. Lire/produire un graphique.</div>
+    <div class="objective"><div class="lbl">DOCTRINE</div>"Tout au max" gagne rarement. La patience est tactique.</div>
+  </div>
+</div>
+<div class="section"><h3><span class="tag">SOP</span>CHRONOLOGIE</h3>
+  <h4>// PHASE 1 · ÉCHAUFFEMENT (5 min)</h4>
+  <ul class="steps">
+    <li>Course de handshake. Premier connecté gagne.</li>
+    <li>Sonde sécurité : "Où est ⏹ ?" — tous pointent.</li>
+  </ul>
+  <h4>// PHASE 2 · TRIAL 3-VITESSES (15 min)</h4>
+  <ul class="steps">
+    <li>Accélérateur 10%. Avancer 3s. Marquer position d'arrêt.</li>
+    <li>Reset. 50%. 3s. Marquer.</li>
+    <li class="exec">Reset. 100%. 3s. Marquer. <b>Comparer.</b> Même temps, distances très différentes.</li>
+  </ul>
+  <h4>// PHASE 3 · PROFILAGE FREINAGE (20 min)</h4>
+  <ul class="steps">
+    <li>Ligne START au sol. Unité derrière.</li>
+    <li>Avancer. <b>Trigger ⏹ quand le nez croise la ligne.</b></li>
+    <li>Marquer position d'arrêt. Mesurer = <b>distance de freinage</b>.</li>
+    <li>3 essais à 30%, 60%, 100%. Tabuler.</li>
+  </ul>
+  <table>
+    <tr><th>Accélérateur</th><th>E1</th><th>E2</th><th>E3</th><th>Moyenne</th></tr>
+    <tr><td><b>30%</b></td><td>__cm</td><td>__cm</td><td>__cm</td><td>__cm</td></tr>
+    <tr><td><b>60%</b></td><td>__cm</td><td>__cm</td><td>__cm</td><td>__cm</td></tr>
+    <tr><td><b>100%</b></td><td>__cm</td><td>__cm</td><td>__cm</td><td>__cm</td></tr>
+  </table>
+  <div class="lab"><b>DÉCOUVERTE :</b> doubler la vitesse augmente la distance de freinage de plus du double. L'énergie cinétique est non-linéaire (∝ v²).</div>
+  <h4>// PHASE 4 · STATIONNEMENT PRÉCIS (25 min)</h4>
+  <ul class="steps">
+    <li>Carré 30×30 cm à 1m. Cible.</li>
+    <li class="exec">Objectif : se garer <b>entièrement dedans</b>.</li>
+    <li>3 essais. Agent choisit la vitesse.</li>
+    <li>Score: 3 entièrement, 1 sur ligne, 0 dehors.</li>
+  </ul>
+  <h4>// PHASE 5 · TRAÇAGE DONNÉES (15 min)</h4>
+  <ul class="steps">
+    <li>Chaque agent : papier millimétré.</li>
+    <li>X : accélérateur %. Y : distance freinage (cm).</li>
+    <li>Plotter 3 points. Tracer la courbe.</li>
+    <li class="exec"><b>Question :</b> "La ligne est-elle droite ?" Non. Elle s'incurve.</li>
+  </ul>
+  <h4>// PHASE 6 · APPLICATION (10 min)</h4>
+  <ul class="steps">
+    <li>"Pourquoi des dos d'âne dans les écoles ?"</li>
+    <li>"Pourquoi des freins céramique en F1 ?"</li>
+    <li>"Même maths à 0.5 m/s qu'à 90 m/s. Tu viens de le mesurer."</li>
+  </ul>
+</div>
+<div class="nav-foot"><a href="#op01">◀ OP-01</a><a href="#op03">OP-03 ▶</a></div>
+</section>
+
+<!-- ═══ OP-03 FR ═══ -->
+<section id="op03" class="workshop">
+<div class="brief">
+  <span class="id">▶ OP-03 · NIVEAU: BASIQUE</span>
+  <h2>RECON CAPTEURS</h2>
+  <div class="codename">"Cartographier le réseau de perception. Sonder chaque canal."</div>
+  <div class="specs"><span><b>DURÉE:</b> 90 min</span><span><b>DIFFICULTÉ:</b> ▰▰▱▱▱</span><span><b>PRÉREQUIS:</b> OP-01</span></div>
+</div>
+<div class="transmit"><div class="src"><span class="ico">▣</span>ROBI-9</div><div class="msg">[RÉSEAU CAPTEURS EN LIGNE] J'ai <b>trois canaux de perception</b> : SONAR (acoustique), LIGNE (réflectance optique), IR (infrarouge). Tous convertissent réalité physique → nombres.</div></div>
+<div class="section"><h3><span class="tag">SOP</span>CHRONOLOGIE</h3>
+  <h4>// PHASE 1 · DRILL AVEUGLE (10 min)</h4>
+  <ul class="steps">
+    <li>Bandeau. Wingman dicte vecteur verbal.</li>
+    <li>Marcher entre deux cônes. Sans vision.</li>
+    <li class="exec">Frame : "Voilà l'état par défaut de l'unité — sans capteurs."</li>
+  </ul>
+  <h4>// PHASE 2 · CANAL-A: SONAR (20 min)</h4>
+  <div class="lab"><b>FAIT :</b> les chauves-souris localisent leurs proies dans le noir avec ultrason. Même physique. HC-SR04 émet une impulsion 40 kHz, mesure l'écho.</div>
+  <ul class="steps">
+    <li>Ouvrir l'affichage capteurs. Lire SONAR.</li>
+    <li>Main à 10 cm → lire. 50 cm → lire à nouveau.</li>
+    <li class="exec"><b>PRÉDICTION :</b> instructeur tient un objet, agents <b>écrivent</b> leur prédiction, puis mesurent. Le plus proche gagne.</li>
+  </ul>
+  <h4>// PHASE 3 · CANAL-B: LIGNE (15 min)</h4>
+  <ul class="steps">
+    <li>Bande noire sur sol blanc (50 cm).</li>
+    <li>Glisser l'unité dessus. Lire L/M/R en direct.</li>
+    <li class="exec"><b>Noir = retour bas. Blanc = retour haut.</b> Réflectance optique.</li>
+  </ul>
+  <h4>// PHASE 4 · DOC RÉSEAU (25 min)</h4>
+  <ul class="steps">
+    <li>Distribuer schéma vierge de l'unité.</li>
+    <li>Étiqueter chaque capteur : nom · canal · unité · vecteur.</li>
+    <li>Code couleur : ambre=sonar, vert=ligne, orange=IR, cyan=LED.</li>
+    <li class="exec">Meilleurs schémas au mur.</li>
+  </ul>
+  <h4>// PHASE 5 · DRILL PRÉDICTION (10 min)</h4>
+  <ul class="steps">
+    <li>Instructeur présente : main · livre · oreiller · verre.</li>
+    <li>Écrire prédiction SONAR avant mesure.</li>
+    <li>Révéler. Le plus proche = point.</li>
+    <li class="crit"><b>ANOMALIE :</b> oreiller absorbe l'ultrason → lecture plus loin que la réalité.</li>
+  </ul>
+  <h4>// PHASE 6 · APPLICATIONS (10 min)</h4>
+  <ul class="steps">
+    <li>Photos : capteurs de stationnement · drones · aspirateurs robots.</li>
+    <li>"Quel capteur AJOUTERAIS-tu à cette unité ?"</li>
+  </ul>
+</div>
+<div class="nav-foot"><a href="#op02">◀ OP-02</a><a href="#op04">OP-04 ▶</a></div>
+</section>
+
+<!-- ═══ OP-04 FR ═══ -->
+<section id="op04" class="workshop">
+<div class="brief">
+  <span class="id">▶ OP-04 · NIVEAU: INTERMÉDIAIRE</span>
+  <h2>CŒUR COMPORTEMENT</h2>
+  <div class="codename">"Sonder la pile d'autonomie. Reverse-engineer les règles."</div>
+  <div class="specs"><span><b>DURÉE:</b> 90 min</span><span><b>DIFFICULTÉ:</b> ▰▰▱▱▱</span><span><b>PRÉREQUIS:</b> OP-01, OP-03</span></div>
+</div>
+<div class="transmit"><div class="src"><span class="ico">▣</span>ROBI-9</div><div class="msg">[MODE AUTONOMIE] Je vais me piloter seul. <b>Tu ne touches pas aux contrôles.</b> Je lis les capteurs, j'applique les règles, j'actionne les moteurs. Boucle à 10 Hz. Différentes règles = différents profils. Aujourd'hui : hacker les 4.</div></div>
+<div class="section"><h3><span class="tag">DOC</span>PROFILS DE COMPORTEMENT</h3>
+  <table>
+    <tr><th>Profil</th><th>Règle logique</th><th>Signature</th></tr>
+    <tr><td><b>RECON</b></td><td>SI sonar &lt; 25 cm: rotation aléatoire. SINON: avancer lent.</td><td>Prudent · lent</td></tr>
+    <tr><td><b>STANDARD</b></td><td>SI sonar &lt; 20 cm: tourner À L'OPPOSÉ. SINON: avancer.</td><td>Intelligent · équilibré</td></tr>
+    <tr><td><b>STRIKE</b></td><td>SI sonar &lt; 15 cm: rotation rapide. Avancer vitesse max.</td><td>Agressif · ballistique</td></tr>
+    <tr><td><b>DEMO</b></td><td>Chorégraphie pré-encodée (figure-8, spirale).</td><td>Vitrine · scripté</td></tr>
+  </table>
+</div>
+<div class="section"><h3><span class="tag">SOP</span>CHRONOLOGIE</h3>
+  <h4>// PHASE 1 · DÉMO AUTONOMIE (10 min)</h4>
+  <ul class="steps">
+    <li>Pré-armer une unité en STANDARD.</li>
+    <li>Placer dans l'arène. Activer.</li>
+    <li class="exec">Marcher devant. L'unité tourne. Pause.</li>
+    <li><b>Question ouverte :</b> "Est-ce que ça pense ?" Récolter les réponses.</li>
+  </ul>
+  <h4>// PHASE 2 · TOUR DES PROFILS (15 min)</h4>
+  <ul class="steps">
+    <li>RECON · 1 min · STANDARD · 1 min · STRIKE · 1 min · DEMO · 1 min.</li>
+  </ul>
+  <h4>// PHASE 3 · OBSERVATION SCIENTIFIQUE (20 min)</h4>
+  <ul class="steps">
+    <li>Chaque groupe : UN profil.</li>
+    <li>Documenter : vitesse · réactivité · 3 adjectifs · conditions de blocage.</li>
+  </ul>
+  <h4>// PHASE 4 · BRIEFING INTEL (10 min)</h4>
+  <ul class="steps"><li>90 secondes par groupe. Démo + adjectifs + observations.</li></ul>
+  <h4>// PHASE 5 · DÉBAT (15 min)</h4>
+  <ul class="steps">
+    <li class="crit"><b>QUESTION :</b> "Wander autonome = intelligence ?"</li>
+    <li>Deux camps. 4 min d'arguments par camp.</li>
+    <li class="exec"><b>RÉSULTAT :</b> "IA = capteurs + règles + vitesse. Pas de magie."</li>
+  </ul>
+  <div class="intel">Même boucle alimente : autocorrect téléphone · Netflix · ChatGPT · voitures autonomes. Plus grandes règles, architecture identique.</div>
+  <h4>// PHASE 6 · DESIGN PROFIL CUSTOM (15 min)</h4>
+  <ul class="steps">
+    <li>Designer son propre profil sur papier : nom · règles · scénario d'usage.</li>
+  </ul>
+</div>
+<div class="nav-foot"><a href="#op03">◀ OP-03</a><a href="#op05">OP-05 ▶</a></div>
+</section>
+
+<!-- ═══ OP-05 FR ═══ -->
+<section id="op05" class="workshop">
+<div class="brief">
+  <span class="id">▶ OP-05 · NIVEAU: AVANCÉ</span>
+  <h2>CARTOGRAPHIE</h2>
+  <div class="codename">"Construire une carte vive depuis la télémétrie roues. Profiler la dérive."</div>
+  <div class="specs"><span><b>DURÉE:</b> 90 min</span><span><b>DIFFICULTÉ:</b> ▰▰▰▱▱</span><span><b>PRÉREQUIS:</b> OP-01, OP-03</span></div>
+</div>
+<div class="transmit"><div class="src"><span class="ico">▣</span>ROBI-9</div><div class="msg">[ODOMÉTRIE EN LIGNE] Je compte les rotations de roue. 1 tour = 25 cm. Multiplier. Ajouter à la position estimée. Répéter. <b>C'est l'estime à mort.</b> Technique utilisée depuis les années 1500. Fiable... mais les erreurs s'accumulent.</div></div>
+<div class="section"><h3><span class="tag">SOP</span>CHRONOLOGIE</h3>
+  <h4>// PHASE 1 · SÉMANTIQUE CARTE (10 min)</h4>
+  <ul class="steps">
+    <li>Afficher 3 cartes : métro · plan · satellite.</li>
+    <li>Sonder : "Quelle donnée encode ? Qu'est-ce qui est omis ?"</li>
+  </ul>
+  <h4>// PHASE 2 · CONSTRUCTION LIVE (20 min)</h4>
+  <ul class="steps">
+    <li>Onglet CARTE. Canvas vide.</li>
+    <li>Avancer 1m → vecteur vert apparaît.</li>
+    <li>Conduire un carré 1×1m → trajectoire dessinée.</li>
+    <li class="exec">Pings SONAR = marqueurs rouges.</li>
+  </ul>
+  <h4>// PHASE 3 · PROFILAGE DÉRIVE (15 min)</h4>
+  <ul class="steps">
+    <li>Marquer le START.</li>
+    <li>Carré 2×2m, retour à l'origine.</li>
+    <li class="crit"><b>MESURER :</b> position réelle vs position estimée par la carte.</li>
+    <li>L'écart = <b>dérive</b>. Mesurer en cm.</li>
+  </ul>
+  <div class="alert"><b>SOURCES DE DÉRIVE :</b> patinage · surface inégale · calibration moteur · bruit capteur. Toutes réelles. Toutes cumulatives.</div>
+  <h4>// PHASE 4 · TRIAL COMPARATIF (15 min)</h4>
+  <ul class="steps">
+    <li>Deux unités · même route. Comparer cartes côte-à-côte.</li>
+    <li>"Identiques ?" Non. Chaque unité dérive uniquement.</li>
+  </ul>
+  <h4>// PHASE 5 · DOCTRINE GPS (10 min)</h4>
+  <ul class="steps">
+    <li>"Imaginer voiture autonome avec UNIQUEMENT odométrie."</li>
+    <li>Calculer : 1% dérive × 10 km = 100 m d'écart. Échec mission.</li>
+    <li class="exec"><b>SOLUTION :</b> fusion capteurs = odométrie + GPS + caméras + IMU + LIDAR.</li>
+  </ul>
+  <h4>// PHASE 6 · CARTE TACTIQUE (15 min)</h4>
+  <ul class="steps"><li>Esquisser sa chambre (ou trajet école) en SLAM-style.</li></ul>
+</div>
+<div class="nav-foot"><a href="#op04">◀ OP-04</a><a href="#op06">OP-06 ▶</a></div>
+</section>
+
+<!-- ═══ OP-06 FR ═══ -->
+<section id="op06" class="workshop">
+<div class="brief">
+  <span class="id">▶ OP-06 · NIVEAU: AVANCÉ</span>
+  <h2>CODE TRAJECTOIRE</h2>
+  <div class="codename">"Préprogrammer un chemin. Sauver. Rejouer. Bienvenue dans la prog."</div>
+  <div class="specs"><span><b>DURÉE:</b> 90 min</span><span><b>DIFFICULTÉ:</b> ▰▰▰▱▱</span><span><b>PRÉREQUIS:</b> OP-05</span></div>
+</div>
+<div class="transmit"><div class="src"><span class="ico">▣</span>ROBI-9</div><div class="msg">[MODULE AUTOPILOT CHARGÉ] Tu dessines une trajectoire. Je la suis seul. Sauver le fichier = ton premier <b>programme</b>. Pas de clavier. Pas de syntaxe. Pure logique. Les vrais ingés font pareil avec du code, mais le principe : identique.</div></div>
+<div class="section"><h3><span class="tag">SOP</span>CHRONOLOGIE</h3>
+  <h4>// PHASE 1 · DÉMO AUTOPILOT (10 min)</h4>
+  <ul class="steps">
+    <li>Onglet CARTE. Tap mode TRAJECTOIRE (✏️).</li>
+    <li>Dessiner une courbe au doigt.</li>
+    <li class="exec">Relâcher. Unité suit en autonome.</li>
+  </ul>
+  <h4>// PHASE 2 · FORMES PRIMITIVES (20 min)</h4>
+  <ul class="steps">
+    <li>Chaque agent : ligne droite. Exécuter.</li>
+    <li>Triangle. Boucle.</li>
+    <li>L'unité ne suit pas exactement. <b>Pourquoi ?</b> Dérive (OP-05).</li>
+  </ul>
+  <h4>// PHASE 3 · SAUVER PROGRAMME (10 min)</h4>
+  <ul class="steps">
+    <li>Tap SAVE.</li>
+    <li>Browser exporte un JSON. Ouvrir dans un éditeur.</li>
+    <li class="exec"><b>OBSERVER :</b> trajectoire = chiffres. <code>{x:12, y:30}, ...</code></li>
+    <li>"Voilà à quoi ressemble du code sous la syntaxe."</li>
+  </ul>
+  <h4>// PHASE 4 · OP TRACÉ INITIALE (25 min)</h4>
+  <ul class="steps">
+    <li>Objectif : trajectoire trace ta lettre.</li>
+    <li>Ruban canvas blanc au sol.</li>
+    <li class="exec">Vote : meilleure initiale = Programmeur.</li>
+  </ul>
+  <h4>// PHASE 5 · REJEU CROISÉ (10 min)</h4>
+  <ul class="steps">
+    <li>Charger le JSON d'un partenaire.</li>
+    <li class="crit"><b>RÉSULTAT :</b> même fichier, unité différente, résultat différent. Variance hardware + dérive.</li>
+  </ul>
+  <h4>// PHASE 6 · COMPÉT MEILLEUR PATH (10 min)</h4>
+  <ul class="steps">
+    <li>Forme cible : étoile · circuit. Score : déviation. Gagnant : Programmeur Niv.1.</li>
+  </ul>
+</div>
+<div class="nav-foot"><a href="#op05">◀ OP-05</a><a href="#op07">OP-07 ▶</a></div>
+</section>
+
+<!-- ═══ OP-07 FR ═══ -->
+<section id="op07" class="workshop">
+<div class="brief">
+  <span class="id">▶ OP-07 · NIVEAU: INTERMÉDIAIRE</span>
+  <h2>LABO SIGNAL</h2>
+  <div class="codename">"Le son est de la donnée. Fréquence = hauteur. Encoder et décoder."</div>
+  <div class="specs"><span><b>DURÉE:</b> 90 min</span><span><b>DIFFICULTÉ:</b> ▰▰▱▱▱</span><span><b>PRÉREQUIS:</b> OP-01</span></div>
+</div>
+<div class="transmit"><div class="src"><span class="ico">▣</span>ROBI-9</div><div class="msg">[PIEZO ACTIF] Mon buzzer émet des ondes carrées à n'importe quelle fréquence. <b>Fréquence = hauteur. Durée = rythme.</b> Tu vas synthétiser une signature 4-tons et décoder du Morse. Vraie ingénierie comms.</div></div>
+<div class="section"><h3><span class="tag">SOP</span>CHRONOLOGIE</h3>
+  <h4>// PHASE 1 · SONDE BUZZER (10 min)</h4>
+  <ul class="steps">
+    <li>Identifier le module. Ouvrir BUZZER. Sortir 100 Hz · 440 Hz · 2000 Hz.</li>
+    <li>"Plus petite différence audible ?"</li>
+  </ul>
+  <h4>// PHASE 2 · INTERFACE PIANO (20 min)</h4>
+  <ul class="steps">
+    <li>Touches piano. 5 min de jeu libre. Trouver une séquence.</li>
+  </ul>
+  <h4>// PHASE 3 · SIGNATURE 4-TONS (25 min)</h4>
+  <ul class="steps">
+    <li>Paires. 5 min pour composer une signature 4-tons.</li>
+    <li>Encoder sur papier : <code>C4 - E4 - G4 - C5 (250 ms each)</code></li>
+    <li class="exec">Reproduire 3× identique = signature certifiée.</li>
+  </ul>
+  <h4>// PHASE 4 · DRILL TRANSMISSION (15 min)</h4>
+  <ul class="steps"><li>Performance par paire devant le groupe. Vote : clarté · originalité · feel mission.</li></ul>
+  <h4>// PHASE 5 · DÉCODE MORSE (10 min)</h4>
+  <div class="lab"><b>CONTEXTE :</b> Morse = plus vieux protocole numérique. Utilisé 1844-aujourd'hui. SOS = · · · ─ ─ ─ · · ·</div>
+  <ul class="steps">
+    <li>Onglet MORSE. Instructeur transmet un callsign 5-lettres.</li>
+    <li>Décoder.</li>
+    <li class="exec">Premier à extraire = point.</li>
+  </ul>
+  <h4>// PHASE 6 · APPLICATION (10 min)</h4>
+  <ul class="steps">
+    <li>Spotify · écouteurs · notes vocales — tout audio = échantillons numériques.</li>
+    <li>"Pourquoi MP3 ?" — compresser sans perdre la hauteur.</li>
+  </ul>
+</div>
+<div class="nav-foot"><a href="#op06">◀ OP-06</a><a href="#op08">OP-08 ▶</a></div>
+</section>
+
+<!-- ═══ OP-08 FR ═══ -->
+<section id="op08" class="workshop">
+<div class="brief">
+  <span class="id">▶ OP-08 · NIVEAU: AVANCÉ</span>
+  <h2>INGÉ SERVO</h2>
+  <div class="codename">"Actionneur à position contrôlée. Précision 0-180°. Designe ton payload."</div>
+  <div class="specs"><span><b>DURÉE:</b> 90 min</span><span><b>DIFFICULTÉ:</b> ▰▰▰▱▱</span><span><b>PRÉREQUIS:</b> OP-01</span></div>
+</div>
+<div class="transmit"><div class="src"><span class="ico">▣</span>ROBI-9</div><div class="msg">[PORTS S1/S2 ACTIFS] Servos ≠ moteurs. <b>Servo = angle précis.</b> Moteur = rotation continue. Tu commandes 47°. Le servo va exactement à 47°. Utilisé : imprimantes 3D, robots chirurgicaux, RC, animatroniques. Aujourd'hui : design d'un payload.</div></div>
+<div class="section"><h3><span class="tag">SOP</span>CHRONOLOGIE</h3>
+  <h4>// PHASE 1 · INTRO SERVO (10 min)</h4>
+  <ul class="steps">
+    <li>Faire tourner un vrai SG90. Identifier connecteur, palonnier, corps.</li>
+    <li>Lire 0° / 90° / 180°. Onglet SERVO. Envoyer 0°.</li>
+    <li class="exec">Snap réponse à l'écran + servo physique.</li>
+  </ul>
+  <h4>// PHASE 2 · DRILL ANGLE-RÉACTION (15 min)</h4>
+  <ul class="steps">
+    <li>Instructeur dit : "45 !" Agents tappent 45° le plus vite.</li>
+    <li>Séquence : 75 · 135 · 0 · 180.</li>
+    <li class="exec"><b>BONUS :</b> "Salue-moi." Agent code un sweep.</li>
+  </ul>
+  <h4>// PHASE 3 · MODE SWEEP (10 min)</h4>
+  <ul class="steps">
+    <li>Activer sweep continu 0↔180.</li>
+    <li>"Parallèles industriels ?" → ventilateur · scanner sonar · arroseur · essuie-glace.</li>
+  </ul>
+  <h4>// PHASE 4 · DESIGN PAYLOAD (30 min)</h4>
+  <ul class="steps">
+    <li class="exec">TU es l'ingénieur.</li>
+    <li>Designer un attachement papier pour le palonnier.</li>
+    <li>Doit utiliser 0-180°. Doit servir une fonction tactique.</li>
+    <li>Inspirations : déployeur drapeau · indicateur · tour sonar · pince · drumstick.</li>
+  </ul>
+  <h4>// PHASE 5 · BRIEFING DESIGN (15 min)</h4>
+  <ul class="steps">
+    <li>60 sec par agent. Vote : utilité tactique · créativité · mode d'échec probable.</li>
+    <li class="exec">Meilleur design = Ingénieur Mécanique.</li>
+  </ul>
+  <h4>// PHASE 6 · APPLICATIONS (10 min)</h4>
+  <ul class="steps">
+    <li>Imprimantes 3D · chirurgie robotique · ailerons RC · animatroniques Disney.</li>
+  </ul>
+</div>
+<div class="nav-foot"><a href="#op07">◀ OP-07</a><a href="#op09">OP-09 ▶</a></div>
+</section>
+
+<!-- ═══ OP-09 FR ═══ -->
+<section id="op09" class="workshop">
+<div class="brief">
+  <span class="id">▶ OP-09 · NIVEAU: AVANCÉ</span>
+  <h2>TÉLÉMÉTRIE</h2>
+  <div class="codename">"Streams de données live. Hypothèse. Test. Conclure. Méthode."</div>
+  <div class="specs"><span><b>DURÉE:</b> 90 min</span><span><b>DIFFICULTÉ:</b> ▰▰▰▱▱</span><span><b>PRÉREQUIS:</b> OP-02, OP-03</span></div>
+</div>
+<div class="transmit"><div class="src"><span class="ico">▣</span>ROBI-9</div><div class="msg">[FLUX TÉLÉMÉTRIE] Tu deviens ingénieur. Forme une hypothèse. Teste-la. Lis les charts live. Conclus. <b>Même protocole utilisé au JPL · CERN · Tesla R&amp;D.</b> Plus petite échelle. Méthode identique.</div></div>
+<div class="section"><h3><span class="tag">SOP</span>CHRONOLOGIE</h3>
+  <h4>// PHASE 1 · BRIEFING TÉLÉMÉTRIE (10 min)</h4>
+  <ul class="steps">
+    <li>Photos : tableau de bord F1 · centre contrôle ISS · télémétrie spacecraft.</li>
+    <li>"Tout ça = nombres sur une machine, streamés live."</li>
+    <li>Onglet GRAPH. Conduire. Chart se construit en direct.</li>
+  </ul>
+  <h4>// PHASE 2 · LECTURE CHART (15 min)</h4>
+  <ul class="steps">
+    <li>Conduire à 50% stable. Chart = ligne plate.</li>
+    <li>Conduire 100% × 2s, halte. Pic + chute.</li>
+    <li>X : temps. Y : vélocité.</li>
+  </ul>
+  <h4>// PHASE 3 · SETUP EXPÉRIENCE (20 min)</h4>
+  <ul class="steps">
+    <li class="exec"><b>HYPOTHÈSE :</b> "Le tapis réduit-il la vélocité vs sol dur ?"</li>
+    <li>Chaque agent : ÉCRIRE prédiction. Oui/non ? De combien ?</li>
+    <li>Setup : 1 m sol dur + 1 m tapis (paillasson).</li>
+  </ul>
+  <h4>// PHASE 4 · EXÉCUTION ESSAIS (20 min)</h4>
+  <ul class="steps">
+    <li>Chaque groupe : 3 essais par surface. 6 total.</li>
+    <li>Lire vélocité de pic. Moyenne par surface.</li>
+    <li>Comparer à hypothèse.</li>
+  </ul>
+  <h4>// PHASE 5 · CONCLUSION + EXPORT (15 min)</h4>
+  <ul class="steps">
+    <li>1-phrase conclusion avec chiffres réels.</li>
+    <li class="exec">Tap EXPORT → CSV. Ouvrir.</li>
+    <li>"Voilà ce que les médecins, météorologues, ingénieurs gardent."</li>
+  </ul>
+  <h4>// PHASE 6 · PARALLÈLES INDUSTRIE (10 min)</h4>
+  <div class="intel"><b>Même protocole :</b> médecin avec données cardiaques · météorologue avec températures · banque avec actions · Tesla avec Autopilot · NASA avec rover. Identique 5 étapes.</div>
+</div>
+<div class="nav-foot"><a href="#op08">◀ OP-08</a><a href="#op10">OP-10 ▶</a></div>
+</section>
+
+<!-- ═══ OP-10 FR ═══ -->
+<section id="op10" class="workshop">
+<div class="brief">
+  <span class="id">▶ OP-10 · NIVEAU: ÉLITE</span>
+  <h2>PATHFINDER</h2>
+  <div class="codename">"Algorithme A*. Même logique que Google Maps. Plus petite échelle."</div>
+  <div class="specs"><span><b>DURÉE:</b> 90 min</span><span><b>DIFFICULTÉ:</b> ▰▰▰▰▱</span><span><b>PRÉREQUIS:</b> OP-05, OP-06</span></div>
+</div>
+<div class="transmit"><div class="src"><span class="ico">▣</span>ROBI-9</div><div class="msg">[PLANIFICATEUR ENGAGÉ] Les algorithmes sont des recettes pour ordinateurs. Aujourd'hui : résoudre un labyrinthe sur papier. Puis regarder <b>l'algo A*</b> résoudre la même map en autonome. Même algorithme tourne dans : Google Maps · échecs · jeux vidéo · routage autonome.</div></div>
+<div class="section"><h3><span class="tag">SOP</span>CHRONOLOGIE</h3>
+  <h4>// PHASE 1 · LABYRINTHE PAPIER (15 min)</h4>
+  <ul class="steps">
+    <li>Distribuer labyrinthe 5×5. Start S → Goal G.</li>
+    <li>Résoudre au crayon. Chronométrer.</li>
+  </ul>
+  <h4>// PHASE 2 · DÉBRIEF STRATÉGIE (10 min)</h4>
+  <ul class="steps">
+    <li>Chaque agent : énoncer sa stratégie en 1 phrase.</li>
+    <li class="crit"><b>RÉSULTAT :</b> tous des <b>algorithmes</b>. Tu viens d'inventer la recherche heuristique.</li>
+  </ul>
+  <h4>// PHASE 3 · EXÉCUTION A* (20 min)</h4>
+  <ul class="steps">
+    <li>Visualiseur Algorithme. Cliquer A*. Choisir un goal.</li>
+    <li class="exec"><b>OBSERVER :</b> cyan = frontière, ambre = exploré, vert = chemin optimal.</li>
+    <li>"A* a-t-il exploré CHAQUE case ?" Non. Seulement les prometteuses.</li>
+  </ul>
+  <h4>// PHASE 4 · ANALYSE COMPARATIVE (15 min)</h4>
+  <ul class="steps">
+    <li>Côte-à-côte : chemin crayon vs chemin vert A*.</li>
+    <li>"Que fait A* mieux ?" · compte chaque pas · évalue toutes les options · n'abandonne jamais.</li>
+  </ul>
+  <h4>// PHASE 5 · LABYRINTHE PHYSIQUE (15 min)</h4>
+  <ul class="steps">
+    <li>Ruban d'obstacles au sol : labyrinthe physique.</li>
+    <li>Conduire l'unité pour mapper (SLAM).</li>
+    <li class="exec">A* exécute → l'unité navigue toute seule.</li>
+  </ul>
+  <h4>// PHASE 6 · APPLICATIONS INDUSTRIE (15 min)</h4>
+  <ul class="steps">
+    <li>Google Maps "itinéraire le plus rapide" = A* en production.</li>
+    <li>Spotify · échecs · cycle lave-vaisselle · autocomplete · ATM.</li>
+    <li class="exec">"Tu as utilisé des algorithmes aujourd'hui. Sans taper de code."</li>
+  </ul>
+</div>
+<div class="nav-foot"><a href="#op09">◀ OP-09</a><a href="#op11">OP-11 ▶</a></div>
+</section>
+
+<!-- ═══ OP-11 FR ═══ -->
+<section id="op11" class="workshop">
+<div class="brief">
+  <span class="id">▶ OP-11 · NIVEAU: ÉLITE</span>
+  <h2>OPS MULTI-UNITÉ</h2>
+  <div class="codename">"2 unités. 1 mission. Compétition. Coopération. Détecter la latence."</div>
+  <div class="specs"><span><b>DURÉE:</b> 90 min</span><span><b>DIFFICULTÉ:</b> ▰▰▰▱▱</span><span><b>PRÉREQUIS:</b> OP-01, OP-03 · 2+ UNITÉS</span></div>
+</div>
+<div class="transmit"><div class="src"><span class="ico">▣</span>ROBI-9</div><div class="msg">[RÉSEAU MAILLÉ] Deux unités sur le terrain. Aujourd'hui : <b>opérations multi-agents</b>. Pair · sync · combat · drill coopération. Découverte : les réseaux ont de la latence. La communication bat le silence.</div></div>
+<div class="section"><h3><span class="tag">SOP</span>CHRONOLOGIE</h3>
+  <h4>// PHASE 1 · PAIRAGE UNITÉS (10 min)</h4>
+  <ul class="steps">
+    <li>Deux unités actives. Deux consoles ouvertes.</li>
+    <li>Tap PAIR sur les deux. Handshake WebRTC.</li>
+    <li class="exec">Test : conduire unit-α → unit-β mirroir l'action.</li>
+  </ul>
+  <h4>// PHASE 2 · OBSERVATION LATENCE (10 min)</h4>
+  <ul class="steps">
+    <li>Mode sync. Les deux exécutent les mêmes commandes.</li>
+    <li class="crit">Sync n'est pas parfait. ~50 ms latence sans-fil.</li>
+    <li>"Pourquoi Zoom freeze ? Pourquoi multiplayer lag ? Même physique."</li>
+  </ul>
+  <h4>// PHASE 3 · PROTOCOLE COMBAT (25 min)</h4>
+  <ul class="steps">
+    <li>Mode FENCING. Sonar de chaque unité = zone d'engagement.</li>
+    <li>Détection &lt; 12 cm = HIT.</li>
+    <li class="exec"><b>PREMIER À 3 HITS GAGNE.</b> Best of 5.</li>
+    <li>Bonus : tilt téléphone = "vélocité de frappe". Tilt rapide × 2 dégâts.</li>
+  </ul>
+  <h4>// PHASE 4 · MISSION COOP (25 min)</h4>
+  <ul class="steps">
+    <li>Cible au sol.</li>
+    <li>Objectif : LES DEUX unités atteignent la cible <b>à 1 sec près</b>.</li>
+    <li class="crit"><b>RD-1 :</b> SILENCE. Signaux main uniquement.</li>
+    <li><b>RD-2 :</b> Voix autorisée.</li>
+  </ul>
+  <h4>// PHASE 5 · DÉBRIEF TACTIQUE (10 min)</h4>
+  <ul class="steps">
+    <li>Qu'est-ce qui a permis la victoire ? Quoi a brisé la coordination ?</li>
+    <li class="intel">Mêmes problèmes : essaims drones · camions autonomes · jeux multi · trading networks.</li>
+  </ul>
+  <h4>// PHASE 6 · CÉRÉMONIE (10 min)</h4>
+  <ul class="steps">
+    <li>MEILLEUR OPÉRATIF · MEILLEURE ÉQUIPE · MEILLEURE CONDUITE (vote pairs).</li>
+  </ul>
+</div>
+<div class="nav-foot"><a href="#op10">◀ OP-10</a><a href="#op12">OP-12 ▶</a></div>
+</section>
+
+<!-- ═══ OP-12 FR ═══ -->
+<section id="op12" class="workshop">
+<div class="brief">
+  <span class="id">▶ OP-12 · OPÉRATION FINALE</span>
+  <h2>DÉPLOIEMENT TERRAIN</h2>
+  <div class="codename">"Designer. Construire. Présenter. Démontrer la pile complète."</div>
+  <div class="specs"><span><b>DURÉE:</b> 90 min</span><span><b>DIFFICULTÉ:</b> ▰▰▰▰▰</span><span><b>PRÉREQUIS:</b> OP-01 à OP-06 minimum</span></div>
+</div>
+<div class="transmit"><div class="src"><span class="ico">▣</span>ROBI-9</div><div class="msg">[HABILITATION FINALE] OP capstone. Équipes de 3. Scénario assigné. <b>Plan · build · répétition · déploiement.</b> Utilise n'importe quelle compétence des OP 1-11. Pas de notes — seule la complétion compte.</div></div>
+<div class="section"><h3><span class="tag">DOC</span>SCÉNARIOS DE MISSION</h3>
+  <table>
+    <tr><th>Code</th><th>Mission</th><th>Briefing</th><th>Modules</th></tr>
+    <tr><td><b>SC-01</b></td><td>LIVRAISON PAYLOAD</td><td>Conduire A→B en évitant 3 obstacles. Déployer payload via servo.</td><td>Drive · sonar · servo</td></tr>
+    <tr><td><b>SC-02</b></td><td>PATROUILLE RECON</td><td>Patrouiller une zone 60s. Compter contacts. Rapport acoustique.</td><td>Wander · sonar · buzzer</td></tr>
+    <tr><td><b>SC-03</b></td><td>ESCORT SIGNAL</td><td>Conduire trajectoire en diffusant signature.</td><td>Trajectoire · buzzer</td></tr>
+    <tr><td><b>SC-04</b></td><td>TIME TRIAL</td><td>Slalom 5 cônes &lt; 20 sec. 0 contact.</td><td>Drive · vélocité</td></tr>
+    <tr><td><b>SC-05</b></td><td>SEARCH &amp; EXTRACT</td><td>Localiser cible dans labyrinthe. Retour à la base.</td><td>SLAM · sonar · trajectoire</td></tr>
+    <tr><td><b>SC-06</b></td><td>FIELD DEMO</td><td>Plan + chorégraphie 30s. Documenter en vidéo.</td><td>3 modules au choix</td></tr>
+  </table>
+</div>
+<div class="section"><h3><span class="tag">SOP</span>CHRONOLOGIE</h3>
+  <h4>// PHASE 1 · BRIEFING (10 min)</h4>
+  <ul class="steps">
+    <li>Équipes de 3. Mix de niveaux.</li>
+    <li>Lire scénario. Présenter l'arène. Distribuer feuille de plan.</li>
+    <li class="exec">Définir critères de succès. Au tableau.</li>
+  </ul>
+  <h4>// PHASE 2 · PLANIFICATION (15 min)</h4>
+  <ul class="steps">
+    <li class="crit"><b>PAS DE HARDWARE.</b> Plan papier d'abord.</li>
+    <li>Architecture solution : modules, séquence, rôles (opérateur · analyste · présentateur).</li>
+    <li>Estimer durées de phase. Instructeur valide en 2 min.</li>
+  </ul>
+  <h4>// PHASE 3 · BUILD &amp; ITER (35 min)</h4>
+  <ul class="steps">
+    <li>35 minutes d'exécution.</li>
+    <li class="crit">Instructeurs posent QUESTIONS uniquement.</li>
+    <li>T-20 : "10 min avant dry-run." T-30 : "5 min avant déploiement."</li>
+  </ul>
+  <div class="alert"><b>LE CHRONO EST LA LOI.</b> Équipes au-delà du temps déploient l'état actuel. C'est de l'ingénierie.</div>
+  <h4>// PHASE 4 · DRY RUN (10 min)</h4>
+  <ul class="steps"><li>1 répétition par équipe. Pas de fix mid-run.</li></ul>
+  <h4>// PHASE 5 · BRIEFING DÉPLOIEMENT (20 min)</h4>
+  <ul class="steps">
+    <li>Chaque équipe : 4 min MAX.</li>
+    <li>1 min plan · 2 min déploiement · 1 min Q&amp;A.</li>
+    <li class="exec">Instructeur scoring sur grille critères.</li>
+  </ul>
+</div>
+<div class="section"><h3><span class="tag">EVAL</span>GRILLE DE SCORING</h3>
+  <table>
+    <tr><th>Critère</th><th>0</th><th>1</th><th>2</th></tr>
+    <tr><td>Mission complétée</td><td>Non</td><td>Partiel</td><td>Oui</td></tr>
+    <tr><td>Modules utilisés (≥ 2)</td><td>0-1</td><td>2</td><td>3+</td></tr>
+    <tr><td>Arrêt sécurisé</td><td>Crash</td><td>Halte manuelle</td><td>Auto-halte</td></tr>
+    <tr><td>Clarté briefing</td><td>Confus</td><td>Adéquat</td><td>Captivant</td></tr>
+    <tr><td>Coordination équipe</td><td>Solo</td><td>Partage</td><td>Vraie équipe</td></tr>
+  </table>
+</div>
+<div class="section"><h3><span class="tag">FINAL</span>CÉRÉMONIE DE DÉPLOIEMENT</h3>
+  <ul class="steps">
+    <li class="exec">Désignation finale : <b>COMMANDANT DE TERRAIN</b>.</li>
+    <li>Chaque agent reçoit certificat listant les 12 ops.</li>
+    <li>Photo de groupe avec unités.</li>
+    <li class="crit">Briefing final : <b>"Mêmes compétences fonctionnent sur vrais spacecrafts, drones, voitures autonomes. Déploie-les."</b></li>
+  </ul>
+</div>
+<div class="nav-foot"><a href="#op11">◀ OP-11</a><a href="#start">▶ QG</a></div>
+</section>
+
+</main>
+</div>
+
+<div class="wd-band wd-band-bottom"></div>
+<footer class="wd-footer">
+  <span>propulsé par <a href="https://workshop-diy.org" target="_blank" rel="noopener">workshop-diy.org</a></span>
+  <span class="sep">·</span>
+  <span>ROBI-9 OPS COMMAND</span>
+  <span class="sep">·</span>
+  <span class="badge">v1.2</span>
+</footer>
+
+<script>
+(function() {
+  const sel = document.getElementById('themeSelect');
+  function apply(t) {
+    document.documentElement.setAttribute('data-theme', t);
+    if (sel) sel.value = t;
+    try { localStorage.setItem('robi.theme', t); } catch (e) {}
+  }
+  if (sel) sel.addEventListener('change', e => apply(e.target.value));
+  try { const s = localStorage.getItem('robi.theme'); if (s) apply(s); } catch (e) {}
+})();
+</script>
+
+<script>
+function show(id) {
+  document.querySelectorAll('.workshop').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('aside.nav a.op').forEach(a => a.classList.remove('active'));
+  const sec = document.getElementById(id);
+  const link = document.querySelector(`aside.nav a.op[href="#${id}"]`);
+  if (sec) sec.classList.add('active');
+  if (link) link.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const tgt = a.getAttribute('href').slice(1);
+    if (document.getElementById(tgt)) {
+      e.preventDefault();
+      history.replaceState(null, '', '#' + tgt);
+      show(tgt);
+    }
+  });
+});
+const h = location.hash.slice(1);
+if (h && document.getElementById(h)) show(h);
+window.addEventListener('beforeprint', () => document.querySelectorAll('.workshop').forEach(s => s.classList.add('active')));
+window.addEventListener('afterprint', () => {
+  document.querySelectorAll('.workshop').forEach(s => s.classList.remove('active'));
+  show(location.hash.slice(1) || 'start');
+});
+</script>
+</body>
+</html>

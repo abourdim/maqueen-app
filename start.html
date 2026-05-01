@@ -1,1052 +1,1016 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en" data-theme="carbon">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Maqueen Lab — Premiers pas 🚀</title>
+<title>Robi-9 // First Day at the Lab</title>
+<link rel="stylesheet" href="workshops-theme.css">
 <style>
-  :root {
-    --bg:     #050e1f;
-    --card:   #0b1a33;
-    --card2:  #0f2040;
-    --border: rgba(56,189,248,0.18);
-    --accent: #38bdf8;
-    --green:  #4ade80;
-    --yellow: #facc15;
-    --red:    #f87171;
-    --teal:   #2dd4bf;
-    --purple: #c084fc;
-    --muted:  #7a9bbf;
-    --text:   #e2eaf5;
-  }
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
+  /* Layout-only — colors come from workshops-theme.css [data-theme] */
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--text); }
   body {
-    font-family: 'Segoe UI', system-ui, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    line-height: 1.6;
-    font-size: 16px;
+    font-family: var(--font-body);
+    line-height: 1.55;
+    min-height: 100vh;
+    background:
+      radial-gradient(ellipse at 20% -10%, var(--hero-glow), transparent 55%),
+      radial-gradient(ellipse at 90% 110%, var(--hero-glow), transparent 60%),
+      var(--bg);
   }
 
-  /* ── HERO ── */
+  /* ── HERO ─────────────────────────────────── */
   .hero {
-    background: radial-gradient(ellipse at 50% -20%, #0d3a72 0%, #050e1f 65%);
     text-align: center;
-    padding: 56px 20px 48px;
-    border-bottom: 1px solid var(--border);
+    padding: 50px 20px 30px;
+    max-width: 900px;
+    margin: 0 auto;
+    position: relative;
   }
-  .hero-robot { font-size: 72px; display: block; margin-bottom: 16px;
-    animation: bob 3s ease-in-out infinite; }
-  @keyframes bob {
-    0%,100% { transform: translateY(0); }
-    50%      { transform: translateY(-8px); }
+  .hero .badge-line {
+    display: inline-block;
+    background: var(--bg-card);
+    border: 2px solid var(--neon);
+    color: var(--neon);
+    padding: 6px 16px;
+    border-radius: 999px;
+    font-family: var(--font-tech);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    margin-bottom: 18px;
+    box-shadow: var(--shadow);
   }
+  .robi {
+    width: 150px; height: 150px;
+    margin: 8px auto 18px;
+    position: relative;
+    animation: rob-float 4s ease-in-out infinite;
+  }
+  @keyframes rob-float {
+    0%, 100% { transform: translateY(0) rotate(-1deg); }
+    50%      { transform: translateY(-6px) rotate(1deg); }
+  }
+  .robi svg { width: 100%; height: 100%; filter: drop-shadow(0 6px 18px var(--hero-glow)); }
+  /* Eye blinks + antenna pulse */
+  @keyframes blink { 0%, 92%, 100% { opacity: 1; } 95% { opacity: 0; } }
+  @keyframes antenna-pulse { 0%, 100% { fill: var(--amber); } 50% { fill: var(--orange); } }
+  @keyframes led-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+  .robi .blink-eye { animation: blink 4s ease-in-out infinite; }
+  .robi .ant-tip { animation: antenna-pulse 1.4s ease-in-out infinite; }
+  .robi .led-a { animation: led-blink 1.2s ease-in-out infinite; }
+  .robi .led-b { animation: led-blink 1.2s ease-in-out 0.6s infinite; }
   .hero h1 {
-    font-size: clamp(26px, 6vw, 48px);
-    font-weight: 900;
-    background: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-bottom: 12px;
-    letter-spacing: -0.5px;
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 6vw, 3.4rem);
+    margin: 8px 0 6px;
+    color: var(--neon);
+    letter-spacing: 0.02em;
+    line-height: 1.1;
   }
-  .hero p { color: var(--muted); font-size: 17px; max-width: 500px; margin: 0 auto 20px; }
-  .hero-time {
-    display: inline-flex; align-items: center; gap: 8px;
-    background: rgba(250,204,21,0.1); border: 1px solid rgba(250,204,21,0.3);
-    border-radius: 20px; padding: 6px 16px; color: var(--yellow);
-    font-size: 14px; font-weight: 600;
+  .hero .greeting {
+    font-size: 1.05rem;
+    color: var(--text);
+    margin: 12px auto 6px;
+    max-width: 540px;
+    font-weight: 500;
   }
+  .hero .greeting b { color: var(--amber); }
+  .hero .meta {
+    margin-top: 14px;
+    display: inline-flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .hero .meta span {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 0.82rem;
+    font-weight: 600;
+  }
+  .hero .meta span b { color: var(--amber); }
 
-  /* ── LAYOUT ── */
-  .wrapper { max-width: 740px; margin: 0 auto; padding: 0 20px 80px; }
+  /* ── WRAPPER ──────────────────────────────── */
+  .wrap { max-width: 1000px; margin: 0 auto; padding: 0 22px 60px; }
 
-  /* ── PROGRESS BAR ── */
+  /* ── PROGRESS RING ────────────────────────── */
+  .progress-block {
+    background: var(--bg-card);
+    border: 2px solid var(--border);
+    border-radius: 18px;
+    padding: 16px 20px;
+    margin: 24px 0 28px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    box-shadow: var(--shadow);
+  }
   .progress-bar {
-    display: flex; gap: 0;
-    margin: 32px 0 48px;
-    border-radius: 12px; overflow: hidden;
+    flex: 1;
+    height: 14px;
+    background: var(--bg-soft);
+    border-radius: 999px;
+    overflow: hidden;
     border: 1px solid var(--border);
   }
-  .pb-step {
-    flex: 1; padding: 10px 4px;
-    text-align: center; font-size: 11px; font-weight: 700;
-    color: var(--muted); background: var(--card2);
-    border-right: 1px solid var(--border);
-    cursor: pointer; transition: background 0.2s, color 0.2s;
-    line-height: 1.3;
+  .progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--neon), var(--cyan));
+    border-radius: 999px;
   }
-  .pb-step:last-child { border-right: none; }
-  .pb-step .pb-num { font-size: 16px; display: block; }
-  .pb-step.done   { background: rgba(74,222,128,0.12); color: var(--green); }
-  .pb-step.active { background: rgba(56,189,248,0.15); color: var(--accent); }
+  .progress-text {
+    font-family: var(--font-tech);
+    font-weight: 700;
+    color: var(--neon);
+    font-size: 1rem;
+    white-space: nowrap;
+  }
+  .progress-text b { color: var(--amber); }
 
-  /* ── STEP CARD ── */
-  .step-card {
-    background: var(--card);
-    border: 2px solid var(--border);
-    border-radius: 20px;
-    margin-bottom: 20px;
-    overflow: hidden;
-    transition: border-color 0.3s;
-  }
-  .step-card.active { border-color: var(--accent); }
-  .step-card.done   { border-color: rgba(74,222,128,0.4); }
-
-  .step-header {
-    display: flex; align-items: center; gap: 16px;
-    padding: 22px 24px;
-    cursor: pointer;
-    user-select: none;
-  }
-  .step-number {
-    width: 52px; height: 52px; border-radius: 50%; flex-shrink: 0;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 22px; font-weight: 900;
-    background: linear-gradient(135deg, var(--card2), var(--bg));
-    border: 2px solid var(--border);
-    color: var(--muted);
-    transition: all 0.3s;
-  }
-  .step-card.active .step-number {
-    background: linear-gradient(135deg, #0369a1, #7c3aed);
-    border-color: var(--accent); color: #fff;
-    box-shadow: 0 0 20px rgba(56,189,248,0.4);
-  }
-  .step-card.done .step-number {
-    background: linear-gradient(135deg, #15803d, #166534);
-    border-color: var(--green); color: #fff;
-    box-shadow: 0 0 16px rgba(74,222,128,0.35);
-  }
-  .step-title-block .step-label {
-    font-size: 11px; font-weight: 700; text-transform: uppercase;
-    letter-spacing: 1.2px; color: var(--muted); margin-bottom: 3px;
-  }
-  .step-card.active .step-title-block .step-label { color: var(--accent); }
-  .step-card.done   .step-title-block .step-label { color: var(--green); }
-  .step-title { font-size: 20px; font-weight: 800; }
-  .step-badge {
-    margin-left: auto; flex-shrink: 0;
-    font-size: 22px; width: 40px; text-align: center;
-  }
-
-  /* ── STEP BODY ── */
-  .step-body {
-    padding: 0 24px 24px;
-    display: none;
-  }
-  .step-card.active .step-body,
-  .step-card.done .step-body { display: block; }
-
-  /* ── SUB-STEPS ── */
-  .sub-steps { display: flex; flex-direction: column; gap: 16px; }
-  .sub-step {
-    display: flex; gap: 16px; align-items: flex-start;
-  }
-  .sub-num {
-    width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
-    background: rgba(56,189,248,0.12); border: 1px solid rgba(56,189,248,0.3);
-    color: var(--accent); font-size: 13px; font-weight: 800;
-    display: flex; align-items: center; justify-content: center;
-    margin-top: 2px;
-  }
-  .sub-text { font-size: 15px; color: #c8daf0; }
-  .sub-text strong { color: var(--text); }
-  .sub-text em { color: var(--muted); font-style: normal; font-size: 13px; display: block; margin-top: 4px; }
-
-  /* ── VISUAL DEMOS ── */
-  .demo-box {
-    background: var(--card2); border: 1px solid var(--border);
-    border-radius: 14px; padding: 20px;
-    margin: 16px 0; text-align: center;
-  }
-  .demo-box.blue-glow { border-color: rgba(56,189,248,0.4);
-    box-shadow: 0 0 24px rgba(56,189,248,0.1); }
-  .demo-box.green-glow { border-color: rgba(74,222,128,0.4);
-    box-shadow: 0 0 24px rgba(74,222,128,0.1); }
-  .demo-box.red-glow   { border-color: rgba(248,113,113,0.4);
-    box-shadow: 0 0 24px rgba(248,113,113,0.1); }
-
-  /* FAB replicas */
-  .fab-row { display: flex; justify-content: center; gap: 30px; margin: 8px 0; flex-wrap: wrap; }
-  .fab {
-    width: 84px; height: 84px; border-radius: 50%;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    font-weight: 900; font-family: monospace; color: #fff;
-    border: 3px solid rgba(255,255,255,0.8); gap: 2px;
-    font-size: 11px; letter-spacing: 0.08em;
-  }
-  .fab .fab-i { font-size: 26px; }
-  .fab.connect { background: radial-gradient(circle at 30% 30%, #67e8f9, #0284c7 60%, #0c4a6e);
-    box-shadow: 0 6px 24px rgba(2,132,199,0.55);
-    animation: fpulse 1.8s ease-in-out infinite; }
-  .fab.stop { background: radial-gradient(circle at 30% 30%, #fca5a5, #dc2626 60%, #7f1d1d);
-    box-shadow: 0 6px 24px rgba(220,38,38,0.55);
-    animation: fpulse 2.4s ease-in-out infinite; }
-  @keyframes fpulse {
-    0%,100% { transform: scale(1); }
-    50%      { transform: scale(1.05); }
-  }
-
-  /* keypad replica */
-  .keypad {
+  /* ── PHASE CARD GRID ──────────────────────── */
+  .grid {
     display: grid;
-    grid-template-columns: repeat(3, 56px);
-    grid-template-rows: repeat(3, 56px);
-    gap: 8px; margin: 0 auto; width: fit-content;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+    margin-bottom: 30px;
   }
-  .kbtn {
-    width: 56px; height: 56px; border-radius: 12px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 22px; border: 1px solid var(--border);
-    background: var(--card2); color: var(--accent);
+  .phase {
+    background: var(--bg-card);
+    border: 2px solid var(--border);
+    border-radius: 18px;
+    padding: 18px 20px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
   }
-  .kbtn.stop { background: rgba(220,38,38,0.15);
-    border-color: rgba(220,38,38,0.5); color: var(--red); }
-  .kbtn.empty { background: none; border: none; }
+  .phase::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 4px;
+    background: linear-gradient(90deg, var(--neon), var(--cyan));
+    opacity: 0.5;
+  }
+  .phase:hover {
+    border-color: var(--neon);
+    box-shadow: var(--shadow);
+  }
+  .phase:hover::before { opacity: 1; }
+  .phase.done {
+    border-color: var(--neon);
+    background: linear-gradient(135deg, var(--bg-card), var(--bg-soft));
+  }
+  .phase.done::before { background: var(--neon); opacity: 1; }
+  .phase .row {
+    display: flex; align-items: flex-start; gap: 14px;
+    margin-bottom: 10px;
+  }
+  .phase .num-big {
+    flex-shrink: 0;
+    width: 56px; height: 56px;
+    border-radius: 14px;
+    background: var(--bg-soft);
+    border: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-tech);
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--neon);
+  }
+  .phase.done .num-big {
+    background: var(--neon);
+    color: var(--ink);
+    border-color: var(--neon);
+  }
+  .phase.done .num-big::after { content: '✓'; font-size: 1.4rem; margin-left: -1.1rem; }
+  .phase .icon {
+    font-size: 1.8rem; line-height: 1;
+  }
+  .phase h3 {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    color: var(--text);
+    margin: 0;
+    letter-spacing: 0.01em;
+    line-height: 1.2;
+  }
+  .phase .codename {
+    font-size: 0.85rem;
+    color: var(--steel);
+    margin-top: 2px;
+    font-style: italic;
+  }
+  .phase .time {
+    display: inline-block;
+    background: var(--bg-soft);
+    color: var(--amber);
+    border: 1px solid var(--border);
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    margin-top: 8px;
+  }
+  .phase .open-btn {
+    margin-top: 12px;
+    background: linear-gradient(135deg, var(--neon), var(--cyan));
+    color: var(--ink);
+    border: none;
+    padding: 8px 16px;
+    border-radius: 10px;
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 0.85rem;
+    cursor: pointer;
+    width: 100%;
+    box-shadow: var(--shadow);
+  }
+  .phase .open-btn:hover { filter: brightness(1.1); }
 
-  /* speed slider replica */
-  .speed-demo {
-    background: var(--card2); border: 1px solid var(--border);
-    border-radius: 10px; padding: 14px 18px; margin: 12px 0;
-    display: flex; align-items: center; gap: 14px;
+  /* ── DETAIL PANEL (when phase opens) ───────── */
+  .detail-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    backdrop-filter: blur(4px);
+    z-index: 100;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
   }
-  .speed-label { font-size: 12px; color: var(--muted); font-weight: 700;
-    text-transform: uppercase; letter-spacing: 0.8px; min-width: 56px; }
-  .speed-track {
-    flex: 1; height: 8px; background: #0a1628; border-radius: 4px;
-    position: relative; overflow: visible;
+  .detail-overlay.show { display: flex; }
+  .detail {
+    background: var(--bg-card);
+    border: 2px solid var(--neon);
+    border-radius: 22px;
+    max-width: 640px;
+    width: 100%;
+    max-height: 85vh;
+    overflow-y: auto;
+    padding: 26px 28px;
+    position: relative;
+    box-shadow: var(--shadow);
   }
-  .speed-fill {
-    height: 100%; border-radius: 4px;
-    background: linear-gradient(90deg, #16a34a, #facc15, #ef4444);
+  .detail .close {
+    position: absolute;
+    top: 14px; right: 14px;
+    width: 36px; height: 36px;
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    cursor: pointer;
+    color: var(--text);
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
-  .speed-thumb {
-    width: 20px; height: 20px; background: #fff; border-radius: 50%;
-    position: absolute; top: 50%; transform: translateY(-50%);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+  .detail .close:hover { border-color: var(--danger); color: var(--danger); }
+  body.rtl .detail .close { left: 14px; right: auto; }
+  .detail h2 {
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    color: var(--neon);
+    margin-bottom: 4px;
+    line-height: 1.15;
   }
-  .speed-val { font-size: 14px; font-weight: 800; min-width: 30px; text-align: right; }
+  .detail .codename {
+    color: var(--cyan);
+    font-style: italic;
+    margin-bottom: 14px;
+  }
+  .detail h4 {
+    font-family: var(--font-tech);
+    font-size: 0.78rem;
+    color: var(--amber);
+    letter-spacing: 0.08em;
+    margin: 18px 0 8px;
+    text-transform: uppercase;
+  }
+  .detail h4::before { content: '▸ '; color: var(--neon); }
+  .detail .brief {
+    color: var(--text);
+    background: var(--bg-soft);
+    padding: 12px 16px;
+    border-radius: 12px;
+    border-left: 4px solid var(--cyan);
+    margin: 6px 0;
+    font-size: 0.95rem;
+  }
+  body.rtl .detail .brief { border-left: none; border-right: 4px solid var(--cyan); }
+  .detail ol {
+    list-style: none;
+    counter-reset: s;
+    padding: 0;
+    margin: 8px 0;
+  }
+  .detail ol li {
+    counter-increment: s;
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 10px 14px 10px 50px;
+    margin: 8px 0;
+    position: relative;
+    font-size: 0.95rem;
+    color: var(--text);
+  }
+  body.rtl .detail ol li { padding: 10px 50px 10px 14px; }
+  .detail ol li::before {
+    content: counter(s);
+    position: absolute;
+    left: 12px; top: 50%;
+    transform: translateY(-50%);
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--neon);
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-family: var(--font-tech);
+    font-size: 0.85rem;
+  }
+  body.rtl .detail ol li::before { right: 12px; left: auto; }
+  .detail ol li b { color: var(--amber); }
+  .detail ol li code {
+    background: var(--ink);
+    color: var(--neon);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+  }
+  .detail .tip {
+    background: var(--bg-soft);
+    border-left: 4px solid var(--amber);
+    border-radius: 12px;
+    padding: 10px 14px;
+    margin: 10px 0;
+    font-size: 0.9rem;
+  }
+  body.rtl .detail .tip { border-left: none; border-right: 4px solid var(--amber); }
+  .detail .tip::before { content: '💡 '; }
+  .detail .tip b { color: var(--amber); }
+  .detail .actions {
+    display: flex; gap: 10px; flex-wrap: wrap;
+    margin-top: 22px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+  .detail .actions button {
+    flex: 1;
+    min-width: 120px;
+    padding: 10px 18px;
+    border-radius: 10px;
+    font-family: var(--font-body);
+    font-weight: 700;
+    cursor: pointer;
+    border: 2px solid var(--border);
+    background: var(--bg-soft);
+    color: var(--text);
+  }
+  .detail .actions button:hover { filter: brightness(1.1); }
+  .detail .actions .ok {
+    background: linear-gradient(135deg, var(--neon), var(--cyan));
+    color: var(--ink);
+    border-color: var(--neon);
+  }
 
-  /* ── CALLOUTS ── */
-  .callout {
-    border-radius: 10px; padding: 14px 16px;
-    margin: 14px 0; font-size: 14px; display: flex; gap: 10px; align-items: flex-start;
+  /* ── CERTIFICATE ──────────────────────────── */
+  .cert {
+    background: var(--bg-card);
+    border: 3px solid var(--neon);
+    border-radius: 22px;
+    padding: 36px 28px;
+    text-align: center;
+    margin-top: 30px;
+    display: none;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 0 40px var(--hero-glow);
   }
-  .callout-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
-  .callout.tip  { background: rgba(250,204,21,0.07); border: 1px solid rgba(250,204,21,0.25);
-    color: #dcc87a; border-left: 3px solid var(--yellow); }
-  .callout.good { background: rgba(74,222,128,0.07);  border: 1px solid rgba(74,222,128,0.25);
-    color: #86efac; border-left: 3px solid var(--green); }
-  .callout.warn { background: rgba(248,113,113,0.07); border: 1px solid rgba(248,113,113,0.25);
-    color: #fca5a5; border-left: 3px solid var(--red); }
-  .callout.info { background: rgba(56,189,248,0.07);  border: 1px solid rgba(56,189,248,0.25);
-    color: #93c5fd; border-left: 3px solid var(--accent); }
-  .callout strong { color: inherit; font-weight: 800; }
-
-  /* ── CHECKLIST ── */
-  .checklist { list-style: none; margin: 12px 0; }
-  .checklist li {
-    display: flex; align-items: flex-start; gap: 10px;
-    padding: 8px 0; border-bottom: 1px solid rgba(56,189,248,0.06);
-    font-size: 14px; color: #c8daf0; cursor: pointer;
+  .cert.show { display: block; }
+  .cert::before, .cert::after {
+    content: '';
+    position: absolute;
+    width: 80px; height: 80px;
+    border: 3px solid var(--amber);
+    border-radius: 50%;
   }
-  .checklist li:last-child { border-bottom: none; }
-  .checklist li .ck { width: 22px; height: 22px; border-radius: 6px;
-    border: 2px solid rgba(56,189,248,0.3); background: transparent;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0; font-size: 13px; transition: all 0.2s; }
-  .checklist li.checked .ck { background: var(--green); border-color: var(--green); }
-  .checklist li.checked .ck::after { content: '✓'; color: #fff; font-weight: 900; }
-  .checklist li.checked span { text-decoration: line-through; color: var(--muted); }
-
-  /* ── NEXT BTN ── */
-  .next-btn {
-    display: inline-flex; align-items: center; gap: 10px;
-    margin-top: 20px;
-    background: linear-gradient(135deg, #0369a1, #7c3aed);
-    color: #fff; border: none; border-radius: 12px;
-    padding: 14px 28px; font-size: 16px; font-weight: 800;
-    cursor: pointer; transition: transform 0.15s, box-shadow 0.15s;
-    box-shadow: 0 4px 18px rgba(56,189,248,0.3);
+  .cert::before { top: -10px; left: -10px; }
+  .cert::after  { bottom: -10px; right: -10px; }
+  .cert .seal {
+    font-family: var(--font-tech);
+    font-size: 56px;
+    color: var(--neon);
+    background: var(--bg-soft);
+    display: inline-block;
+    padding: 16px 28px;
+    border-radius: 18px;
+    border: 2px solid var(--neon);
+    margin-bottom: 16px;
   }
-  .next-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(56,189,248,0.4); }
-  .next-btn:active { transform: scale(0.97); }
-  .next-btn.green {
-    background: linear-gradient(135deg, #16a34a, #15803d);
-    box-shadow: 0 4px 18px rgba(74,222,128,0.3);
+  .cert h2 {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    color: var(--neon);
+    margin-bottom: 6px;
   }
-
-  kbd {
-    display: inline-block; background: #1a2d4f;
-    border: 1px solid rgba(56,189,248,0.35); border-radius: 6px;
-    padding: 2px 8px; font-family: monospace; font-size: 12px;
-    color: var(--accent); box-shadow: 0 2px 0 rgba(0,0,0,0.5);
+  .cert .sub { color: var(--cyan); font-style: italic; margin-bottom: 18px; }
+  .cert .designation {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--amber), var(--orange));
+    color: var(--ink);
+    padding: 10px 24px;
+    border-radius: 999px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    margin: 14px 0;
+    box-shadow: var(--shadow);
   }
-
-  /* ── FINAL ── */
-  .final-card {
-    background: radial-gradient(circle at 50% 0%, #0a3a1a, #050e1f);
-    border: 2px solid rgba(74,222,128,0.4);
-    border-radius: 20px; padding: 40px 30px;
-    text-align: center; margin-top: 48px;
+  .cert .links {
+    display: flex; gap: 12px; justify-content: center;
+    flex-wrap: wrap; margin-top: 22px;
   }
-  .final-card .trophy { font-size: 72px; display: block; margin-bottom: 16px;
-    animation: bob 2s ease-in-out infinite; }
-  .final-card h2 { font-size: 28px; font-weight: 900; color: var(--green); margin-bottom: 12px; }
-  .final-card p  { color: #a7f3d0; font-size: 16px; max-width: 420px; margin: 0 auto 24px; }
-  .guide-link {
-    display: inline-flex; align-items: center; gap: 8px;
-    background: rgba(56,189,248,0.12); border: 1px solid rgba(56,189,248,0.4);
-    border-radius: 10px; padding: 12px 20px; color: var(--accent);
-    text-decoration: none; font-weight: 700; font-size: 15px;
-    transition: background 0.2s;
+  .cert .links a {
+    background: var(--bg-soft);
+    color: var(--text);
+    border: 2px solid var(--border);
+    padding: 10px 22px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.92rem;
   }
-  .guide-link:hover { background: rgba(56,189,248,0.2); }
-
-  /* ── FOOTER ── */
-  footer { text-align: center; padding: 28px 20px;
-    border-top: 1px solid var(--border); color: var(--muted); font-size: 13px; }
-
-  /* ── SCREEN SIZE NOTE ── */
-  @media (max-width: 460px) {
-    .step-title { font-size: 17px; }
-    .fab { width: 70px; height: 70px; }
-    .fab .fab-i { font-size: 22px; }
+  .cert .links a:hover {
+    border-color: var(--neon);
+    color: var(--neon);
   }
-
-  /* ── POSITION LABELS ── */
-  .pos-label {
-    display: inline-block; font-size: 11px; font-weight: 700;
-    padding: 3px 10px; border-radius: 20px; margin: 2px;
-  }
-  .pos-left  { background:rgba(2,132,199,0.15); color:#38bdf8; border:1px solid rgba(56,189,248,0.3); }
-  .pos-right { background:rgba(220,38,38,0.15);  color:#f87171; border:1px solid rgba(248,113,113,0.3); }
-
-  /* ── GAME GRID ── */
-  .game-picks { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
-  .game-pick {
-    background: var(--card2); border: 1px solid var(--border);
-    border-radius: 12px; padding: 14px; cursor: pointer;
-    transition: border-color 0.2s, transform 0.15s;
-  }
-  .game-pick:hover { border-color: rgba(56,189,248,0.5); transform: translateY(-2px); }
-  .game-pick .gp-icon { font-size: 28px; margin-bottom: 8px; display: block; }
-  .game-pick .gp-name { font-weight: 700; font-size: 14px; margin-bottom: 4px; }
-  .game-pick .gp-desc { font-size: 12px; color: var(--muted); }
 </style>
 </head>
 <body>
 
-<!-- HERO -->
-<div class="hero">
-  <span class="hero-robot">🤖</span>
-  <h1>Premiers pas avec Maqueen Lab</h1>
-  <p>Suis ces étapes une par une — dans 10 minutes ton robot roule, joue et dessine ses trajets !</p>
-  <span class="hero-time">⏱️ Environ 10 minutes</span>
+<div class="wd-band wd-band-top"></div>
+<header class="wd-header">
+  <div class="title-block">
+    <div class="logo-mark">▣</div>
+    <div>
+      <h1>Robi-9 // Lab Sign-Up</h1>
+      <div class="subtitle">Welcome, inventor · Workshop DIY</div>
+    </div>
+  </div>
+  <div class="wd-header-right">
+    <select class="wd-select" id="themeSelect" aria-label="Theme">
+      <option value="carbon">▣ Carbon</option>
+      <option value="forest">▣ Forest</option>
+      <option value="steel">▣ Steel</option>
+      <option value="paper">☼ Paper</option>
+      <option value="pearl">☼ Pearl</option>
+    </select>
+    <select class="wd-select" id="langSelect" aria-label="Language" onchange="setL(this.value)">
+      <option value="en" selected>🇬🇧 EN</option>
+      <option value="fr">🇫🇷 FR</option>
+      <option value="ar">🇩🇿 AR</option>
+    </select>
+  </div>
+</header>
+
+<section class="hero">
+  <span class="badge-line" data-i18n="hero_badge">▸ FIRST DAY AT THE LAB</span>
+  <div class="robi">
+    <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+      <line x1="60" y1="6" x2="60" y2="22" stroke="var(--cyan)" stroke-width="3" stroke-linecap="round"/>
+      <circle class="ant-tip" cx="60" cy="5" r="4" fill="var(--amber)"/>
+      <circle cx="60" cy="5" r="7" fill="none" stroke="var(--amber)" stroke-width="1" opacity="0.5"/>
+      <rect x="26" y="22" width="68" height="50" rx="14" fill="var(--bg-soft)" stroke="var(--neon)" stroke-width="2.5"/>
+      <circle cx="30" cy="48" r="2" fill="var(--steel)"/>
+      <circle cx="90" cy="48" r="2" fill="var(--steel)"/>
+      <rect x="34" y="34" width="52" height="24" rx="6" fill="var(--ink)" stroke="var(--cyan)" stroke-width="2"/>
+      <rect x="36" y="36" width="48" height="4" rx="2" fill="var(--cyan)" opacity="0.25"/>
+      <circle class="blink-eye" cx="46" cy="46" r="3.5" fill="var(--neon)"/>
+      <circle class="blink-eye" cx="74" cy="46" r="3.5" fill="var(--neon)"/>
+      <circle cx="46" cy="46" r="6" fill="var(--neon)" opacity="0.15"/>
+      <circle cx="74" cy="46" r="6" fill="var(--neon)" opacity="0.15"/>
+      <path d="M 42 66 L 78 66" stroke="var(--cyan)" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="48" cy="66" r="1.2" fill="var(--cyan)"/>
+      <circle cx="60" cy="66" r="1.2" fill="var(--cyan)"/>
+      <circle cx="72" cy="66" r="1.2" fill="var(--cyan)"/>
+      <rect x="32" y="72" width="56" height="28" rx="6" fill="var(--bg-soft)" stroke="var(--neon)" stroke-width="2"/>
+      <rect x="38" y="78" width="44" height="14" rx="3" fill="var(--ink)" stroke="var(--border)"/>
+      <line x1="42" y1="85" x2="56" y2="85" stroke="var(--neon)" stroke-width="1.5"/>
+      <line x1="42" y1="88" x2="62" y2="88" stroke="var(--cyan)" stroke-width="1.2" opacity="0.7"/>
+      <circle class="led-a" cx="44" cy="96" r="2" fill="var(--amber)"/>
+      <circle class="led-b" cx="76" cy="96" r="2" fill="var(--orange)"/>
+      <rect x="14" y="76" width="14" height="18" rx="4" fill="var(--steel)" stroke="var(--ink)" stroke-width="1"/>
+      <rect x="92" y="76" width="14" height="18" rx="4" fill="var(--steel)" stroke="var(--ink)" stroke-width="1"/>
+      <circle cx="21" cy="98" r="3" fill="var(--bg-soft)" stroke="var(--steel)" stroke-width="1.5"/>
+      <circle cx="99" cy="98" r="3" fill="var(--bg-soft)" stroke="var(--steel)" stroke-width="1.5"/>
+      <ellipse cx="40" cy="106" rx="8" ry="4" fill="var(--ink)" stroke="var(--neon)" stroke-width="1.5"/>
+      <ellipse cx="80" cy="106" rx="8" ry="4" fill="var(--ink)" stroke="var(--neon)" stroke-width="1.5"/>
+    </svg>
+  </div>
+  <h1 data-i18n="hero_title">First Day at the Lab</h1>
+  <p class="greeting" data-i18n="hero_greet">Hey, future inventor! I'm <b>Robi-9</b>. Let's get your robot ready in <b>7 quick steps</b>. Tap a card to begin.</p>
+  <div class="meta">
+    <span data-i18n="meta_age">👤 <b>Age 10+</b></span>
+    <span data-i18n="meta_time">⏱ <b>~15 min</b></span>
+    <span data-i18n="meta_steps">🧩 <b>7 steps</b></span>
+  </div>
+</section>
+
+<div class="wrap">
+
+<div class="progress-block">
+  <div class="progress-bar"><div class="progress-fill" id="pBar"></div></div>
+  <div class="progress-text"><span id="pCount">0</span><b>/7</b> <span data-i18n="progress_done">done</span></div>
 </div>
 
-<div class="wrapper">
-
-<!-- PROGRESS -->
-<div class="progress-bar" id="progressBar">
-  <div class="pb-step active" onclick="goTo(0)"><span class="pb-num">🔧</span>Prépare</div>
-  <div class="pb-step" onclick="goTo(1)"><span class="pb-num">🔗</span>Connecte</div>
-  <div class="pb-step" onclick="goTo(2)"><span class="pb-num">⏹</span>Sécurité</div>
-  <div class="pb-step" onclick="goTo(3)"><span class="pb-num">🕹️</span>Pilote</div>
-  <div class="pb-step" onclick="goTo(4)"><span class="pb-num">🚦</span>Wander</div>
-  <div class="pb-step" onclick="goTo(5)"><span class="pb-num">🖍️</span>Dessine</div>
-  <div class="pb-step" onclick="goTo(6)"><span class="pb-num">🎮</span>Joue</div>
-</div>
-
-
-<!-- ════════════════════════════════════════════════════════
-     ÉTAPE 0 — PRÉPARE
-════════════════════════════════════════════════════════ -->
-<div class="step-card active" id="step-0">
-  <div class="step-header" onclick="toggle(0)">
-    <div class="step-number">0</div>
-    <div class="step-title-block">
-      <div class="step-label">Étape 0 — Avant de commencer</div>
-      <div class="step-title">Prépare le matériel 🔧</div>
+<div class="grid" id="grid">
+  <!-- Phase 1 -->
+  <div class="phase" data-p="0" onclick="openP(0)">
+    <div class="row">
+      <div class="num-big">01</div>
+      <div>
+        <h3 data-i18n="p1_title">Power Check</h3>
+        <div class="codename" data-i18n="p1_code">"is your robot charged and ready?"</div>
+      </div>
     </div>
-    <div class="step-badge">🔧</div>
+    <span class="time">⏱ 2 min</span>
+    <button class="open-btn" data-i18n="open_btn">Start →</button>
   </div>
-  <div class="step-body">
-
-    <div class="demo-box">
-      <div style="font-size:48px; margin-bottom:12px">🤖 + 📱</div>
-      <div style="font-size:15px; color:#c8daf0">Tu as besoin de : <strong>ton robot Maqueen</strong> + <strong>un téléphone ou ordinateur</strong></div>
-    </div>
-
-    <div class="sub-steps">
-      <div class="sub-step">
-        <div class="sub-num">A</div>
-        <div class="sub-text">
-          <strong>Vérifie que le micro:bit est bien enfoncé</strong> dans le port du Maqueen (les connecteurs dorés en bas).
-          <em>Le LED rouge sur le micro:bit doit s'allumer quand tu branches les piles.</em>
-        </div>
-      </div>
-      <div class="sub-step">
-        <div class="sub-num">B</div>
-        <div class="sub-text">
-          <strong>Mets des piles neuves</strong> (ou branche le câble USB si tu utilises la batterie LiPo).
-          <em>Un robot à piles faibles a une conduite imprévisible — piles neuves = conduite parfaite.</em>
-        </div>
-      </div>
-      <div class="sub-step">
-        <div class="sub-num">C</div>
-        <div class="sub-text">
-          <strong>Allume le robot</strong> avec l'interrupteur sous le châssis (glisse-le vers ON).
-          <em>Le micro:bit affiche une icône ou un texte — ça veut dire que le firmware est prêt.</em>
-        </div>
-      </div>
-      <div class="sub-step">
-        <div class="sub-num">D</div>
-        <div class="sub-text">
-          <strong>Ouvre Chrome ou Edge</strong> sur ton téléphone / ordinateur.
-          <em>⚠️ Pas Firefox, pas Safari iPhone — ils ne supportent pas Bluetooth Web.</em>
-        </div>
+  <!-- Phase 2 -->
+  <div class="phase" data-p="1" onclick="openP(1)">
+    <div class="row">
+      <div class="num-big">02</div>
+      <div>
+        <h3 data-i18n="p2_title">Connect by Bluetooth</h3>
+        <div class="codename" data-i18n="p2_code">"shake hands with your robot"</div>
       </div>
     </div>
-
-    <div class="callout warn" style="margin-top:20px">
-      <div class="callout-icon">⚠️</div>
-      <div><strong>Firmware requis :</strong> Le micro:bit doit avoir le firmware Maqueen Lab flashé. Si le robot ne répond pas du tout, va dans l'onglet <strong>Plus → Firmware</strong> pour reflasher.</div>
-    </div>
-
-    <ul class="checklist" id="ck-0">
-      <li onclick="check(this)"><div class="ck"></div><span>Piles en place et robot allumé</span></li>
-      <li onclick="check(this)"><div class="ck"></div><span>Micro:bit visible et allumé dans le Maqueen</span></li>
-      <li onclick="check(this)"><div class="ck"></div><span>Application ouverte dans Chrome ou Edge</span></li>
-    </ul>
-
-    <button class="next-btn" onclick="next(0)">Tout est prêt — on connecte ! 🔗</button>
+    <span class="time">⏱ 2 min</span>
+    <button class="open-btn" data-i18n="open_btn">Start →</button>
   </div>
-</div>
-
-
-<!-- ════════════════════════════════════════════════════════
-     ÉTAPE 1 — CONNEXION
-════════════════════════════════════════════════════════ -->
-<div class="step-card" id="step-1">
-  <div class="step-header" onclick="toggle(1)">
-    <div class="step-number">1</div>
-    <div class="step-title-block">
-      <div class="step-label">Étape 1 — Connexion Bluetooth</div>
-      <div class="step-title">Connecte le robot 🔗</div>
+  <!-- Phase 3 -->
+  <div class="phase" data-p="2" onclick="openP(2)">
+    <div class="row">
+      <div class="num-big">03</div>
+      <div>
+        <h3 data-i18n="p3_title">The STOP Button</h3>
+        <div class="codename" data-i18n="p3_code">"safety first · know where it is"</div>
+      </div>
     </div>
-    <div class="step-badge">🔗</div>
+    <span class="time">⏱ 1 min</span>
+    <button class="open-btn" data-i18n="open_btn">Start →</button>
   </div>
-  <div class="step-body">
-
-    <p style="color:#c8daf0; margin-bottom:16px">
-      L'application se connecte à ton micro:bit via <strong>Bluetooth</strong> directement depuis le navigateur — sans câble, sans installation.
-    </p>
-
-    <div class="demo-box blue-glow">
-      <div style="margin-bottom:12px; font-size:13px; color:var(--muted)">
-        Ce bouton clignote en bleu en <span class="pos-label pos-left">bas à gauche</span> de l'écran quand le robot est déconnecté
-      </div>
-      <div class="fab-row">
-        <div class="fab connect">
-          <span class="fab-i">🔗</span>
-          CONNECT
-        </div>
-      </div>
-      <div style="margin-top:12px; font-size:13px; color:#93c5fd">
-        👆 Clique / tape dessus pour lancer la connexion
+  <!-- Phase 4 -->
+  <div class="phase" data-p="3" onclick="openP(3)">
+    <div class="row">
+      <div class="num-big">04</div>
+      <div>
+        <h3 data-i18n="p4_title">Drive Test</h3>
+        <div class="codename" data-i18n="p4_code">"steer · turn · roll like a pro"</div>
       </div>
     </div>
-
-    <div class="sub-steps">
-      <div class="sub-step">
-        <div class="sub-num">1</div>
-        <div class="sub-text">
-          <strong>Tape le bouton bleu 🔗 CONNECT</strong> en bas à gauche de l'écran.
-          <em>Il clignote doucement — tu ne peux pas le rater !</em>
-        </div>
-      </div>
-      <div class="sub-step">
-        <div class="sub-num">2</div>
-        <div class="sub-text">
-          <strong>Une boîte de dialogue s'ouvre</strong> : elle liste les appareils Bluetooth à proximité.
-          <em>Si rien n'apparaît, vérifie que le Bluetooth est activé sur ton téléphone/ordinateur.</em>
-        </div>
-      </div>
-      <div class="sub-step">
-        <div class="sub-num">3</div>
-        <div class="sub-text">
-          <strong>Sélectionne "BBC micro:bit"</strong> dans la liste, puis clique <strong>Jumeler</strong> (ou Pair / Connect).
-          <em>Si plusieurs appareils apparaissent, cherche celui qui s'appelle "maqueen" ou "BBC micro:bit [XXXXX]".</em>
-        </div>
-      </div>
-      <div class="sub-step">
-        <div class="sub-num">4</div>
-        <div class="sub-text">
-          <strong>Le bouton bleu disparaît</strong> — c'est bon ! Le robot est connecté. 🎉
-          <em>La batterie s'affiche en haut, les jauges de vitesse et de sonar deviennent actives.</em>
-        </div>
+    <span class="time">⏱ 3 min</span>
+    <button class="open-btn" data-i18n="open_btn">Start →</button>
+  </div>
+  <!-- Phase 5 -->
+  <div class="phase" data-p="4" onclick="openP(4)">
+    <div class="row">
+      <div class="num-big">05</div>
+      <div>
+        <h3 data-i18n="p5_title">Self-Drive Mode</h3>
+        <div class="codename" data-i18n="p5_code">"watch it think on its own"</div>
       </div>
     </div>
-
-    <div class="callout tip">
-      <div class="callout-icon">💡</div>
-      <div><strong>Problème ?</strong> Si le micro:bit n'apparaît pas : appuie sur le bouton <strong>Reset</strong> au dos du micro:bit → attends 3 secondes → réessaie. Le micro:bit doit se rallumer avec l'écran LED.</div>
+    <span class="time">⏱ 2 min</span>
+    <button class="open-btn" data-i18n="open_btn">Start →</button>
+  </div>
+  <!-- Phase 6 -->
+  <div class="phase" data-p="5" onclick="openP(5)">
+    <div class="row">
+      <div class="num-big">06</div>
+      <div>
+        <h3 data-i18n="p6_title">Draw a Path</h3>
+        <div class="codename" data-i18n="p6_code">"your first program · no code"</div>
+      </div>
     </div>
-
-    <div class="callout good">
-      <div class="callout-icon">✅</div>
-      <div><strong>Connecté avec succès quand :</strong> le bouton 🔗 CONNECT disparaît et le niveau de batterie s'affiche dans l'en-tête.</div>
+    <span class="time">⏱ 3 min</span>
+    <button class="open-btn" data-i18n="open_btn">Start →</button>
+  </div>
+  <!-- Phase 7 -->
+  <div class="phase" data-p="6" onclick="openP(6)">
+    <div class="row">
+      <div class="num-big">07</div>
+      <div>
+        <h3 data-i18n="p7_title">Try the Mini-Games</h3>
+        <div class="codename" data-i18n="p7_code">"slalom · sound · servo · go!"</div>
+      </div>
     </div>
-
-    <ul class="checklist" id="ck-1">
-      <li onclick="check(this)"><div class="ck"></div><span>J'ai vu la liste Bluetooth s'ouvrir</span></li>
-      <li onclick="check(this)"><div class="ck"></div><span>J'ai sélectionné "BBC micro:bit" et cliqué Jumeler</span></li>
-      <li onclick="check(this)"><div class="ck"></div><span>Le bouton bleu a disparu — robot connecté !</span></li>
-    </ul>
-
-    <button class="next-btn" onclick="next(1)">Connecté ! Découvrons le bouton STOP 🛡️</button>
+    <span class="time">⏱ 2 min</span>
+    <button class="open-btn" data-i18n="open_btn">Start →</button>
   </div>
 </div>
 
-
-<!-- ════════════════════════════════════════════════════════
-     ÉTAPE 2 — SÉCURITÉ
-════════════════════════════════════════════════════════ -->
-<div class="step-card" id="step-2">
-  <div class="step-header" onclick="toggle(2)">
-    <div class="step-number">2</div>
-    <div class="step-title-block">
-      <div class="step-label">Étape 2 — La règle n°1</div>
-      <div class="step-title">Le bouton STOP d'urgence ⏹</div>
-    </div>
-    <div class="step-badge">⏹</div>
-  </div>
-  <div class="step-body">
-
-    <div class="callout warn">
-      <div class="callout-icon">🚨</div>
-      <div><strong>À lire en premier !</strong> Avant de faire bouger le robot, sache toujours comment l'arrêter. C'est la règle n°1 de la robotique.</div>
-    </div>
-
-    <div class="demo-box red-glow" style="margin-top:16px">
-      <div style="margin-bottom:12px; font-size:13px; color:var(--muted)">
-        Ce bouton est <strong>toujours visible</strong> en <span class="pos-label pos-right">bas à droite</span>, même quand tu scrolles
-      </div>
-      <div class="fab-row">
-        <div class="fab stop">
-          <span class="fab-i">⏹</span>
-          STOP
-        </div>
-      </div>
-      <div style="margin-top:12px; font-size:13px; color:#fca5a5">
-        👆 Un seul clic = le robot s'arrête immédiatement, quel que soit le mode actif
-      </div>
-    </div>
-
-    <div class="sub-steps" style="margin-top:16px">
-      <div class="sub-step">
-        <div class="sub-num">🖱️</div>
-        <div class="sub-text">
-          <strong>Sur écran</strong> : tape le gros bouton rouge ⏹ STOP en bas à droite.
-        </div>
-      </div>
-      <div class="sub-step">
-        <div class="sub-num">⌨️</div>
-        <div class="sub-text">
-          <strong>Au clavier</strong> : appuie sur <kbd>Échap</kbd> (Escape) — même résultat, encore plus rapide !
-        </div>
-      </div>
-    </div>
-
-    <div class="callout good" style="margin-top:16px">
-      <div class="callout-icon">✅</div>
-      <div>Le bouton STOP <strong>arrête tout</strong> : moteurs, auto-wander, autopilot, macro, tilt, voix… Tout d'un seul coup.</div>
-    </div>
-
-    <div style="background:var(--card2); border:1px solid var(--border); border-radius:12px; padding:18px; margin-top:16px; text-align:center;">
-      <div style="font-size:14px; font-weight:700; color:var(--yellow); margin-bottom:10px">🎯 Exercice — Fais-le maintenant :</div>
-      <div style="font-size:14px; color:#c8daf0;">Appuie sur le bouton rouge ⏹ STOP en bas à droite de l'app.<br>
-      <span style="color:var(--muted); font-size:13px;">Tu dois voir un flash rouge — c'est la confirmation que l'ordre a bien été envoyé.</span></div>
-    </div>
-
-    <ul class="checklist" id="ck-2">
-      <li onclick="check(this)"><div class="ck"></div><span>J'ai trouvé le bouton rouge ⏹ STOP en bas à droite</span></li>
-      <li onclick="check(this)"><div class="ck"></div><span>J'ai appuyé dessus et vu le flash rouge</span></li>
-      <li onclick="check(this)"><div class="ck"></div><span>J'ai testé la touche <kbd>Échap</kbd> sur le clavier</span></li>
-    </ul>
-
-    <button class="next-btn" onclick="next(2)">Je sais stopper — maintenant on conduit ! 🕹️</button>
+<!-- Cert -->
+<div class="cert" id="cert">
+  <div class="seal">▣</div>
+  <h2 data-i18n="cert_title">You're Cleared!</h2>
+  <div class="sub" data-i18n="cert_sub">7/7 steps complete · ready for action</div>
+  <div class="designation" data-i18n="cert_des">▸ JUNIOR LAB INVENTOR ▸</div>
+  <p style="color: var(--text); margin: 16px 0;" data-i18n="cert_msg">Awesome! Your robot is set. Time for real missions.</p>
+  <div class="links">
+    <a href="workshops.html" data-i18n="cert_l1">📖 Field Manual</a>
+    <a href="index.html" data-i18n="cert_l2">🤖 Robot App</a>
+    <a href="workshops-hub.html" data-i18n="cert_l3">🏠 Mission HQ</a>
   </div>
 </div>
 
+</div>
 
-<!-- ════════════════════════════════════════════════════════
-     ÉTAPE 3 — PILOTAGE
-════════════════════════════════════════════════════════ -->
-<div class="step-card" id="step-3">
-  <div class="step-header" onclick="toggle(3)">
-    <div class="step-number">3</div>
-    <div class="step-title-block">
-      <div class="step-label">Étape 3 — Pilotage manuel</div>
-      <div class="step-title">Conduis le robot ! 🕹️</div>
+<!-- Detail panel -->
+<div class="detail-overlay" id="overlay" onclick="if(event.target===this) closeP()">
+  <div class="detail" id="detail">
+    <button class="close" onclick="closeP()">✕</button>
+    <h2 id="dTitle"></h2>
+    <div class="codename" id="dCode"></div>
+    <h4 data-i18n="brief">What you'll do</h4>
+    <div class="brief" id="dBrief"></div>
+    <h4 data-i18n="steps">Steps</h4>
+    <ol id="dSteps"></ol>
+    <div class="tip" id="dTip"></div>
+    <div class="actions">
+      <button onclick="closeP()" data-i18n="later_btn">Later</button>
+      <button class="ok" onclick="markDone(currentP); closeP();" data-i18n="done_btn">✓ Mark done</button>
     </div>
-    <div class="step-badge">🕹️</div>
-  </div>
-  <div class="step-body">
-
-    <p style="color:#c8daf0; margin-bottom:16px">Mets le robot <strong>par terre dans un espace dégagé</strong> avant de continuer.</p>
-
-    <div class="demo-box" style="margin-bottom:20px">
-      <div style="font-size:13px; color:var(--muted); margin-bottom:14px">Le pavé directionnel — dans l'onglet 🤖 Maqueen</div>
-      <div class="keypad">
-        <div class="kbtn empty"></div>
-        <div class="kbtn">⬆️</div>
-        <div class="kbtn empty"></div>
-        <div class="kbtn">⬅️</div>
-        <div class="kbtn stop">■</div>
-        <div class="kbtn">➡️</div>
-        <div class="kbtn empty"></div>
-        <div class="kbtn">⬇️</div>
-        <div class="kbtn empty"></div>
-      </div>
-      <div style="margin-top:14px; font-size:13px; color:#93c5fd">
-        Clique/tape une flèche → le robot bouge. Relâche → il s'arrête.
-      </div>
-    </div>
-
-    <div class="sub-steps">
-      <div class="sub-step">
-        <div class="sub-num">1</div>
-        <div class="sub-text">
-          <strong>Règle la vitesse d'abord</strong> — commence à <strong>100</strong> pour débutant.
-        </div>
-      </div>
-    </div>
-
-    <div class="speed-demo">
-      <div class="speed-label">SPEED</div>
-      <div class="speed-track">
-        <div class="speed-fill" style="width:40%"></div>
-        <div class="speed-thumb" style="left:calc(40% - 10px)"></div>
-      </div>
-      <div class="speed-val" style="color:var(--green)">100</div>
-    </div>
-
-    <div class="sub-steps" style="margin-top:4px">
-      <div class="sub-step">
-        <div class="sub-num">2</div>
-        <div class="sub-text">
-          <strong>Tap ⬆️</strong> — le robot avance. Relâche — il s'arrête.
-          <em>Si le robot tourne au lieu d'aller droit, c'est normal : les moteurs ont de légères différences.</em>
-        </div>
-      </div>
-      <div class="sub-step">
-        <div class="sub-num">3</div>
-        <div class="sub-text">
-          <strong>Essaie ⬅️ et ➡️</strong> pour tourner à gauche et à droite.
-        </div>
-      </div>
-      <div class="sub-step">
-        <div class="sub-num">4</div>
-        <div class="sub-text">
-          <strong>Essaie ⬇️</strong> pour reculer.
-        </div>
-      </div>
-      <div class="sub-step">
-        <div class="sub-num">5</div>
-        <div class="sub-text">
-          <strong>Au clavier ?</strong> Utilise les touches fléchées <kbd>↑</kbd> <kbd>↓</kbd> <kbd>←</kbd> <kbd>→</kbd> — même effet, plus fluide !
-        </div>
-      </div>
-      <div class="sub-step">
-        <div class="sub-num">6</div>
-        <div class="sub-text">
-          <strong>Monte la vitesse à 200</strong> quand tu es à l'aise — le robot est nettement plus rapide !
-          <em>⚠️ Vérifie qu'il y a assez d'espace autour.</em>
-        </div>
-      </div>
-    </div>
-
-    <div class="callout tip">
-      <div class="callout-icon">💡</div>
-      <div><strong>Carte en direct :</strong> Fais défiler la page jusqu'à la carte SLAM — tu verras le trajet du robot s'afficher en vert en temps réel !</div>
-    </div>
-
-    <ul class="checklist" id="ck-3">
-      <li onclick="check(this)"><div class="ck"></div><span>Robot posé par terre, espace dégagé</span></li>
-      <li onclick="check(this)"><div class="ck"></div><span>J'ai réglé la vitesse à 100</span></li>
-      <li onclick="check(this)"><div class="ck"></div><span>J'ai fait avancer, reculer et tourner le robot</span></li>
-      <li onclick="check(this)"><div class="ck"></div><span>J'ai essayé les touches fléchées au clavier</span></li>
-    </ul>
-
-    <button class="next-btn" onclick="next(3)">Je conduis — on active le mode automatique ! 🚦</button>
   </div>
 </div>
 
-
-<!-- ════════════════════════════════════════════════════════
-     ÉTAPE 4 — AUTO-WANDER
-════════════════════════════════════════════════════════ -->
-<div class="step-card" id="step-4">
-  <div class="step-header" onclick="toggle(4)">
-    <div class="step-number">4</div>
-    <div class="step-title-block">
-      <div class="step-label">Étape 4 — Mode autonome</div>
-      <div class="step-title">Auto-Wander — il roule tout seul ! 🚦</div>
-    </div>
-    <div class="step-badge">🚦</div>
-  </div>
-  <div class="step-body">
-
-    <p style="color:#c8daf0; margin-bottom:16px">
-      En mode <strong>Auto-Wander</strong>, le robot explore tout seul : il avance, détecte les murs et les objets avec son sonar, et tourne pour les éviter.
-    </p>
-
-    <div class="demo-box green-glow">
-      <div style="font-size:42px; margin-bottom:12px">🚦</div>
-      <div style="font-size:15px; font-weight:700; color:var(--green)">Bouton "Auto wander"</div>
-      <div style="font-size:13px; color:var(--muted); margin-top:6px">Dans l'onglet 🤖 Maqueen, section "Drive"</div>
-    </div>
-
-    <div class="sub-steps" style="margin-top:16px">
-      <div class="sub-step">
-        <div class="sub-num">1</div>
-        <div class="sub-text">
-          <strong>Baisse la vitesse à 120</strong> pour commencer — un wander calme est plus impressionnant à regarder.
-        </div>
-      </div>
-      <div class="sub-step">
-        <div class="sub-num">2</div>
-        <div class="sub-text">
-          <strong>Règle "obstacle ≤ 20 cm"</strong> — le robot virera quand un obstacle est à moins de 20 cm.
-          <em>Plus le chiffre est grand, plus le robot vire tôt.</em>
-        </div>
-      </div>
-      <div class="sub-step">
-        <div class="sub-num">3</div>
-        <div class="sub-text">
-          <strong>Clique sur "🚦 Auto wander"</strong> — le robot démarre et explore tout seul !
-        </div>
-      </div>
-      <div class="sub-step">
-        <div class="sub-num">4</div>
-        <div class="sub-text">
-          <strong>Regarde la jauge SONAR</strong> sur le tableau de bord — tu vois la distance à l'obstacle changer en temps réel.
-        </div>
-      </div>
-      <div class="sub-step">
-        <div class="sub-num">5</div>
-        <div class="sub-text">
-          <strong>Pour arrêter</strong> : tap ⏹ STOP ou clique à nouveau sur "Auto wander".
-        </div>
-      </div>
-    </div>
-
-    <div style="background:var(--card2); border:1px solid var(--border); border-radius:12px; padding:16px; margin-top:16px;">
-      <div style="font-size:13px; font-weight:700; color:var(--purple); margin-bottom:10px">🎭 Essaie les personnalités !</div>
-      <div style="display:flex; gap:8px; flex-wrap:wrap;">
-        <span style="background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.3); border-radius:8px; padding:6px 12px; font-size:13px; color:#fca5a5">⚡ Rapide — fonce et vire vite</span>
-        <span style="background:rgba(56,189,248,0.15); border:1px solid rgba(56,189,248,0.3); border-radius:8px; padding:6px 12px; font-size:13px; color:#93c5fd">🐢 Prudent — lent et doux</span>
-        <span style="background:rgba(192,132,252,0.15); border:1px solid rgba(192,132,252,0.3); border-radius:8px; padding:6px 12px; font-size:13px; color:var(--purple)">🔍 Curieux — balayage large</span>
-        <span style="background:rgba(250,204,21,0.15); border:1px solid rgba(250,204,21,0.3); border-radius:8px; padding:6px 12px; font-size:13px; color:var(--yellow)">😴 Fainéant — s'arrête souvent</span>
-      </div>
-    </div>
-
-    <div class="callout info" style="margin-top:14px">
-      <div class="callout-icon">🗺️</div>
-      <div>Pendant le wander, regarde la <strong>carte SLAM</strong> se remplir en temps réel — le trajet vert s'étend et les obstacles jaunes apparaissent là où le sonar a détecté des murs !</div>
-    </div>
-
-    <ul class="checklist" id="ck-4">
-      <li onclick="check(this)"><div class="ck"></div><span>J'ai activé Auto-Wander et le robot roule seul</span></li>
-      <li onclick="check(this)"><div class="ck"></div><span>J'ai vu le robot éviter un obstacle</span></li>
-      <li onclick="check(this)"><div class="ck"></div><span>J'ai essayé au moins 2 personnalités différentes</span></li>
-      <li onclick="check(this)"><div class="ck"></div><span>J'ai arrêté proprement avec ⏹ STOP</span></li>
-    </ul>
-
-    <button class="next-btn" onclick="next(4)">Impressionnant ! Maintenant je trace mon chemin 🖍️</button>
-  </div>
-</div>
-
-
-<!-- ════════════════════════════════════════════════════════
-     ÉTAPE 5 — DESSINE & ROULE
-════════════════════════════════════════════════════════ -->
-<div class="step-card" id="step-5">
-  <div class="step-header" onclick="toggle(5)">
-    <div class="step-number">5</div>
-    <div class="step-title-block">
-      <div class="step-label">Étape 5 — Autopilot</div>
-      <div class="step-title">Dessine &amp; Roule 🖍️</div>
-    </div>
-    <div class="step-badge">🖍️</div>
-  </div>
-  <div class="step-body">
-
-    <p style="color:#c8daf0; margin-bottom:16px">
-      Tu peux <strong>dessiner un chemin</strong> du doigt directement sur la carte — et le robot le suit exactement !
-    </p>
-
-    <div class="demo-box blue-glow">
-      <div style="font-size:13px; color:var(--muted); margin-bottom:10px">Dans la barre de boutons de la carte</div>
-      <div style="display:flex; justify-content:center; gap:12px; flex-wrap:wrap; align-items:center;">
-        <div style="width:46px;height:46px;border-radius:50%;background:rgba(45,212,191,0.15);border:2px solid rgba(45,212,191,0.5);display:flex;align-items:center;justify-content:center;font-size:22px;">🖍️</div>
-        <div style="font-size:13px; color:#c8daf0; text-align:left; max-width:200px">Ce bouton active le mode dessin. Tape dessus, puis trace ton chemin sur la carte.</div>
-      </div>
-    </div>
-
-    <div class="sub-steps" style="margin-top:16px">
-      <div class="sub-step">
-        <div class="sub-num">1</div>
-        <div class="sub-text">
-          <strong>Efface d'abord la carte</strong> (bouton ↺ à droite de la barre) pour repartir de zéro.
-          <em>Le robot revient aussi à la position 0,0.</em>
-        </div>
-      </div>
-      <div class="sub-step">
-        <div class="sub-num">2</div>
-        <div class="sub-text">
-          <strong>Clique sur le bouton 🖍️</strong> dans la barre de la carte — le curseur se transforme en croix.
-        </div>
-      </div>
-      <div class="sub-step">
-        <div class="sub-num">3</div>
-        <div class="sub-text">
-          <strong>Maintiens ton doigt/la souris appuyé·e</strong> sur la carte et <strong>trace une courbe douce</strong> — un grand S ou un arc de cercle.
-          <em>Évite les angles droits très serrés — le robot préfère les courbes !</em>
-        </div>
-      </div>
-      <div class="sub-step">
-        <div class="sub-num">4</div>
-        <div class="sub-text">
-          <strong>Relâche</strong> — le robot démarre immédiatement et suit le tracé violet en pointillés.
-        </div>
-      </div>
-      <div class="sub-step">
-        <div class="sub-num">5</div>
-        <div class="sub-text">
-          <strong>Quand il arrive au bout</strong>, il s'arrête tout seul. Sinon, <kbd>Échap</kbd> pour arrêter.
-        </div>
-      </div>
-    </div>
-
-    <div style="background:var(--card2); border:1px solid rgba(45,212,191,0.3); border-radius:12px; padding:16px; margin-top:16px;">
-      <div style="font-size:13px; font-weight:700; color:var(--teal); margin-bottom:10px">💾 Sauvegarde et rejoue ton chemin</div>
-      <div style="display:flex; gap:10px; flex-wrap:wrap;">
-        <div style="flex:1; min-width:120px; background:var(--card); border-radius:8px; padding:10px; text-align:center;">
-          <div style="font-size:22px; margin-bottom:4px">💾</div>
-          <div style="font-size:12px; color:#c8daf0; font-weight:700">Enregistrer</div>
-          <div style="font-size:11px; color:var(--muted)">Télécharge un fichier .json</div>
-        </div>
-        <div style="flex:1; min-width:120px; background:var(--card); border-radius:8px; padding:10px; text-align:center;">
-          <div style="font-size:22px; margin-bottom:4px">🔁</div>
-          <div style="font-size:12px; color:#c8daf0; font-weight:700">Rejouer</div>
-          <div style="font-size:11px; color:var(--muted)">Relance le même chemin</div>
-        </div>
-        <div style="flex:1; min-width:120px; background:var(--card); border-radius:8px; padding:10px; text-align:center;">
-          <div style="font-size:22px; margin-bottom:4px">📂</div>
-          <div style="font-size:12px; color:#c8daf0; font-weight:700">Charger</div>
-          <div style="font-size:11px; color:var(--muted)">Ouvre un fichier sauvegardé</div>
-        </div>
-      </div>
-      <div style="font-size:12px; color:var(--muted); margin-top:10px">Ces 3 boutons apparaissent automatiquement après avoir dessiné un chemin.</div>
-    </div>
-
-    <div class="callout tip" style="margin-top:14px">
-      <div class="callout-icon">💡</div>
-      <div><strong>Astuce pro :</strong> Dessine une grande spirale — le robot suit la courbe de l'extérieur vers l'intérieur. C'est impressionnant à filmer !</div>
-    </div>
-
-    <ul class="checklist" id="ck-5">
-      <li onclick="check(this)"><div class="ck"></div><span>J'ai effacé la carte avec ↺</span></li>
-      <li onclick="check(this)"><div class="ck"></div><span>J'ai dessiné un chemin sur la carte</span></li>
-      <li onclick="check(this)"><div class="ck"></div><span>Le robot a suivi le tracé violet</span></li>
-      <li onclick="check(this)"><div class="ck"></div><span>J'ai sauvegardé le chemin avec 💾</span></li>
-      <li onclick="check(this)"><div class="ck"></div><span>J'ai rejoué le chemin avec 🔁</span></li>
-    </ul>
-
-    <button class="next-btn" onclick="next(5)">Génial ! On joue maintenant 🎮</button>
-  </div>
-</div>
-
-
-<!-- ════════════════════════════════════════════════════════
-     ÉTAPE 6 — JEUX
-════════════════════════════════════════════════════════ -->
-<div class="step-card" id="step-6">
-  <div class="step-header" onclick="toggle(6)">
-    <div class="step-number">6</div>
-    <div class="step-title-block">
-      <div class="step-label">Étape 6 — Mini-jeux</div>
-      <div class="step-title">Joue et défie tes amis ! 🎮</div>
-    </div>
-    <div class="step-badge">🎮</div>
-  </div>
-  <div class="step-body">
-
-    <p style="color:#c8daf0; margin-bottom:16px">Tu maîtrises les bases — voici les <strong>jeux à essayer en premier</strong>. Ils sont dans l'onglet 🤖 Maqueen, section "Jeux".</p>
-
-    <div class="game-picks">
-
-      <div class="game-pick">
-        <span class="gp-icon">🛰️</span>
-        <div class="gp-name">SLAM the Room</div>
-        <div class="gp-desc">Explore un maximum de cases en 60 secondes. Plus tu couvres de terrain, plus ton score est élevé.</div>
-      </div>
-
-      <div class="game-pick">
-        <span class="gp-icon">🎯</span>
-        <div class="gp-name">Drift Champion</div>
-        <div class="gp-desc">Conduis le plus droit possible. La boussole mesure ton écart — score max = 100 !</div>
-      </div>
-
-      <div class="game-pick">
-        <span class="gp-icon">⚽</span>
-        <div class="gp-name">Robot Soccer</div>
-        <div class="gp-desc">2 équipes, le robot pousse une balle. Compte les buts sur le scoreboard !</div>
-      </div>
-
-      <div class="game-pick">
-        <span class="gp-icon">📐</span>
-        <div class="gp-name">Math the Distance</div>
-        <div class="gp-desc">Calcule d = v × t avant de faire rouler le robot pour vérifier ta réponse. Science + robot !</div>
-      </div>
-
-      <div class="game-pick">
-        <span class="gp-icon">👯</span>
-        <div class="gp-name">Co-Pilot 2 joueurs</div>
-        <div class="gp-desc">Un enfant accélère avec W/S, l'autre tourne avec J/L. Obligés de coopérer !</div>
-      </div>
-
-      <div class="game-pick">
-        <span class="gp-icon">🏁</span>
-        <div class="gp-name">Line Race</div>
-        <div class="gp-desc">Fais des tours de circuit et bats ton meilleur temps. Construis une piste avec du scotch !</div>
-      </div>
-
-    </div>
-
-    <div class="callout info" style="margin-top:16px">
-      <div class="callout-icon">💡</div>
-      <div>Chaque jeu sauvegarde ton <strong>meilleur score</strong> automatiquement — reviens le lendemain pour le battre !</div>
-    </div>
-
-    <ul class="checklist" id="ck-6">
-      <li onclick="check(this)"><div class="ck"></div><span>J'ai joué à SLAM the Room</span></li>
-      <li onclick="check(this)"><div class="ck"></div><span>J'ai joué à au moins un autre jeu</span></li>
-      <li onclick="check(this)"><div class="ck"></div><span>J'ai battu un score ou défié quelqu'un !</span></li>
-    </ul>
-
-    <button class="next-btn green" onclick="finish()">J'ai tout fait — voir le récapitulatif 🏆</button>
-  </div>
-</div>
-
-<!-- ════════════ FINAL ════════════ -->
-<div class="final-card" id="final" style="display:none">
-  <span class="trophy">🏆</span>
-  <h2>Mission accomplie !</h2>
-  <p>Tu sais maintenant connecter le robot, le piloter, le faire rouler tout seul, dessiner ses trajets et jouer. Tu es un vrai pilote Maqueen !</p>
-
-  <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-bottom:24px;">
-    <div style="background:rgba(74,222,128,0.1); border:1px solid rgba(74,222,128,0.3); border-radius:10px; padding:10px 16px; font-size:13px; color:var(--green);">✅ Connexion Bluetooth</div>
-    <div style="background:rgba(74,222,128,0.1); border:1px solid rgba(74,222,128,0.3); border-radius:10px; padding:10px 16px; font-size:13px; color:var(--green);">✅ Bouton STOP</div>
-    <div style="background:rgba(74,222,128,0.1); border:1px solid rgba(74,222,128,0.3); border-radius:10px; padding:10px 16px; font-size:13px; color:var(--green);">✅ Pilotage manuel</div>
-    <div style="background:rgba(74,222,128,0.1); border:1px solid rgba(74,222,128,0.3); border-radius:10px; padding:10px 16px; font-size:13px; color:var(--green);">✅ Auto-Wander</div>
-    <div style="background:rgba(74,222,128,0.1); border:1px solid rgba(74,222,128,0.3); border-radius:10px; padding:10px 16px; font-size:13px; color:var(--green);">✅ Dessine &amp; Roule</div>
-    <div style="background:rgba(74,222,128,0.1); border:1px solid rgba(74,222,128,0.3); border-radius:10px; padding:10px 16px; font-size:13px; color:var(--green);">✅ Mini-jeux</div>
-  </div>
-
-  <div style="margin-bottom:16px; font-size:15px; color:#a7f3d0; font-weight:700">Et maintenant ?</div>
-  <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
-    <a href="guide.html" target="_blank" class="guide-link">📖 Guide complet — toutes les fonctions</a>
-    <a href="index.html" class="guide-link" style="background:rgba(74,222,128,0.12); border-color:rgba(74,222,128,0.4); color:var(--green)">🤖 Retour à l'application</a>
-  </div>
-</div>
-
-</div><!-- /wrapper -->
-
-<footer>
-  <p>🤖 <strong>Maqueen Lab</strong> — Guide premiers pas</p>
-  <p style="margin-top:6px; font-size:12px; color:#4a6a8a">Robot DFRobot Maqueen + BBC micro:bit · Utilise Chrome ou Edge</p>
+<div class="wd-band wd-band-bottom"></div>
+<footer class="wd-footer">
+  <span>powered by <a href="https://workshop-diy.org" target="_blank" rel="noopener">workshop-diy.org</a></span>
+  <span class="sep">·</span>
+  <span>Robi-9 Lab</span>
+  <span class="sep">·</span>
+  <span class="badge">v1.2</span>
 </footer>
 
 <script>
-  const TOTAL = 7;
-  let current = 0;
+const PHASES = {
+  en: [
+    { title: 'Power Check', code: '"is your robot charged and ready?"',
+      brief: "Before any mission, check that your robot is awake and your tablet is set up. A dead robot = a stopped mission!",
+      steps: [
+        "Find your <b>Robi-9 robot</b>. Look for any visible damage.",
+        "Check the <b>battery LED</b>: it should glow steady. If not, charge it.",
+        "Check the <b>micro:bit</b>: firmware loaded, all green.",
+        "On your tablet/laptop: turn <b>Bluetooth ON</b>.",
+        "Open <b>Chrome or Edge</b>. Other browsers won't work."
+      ],
+      tip: "<b>Important:</b> the app needs HTTPS or localhost. Opening file:// won't connect to your robot." },
+    { title: 'Connect by Bluetooth', code: '"shake hands with your robot"',
+      brief: "Time to wake your robot up! Press the connect button — your tablet will pair over Bluetooth.",
+      steps: [
+        "Open the robot app (<code>index.html</code>).",
+        "Tap the big blue <code>⌘ CONNECT</code> button (bottom-left).",
+        "A list pops up. Pick <b>Maqueen…</b> and tap <code>Pair</code>.",
+        "Done! The button hides. Status turns green.",
+        "Try drive forward 1 second to test the link."
+      ],
+      tip: "If no devices show: turn Bluetooth off and on, then try again." },
+    { title: 'The STOP Button', code: '"safety first · know where it is"',
+      brief: "The most important button on the whole app. Master it BEFORE you drive!",
+      steps: [
+        "Find the <b>red ⏹ STOP button</b> (bottom-right of the app).",
+        "It's the ONE button you must always reach. Even when scrolled.",
+        "Press it once = robot stops instantly.",
+        "Keyboard shortcut: <code>SPACE</code>.",
+        "Practice: drive 1 sec, STOP. Drive, STOP. Build the reflex."
+      ],
+      tip: "<b>Lab rule:</b> never drive at people, pets, or laptops. When unsure, STOP first." },
+    { title: 'Drive Test', code: '"steer · turn · roll like a pro"',
+      brief: "Now drive! Use the arrow pad to move. Adjust the speed slider for control.",
+      steps: [
+        "Find the <b>arrow pad</b> in the middle (▲ ◀ ▶ ▼).",
+        "<code>▲</code> = forward · <code>▼</code> = back · <code>◀ ▶</code> = turn.",
+        "Drag the <b>speed slider</b> to set how fast (0-100%).",
+        "Drill: forward 1s, turn 90°, stop. Try with different speeds.",
+        "Bonus: TILT your tablet to drive! Find it in Settings."
+      ],
+      tip: "<b>Tip:</b> 50% speed = best control. 100% = wild and hard to park." },
+    { title: 'Self-Drive Mode', code: '"watch it think on its own"',
+      brief: "Your robot can drive itself! It uses its sonar to spot walls and turn away. Pure science.",
+      steps: [
+        "Place robot in an open spot (1m × 1m clear).",
+        "Find the <code>🌀 WANDER</code> button. Tap it.",
+        "Robot drives by itself. Walk in front: it turns away.",
+        "Try different profiles: SCOUT · STANDARD · FAST · DEMO.",
+        "Tap <code>🌀</code> again or <code>⏹</code> to stop."
+      ],
+      tip: "<b>Cool fact:</b> self-driving cars use the same loop. Bigger rules, same idea." },
+    { title: 'Draw a Path', code: '"your first program · no code"',
+      brief: "Draw a path on the screen. Watch your robot follow it on its own. That's programming!",
+      steps: [
+        "Open the <b>MAP tab</b> in the app.",
+        "Tap <code>✏️ DRAW</code> to enter draw mode.",
+        "Finger-paint a path: a curve, a square, your initial!",
+        "Lift finger: robot starts following automatically.",
+        "Tap <code>💾 SAVE</code> to keep your path as a file."
+      ],
+      tip: "<b>You just programmed!</b> No keyboard, no syntax. Real engineers do the same idea, just typed out." },
+    { title: 'Try the Mini-Games', code: '"slalom · sound · servo · go!"',
+      brief: "Time to play! Try a few mini-games to test your skills with the robot.",
+      steps: [
+        "<b>Slalom:</b> set 4-6 cones in zigzag, drive without touching.",
+        "<b>Line Follow:</b> tape a black line on white floor, follow it.",
+        "<b>Buzzer Tune:</b> open buzzer panel, play a 4-note song.",
+        "<b>Servo Arm:</b> tap S1, send 0° / 90° / 180°.",
+        "<b>2 Robots:</b> if you have 2, tap PAIR to link them."
+      ],
+      tip: "Each of these grows into a full mission in the Field Manual!" }
+  ],
+  fr: [
+    { title: 'Vérification Énergie', code: '"ton robot est-il chargé et prêt ?"',
+      brief: "Avant toute mission, vérifie que ton robot est réveillé et ta tablette est prête. Un robot mort = mission stoppée !",
+      steps: [
+        "Trouve ton <b>robot Robi-9</b>. Regarde s'il y a des dommages visibles.",
+        "Vérifie la <b>LED de batterie</b> : elle doit briller fixe. Sinon, recharge.",
+        "Vérifie le <b>micro:bit</b> : firmware chargé, tout est vert.",
+        "Sur ta tablette/laptop : active le <b>Bluetooth</b>.",
+        "Ouvre <b>Chrome ou Edge</b>. Les autres navigateurs ne marchent pas."
+      ],
+      tip: "<b>Important :</b> l'app a besoin de HTTPS ou localhost. Ouvrir file:// ne connectera pas." },
+    { title: 'Connexion Bluetooth', code: '"poigne de main avec ton robot"',
+      brief: "Il est temps de réveiller ton robot ! Appuie sur le bouton connect — ta tablette se lie en Bluetooth.",
+      steps: [
+        "Ouvre l'app robot (<code>index.html</code>).",
+        "Appuie sur le gros bouton bleu <code>⌘ CONNECT</code> (en bas à gauche).",
+        "Une liste apparaît. Choisis <b>Maqueen…</b> et tape <code>Pair</code>.",
+        "Fait ! Le bouton se cache. Le statut passe au vert.",
+        "Essaie d'avancer 1 seconde pour tester la liaison."
+      ],
+      tip: "Si aucun appareil n'apparaît : éteins et rallume le Bluetooth, puis réessaie." },
+    { title: 'Le Bouton STOP', code: '"sécurité d\'abord · sache où il est"',
+      brief: "Le bouton le plus important de toute l'app. Maîtrise-le AVANT de conduire !",
+      steps: [
+        "Trouve le <b>bouton ⏹ STOP rouge</b> (en bas à droite de l'app).",
+        "C'est LE bouton à toujours pouvoir atteindre. Même en scrollant.",
+        "Appuie une fois = le robot s'arrête instantanément.",
+        "Raccourci clavier : <code>ESPACE</code>.",
+        "Pratique : conduire 1 sec, STOP. Conduire, STOP. Construis le réflexe."
+      ],
+      tip: "<b>Règle du labo :</b> jamais vers les gens, animaux ou laptops. Dans le doute, STOP d'abord." },
+    { title: 'Test de Conduite', code: '"diriger · tourner · rouler comme un pro"',
+      brief: "Maintenant conduis ! Utilise les flèches pour bouger. Ajuste le slider de vitesse pour le contrôle.",
+      steps: [
+        "Trouve les <b>flèches</b> au milieu (▲ ◀ ▶ ▼).",
+        "<code>▲</code> = avant · <code>▼</code> = arrière · <code>◀ ▶</code> = tourner.",
+        "Glisse le <b>slider de vitesse</b> pour la régler (0-100%).",
+        "Drill : avance 1s, tourne 90°, stop. Essaie avec différentes vitesses.",
+        "Bonus : INCLINE ta tablette pour conduire ! Active dans les Réglages."
+      ],
+      tip: "<b>Astuce :</b> 50% = meilleur contrôle. 100% = sauvage et dur à garer." },
+    { title: 'Mode Auto-Pilote', code: '"regarde-le penser tout seul"',
+      brief: "Ton robot peut conduire seul ! Il utilise son sonar pour voir les murs et tourner. Vraie science.",
+      steps: [
+        "Pose le robot dans un endroit dégagé (1m × 1m libre).",
+        "Trouve le bouton <code>🌀 WANDER</code>. Appuie.",
+        "Le robot conduit tout seul. Marche devant : il tourne loin.",
+        "Essaie les profils : SCOUT · STANDARD · RAPIDE · DEMO.",
+        "Appuie <code>🌀</code> à nouveau ou <code>⏹</code> pour arrêter."
+      ],
+      tip: "<b>Cool :</b> les voitures autonomes utilisent la même boucle. Plus de règles, même idée." },
+    { title: 'Dessine un Chemin', code: '"ton premier programme · sans code"',
+      brief: "Dessine un chemin à l'écran. Regarde ton robot le suivre tout seul. Ça, c'est programmer !",
+      steps: [
+        "Ouvre l'<b>onglet CARTE</b> dans l'app.",
+        "Tape <code>✏️ DRAW</code> pour entrer en mode dessin.",
+        "Dessine au doigt un chemin : courbe, carré, ton initiale !",
+        "Lâche le doigt : le robot commence à suivre automatiquement.",
+        "Tape <code>💾 SAVE</code> pour garder le chemin en fichier."
+      ],
+      tip: "<b>Tu viens de programmer !</b> Pas de clavier, pas de syntaxe. Les vrais ingés font pareil, en tapant." },
+    { title: 'Essaie les Mini-Jeux', code: '"slalom · son · servo · go !"',
+      brief: "C'est l'heure de jouer ! Essaie quelques mini-jeux pour tester tes compétences.",
+      steps: [
+        "<b>Slalom :</b> 4-6 cônes en zigzag, conduis sans toucher.",
+        "<b>Suiveur de ligne :</b> ruban noir sur sol blanc, suis-le.",
+        "<b>Buzzer :</b> ouvre le panneau buzzer, joue une chanson 4 notes.",
+        "<b>Bras Servo :</b> tape S1, envoie 0° / 90° / 180°.",
+        "<b>2 Robots :</b> si t'en as 2, tape PAIR pour les lier."
+      ],
+      tip: "Chacun de ces jeux devient une mission complète dans le Manuel de Terrain !" }
+  ],
+  ar: [
+    { title: 'فحص الطاقة', code: '"هل روبوتك مشحون وجاهز ؟"',
+      brief: "قبل أيّ مهمّة، تحقق أن روبوتك مستيقظ ولوحك جاهز. روبوت ميت = مهمّة متوقفة !",
+      steps: [
+        "اعثر على <b>روبوت Robi-9</b>. ابحث عن أيّ ضرر مرئيّ.",
+        "تحقق من <b>LED البطّاريّة</b>: يجب أن يضيء ثابتاً. وإلا، اشحنه.",
+        "تحقق من <b>micro:bit</b>: firmware مُحَمَّل، كل شيء أخضر.",
+        "على لوحك/حاسوبك: شَغِّل <b>البلوتوث</b>.",
+        "افتح <b>Chrome أو Edge</b>. المتصفّحات الأخرى لن تعمل."
+      ],
+      tip: "<b>مهمّ:</b> التطبيق يحتاج HTTPS أو localhost. file:// لن يتّصل." },
+    { title: 'الاتصال بالبلوتوث', code: '"صافِح روبوتك"',
+      brief: "حان وقت إيقاظ روبوتك ! اضغط زر الاتصال — اللوح سيرتبط عبر البلوتوث.",
+      steps: [
+        "افتح تطبيق الروبوت (<code>index.html</code>).",
+        "اضغط الزرّ الأزرق الكبير <code>⌘ CONNECT</code> (يسار-أسفل).",
+        "تظهر قائمة. اختر <b>Maqueen…</b> واضغط <code>Pair</code>.",
+        "تمّ ! الزرّ يختفي. الحالة تصبح خضراء.",
+        "جرّب التقدّم ثانية واحدة لاختبار الاتصال."
+      ],
+      tip: "إن لم تظهر أجهزة: أوقف البلوتوث ثم أعد تشغيله، وحاول مجدّداً." },
+    { title: 'زرّ الإيقاف', code: '"السلامة أوّلاً · اعرف مكانه"',
+      brief: "أهمّ زرّ في التطبيق كلّه. أتقنه قبل القيادة !",
+      steps: [
+        "اعثر على <b>زرّ ⏹ STOP الأحمر</b> (يمين-أسفل التطبيق).",
+        "هو الزرّ الوحيد الذي يجب أن يكون في متناولك دائماً. حتى عند التمرير.",
+        "اضغطه مرّة = الروبوت يتوقّف فوراً.",
+        "اختصار لوحة المفاتيح: <code>SPACE</code>.",
+        "تدرّب: قُد ثانية، STOP. قُد، STOP. ابنِ ردّ الفعل."
+      ],
+      tip: "<b>قاعدة المختبر:</b> لا تَقُد نحو أشخاص، حيوانات، أو حواسيب. عند الشكّ، STOP أوّلاً." },
+    { title: 'اختبار القيادة', code: '"وَجِّه · أدِر · تدحرج كالمحترف"',
+      brief: "الآن قُد ! استخدم الأسهم للتحرّك. اضبط منزلق السرعة للتحكّم.",
+      steps: [
+        "اعثر على <b>الأسهم</b> في الوسط (▲ ◀ ▶ ▼).",
+        "<code>▲</code> = أمام · <code>▼</code> = خلف · <code>◀ ▶</code> = استدارة.",
+        "اِسحب <b>منزلق السرعة</b> لضبطها (0-100%).",
+        "تدريب: تقدّم ثانية، أدر 90°، توقّف. جرّب بسرعات مختلفة.",
+        "إضافة: أَمِل لوحك للقيادة ! فعِّل من الإعدادات."
+      ],
+      tip: "<b>تلميح:</b> 50% = أفضل تحكّم. 100% = جامح وصعب الرسوّ." },
+    { title: 'وضع القيادة الذاتية', code: '"شاهده يفكّر بنفسه"',
+      brief: "روبوتك يستطيع القيادة بنفسه ! يستخدم سوناره لرؤية الجدران ويبتعد. علم حقيقي.",
+      steps: [
+        "ضع الروبوت في مكان مفتوح (1م × 1م).",
+        "اعثر على زرّ <code>🌀 WANDER</code>. اضغطه.",
+        "الروبوت يقود نفسه. اِمشِ أمامه : يَلتفُّ بعيداً.",
+        "جرّب الملفّات: SCOUT · STANDARD · FAST · DEMO.",
+        "اضغط <code>🌀</code> ثانية أو <code>⏹</code> للإيقاف."
+      ],
+      tip: "<b>رائع:</b> السيّارات الذاتية تستخدم نفس الحلقة. قواعد أكبر، نفس الفكرة." },
+    { title: 'ارسم مساراً', code: '"أوّل برنامج لك · بلا كود"',
+      brief: "ارسم مساراً على الشاشة. شاهد روبوتك يتبعه بنفسه. هذه هي البرمجة !",
+      steps: [
+        "افتح <b>علامة الخريطة</b> في التطبيق.",
+        "انقر <code>✏️ DRAW</code> لدخول وضع الرسم.",
+        "ارسم بإصبعك مساراً : منحنى، مربّع، حرفك الأوّل !",
+        "ارفع إصبعك : الروبوت يبدأ التتبّع تلقائيّاً.",
+        "انقر <code>💾 SAVE</code> لحفظ المسار كملف."
+      ],
+      tip: "<b>لقد بَرمَجت !</b> بلا لوحة مفاتيح، بلا صياغة. المهندسون الحقيقيون يفعلون الشيء نفسه، بكتابة." },
+    { title: 'جرّب الألعاب الصغيرة', code: '"تعرّج · صوت · سيرفو · هيّا !"',
+      brief: "حان وقت اللعب ! جرّب بعض الألعاب الصغيرة لاختبار مهاراتك.",
+      steps: [
+        "<b>تعرّج:</b> 4-6 أقماع، قُد بدون لمسها.",
+        "<b>تتبّع الخط:</b> شريط أسود على أرض بيضاء، اتبعه.",
+        "<b>صفّارة:</b> افتح لوحة الصفّارة، اعزف أغنية 4 نغمات.",
+        "<b>ذراع سيرفو:</b> انقر S1، أرسل 0° / 90° / 180°.",
+        "<b>2 روبوتات:</b> إن كان لديك 2، انقر PAIR لربطهما."
+      ],
+      tip: "كلٌّ من هذه يصبح مهمّة كاملة في دليل الميدان !" }
+  ]
+};
 
-  function toggle(n) {
-    const card = document.getElementById('step-'+n);
-    if (card.classList.contains('done') || card.classList.contains('active')) {
-      // collapse if already open and not current
-    }
+const T = {
+  en: {
+    hero_badge: '▸ FIRST DAY AT THE LAB',
+    hero_title: 'First Day at the Lab',
+    hero_greet: 'Hey, future inventor! I\'m <b>Robi-9</b>. Let\'s get your robot ready in <b>7 quick steps</b>. Tap a card to begin.',
+    meta_age: '👤 <b>Age 10+</b>', meta_time: '⏱ <b>~15 min</b>', meta_steps: '🧩 <b>7 steps</b>',
+    progress_done: 'done',
+    p1_title:'Power Check', p1_code:'"is your robot charged and ready?"',
+    p2_title:'Connect by Bluetooth', p2_code:'"shake hands with your robot"',
+    p3_title:'The STOP Button', p3_code:'"safety first · know where it is"',
+    p4_title:'Drive Test', p4_code:'"steer · turn · roll like a pro"',
+    p5_title:'Self-Drive Mode', p5_code:'"watch it think on its own"',
+    p6_title:'Draw a Path', p6_code:'"your first program · no code"',
+    p7_title:'Try the Mini-Games', p7_code:'"slalom · sound · servo · go!"',
+    open_btn: 'Start →', later_btn: 'Later', done_btn: '✓ Mark done',
+    brief: 'What you\'ll do', steps: 'Steps',
+    cert_title: 'You\'re Cleared!', cert_sub: '7/7 steps complete · ready for action',
+    cert_des: '▸ JUNIOR LAB INVENTOR ▸',
+    cert_msg: 'Awesome! Your robot is set. Time for real missions.',
+    cert_l1: '📖 Field Manual', cert_l2: '🤖 Robot App', cert_l3: '🏠 Mission HQ'
+  },
+  fr: {
+    hero_badge: '▸ PREMIER JOUR AU LABO',
+    hero_title: 'Premier Jour au Labo',
+    hero_greet: 'Salut, futur inventeur ! Je suis <b>Robi-9</b>. Préparons ton robot en <b>7 étapes rapides</b>. Tape une carte pour commencer.',
+    meta_age: '👤 <b>10 ans+</b>', meta_time: '⏱ <b>~15 min</b>', meta_steps: '🧩 <b>7 étapes</b>',
+    progress_done: 'faites',
+    p1_title:'Vérification Énergie', p1_code:'"ton robot est-il chargé et prêt ?"',
+    p2_title:'Connexion Bluetooth', p2_code:'"poigne de main avec ton robot"',
+    p3_title:'Le Bouton STOP', p3_code:'"sécurité d\'abord · sache où il est"',
+    p4_title:'Test de Conduite', p4_code:'"diriger · tourner · rouler comme un pro"',
+    p5_title:'Mode Auto-Pilote', p5_code:'"regarde-le penser tout seul"',
+    p6_title:'Dessine un Chemin', p6_code:'"ton premier programme · sans code"',
+    p7_title:'Essaie les Mini-Jeux', p7_code:'"slalom · son · servo · go !"',
+    open_btn: 'Démarrer →', later_btn: 'Plus tard', done_btn: '✓ Marquer fait',
+    brief: 'Ce que tu vas faire', steps: 'Étapes',
+    cert_title: 'Tu es prêt !', cert_sub: '7/7 étapes faites · prêt pour l\'action',
+    cert_des: '▸ INVENTEUR JUNIOR LABO ▸',
+    cert_msg: 'Génial ! Ton robot est prêt. Il est temps des vraies missions.',
+    cert_l1: '📖 Manuel Terrain', cert_l2: '🤖 App Robot', cert_l3: '🏠 QG Mission'
+  },
+  ar: {
+    hero_badge: '▸ اليوم الأوّل في المختبر',
+    hero_title: 'اليوم الأوّل في المختبر',
+    hero_greet: 'أهلاً، أيّها المخترع المستقبليّ ! أنا <b>Robi-9</b>. لنُجَهِّز روبوتك في <b>7 خطوات سريعة</b>. انقر بطاقة للبدء.',
+    meta_age: '👤 <b>10 سنوات+</b>', meta_time: '⏱ <b>~15 د</b>', meta_steps: '🧩 <b>7 خطوات</b>',
+    progress_done: 'منجزة',
+    p1_title:'فحص الطاقة', p1_code:'"هل روبوتك مشحون وجاهز ؟"',
+    p2_title:'الاتصال بالبلوتوث', p2_code:'"صافِح روبوتك"',
+    p3_title:'زرّ الإيقاف', p3_code:'"السلامة أوّلاً · اعرف مكانه"',
+    p4_title:'اختبار القيادة', p4_code:'"وَجِّه · أدِر · تدحرج كالمحترف"',
+    p5_title:'وضع القيادة الذاتية', p5_code:'"شاهده يفكّر بنفسه"',
+    p6_title:'ارسم مساراً', p6_code:'"أوّل برنامج لك · بلا كود"',
+    p7_title:'جرّب الألعاب الصغيرة', p7_code:'"تعرّج · صوت · سيرفو · هيّا !"',
+    open_btn: 'ابدأ ←', later_btn: 'لاحقاً', done_btn: '✓ علِّم مكتمل',
+    brief: 'ماذا ستفعل', steps: 'الخطوات',
+    cert_title: 'تم تأهيلك !', cert_sub: '7/7 خطوات مكتملة · جاهز للعمل',
+    cert_des: '▸ مخترع المختبر الصغير ▸',
+    cert_msg: 'رائع ! روبوتك جاهز. حان وقت المهمّات الحقيقيّة.',
+    cert_l1: '📖 دليل الميدان', cert_l2: '🤖 تطبيق الروبوت', cert_l3: '🏠 المقر الرئيسي'
   }
+};
 
-  function goTo(n) {
-    // Allow jumping back to any step
-    for (let i = 0; i < TOTAL; i++) {
-      const card = document.getElementById('step-'+i);
-      if (!card) continue;
-      if (i === n) {
-        card.classList.add('active');
-        card.classList.remove('done');
-        card.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      } else if (i < n) {
-        card.classList.remove('active');
-        card.classList.add('done');
-      } else {
-        card.classList.remove('active', 'done');
-      }
-    }
-    current = n;
-    updateProgress();
-  }
+let currentLang = 'en';
+let currentP = -1;
+const completed = new Set();
 
-  function next(n) {
-    // Mark current as done
-    const card = document.getElementById('step-'+n);
-    card.classList.remove('active');
-    card.classList.add('done');
+function setL(lang) {
+  currentLang = lang;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const k = el.dataset.i18n;
+    if (T[lang] && T[lang][k]) el.innerHTML = T[lang][k];
+  });
+  document.body.classList.toggle('rtl', lang === 'ar');
+  document.documentElement.lang = lang;
+  document.documentElement.dir = (lang === 'ar') ? 'rtl' : 'ltr';
+  document.getElementById('langSelect').value = lang;
+  try { localStorage.setItem('robi.lang', lang); } catch (e) {}
+}
 
-    const nextCard = document.getElementById('step-'+(n+1));
-    if (nextCard) {
-      nextCard.classList.add('active');
-      nextCard.classList.remove('done');
-      setTimeout(() => nextCard.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
-      current = n + 1;
-    }
-    updateProgress();
-  }
+function openP(n) {
+  currentP = n;
+  const phase = PHASES[currentLang][n];
+  document.getElementById('dTitle').textContent = phase.title;
+  document.getElementById('dCode').textContent = phase.code;
+  document.getElementById('dBrief').innerHTML = phase.brief;
+  document.getElementById('dSteps').innerHTML = phase.steps.map(s => `<li>${s}</li>`).join('');
+  document.getElementById('dTip').innerHTML = phase.tip;
+  document.getElementById('overlay').classList.add('show');
+}
+function closeP() { document.getElementById('overlay').classList.remove('show'); }
 
-  function finish() {
-    const card = document.getElementById('step-6');
-    card.classList.remove('active');
-    card.classList.add('done');
-    const fin = document.getElementById('final');
-    fin.style.display = '';
-    setTimeout(() => fin.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
-    updateProgress();
-  }
-
-  function updateProgress() {
-    const steps = document.querySelectorAll('.pb-step');
-    steps.forEach((s, i) => {
-      s.classList.remove('done', 'active');
-      const card = document.getElementById('step-'+i);
-      if (!card) return;
-      if (card.classList.contains('done')) s.classList.add('done');
-      else if (card.classList.contains('active')) s.classList.add('active');
-    });
-  }
-
-  function check(li) {
-    li.classList.toggle('checked');
-  }
-
-  // Save checklist state across page reloads (optional nice touch)
+function markDone(n) {
+  completed.add(n);
+  const card = document.querySelector(`.phase[data-p="${n}"]`);
+  if (card) card.classList.add('done');
   updateProgress();
+  try { localStorage.setItem('robi.startProg', JSON.stringify([...completed])); } catch (e) {}
+  if (completed.size === 7) {
+    document.getElementById('cert').classList.add('show');
+    document.getElementById('cert').scrollIntoView({ behavior: 'smooth' });
+  }
+}
+
+function updateProgress() {
+  const pct = (completed.size / 7) * 100;
+  document.getElementById('pBar').style.width = pct + '%';
+  document.getElementById('pCount').textContent = completed.size;
+}
+
+// Theme switcher
+const themeSel = document.getElementById('themeSelect');
+function applyTheme(t) {
+  document.documentElement.setAttribute('data-theme', t);
+  themeSel.value = t;
+  try { localStorage.setItem('robi.theme', t); } catch (e) {}
+}
+themeSel.addEventListener('change', e => applyTheme(e.target.value));
+
+// Init
+try {
+  const sav = localStorage.getItem('robi.lang'); if (sav) setL(sav);
+  const th = localStorage.getItem('robi.theme'); if (th) applyTheme(th);
+  const prog = JSON.parse(localStorage.getItem('robi.startProg') || '[]');
+  prog.forEach(n => markDone(n));
+} catch (e) {}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeP(); });
 </script>
 
 </body>

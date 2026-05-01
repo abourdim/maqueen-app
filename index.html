@@ -189,6 +189,16 @@ html[dir="rtl"] .hint ol { padding-left: 0; padding-right: 20px; }
             <span class="btn-icon">✕</span>
             <span data-i18n="disconnect_btn">Disconnect</span>
         </button>
+        <a href="workshops-hub.html" target="_blank" class="header-workshops-link"
+           title="Robi-9 Lab — 12 robot workshops for kids 10+"
+           style="display:inline-flex; align-items:center; gap:6px; padding:6px 12px; background:linear-gradient(135deg,#22c55e,#38bdf8); color:#0a1018; border-radius:8px; text-decoration:none; font-weight:700; font-size:0.85rem; border:1.5px solid #0a1018; box-shadow:2px 2px 0 rgba(0,0,0,0.3); white-space:nowrap;">
+            🏠 <span data-i18n="header_workshops">Workshops</span>
+        </a>
+        <a href="start.html" target="_blank" class="header-start-link"
+           title="First Day Setup — for first-time users"
+           style="display:inline-flex; align-items:center; gap:6px; padding:6px 12px; background:#fbbf24; color:#0a1018; border-radius:8px; text-decoration:none; font-weight:700; font-size:0.85rem; border:1.5px solid #0a1018; box-shadow:2px 2px 0 rgba(0,0,0,0.3); white-space:nowrap;">
+            🚀 <span data-i18n="header_start">First Day</span>
+        </a>
     </div>
     <!-- Hidden originals — kept in DOM so existing JS hooks (theme,
          language, qr-share, pair, etc.) keep working. They're moved
@@ -212,13 +222,32 @@ html[dir="rtl"] .hint ol { padding-left: 0; padding-right: 20px; }
         <a href="schematics-kids.html" title="Meet your robot">🤖 <span>Meet robot</span></a>
         <a href="schematics.html" title="Engineer schematic">📐 <span>Schematic</span></a>
         <a href="pinout.html" title="Pinout reference">📌 <span>Pinout</span></a>
-        <a href="start.html" target="_blank" title="Premiers pas — débutants">🚀 <span>Start</span></a>
-        <a id="userGuideLink" href="guide.html" target="_blank" title="Guide complet">📖 <span>Guide</span></a>
+        <a href="start.html" target="_blank" title="First Day Setup — for first-timers">🚀 <span>First Day</span></a>
+        <a href="workshops-hub.html" target="_blank" title="Robi-9 Lab · 12 robot workshops for kids">🏠 <span>Workshops</span></a>
+        <a href="workshops.html" target="_blank" title="Mission Guide · all 12 missions step-by-step">📚 <span>Missions</span></a>
+        <a href="workshop-booklet.html" target="_blank" title="My Robot Adventure Journal · printable for kids">🎒 <span>Journal</span></a>
+        <a id="userGuideLink" href="guide.html" target="_blank" title="App reference guide">📖 <span>Guide</span></a>
         <button id="qrShareBtn" type="button" title="Scan to open Maqueen Lab on a phone">📱</button>
         <button id="mqPairBtn"  type="button" title="Pair with a second Maqueen Lab tab">🤝</button>
         <button id="clearCacheBtn" title="Reset">🗑️</button>
     </div>
 </div>
+
+    <!-- ===== WORKSHOP LINKS BANNER — direct access to kid resources ===== -->
+    <div id="workshopBanner" style="display:flex !important; gap:10px; padding:10px 16px; margin:8px 0 12px; background:linear-gradient(90deg, rgba(34,197,94,0.12), rgba(56,189,248,0.10), rgba(251,191,36,0.10)); border:2px solid rgba(34,197,94,0.4); border-radius:12px; flex-wrap:wrap; align-items:center; font-family:system-ui, sans-serif;">
+      <span style="font-size:14px; font-weight:800; color:#4ade80; letter-spacing:0.04em; padding-right:6px; white-space:nowrap;">🤖 Robi-9 Workshops →</span>
+      <a href="workshops-hub.html" target="_blank" rel="noopener" style="display:inline-flex; align-items:center; gap:6px; padding:7px 14px; background:linear-gradient(135deg,#22c55e,#38bdf8); color:#0a1018 !important; border-radius:8px; text-decoration:none !important; font-weight:700; font-size:0.9rem; border:1.5px solid #0a1018; box-shadow:2px 2px 0 rgba(0,0,0,0.3); white-space:nowrap;">🏠 Lab Home</a>
+      <a href="start.html" target="_blank" rel="noopener" style="display:inline-flex; align-items:center; gap:6px; padding:7px 14px; background:#fbbf24; color:#0a1018 !important; border-radius:8px; text-decoration:none !important; font-weight:700; font-size:0.9rem; border:1.5px solid #0a1018; box-shadow:2px 2px 0 rgba(0,0,0,0.3); white-space:nowrap;">🚀 First Day</a>
+      <a href="workshops.html" target="_blank" rel="noopener" style="display:inline-flex; align-items:center; gap:6px; padding:7px 14px; background:#38bdf8; color:#0a1018 !important; border-radius:8px; text-decoration:none !important; font-weight:700; font-size:0.9rem; border:1.5px solid #0a1018; box-shadow:2px 2px 0 rgba(0,0,0,0.3); white-space:nowrap;">📚 12 Missions</a>
+      <a href="workshop-booklet.html" target="_blank" rel="noopener" style="display:inline-flex; align-items:center; gap:6px; padding:7px 14px; background:#fb923c; color:#0a1018 !important; border-radius:8px; text-decoration:none !important; font-weight:700; font-size:0.9rem; border:1.5px solid #0a1018; box-shadow:2px 2px 0 rgba(0,0,0,0.3); white-space:nowrap;">🎒 Kid Journal</a>
+      <a href="workshop-cheatcards.html" target="_blank" rel="noopener" style="display:inline-flex; align-items:center; gap:6px; padding:7px 14px; background:rgba(74,222,128,0.18); color:#4ade80 !important; border-radius:8px; text-decoration:none !important; font-weight:700; font-size:0.9rem; border:1.5px solid rgba(74,222,128,0.5); white-space:nowrap;">🃏 Mission Cards</a>
+      <a href="workshop-energizers.html" target="_blank" rel="noopener" style="display:inline-flex; align-items:center; gap:6px; padding:7px 14px; background:rgba(74,222,128,0.18); color:#4ade80 !important; border-radius:8px; text-decoration:none !important; font-weight:700; font-size:0.9rem; border:1.5px solid rgba(74,222,128,0.5); white-space:nowrap;">⚡ Quick Games</a>
+      <button onclick="this.parentElement.style.display='none'; try{localStorage.setItem('mqHideWorkshopBanner','1')}catch(e){}" title="Hide this bar" style="margin-left:auto; background:transparent; border:1px solid rgba(148,163,184,0.4); color:#94a3b8; width:26px; height:26px; border-radius:6px; cursor:pointer; font-size:14px; padding:0; line-height:1;">✕</button>
+    </div>
+    <script>
+      // Honor user's hide preference (the ✕ above)
+      try { if (localStorage.getItem('mqHideWorkshopBanner') === '1') { document.getElementById('workshopBanner').style.display = 'none'; } } catch(e) {}
+    </script>
 
     <!-- ===== Maqueen Lite v4 live sensor strip (new firmware verbs) ===== -->
     <div id="maqueen-panel" style="display:flex; gap:14px; padding:10px 16px; margin:0 0 12px; background:linear-gradient(90deg, rgba(0,212,255,0.08), rgba(56,189,248,0.06)); border:1px solid rgba(0,212,255,0.25); border-radius:12px; flex-wrap:wrap; align-items:center; font-family:'JetBrains Mono', monospace; font-size:13px;">

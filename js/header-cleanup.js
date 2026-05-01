@@ -176,7 +176,29 @@
           toolsMount.appendChild(el);
         }
       });
-      // Nav links (lab/robot/schematics/pinout/userguide)
+      // Workshop links — for kids running missions. Styled prominently
+      // with a cyan/amber gradient so they stand out from the engineer-only
+      // tools below (lab/schematic/pinout).
+      const workshopLinks = [
+        { href: 'workshops-hub.html', label: '🏠 Workshops' },
+        { href: 'start.html',         label: '🚀 First Day' },
+        { href: 'workshops.html',     label: '📚 Missions' },
+        { href: 'workshop-booklet.html', label: '🎒 Journal' }
+      ];
+      workshopLinks.forEach(({ href, label }) => {
+        // Avoid duplicates if the link is already a visible header button
+        const existing = toolsMount.querySelector(`a[href="${href}"]`);
+        if (existing) return;
+        const stashed = document.querySelector(`#headerHiddenStash a[href="${href}"]`);
+        const a = stashed || document.createElement('a');
+        a.href = href;
+        a.target = '_blank';
+        a.rel = 'noopener';
+        a.textContent = label;
+        a.style.cssText = 'opacity:1; font-size:13px; padding:8px 14px; background:linear-gradient(135deg, rgba(34,197,94,0.18), rgba(56,189,248,0.18)); border:1px solid rgba(56,189,248,0.45); border-radius:8px; color:#e6eef9; text-decoration:none; font-weight:700; box-shadow:0 0 8px rgba(56,189,248,0.15);';
+        toolsMount.appendChild(a);
+      });
+      // Engineer-only nav links (kept second so workshops show first)
       const navIds = ['lab.html','schematics-kids.html','schematics.html','pinout.html'];
       navIds.forEach(href => {
         const a = document.querySelector(`a[href="${href}"]`);

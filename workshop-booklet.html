@@ -1,0 +1,1283 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="carbon">
+<head>
+<meta charset="UTF-8">
+<title>My Robot Adventure Journal</title>
+<link rel="stylesheet" href="workshops-theme.css">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--text); }
+  body {
+    font-family: var(--font-body);
+    line-height: 1.5;
+  }
+  body.rtl { direction: rtl; }
+
+  /* Top control bar */
+  .topbar {
+    position: sticky; top: 0; z-index: 100;
+    background: var(--bg-card);
+    border-bottom: 2px solid var(--border);
+    padding: 10px 18px;
+    display: flex; justify-content: space-between; align-items: center;
+    gap: 10px; flex-wrap: wrap;
+  }
+  .topbar .logo {
+    display: flex; align-items: center; gap: 10px;
+    font-family: var(--font-display);
+    color: var(--neon);
+    font-size: 1.1rem;
+  }
+  .topbar .logo .mark {
+    background: linear-gradient(135deg, var(--neon), var(--cyan));
+    color: var(--ink); padding: 6px 10px;
+    border-radius: 8px; font-weight: 800;
+  }
+  .topbar .controls { display: flex; gap: 8px; align-items: center; }
+  @media print { .topbar { display: none; } }
+
+  /* PAGE — kid-friendly notebook page */
+  .page {
+    width: 210mm; min-height: 297mm;
+    background: var(--paper);
+    color: #1a2230;
+    margin: 12mm auto;
+    padding: 16mm;
+    box-shadow: 0 0 30px rgba(0,0,0,0.4);
+    page-break-after: always;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(0,0,0,0.05);
+  }
+  .page::before, .page::after {
+    content: ''; position: absolute;
+    width: 60px; height: 60px;
+    border: 3px solid var(--neon);
+    border-radius: 14px;
+    z-index: 0;
+  }
+  .page::before { top: -20px; right: -20px; opacity: 0.6; }
+  .page::after  { bottom: -20px; left: -20px; opacity: 0.6; }
+  .page > * { position: relative; z-index: 1; }
+
+  /* COVER */
+  .cover {
+    display: flex; flex-direction: column;
+    justify-content: center; align-items: center;
+    text-align: center;
+    background:
+      radial-gradient(ellipse at top, var(--hero-glow), transparent 60%),
+      radial-gradient(ellipse at bottom, rgba(251,191,36,0.08), transparent 60%),
+      var(--paper);
+  }
+  .cover .badge-line {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--neon), var(--cyan));
+    color: #fff;
+    padding: 6px 18px;
+    border-radius: 999px;
+    font-family: var(--font-tech);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    margin-bottom: 18px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+  .cover h1 {
+    font-family: var(--font-display);
+    font-size: 56px;
+    color: #1a2230;
+    margin: 8px 0;
+    letter-spacing: 0.02em;
+    line-height: 1.05;
+  }
+  .cover h1 .accent {
+    background: linear-gradient(135deg, var(--neon), var(--cyan));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .cover .sub {
+    font-size: 18px;
+    color: var(--steel);
+    margin-bottom: 24px;
+    font-style: italic;
+  }
+  .cover .robi {
+    width: 180px; height: 180px;
+    margin: 18px 0 24px;
+  }
+  .cover .robi svg { width: 100%; height: 100%; filter: drop-shadow(0 8px 20px rgba(0,0,0,0.15)); }
+  .cover .tagline {
+    background: var(--bg-card);
+    color: #fff;
+    padding: 10px 22px;
+    border-radius: 30px;
+    font-size: 14px;
+    margin-bottom: 30px;
+    box-shadow: var(--shadow);
+  }
+  [data-theme="paper"] .cover .tagline,
+  [data-theme="pearl"] .cover .tagline {
+    background: #1a2230; color: var(--neon);
+  }
+  .namecard {
+    background: rgba(255,255,255,0.6);
+    border: 2px dashed var(--neon);
+    border-radius: 16px;
+    padding: 22px 28px;
+    width: 100%;
+    max-width: 480px;
+    text-align: left;
+  }
+  body.rtl .namecard { text-align: right; }
+  .namecard .field {
+    display: flex; align-items: center; gap: 12px;
+    margin: 10px 0;
+  }
+  .namecard .lbl {
+    color: var(--neon); font-weight: 700;
+    min-width: 130px; font-size: 13px;
+    font-family: var(--font-display);
+  }
+  .namecard .line {
+    flex: 1; border-bottom: 2px solid var(--neon);
+    height: 24px;
+  }
+  .cover .footer-tag {
+    margin-top: 28px;
+    font-size: 11px;
+    color: var(--steel);
+    letter-spacing: 0.1em;
+  }
+  .cover .footer-tag b { color: var(--neon); }
+
+  /* INDEX */
+  .index h1 {
+    font-family: var(--font-display);
+    font-size: 32px;
+    color: var(--neon);
+    border-bottom: 4px solid var(--orange);
+    padding-bottom: 8px;
+    margin-bottom: 14px;
+  }
+  .robi-says {
+    background: linear-gradient(135deg, rgba(74,222,128,0.1), rgba(56,189,248,0.05));
+    border: 2px solid var(--neon);
+    border-radius: 16px;
+    padding: 14px 18px;
+    margin: 12px 0 18px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .robi-says .mini {
+    flex-shrink: 0;
+    width: 56px; height: 56px;
+    background: var(--bg-card);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    border: 2px solid var(--neon);
+  }
+  .robi-says .mini svg { width: 38px; height: 38px; }
+  .robi-says .text { flex: 1; font-size: 14px; color: #1a2230; }
+  .robi-says .text b { color: var(--orange); }
+  [data-theme="paper"] .robi-says .text,
+  [data-theme="pearl"] .robi-says .text { color: #1a2230; }
+  [data-theme="carbon"] .robi-says .text,
+  [data-theme="forest"] .robi-says .text,
+  [data-theme="steel"] .robi-says .text { color: #1a2230; }
+
+  .mission-list { list-style: none; padding: 0; }
+  .mission-list li {
+    background: #fff;
+    border: 2px solid #1a2230;
+    border-left: 6px solid var(--neon);
+    border-radius: 10px;
+    padding: 10px 14px;
+    margin: 8px 0;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 14px;
+    color: #1a2230;
+  }
+  body.rtl .mission-list li { border-left: 2px solid #1a2230; border-right: 6px solid var(--neon); }
+  .mission-list li .num {
+    background: var(--neon); color: #fff;
+    border-radius: 8px;
+    padding: 4px 10px;
+    font-family: var(--font-tech);
+    font-size: 12px;
+    font-weight: 700;
+    flex-shrink: 0;
+    min-width: 70px;
+    text-align: center;
+  }
+  .mission-list li .ic { font-size: 22px; flex-shrink: 0; }
+  .mission-list li .check {
+    margin-left: auto;
+    width: 26px; height: 26px;
+    border: 2.5px solid #1a2230;
+    border-radius: 6px;
+    background: #fff;
+    flex-shrink: 0;
+  }
+  body.rtl .mission-list li .check { margin-left: 0; margin-right: auto; }
+
+  /* MISSION PAGE */
+  .mission-page h1 {
+    font-family: var(--font-display);
+    font-size: 30px;
+    color: #1a2230;
+    margin: 0;
+    line-height: 1.1;
+  }
+  .mission-page .id-tag {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--orange), var(--amber));
+    color: #fff;
+    padding: 4px 14px;
+    border-radius: 999px;
+    font-family: var(--font-tech);
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    letter-spacing: 0.05em;
+  }
+  .mission-page .codename {
+    color: var(--steel);
+    font-style: italic;
+    font-size: 14px;
+    margin: 4px 0 14px;
+  }
+  .robi-bubble {
+    background: linear-gradient(135deg, rgba(74,222,128,0.1), rgba(56,189,248,0.05));
+    border: 2px solid var(--neon);
+    border-radius: 16px;
+    padding: 14px 18px;
+    margin: 12px 0;
+    font-size: 14px;
+    color: #1a2230;
+    display: flex; gap: 14px; align-items: flex-start;
+  }
+  .robi-bubble .mini {
+    flex-shrink: 0; width: 50px; height: 50px;
+    background: var(--bg-card);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    border: 2px solid var(--neon);
+  }
+  .robi-bubble .mini svg { width: 36px; height: 36px; }
+  .robi-bubble .text { flex: 1; }
+  .robi-bubble .text b { color: var(--orange); }
+
+  .box-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    margin: 12px 0;
+  }
+  .learn-box {
+    background: #fff;
+    border: 2px solid #1a2230;
+    border-radius: 12px;
+    padding: 10px 12px;
+    min-height: 90px;
+    color: #1a2230;
+  }
+  .learn-box.cyan { border-color: var(--cyan); border-top-width: 6px; }
+  .learn-box.amber { border-color: var(--amber); border-top-width: 6px; }
+  .learn-box.green { border-color: var(--neon); border-top-width: 6px; }
+  .learn-box .ic {
+    font-size: 22px; line-height: 1;
+    margin-bottom: 4px;
+  }
+  .learn-box .lbl {
+    font-family: var(--font-display);
+    font-size: 11px;
+    color: var(--orange);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 4px;
+  }
+  .learn-box .lines {
+    border-bottom: 1px dashed #b0b8c4;
+    height: 16px;
+    margin-top: 6px;
+  }
+  .draw-zone {
+    background: #fff;
+    border: 3px dashed var(--orange);
+    border-radius: 14px;
+    padding: 12px 16px;
+    margin: 12px 0;
+    min-height: 180px;
+    color: #1a2230;
+  }
+  .draw-zone .header {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 8px;
+    border-bottom: 2px dashed var(--orange);
+    padding-bottom: 6px;
+  }
+  .draw-zone .header .ic {
+    background: var(--orange); color: #fff;
+    padding: 4px 10px; border-radius: 8px;
+    font-size: 12px; font-weight: 800;
+    font-family: var(--font-tech);
+  }
+  .draw-zone .header .title {
+    font-family: var(--font-display);
+    font-size: 15px;
+    color: var(--orange);
+  }
+  .challenge-box {
+    background: linear-gradient(135deg, var(--amber), var(--orange));
+    color: #fff;
+    border-radius: 16px;
+    padding: 14px 18px;
+    margin: 12px 0;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+  }
+  .challenge-box .label {
+    display: inline-block;
+    background: rgba(0,0,0,0.2);
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-family: var(--font-tech);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    margin-bottom: 8px;
+  }
+  .challenge-box h4 {
+    font-family: var(--font-display);
+    margin: 4px 0;
+    font-size: 17px;
+  }
+  .challenge-box .clue {
+    margin-top: 6px; font-size: 13px;
+    background: rgba(0,0,0,0.15);
+    padding: 4px 10px;
+    border-radius: 8px;
+    display: inline-block;
+  }
+  .badge-spot {
+    position: absolute;
+    bottom: 14px; right: 14px;
+    background: linear-gradient(135deg, var(--neon), var(--cyan));
+    color: #fff;
+    border-radius: 50%;
+    width: 110px; height: 110px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center;
+    font-family: var(--font-display);
+    font-size: 11px;
+    line-height: 1.2;
+    padding: 8px;
+    transform: rotate(-8deg);
+    border: 3px dashed #fff;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+  }
+  body.rtl .badge-spot { left: 14px; right: auto; transform: rotate(8deg); }
+  .badge-spot .star {
+    font-size: 24px;
+    margin-bottom: 4px;
+  }
+  .fact-strip {
+    background: var(--cyan);
+    color: #fff;
+    padding: 8px 14px;
+    border-radius: 12px;
+    margin: 10px 0;
+    font-size: 13px;
+  }
+  .fact-strip b {
+    background: rgba(0,0,0,0.25);
+    padding: 1px 6px;
+    border-radius: 4px;
+  }
+
+  /* CERTIFICATE PAGE */
+  .cert-page {
+    background:
+      radial-gradient(ellipse at center, var(--hero-glow), transparent 60%),
+      var(--paper);
+    text-align: center;
+    padding: 30px 40px;
+  }
+  .cert-page::before, .cert-page::after {
+    border: 4px solid var(--amber);
+    width: 80px; height: 80px;
+  }
+  .cert-page .seal {
+    font-family: var(--font-display);
+    font-size: 60px;
+    color: #fff;
+    background: linear-gradient(135deg, var(--neon), var(--cyan));
+    display: inline-block;
+    padding: 18px 30px;
+    border-radius: 20px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    margin: 24px 0 14px;
+  }
+  .cert-page h1 {
+    font-family: var(--font-display);
+    font-size: 42px;
+    color: var(--neon);
+    margin: 14px 0 6px;
+  }
+  .cert-page .sub {
+    color: var(--steel); font-style: italic;
+    margin-bottom: 24px;
+  }
+  .cert-page .name-line {
+    font-size: 16px; color: #1a2230;
+    margin: 30px auto;
+    max-width: 80%;
+  }
+  .cert-page .name-line span {
+    display: block;
+    border-bottom: 3px solid var(--neon);
+    height: 50px;
+    margin: 8px 0;
+  }
+  .cert-page .text {
+    font-size: 15px;
+    line-height: 1.6;
+    margin: 18px 40px;
+    color: #1a2230;
+  }
+  .cert-page .designation {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--amber), var(--orange));
+    color: #fff;
+    padding: 12px 30px;
+    border-radius: 999px;
+    font-family: var(--font-display);
+    font-size: 22px;
+    margin: 14px 0;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+  }
+  .cert-page .signs {
+    display: flex; justify-content: space-around;
+    margin-top: 36px;
+  }
+  .cert-page .signs .line {
+    border-top: 2px solid #1a2230;
+    margin-top: 30px;
+    padding-top: 6px;
+    width: 180px;
+    font-size: 12px;
+    color: #1a2230;
+  }
+
+  @media print {
+    body { background: #fff; }
+    .page { margin: 0; box-shadow: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo">
+    <span class="mark">▣</span>
+    <span data-i18n="logo">My Robot Adventure</span>
+  </div>
+  <div class="controls">
+    <a onclick="setL('en')" id="langEn" class="wd-select" style="cursor:pointer;">EN</a>
+    <a onclick="setL('fr')" id="langFr" class="wd-select" style="cursor:pointer;">FR</a>
+    <a onclick="setL('ar')" id="langAr" class="wd-select" style="cursor:pointer;">AR</a>
+    <select class="wd-select" id="themeSelect" aria-label="Theme">
+      <option value="carbon">▣ Carbon</option>
+      <option value="forest">▣ Forest</option>
+      <option value="steel">▣ Steel</option>
+      <option value="paper">☼ Paper</option>
+      <option value="pearl">☼ Pearl</option>
+    </select>
+    <button class="wd-select" onclick="window.print()" data-i18n="print">🖨 Print</button>
+  </div>
+</div>
+
+<!-- ROBI MASCOT (reused) -->
+<svg style="display:none" id="robi-template" viewBox="0 0 120 120">
+  <line x1="60" y1="6" x2="60" y2="22" stroke="var(--cyan)" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="60" cy="5" r="4" fill="var(--amber)"/>
+  <rect x="26" y="22" width="68" height="50" rx="14" fill="var(--bg-soft)" stroke="var(--neon)" stroke-width="2.5"/>
+  <rect x="34" y="34" width="52" height="24" rx="6" fill="var(--ink)" stroke="var(--cyan)" stroke-width="2"/>
+  <circle cx="46" cy="46" r="3.5" fill="var(--neon)"/>
+  <circle cx="74" cy="46" r="3.5" fill="var(--neon)"/>
+  <path d="M 42 66 L 78 66" stroke="var(--cyan)" stroke-width="2" stroke-linecap="round"/>
+  <rect x="32" y="72" width="56" height="28" rx="6" fill="var(--bg-soft)" stroke="var(--neon)" stroke-width="2"/>
+  <rect x="38" y="78" width="44" height="14" rx="3" fill="var(--ink)"/>
+  <circle cx="44" cy="96" r="2" fill="var(--amber)"/>
+  <circle cx="76" cy="96" r="2" fill="var(--orange)"/>
+  <rect x="14" y="76" width="14" height="18" rx="4" fill="var(--steel)"/>
+  <rect x="92" y="76" width="14" height="18" rx="4" fill="var(--steel)"/>
+  <ellipse cx="40" cy="106" rx="8" ry="4" fill="var(--ink)" stroke="var(--neon)" stroke-width="1.5"/>
+  <ellipse cx="80" cy="106" rx="8" ry="4" fill="var(--ink)" stroke="var(--neon)" stroke-width="1.5"/>
+</svg>
+
+<!-- COVER -->
+<div class="page cover">
+  <span class="badge-line" data-i18n="cov_badge">▸ MY ROBOT ADVENTURE</span>
+  <h1><span data-i18n="cov_t1">My Robot</span><br><span class="accent" data-i18n="cov_t2">Adventure!</span></h1>
+  <div class="sub" data-i18n="cov_sub">// 12 missions logged · 18 hours of fun</div>
+  <div class="robi"><svg viewBox="0 0 120 120"><use href="#robi-template"/></svg></div>
+  <div class="tagline" data-i18n="cov_tag">"From first connect to final big mission!"</div>
+  <div class="namecard">
+    <div class="field"><span class="lbl" data-i18n="card_name">My name:</span><span class="line"></span></div>
+    <div class="field"><span class="lbl" data-i18n="card_age">My age:</span><span class="line"></span></div>
+    <div class="field"><span class="lbl" data-i18n="card_robot">My robot:</span><span class="line"></span></div>
+    <div class="field"><span class="lbl" data-i18n="card_date">Started on:</span><span class="line"></span></div>
+  </div>
+  <div class="footer-tag" data-i18n="cov_foot">// <b>Property of:</b> the inventor named above</div>
+</div>
+
+<!-- INDEX -->
+<div class="page index">
+  <h1 data-i18n="idx_title">▸ My 12 Missions</h1>
+  <div class="robi-says">
+    <div class="mini"><svg viewBox="0 0 120 120"><use href="#robi-template"/></svg></div>
+    <div class="text" data-i18n="idx_msg"><b>Hey, inventor!</b> Tick the box ✓ as each mission is done. All 12 = you're a Robot Master!</div>
+  </div>
+  <ol class="mission-list">
+    <li><span class="num">M-01</span><span class="ic">🔋</span><span data-i18n="op01_name">Wake The Robot</span><span class="check"></span></li>
+    <li><span class="num">M-02</span><span class="ic">🏎️</span><span data-i18n="op02_name">Speed Lab</span><span class="check"></span></li>
+    <li><span class="num">M-03</span><span class="ic">👁️</span><span data-i18n="op03_name">Robot Senses</span><span class="check"></span></li>
+    <li><span class="num">M-04</span><span class="ic">🧠</span><span data-i18n="op04_name">Robot Brain</span><span class="check"></span></li>
+    <li><span class="num">M-05</span><span class="ic">🗺️</span><span data-i18n="op05_name">Live Map</span><span class="check"></span></li>
+    <li><span class="num">M-06</span><span class="ic">✏️</span><span data-i18n="op06_name">Draw to Code</span><span class="check"></span></li>
+    <li><span class="num">M-07</span><span class="ic">🎵</span><span data-i18n="op07_name">Sound Lab</span><span class="check"></span></li>
+    <li><span class="num">M-08</span><span class="ic">🦾</span><span data-i18n="op08_name">Servo Engineer</span><span class="check"></span></li>
+    <li><span class="num">M-09</span><span class="ic">📊</span><span data-i18n="op09_name">Data Detective</span><span class="check"></span></li>
+    <li><span class="num">M-10</span><span class="ic">🧩</span><span data-i18n="op10_name">Path Finder</span><span class="check"></span></li>
+    <li><span class="num">M-11</span><span class="ic">🤺</span><span data-i18n="op11_name">Robot Duels</span><span class="check"></span></li>
+    <li><span class="num" style="background:var(--orange)">FINAL</span><span class="ic">🏆</span><span data-i18n="op12_name">Big Mission</span><span class="check"></span></li>
+  </ol>
+</div>
+
+<!-- 12 MISSION PAGES -->
+<div class="page mission-page">
+  <span class="id-tag">▸ MISSION 01</span>
+  <h1 data-i18n="op01_name">Wake The Robot</h1>
+  <div class="codename" data-i18n="op01_code">"connect by Bluetooth · master the STOP button"</div>
+  <div class="robi-bubble">
+    <div class="mini"><svg viewBox="0 0 120 120"><use href="#robi-template"/></svg></div>
+    <div class="text" data-i18n="op01_msg">Today: I learned to wake my robot with <b>Bluetooth</b> and use the big red <b>STOP</b> button. I earned my first badge: <b>CONNECTOR</b>!</div>
+  </div>
+  <div class="box-grid">
+    <div class="learn-box green"><div class="ic">💡</div><div class="lbl" data-i18n="learned">I learned</div><div class="lines"></div><div class="lines"></div><div class="lines"></div></div>
+    <div class="learn-box cyan"><div class="ic">🎉</div><div class="lbl" data-i18n="best">My fav part</div><div class="lines"></div><div class="lines"></div><div class="lines"></div></div>
+    <div class="learn-box amber"><div class="ic">🤔</div><div class="lbl" data-i18n="hard">Tricky bit</div><div class="lines"></div><div class="lines"></div><div class="lines"></div></div>
+  </div>
+  <div class="draw-zone">
+    <div class="header"><span class="ic">DRAW</span><span class="title" data-i18n="op01_draw">▸ Draw your robot waking up!</span></div>
+  </div>
+  <div class="challenge-box">
+    <span class="label" data-i18n="challenge">▸ ROBI'S CHALLENGE</span>
+    <h4 data-i18n="op01_chal">Connect → drive → STOP, all in under 10 seconds!</h4>
+    <span class="clue" data-i18n="op01_clue">My time: ____ sec ⏱</span>
+  </div>
+  <div class="badge-spot"><span class="star">⭐</span><span data-i18n="badge_connector">CONNECTOR<br>UNLOCKED</span></div>
+</div>
+
+<div class="page mission-page">
+  <span class="id-tag">▸ MISSION 02</span>
+  <h1 data-i18n="op02_name">Speed Lab</h1>
+  <div class="codename" data-i18n="op02_code">"calibrate throttle · profile the brakes"</div>
+  <div class="robi-bubble">
+    <div class="mini"><svg viewBox="0 0 120 120"><use href="#robi-template"/></svg></div>
+    <div class="text" data-i18n="op02_msg">Today: I tested <b>brake distance</b> at 30/60/100% and drew my first <b>science chart</b>. Energy is non-linear — wow!</div>
+  </div>
+  <div class="box-grid">
+    <div class="learn-box green"><div class="ic">🐢</div><div class="lbl">30%</div><div class="lines" style="height:20px;"></div><span style="font-size:10px;" data-i18n="brake_lbl">brake (cm)</span></div>
+    <div class="learn-box cyan"><div class="ic">🐎</div><div class="lbl">60%</div><div class="lines" style="height:20px;"></div><span style="font-size:10px;" data-i18n="brake_lbl">brake (cm)</span></div>
+    <div class="learn-box amber"><div class="ic">🚀</div><div class="lbl">100%</div><div class="lines" style="height:20px;"></div><span style="font-size:10px;" data-i18n="brake_lbl">brake (cm)</span></div>
+  </div>
+  <div class="draw-zone">
+    <div class="header"><span class="ic">PLOT</span><span class="title" data-i18n="op02_draw">▸ My speed chart (3 dots, draw the curve!)</span></div>
+    <div style="height: 130px; position: relative; margin-top: 8px;">
+      <div style="position:absolute; inset:0; background-image: repeating-linear-gradient(0deg, #d8d2b8 0 1px, transparent 1px 25px), repeating-linear-gradient(90deg, #d8d2b8 0 1px, transparent 1px 50px); border-left: 2px solid #1a2230; border-bottom: 2px solid #1a2230;"></div>
+      <span style="position:absolute; left:-20px; top:0; font-weight:800; font-size:10px; color:var(--orange);">cm</span>
+      <span style="position:absolute; right:0; bottom:-16px; font-weight:800; font-size:10px; color:var(--orange);">% →</span>
+    </div>
+  </div>
+  <div class="challenge-box">
+    <span class="label" data-i18n="challenge">▸ ROBI'S CHALLENGE</span>
+    <h4 data-i18n="op02_chal">Park inside the dock zone 3 times in a row!</h4>
+    <span class="clue" data-i18n="op02_clue">Tries needed: ____ 🅿️</span>
+  </div>
+  <div class="badge-spot"><span class="star">⭐</span><span data-i18n="badge_velocity">SPEED<br>SPECIALIST</span></div>
+</div>
+
+<div class="page mission-page">
+  <span class="id-tag">▸ MISSION 03</span>
+  <h1 data-i18n="op03_name">Robot Senses</h1>
+  <div class="codename" data-i18n="op03_code">"sonar · line sensors · IR — like a bat!"</div>
+  <div class="robi-bubble">
+    <div class="mini"><svg viewBox="0 0 120 120"><use href="#robi-template"/></svg></div>
+    <div class="text" data-i18n="op03_msg">Today: I checked my robot's <b>3 senses</b> — sonar (bat ears!), line sensors (eyes for the floor), and IR. Same physics as bats hunt with!</div>
+  </div>
+  <div class="fact-strip">🦇 <b>FACT:</b> <span data-i18n="op03_fact">Bats find bugs in pitch dark using ultrasound. The robot's sonar uses the same trick — 40 kHz ping, listen for the echo.</span></div>
+  <div class="box-grid">
+    <div class="learn-box green"><div class="ic">🔊</div><div class="lbl" data-i18n="op03_sonar">SONAR reads in</div><div class="lines"></div><div class="lines"></div></div>
+    <div class="learn-box cyan"><div class="ic">⚫</div><div class="lbl" data-i18n="op03_line">BLACK floor =</div><div class="lines"></div><div class="lines"></div></div>
+    <div class="learn-box amber"><div class="ic">⭐</div><div class="lbl" data-i18n="op03_fav">My fav sensor</div><div class="lines"></div><div class="lines"></div></div>
+  </div>
+  <div class="draw-zone">
+    <div class="header"><span class="ic">MAP</span><span class="title" data-i18n="op03_draw">▸ Draw the robot. Mark all the sensors!</span></div>
+  </div>
+  <div class="challenge-box">
+    <span class="label" data-i18n="challenge">▸ ROBI'S CHALLENGE</span>
+    <h4 data-i18n="op03_chal">Predict the sonar reading 5 times in a row!</h4>
+    <span class="clue" data-i18n="op03_clue">Best streak: ____ 🎯</span>
+  </div>
+  <div class="badge-spot"><span class="star">⭐</span><span data-i18n="badge_recon">SENSOR<br>SCOUT</span></div>
+</div>
+
+<div class="page mission-page">
+  <span class="id-tag">▸ MISSION 04</span>
+  <h1 data-i18n="op04_name">Robot Brain</h1>
+  <div class="codename" data-i18n="op04_code">"4 personalities · what's really 'thinking'?"</div>
+  <div class="robi-bubble">
+    <div class="mini"><svg viewBox="0 0 120 120"><use href="#robi-template"/></svg></div>
+    <div class="text" data-i18n="op04_msg">Today: I tested <b>4 robot personalities</b>. Big secret: AI = sensors + rules + speed. <b>No magic!</b> Same loop ChatGPT uses!</div>
+  </div>
+  <div class="box-grid">
+    <div class="learn-box green"><div class="ic">🐢</div><div class="lbl">SCOUT</div><div class="lines"></div><div class="lines"></div></div>
+    <div class="learn-box cyan"><div class="ic">⚡</div><div class="lbl">FAST</div><div class="lines"></div><div class="lines"></div></div>
+    <div class="learn-box amber"><div class="ic">⭐</div><div class="lbl" data-i18n="op04_fav">My fav</div><div class="lines"></div><div class="lines"></div></div>
+  </div>
+  <div class="draw-zone">
+    <div class="header"><span class="ic">DESIGN</span><span class="title" data-i18n="op04_draw">▸ Design YOUR personality!</span></div>
+    <div style="margin-top:10px; font-size: 13px;">
+      <div data-i18n="op04_d1">Name: <span style="border-bottom: 2px solid #1a2230; display: inline-block; min-width: 200px;"></span></div>
+      <div style="margin-top:6px;" data-i18n="op04_d2">IF sonar &lt; ___ cm → action: ____________________</div>
+      <div style="margin-top:6px;" data-i18n="op04_d3">IF path is clear → action: ____________________</div>
+    </div>
+  </div>
+  <div class="challenge-box">
+    <span class="label" data-i18n="challenge">▸ ROBI'S CHALLENGE</span>
+    <h4 data-i18n="op04_chal">Watch wander · count obstacles dodged in 2 min!</h4>
+    <span class="clue" data-i18n="op04_clue">Dodges: ____ 🚧</span>
+  </div>
+  <div class="badge-spot"><span class="star">⭐</span><span data-i18n="badge_brain">BRAIN<br>HACKER</span></div>
+</div>
+
+<div class="page mission-page">
+  <span class="id-tag">▸ MISSION 05</span>
+  <h1 data-i18n="op05_name">Live Map</h1>
+  <div class="codename" data-i18n="op05_code">"build a map from wheel turns · spot the drift"</div>
+  <div class="robi-bubble">
+    <div class="mini"><svg viewBox="0 0 120 120"><use href="#robi-template"/></svg></div>
+    <div class="text" data-i18n="op05_msg">Today: I built a <b>SLAM map</b> from wheel turns! 1 turn = 25 cm. The map drifts though — that's why GPS exists!</div>
+  </div>
+  <div class="box-grid">
+    <div class="learn-box green"><div class="ic">🌀</div><div class="lbl" data-i18n="op05_b1">1 turn =</div><div class="lines"></div><span style="font-size:10px;">cm</span></div>
+    <div class="learn-box cyan"><div class="ic">🌊</div><div class="lbl" data-i18n="op05_b2">drift means</div><div class="lines"></div><div class="lines"></div></div>
+    <div class="learn-box amber"><div class="ic">🛰️</div><div class="lbl" data-i18n="op05_b3">why GPS</div><div class="lines"></div><div class="lines"></div></div>
+  </div>
+  <div class="draw-zone">
+    <div class="header"><span class="ic">MAP</span><span class="title" data-i18n="op05_draw">▸ Draw your bedroom or path to school as a map!</span></div>
+  </div>
+  <div class="challenge-box">
+    <span class="label" data-i18n="challenge">▸ ROBI'S CHALLENGE</span>
+    <h4 data-i18n="op05_chal">Drive a perfect square · measure the drift gap!</h4>
+    <span class="clue" data-i18n="op05_clue">Drift: ____ cm 📏</span>
+  </div>
+  <div class="badge-spot"><span class="star">⭐</span><span data-i18n="badge_carto">MAP<br>MAKER</span></div>
+</div>
+
+<div class="page mission-page">
+  <span class="id-tag">▸ MISSION 06</span>
+  <h1 data-i18n="op06_name">Draw to Code</h1>
+  <div class="codename" data-i18n="op06_code">"your first program · no typing!"</div>
+  <div class="robi-bubble">
+    <div class="mini"><svg viewBox="0 0 120 120"><use href="#robi-template"/></svg></div>
+    <div class="text" data-i18n="op06_msg">Today: I drew a path with my finger and the robot followed it ALONE! Saved as a JSON file = my <b>first program</b>!</div>
+  </div>
+  <div class="box-grid">
+    <div class="learn-box green"><div class="ic">🎮</div><div class="lbl" data-i18n="op06_b1">Driving =</div><div class="lines"></div><div class="lines"></div></div>
+    <div class="learn-box cyan"><div class="ic">🤖</div><div class="lbl" data-i18n="op06_b2">Programming =</div><div class="lines"></div><div class="lines"></div></div>
+    <div class="learn-box amber"><div class="ic">💾</div><div class="lbl" data-i18n="op06_b3">My file name</div><div class="lines"></div><div class="lines"></div></div>
+  </div>
+  <div class="draw-zone">
+    <div class="header"><span class="ic">PATH</span><span class="title" data-i18n="op06_draw">▸ Sketch the path you programmed!</span></div>
+  </div>
+  <div class="challenge-box">
+    <span class="label" data-i18n="challenge">▸ ROBI'S CHALLENGE</span>
+    <h4 data-i18n="op06_chal">Make the robot draw your initial letter!</h4>
+    <span class="clue" data-i18n="op06_clue">My letter: ____ ✏️</span>
+  </div>
+  <div class="badge-spot"><span class="star">⭐</span><span data-i18n="badge_prog">PROGRAMMER<br>UNLOCKED</span></div>
+</div>
+
+<div class="page mission-page">
+  <span class="id-tag">▸ MISSION 07</span>
+  <h1 data-i18n="op07_name">Sound Lab</h1>
+  <div class="codename" data-i18n="op07_code">"sound is data · frequency = pitch"</div>
+  <div class="robi-bubble">
+    <div class="mini"><svg viewBox="0 0 120 120"><use href="#robi-template"/></svg></div>
+    <div class="text" data-i18n="op07_msg">Today: I made a <b>4-note song</b> on the buzzer and decoded Morse! Sound is just numbers — same as Spotify!</div>
+  </div>
+  <div class="fact-strip">🎵 <b>FACT:</b> <span data-i18n="op07_fact">Spotify, headphones, voice notes — all sound is just numbers. Even your favourite track!</span></div>
+  <div class="draw-zone" style="min-height: 130px;">
+    <div class="header"><span class="ic">SONG</span><span class="title" data-i18n="op07_draw">▸ My 4-note song!</span></div>
+    <div style="margin-top:10px; font-size: 13px;">
+      <span data-i18n="op07_d1">Song name:</span> <span style="border-bottom: 2px solid #1a2230; display: inline-block; min-width: 200px;"></span>
+    </div>
+    <div style="margin-top:14px; display:flex; gap:8px; align-items:center;">
+      <span style="font-weight:800; color:var(--orange); font-family: var(--font-display);" data-i18n="op07_notes">Notes:</span>
+      <span style="background:var(--neon); color:#fff; padding:6px 14px; border-radius:8px; font-weight:800; min-width:42px; text-align:center;">__</span>
+      <span style="background:var(--cyan); color:#fff; padding:6px 14px; border-radius:8px; font-weight:800; min-width:42px; text-align:center;">__</span>
+      <span style="background:var(--amber); color:#fff; padding:6px 14px; border-radius:8px; font-weight:800; min-width:42px; text-align:center;">__</span>
+      <span style="background:var(--orange); color:#fff; padding:6px 14px; border-radius:8px; font-weight:800; min-width:42px; text-align:center;">__</span>
+    </div>
+  </div>
+  <div class="box-grid">
+    <div class="learn-box green"><div class="ic">🐦</div><div class="lbl" data-i18n="op07_b1">High pitch =</div><div class="lines"></div></div>
+    <div class="learn-box cyan"><div class="ic">🐘</div><div class="lbl" data-i18n="op07_b2">Low pitch =</div><div class="lines"></div></div>
+    <div class="learn-box amber"><div class="ic">🆘</div><div class="lbl" data-i18n="op07_b3">Morse SOS</div><div style="font-family:monospace; font-size:12px; margin-top:4px;">· · · ─ ─ ─ · · ·</div></div>
+  </div>
+  <div class="challenge-box">
+    <span class="label" data-i18n="challenge">▸ ROBI'S CHALLENGE</span>
+    <h4 data-i18n="op07_chal">Decode a 5-letter Morse word in under 30 sec!</h4>
+    <span class="clue" data-i18n="op07_clue">My time: ____ sec ⏱</span>
+  </div>
+  <div class="badge-spot"><span class="star">⭐</span><span data-i18n="badge_signal">COMPOSER<br>UNLOCKED</span></div>
+</div>
+
+<div class="page mission-page">
+  <span class="id-tag">▸ MISSION 08</span>
+  <h1 data-i18n="op08_name">Servo Engineer</h1>
+  <div class="codename" data-i18n="op08_code">"precise angles · 0-180° · design a payload"</div>
+  <div class="robi-bubble">
+    <div class="mini"><svg viewBox="0 0 120 120"><use href="#robi-template"/></svg></div>
+    <div class="text" data-i18n="op08_msg">Today: I sent the servo to <b>exact angles</b> (0°, 45°, 90°...). I designed my own paper attachment — I'm an <b>engineer</b>!</div>
+  </div>
+  <div class="box-grid">
+    <div class="learn-box green"><div class="ic">⚙️</div><div class="lbl" data-i18n="op08_b1">Motor =</div><div class="lines"></div></div>
+    <div class="learn-box cyan"><div class="ic">🦾</div><div class="lbl" data-i18n="op08_b2">Servo =</div><div class="lines"></div></div>
+    <div class="learn-box amber"><div class="ic">🌀</div><div class="lbl" data-i18n="op08_b3">Sweep =</div><div class="lines"></div></div>
+  </div>
+  <div class="draw-zone">
+    <div class="header"><span class="ic">DESIGN</span><span class="title" data-i18n="op08_draw">▸ Sketch your servo invention!</span></div>
+    <div style="margin-top:8px; font-size: 13px;">
+      <div data-i18n="op08_d1">Invention name: <span style="border-bottom: 2px solid #1a2230; display: inline-block; min-width: 220px;"></span></div>
+      <div style="margin-top:6px;" data-i18n="op08_d2">What it does: ___________________________________</div>
+      <div style="margin-top:6px;" data-i18n="op08_d3">At 0° → ____________  ·  At 90° → ____________  ·  At 180° → ____________</div>
+    </div>
+  </div>
+  <div class="challenge-box">
+    <span class="label" data-i18n="challenge">▸ ROBI'S CHALLENGE</span>
+    <h4 data-i18n="op08_chal">Hit 5 random angles · fastest reaction time!</h4>
+    <span class="clue" data-i18n="op08_clue">Reaction: ____ ms ⚡</span>
+  </div>
+  <div class="badge-spot"><span class="star">⭐</span><span data-i18n="badge_eng">ENGINEER<br>UNLOCKED</span></div>
+</div>
+
+<div class="page mission-page">
+  <span class="id-tag">▸ MISSION 09</span>
+  <h1 data-i18n="op09_name">Data Detective</h1>
+  <div class="codename" data-i18n="op09_code">"hypothesis · test · data · conclusion"</div>
+  <div class="robi-bubble">
+    <div class="mini"><svg viewBox="0 0 120 120"><use href="#robi-template"/></svg></div>
+    <div class="text" data-i18n="op09_msg">Today: I was a <b>scientist</b>! I made a guess, tested it, read the chart, and concluded. Same way NASA works!</div>
+  </div>
+  <div class="draw-zone" style="min-height: 200px;">
+    <div class="header"><span class="ic">LOG</span><span class="title" data-i18n="op09_draw">▸ My experiment: carpet vs hard floor</span></div>
+    <table style="width:100%; border-collapse:collapse; margin-top:8px; font-size:13px;">
+      <tr><td style="border:1px solid #1a2230; padding:6px; background:var(--neon); color:#fff; font-weight:800;" data-i18n="op09_t1">My GUESS</td><td style="border:1px solid #1a2230; padding:6px;" data-i18n="op09_t1v">Carpet slows by ____%</td></tr>
+      <tr><td style="border:1px solid #1a2230; padding:6px; background:var(--neon); color:#fff; font-weight:800;" data-i18n="op09_t2">Hard avg</td><td style="border:1px solid #1a2230; padding:6px;">_____ cm/s</td></tr>
+      <tr><td style="border:1px solid #1a2230; padding:6px; background:var(--neon); color:#fff; font-weight:800;" data-i18n="op09_t3">Carpet avg</td><td style="border:1px solid #1a2230; padding:6px;">_____ cm/s</td></tr>
+      <tr><td style="border:1px solid #1a2230; padding:6px; background:var(--neon); color:#fff; font-weight:800;" data-i18n="op09_t4">Difference</td><td style="border:1px solid #1a2230; padding:6px;">_____ %</td></tr>
+      <tr><td style="border:1px solid #1a2230; padding:6px; background:var(--neon); color:#fff; font-weight:800;" data-i18n="op09_t5">Was I right?</td><td style="border:1px solid #1a2230; padding:6px;" data-i18n="op09_t5v">YES / NO / kinda</td></tr>
+    </table>
+  </div>
+  <div class="challenge-box">
+    <span class="label" data-i18n="challenge">▸ ROBI'S CHALLENGE</span>
+    <h4 data-i18n="op09_chal">Make a guess · be wrong on purpose once!</h4>
+    <span class="clue" data-i18n="op09_clue">"Wrong = science still wins" 🔬</span>
+  </div>
+  <div class="badge-spot"><span class="star">⭐</span><span data-i18n="badge_data">DATA<br>SCIENTIST</span></div>
+</div>
+
+<div class="page mission-page">
+  <span class="id-tag">▸ MISSION 10</span>
+  <h1 data-i18n="op10_name">Path Finder</h1>
+  <div class="codename" data-i18n="op10_code">"A* search · same logic as Google Maps"</div>
+  <div class="robi-bubble">
+    <div class="mini"><svg viewBox="0 0 120 120"><use href="#robi-template"/></svg></div>
+    <div class="text" data-i18n="op10_msg">Today: I solved a maze. Then I watched <b>A*</b> solve it faster! Algorithms = recipes. Same one Google Maps uses!</div>
+  </div>
+  <div class="fact-strip">🗺️ <b>FACT:</b> <span data-i18n="op10_fact">Google Maps uses A* every time you ask for directions. Billion times a day. Same algorithm I just watched run!</span></div>
+  <div class="box-grid">
+    <div class="learn-box green"><div class="ic">📜</div><div class="lbl" data-i18n="op10_b1">Algorithm =</div><div class="lines"></div><div class="lines"></div></div>
+    <div class="learn-box cyan"><div class="ic">🟢</div><div class="lbl" data-i18n="op10_b2">A* green path =</div><div class="lines"></div></div>
+    <div class="learn-box amber"><div class="ic">🌎</div><div class="lbl" data-i18n="op10_b3">Used by</div><div class="lines"></div><div class="lines"></div></div>
+  </div>
+  <div class="draw-zone">
+    <div class="header"><span class="ic">MAZE</span><span class="title" data-i18n="op10_draw">▸ Design your maze · trace the shortest path!</span></div>
+  </div>
+  <div class="challenge-box">
+    <span class="label" data-i18n="challenge">▸ ROBI'S CHALLENGE</span>
+    <h4 data-i18n="op10_chal">Solve a 5×5 paper maze in under 30 sec!</h4>
+    <span class="clue" data-i18n="op10_clue">My time: ____ sec 🏃</span>
+  </div>
+  <div class="badge-spot"><span class="star">⭐</span><span data-i18n="badge_path">PATH<br>FINDER</span></div>
+</div>
+
+<div class="page mission-page">
+  <span class="id-tag">▸ MISSION 11</span>
+  <h1 data-i18n="op11_name">Robot Duels</h1>
+  <div class="codename" data-i18n="op11_code">"2 robots · compete · cooperate"</div>
+  <div class="robi-bubble">
+    <div class="mini"><svg viewBox="0 0 120 120"><use href="#robi-template"/></svg></div>
+    <div class="text" data-i18n="op11_msg">Today: 2 robots! We <b>fenced</b> with sonar swords ⚔️ and tried <b>cooperating</b>. Cooperation is harder than fighting!</div>
+  </div>
+  <div class="box-grid">
+    <div class="learn-box green"><div class="ic">⚔️</div><div class="lbl" data-i18n="op11_b1">My wins</div><div class="lines"></div></div>
+    <div class="learn-box cyan"><div class="ic">🤝</div><div class="lbl" data-i18n="op11_b2">My partner</div><div class="lines"></div></div>
+    <div class="learn-box amber"><div class="ic">📶</div><div class="lbl" data-i18n="op11_b3">Lag means</div><div class="lines"></div></div>
+  </div>
+  <div class="draw-zone">
+    <div class="header"><span class="ic">DUEL</span><span class="title" data-i18n="op11_draw">▸ Draw the EPIC duel — your robot vs theirs!</span></div>
+  </div>
+  <div class="challenge-box">
+    <span class="label" data-i18n="challenge">▸ ROBI'S CHALLENGE</span>
+    <h4 data-i18n="op11_chal">Win a duel without taking a single hit!</h4>
+    <span class="clue" data-i18n="op11_clue">Final score: ____ vs ____ 🏆</span>
+  </div>
+  <div class="badge-spot"><span class="star">⭐</span><span data-i18n="badge_multi">DUEL<br>MASTER</span></div>
+</div>
+
+<div class="page mission-page">
+  <span class="id-tag" style="background: linear-gradient(135deg, var(--orange), var(--danger));">▸ MISSION 12 · FINAL</span>
+  <h1 data-i18n="op12_name" style="color: var(--orange);">Big Mission!</h1>
+  <div class="codename" data-i18n="op12_code">"design · build · present · be a hero"</div>
+  <div class="robi-bubble" style="border-color: var(--orange);">
+    <div class="mini"><svg viewBox="0 0 120 120"><use href="#robi-template"/></svg></div>
+    <div class="text" data-i18n="op12_msg">FINAL MISSION! Team of 3. We got a real <b>scenario</b>, planned, built, and <b>presented</b>. Used 12 missions of skills in ONE big show!</div>
+  </div>
+  <div class="box-grid">
+    <div class="learn-box green"><div class="ic">📋</div><div class="lbl" data-i18n="op12_b1">Mission code</div><div class="lines"></div><div class="lines"></div></div>
+    <div class="learn-box cyan"><div class="ic">👥</div><div class="lbl" data-i18n="op12_b2">My team</div><div class="lines"></div><div class="lines"></div></div>
+    <div class="learn-box amber"><div class="ic">⭐</div><div class="lbl" data-i18n="op12_b3">Score / 10</div><div class="lines" style="font-size:18px; text-align:center; padding:6px;"></div></div>
+  </div>
+  <div class="draw-zone">
+    <div class="header"><span class="ic">PLAN</span><span class="title" data-i18n="op12_draw">▸ Sketch your team's mission plan!</span></div>
+  </div>
+  <div class="challenge-box" style="background: linear-gradient(135deg, var(--orange), var(--danger));">
+    <span class="label" data-i18n="challenge">▸ ROBI'S CHALLENGE</span>
+    <h4 data-i18n="op12_chal">Use at least 3 different features in ONE mission!</h4>
+    <span class="clue" data-i18n="op12_clue">Features used: __________________________</span>
+  </div>
+  <div class="badge-spot" style="background: linear-gradient(135deg, var(--orange), var(--danger));"><span class="star">🏆</span><span data-i18n="badge_final">BIG MISSION<br>HERO</span></div>
+</div>
+
+<!-- CERTIFICATE -->
+<div class="page cert-page">
+  <div class="seal">▣</div>
+  <h1 data-i18n="cert_title">You Did It!</h1>
+  <div class="sub" data-i18n="cert_sub">12 missions · 1 brave inventor</div>
+  <div class="name-line">
+    <span data-i18n="cert_certifies">This certifies that</span>
+    <span></span>
+  </div>
+  <div class="text" data-i18n="cert_text">
+    has bravely completed all <b>12 robot missions</b>,<br>
+    survived <b>countless slaloms</b>, and is now officially:
+  </div>
+  <div class="designation" data-i18n="cert_designation">▸ JUNIOR ROBOT INVENTOR ▸</div>
+  <div class="signs">
+    <div class="line" data-i18n="sig_robi">Robi-9 the Robot 🤖</div>
+    <div class="line" data-i18n="sig_handler">Workshop Leader</div>
+  </div>
+  <div style="margin-top:30px; font-size:13px; color:#1a2230;">
+    <span data-i18n="cert_date">Date:</span> <span style="border-bottom: 2px solid #1a2230; display: inline-block; width: 140px;"></span>
+  </div>
+</div>
+
+<div class="wd-band wd-band-bottom"></div>
+<footer class="wd-footer">
+  <span data-i18n="foot_pow">powered by <a href="https://workshop-diy.org" target="_blank" rel="noopener">workshop-diy.org</a></span>
+  <span class="sep">·</span>
+  <span>Robi-9 Lab</span>
+  <span class="sep">·</span>
+  <span class="badge">v1.2</span>
+</footer>
+
+<script>
+const T = {
+  en: {
+    logo: 'My Robot Adventure',
+    print: '🖨 Print',
+    cov_badge: '▸ MY ROBOT ADVENTURE',
+    cov_t1: 'My Robot', cov_t2: 'Adventure!',
+    cov_sub: '// 12 missions logged · 18 hours of fun',
+    cov_tag: '"From first connect to final big mission!"',
+    cov_foot: '// <b>Property of:</b> the inventor named above',
+    card_name: 'My name:', card_age: 'My age:', card_robot: 'My robot:', card_date: 'Started on:',
+    idx_title: '▸ My 12 Missions',
+    idx_msg: '<b>Hey, inventor!</b> Tick the box ✓ as each mission is done. All 12 = you\'re a Robot Master!',
+    op01_name: 'Wake The Robot', op01_code: '"connect by Bluetooth · master the STOP button"',
+    op01_msg: 'Today: I learned to wake my robot with <b>Bluetooth</b> and use the big red <b>STOP</b> button. I earned my first badge: <b>CONNECTOR</b>!',
+    op01_draw: '▸ Draw your robot waking up!',
+    op01_chal: 'Connect → drive → STOP, all in under 10 seconds!',
+    op01_clue: 'My time: ____ sec ⏱',
+    op02_name: 'Speed Lab', op02_code: '"calibrate throttle · profile the brakes"',
+    op02_msg: 'Today: I tested <b>brake distance</b> at 30/60/100% and drew my first <b>science chart</b>. Energy is non-linear — wow!',
+    op02_draw: '▸ My speed chart (3 dots, draw the curve!)',
+    op02_chal: 'Park inside the dock zone 3 times in a row!',
+    op02_clue: 'Tries needed: ____ 🅿️',
+    brake_lbl: 'brake (cm)',
+    op03_name: 'Robot Senses', op03_code: '"sonar · line sensors · IR — like a bat!"',
+    op03_msg: 'Today: I checked my robot\'s <b>3 senses</b> — sonar (bat ears!), line sensors (eyes for the floor), and IR. Same physics as bats hunt with!',
+    op03_fact: 'Bats find bugs in pitch dark using ultrasound. The robot\'s sonar uses the same trick — 40 kHz ping, listen for the echo.',
+    op03_sonar: 'SONAR reads in', op03_line: 'BLACK floor =', op03_fav: 'My fav sensor',
+    op03_draw: '▸ Draw the robot. Mark all the sensors!',
+    op03_chal: 'Predict the sonar reading 5 times in a row!',
+    op03_clue: 'Best streak: ____ 🎯',
+    op04_name: 'Robot Brain', op04_code: '"4 personalities · what\'s really \'thinking\'?"',
+    op04_msg: 'Today: I tested <b>4 robot personalities</b>. Big secret: AI = sensors + rules + speed. <b>No magic!</b> Same loop ChatGPT uses!',
+    op04_fav: 'My fav',
+    op04_draw: '▸ Design YOUR personality!',
+    op04_d1: 'Name: <span style="border-bottom: 2px solid #1a2230; display: inline-block; min-width: 200px;"></span>',
+    op04_d2: 'IF sonar &lt; ___ cm → action: ____________________',
+    op04_d3: 'IF path is clear → action: ____________________',
+    op04_chal: 'Watch wander · count obstacles dodged in 2 min!',
+    op04_clue: 'Dodges: ____ 🚧',
+    op05_name: 'Live Map', op05_code: '"build a map from wheel turns · spot the drift"',
+    op05_msg: 'Today: I built a <b>SLAM map</b> from wheel turns! 1 turn = 25 cm. The map drifts though — that\'s why GPS exists!',
+    op05_b1: '1 turn =', op05_b2: 'drift means', op05_b3: 'why GPS',
+    op05_draw: '▸ Draw your bedroom or path to school as a map!',
+    op05_chal: 'Drive a perfect square · measure the drift gap!',
+    op05_clue: 'Drift: ____ cm 📏',
+    op06_name: 'Draw to Code', op06_code: '"your first program · no typing!"',
+    op06_msg: 'Today: I drew a path with my finger and the robot followed it ALONE! Saved as a JSON file = my <b>first program</b>!',
+    op06_b1: 'Driving =', op06_b2: 'Programming =', op06_b3: 'My file name',
+    op06_draw: '▸ Sketch the path you programmed!',
+    op06_chal: 'Make the robot draw your initial letter!',
+    op06_clue: 'My letter: ____ ✏️',
+    op07_name: 'Sound Lab', op07_code: '"sound is data · frequency = pitch"',
+    op07_msg: 'Today: I made a <b>4-note song</b> on the buzzer and decoded Morse! Sound is just numbers — same as Spotify!',
+    op07_fact: 'Spotify, headphones, voice notes — all sound is just numbers. Even your favourite track!',
+    op07_draw: '▸ My 4-note song!',
+    op07_d1: 'Song name:', op07_notes: 'Notes:',
+    op07_b1: 'High pitch =', op07_b2: 'Low pitch =', op07_b3: 'Morse SOS',
+    op07_chal: 'Decode a 5-letter Morse word in under 30 sec!',
+    op07_clue: 'My time: ____ sec ⏱',
+    op08_name: 'Servo Engineer', op08_code: '"precise angles · 0-180° · design a payload"',
+    op08_msg: 'Today: I sent the servo to <b>exact angles</b> (0°, 45°, 90°...). I designed my own paper attachment — I\'m an <b>engineer</b>!',
+    op08_b1: 'Motor =', op08_b2: 'Servo =', op08_b3: 'Sweep =',
+    op08_draw: '▸ Sketch your servo invention!',
+    op08_d1: 'Invention name: <span style="border-bottom: 2px solid #1a2230; display: inline-block; min-width: 220px;"></span>',
+    op08_d2: 'What it does: ___________________________________',
+    op08_d3: 'At 0° → ____________  ·  At 90° → ____________  ·  At 180° → ____________',
+    op08_chal: 'Hit 5 random angles · fastest reaction time!',
+    op08_clue: 'Reaction: ____ ms ⚡',
+    op09_name: 'Data Detective', op09_code: '"hypothesis · test · data · conclusion"',
+    op09_msg: 'Today: I was a <b>scientist</b>! I made a guess, tested it, read the chart, and concluded. Same way NASA works!',
+    op09_draw: '▸ My experiment: carpet vs hard floor',
+    op09_t1: 'My GUESS', op09_t1v: 'Carpet slows by ____%',
+    op09_t2: 'Hard avg', op09_t3: 'Carpet avg', op09_t4: 'Difference',
+    op09_t5: 'Was I right?', op09_t5v: 'YES / NO / kinda',
+    op09_chal: 'Make a guess · be wrong on purpose once!',
+    op09_clue: '"Wrong = science still wins" 🔬',
+    op10_name: 'Path Finder', op10_code: '"A* search · same logic as Google Maps"',
+    op10_msg: 'Today: I solved a maze. Then I watched <b>A*</b> solve it faster! Algorithms = recipes. Same one Google Maps uses!',
+    op10_fact: 'Google Maps uses A* every time you ask for directions. Billion times a day. Same algorithm I just watched run!',
+    op10_b1: 'Algorithm =', op10_b2: 'A* green path =', op10_b3: 'Used by',
+    op10_draw: '▸ Design your maze · trace the shortest path!',
+    op10_chal: 'Solve a 5×5 paper maze in under 30 sec!',
+    op10_clue: 'My time: ____ sec 🏃',
+    op11_name: 'Robot Duels', op11_code: '"2 robots · compete · cooperate"',
+    op11_msg: 'Today: 2 robots! We <b>fenced</b> with sonar swords ⚔️ and tried <b>cooperating</b>. Cooperation is harder than fighting!',
+    op11_b1: 'My wins', op11_b2: 'My partner', op11_b3: 'Lag means',
+    op11_draw: '▸ Draw the EPIC duel — your robot vs theirs!',
+    op11_chal: 'Win a duel without taking a single hit!',
+    op11_clue: 'Final score: ____ vs ____ 🏆',
+    op12_name: 'Big Mission!', op12_code: '"design · build · present · be a hero"',
+    op12_msg: 'FINAL MISSION! Team of 3. We got a real <b>scenario</b>, planned, built, and <b>presented</b>. Used 12 missions of skills in ONE big show!',
+    op12_b1: 'Mission code', op12_b2: 'My team', op12_b3: 'Score / 10',
+    op12_draw: '▸ Sketch your team\'s mission plan!',
+    op12_chal: 'Use at least 3 different features in ONE mission!',
+    op12_clue: 'Features used: __________________________',
+    challenge: '▸ ROBI\'S CHALLENGE',
+    learned: 'I learned', best: 'My fav part', hard: 'Tricky bit',
+    badge_connector: 'CONNECTOR<br>UNLOCKED', badge_velocity: 'SPEED<br>SPECIALIST',
+    badge_recon: 'SENSOR<br>SCOUT', badge_brain: 'BRAIN<br>HACKER',
+    badge_carto: 'MAP<br>MAKER', badge_prog: 'PROGRAMMER<br>UNLOCKED',
+    badge_signal: 'COMPOSER<br>UNLOCKED', badge_eng: 'ENGINEER<br>UNLOCKED',
+    badge_data: 'DATA<br>SCIENTIST', badge_path: 'PATH<br>FINDER',
+    badge_multi: 'DUEL<br>MASTER', badge_final: 'BIG MISSION<br>HERO',
+    cert_title: 'You Did It!', cert_sub: '12 missions · 1 brave inventor',
+    cert_certifies: 'This certifies that',
+    cert_text: 'has bravely completed all <b>12 robot missions</b>,<br>survived <b>countless slaloms</b>, and is now officially:',
+    cert_designation: '▸ JUNIOR ROBOT INVENTOR ▸',
+    sig_robi: 'Robi-9 the Robot 🤖', sig_handler: 'Workshop Leader',
+    cert_date: 'Date:',
+    foot_pow: 'powered by <a href="https://workshop-diy.org" target="_blank" rel="noopener">workshop-diy.org</a>'
+  },
+  fr: {
+    logo: 'Mon Aventure Robot',
+    print: '🖨 Imprimer',
+    cov_badge: '▸ MON AVENTURE ROBOT',
+    cov_t1: 'Mon Aventure', cov_t2: 'Robot !',
+    cov_sub: '// 12 missions enregistrées · 18h de fun',
+    cov_tag: '"De la 1ère connexion à la grande mission finale !"',
+    cov_foot: '// <b>Propriété de :</b> l\'inventeur ci-dessus',
+    card_name: 'Mon prénom :', card_age: 'Mon âge :', card_robot: 'Mon robot :', card_date: 'Commencé le :',
+    idx_title: '▸ Mes 12 Missions',
+    idx_msg: '<b>Salut, inventeur !</b> Coche la case ✓ à chaque mission terminée. Les 12 = tu es Maître Robot !',
+    op01_name: 'Réveil du Robot', op01_code: '"connexion Bluetooth · maîtrise du STOP"',
+    op01_msg: 'Aujourd\'hui : j\'ai appris à réveiller mon robot avec le <b>Bluetooth</b> et à utiliser le gros bouton <b>STOP</b> rouge. J\'ai gagné mon premier badge : <b>CONNECTEUR</b> !',
+    op01_draw: '▸ Dessine ton robot qui se réveille !',
+    op01_chal: 'Connecter → conduire → STOP, en moins de 10 secondes !',
+    op01_clue: 'Mon temps : ____ sec ⏱',
+    op02_name: 'Labo Vitesse', op02_code: '"régler l\'accélérateur · tester les freins"',
+    op02_msg: 'Aujourd\'hui : j\'ai testé la <b>distance de freinage</b> à 30/60/100% et tracé ma première <b>courbe science</b>. L\'énergie n\'est pas linéaire — wow !',
+    op02_draw: '▸ Ma courbe de vitesse (3 points · trace la courbe !)',
+    op02_chal: 'Stationner dans le carré 3 fois de suite !',
+    op02_clue: 'Essais : ____ 🅿️',
+    brake_lbl: 'frein (cm)',
+    op03_name: 'Sens du Robot', op03_code: '"sonar · capteurs de ligne · IR — comme une chauve-souris !"',
+    op03_msg: 'Aujourd\'hui : j\'ai testé les <b>3 sens</b> de mon robot — sonar (oreilles de chauve-souris !), capteurs de ligne, et IR. Même physique que les chauves-souris !',
+    op03_fact: 'Les chauves-souris trouvent les insectes dans le noir avec des ultrasons. Le sonar du robot fait pareil — ping 40 kHz, écoute l\'écho.',
+    op03_sonar: 'SONAR lit en', op03_line: 'Sol NOIR =', op03_fav: 'Mon capteur fav',
+    op03_draw: '▸ Dessine le robot. Marque tous les capteurs !',
+    op03_chal: 'Prédire le sonar 5 fois de suite !',
+    op03_clue: 'Meilleure série : ____ 🎯',
+    op04_name: 'Cerveau du Robot', op04_code: '"4 personnalités · qu\'est-ce que \'penser\' ?"',
+    op04_msg: 'Aujourd\'hui : j\'ai testé <b>4 personnalités</b>. Grand secret : IA = capteurs + règles + vitesse. <b>Pas de magie !</b> Même boucle que ChatGPT !',
+    op04_fav: 'Ma fav',
+    op04_draw: '▸ Designe TA personnalité !',
+    op04_d1: 'Nom : <span style="border-bottom: 2px solid #1a2230; display: inline-block; min-width: 200px;"></span>',
+    op04_d2: 'SI sonar &lt; ___ cm → action : ____________________',
+    op04_d3: 'SI chemin libre → action : ____________________',
+    op04_chal: 'Compter les esquives en mode wander pendant 2 min !',
+    op04_clue: 'Esquives : ____ 🚧',
+    op05_name: 'Carte Live', op05_code: '"bâtir une carte avec les tours de roue · trouver la dérive"',
+    op05_msg: 'Aujourd\'hui : j\'ai bâti une <b>carte SLAM</b> avec les tours de roue ! 1 tour = 25 cm. La carte dérive — c\'est pour ça que le GPS existe !',
+    op05_b1: '1 tour =', op05_b2: 'la dérive c\'est', op05_b3: 'pourquoi le GPS',
+    op05_draw: '▸ Dessine ta chambre ou le chemin de l\'école !',
+    op05_chal: 'Rouler un carré parfait · mesure la dérive !',
+    op05_clue: 'Dérive : ____ cm 📏',
+    op06_name: 'Dessin = Code', op06_code: '"ton premier programme · sans taper !"',
+    op06_msg: 'Aujourd\'hui : j\'ai dessiné un chemin avec le doigt et le robot l\'a suivi TOUT SEUL ! Sauvé en JSON = mon <b>premier programme</b> !',
+    op06_b1: 'Conduire =', op06_b2: 'Programmer =', op06_b3: 'Mon fichier',
+    op06_draw: '▸ Esquisse le chemin programmé !',
+    op06_chal: 'Faire dessiner ton initiale au robot !',
+    op06_clue: 'Ma lettre : ____ ✏️',
+    op07_name: 'Labo Son', op07_code: '"le son est de la donnée · fréquence = hauteur"',
+    op07_msg: 'Aujourd\'hui : j\'ai fait une <b>chanson 4 notes</b> au buzzer et décodé du Morse ! Le son n\'est que des nombres — pareil que Spotify !',
+    op07_fact: 'Spotify, écouteurs, notes vocales — tout son n\'est que des nombres. Même tes morceaux préférés !',
+    op07_draw: '▸ Ma chanson 4 notes !',
+    op07_d1: 'Nom de la chanson :', op07_notes: 'Notes :',
+    op07_b1: 'Aigu =', op07_b2: 'Grave =', op07_b3: 'Morse SOS',
+    op07_chal: 'Décoder un mot Morse 5 lettres en moins de 30 sec !',
+    op07_clue: 'Mon temps : ____ sec ⏱',
+    op08_name: 'Ingé Servo', op08_code: '"angles précis · 0-180° · designe un accessoire"',
+    op08_msg: 'Aujourd\'hui : j\'ai envoyé le servo à des <b>angles exacts</b> (0°, 45°, 90°...). J\'ai designé mon propre attache papier — je suis un <b>ingénieur</b> !',
+    op08_b1: 'Moteur =', op08_b2: 'Servo =', op08_b3: 'Balayage =',
+    op08_draw: '▸ Esquisse ton invention servo !',
+    op08_d1: 'Nom de l\'invention : <span style="border-bottom: 2px solid #1a2230; display: inline-block; min-width: 220px;"></span>',
+    op08_d2: 'Ce que ça fait : ___________________________________',
+    op08_d3: 'À 0° → ____________  ·  À 90° → ____________  ·  À 180° → ____________',
+    op08_chal: 'Atteindre 5 angles aléatoires · réflexe le plus rapide !',
+    op08_clue: 'Réaction : ____ ms ⚡',
+    op09_name: 'Détective Données', op09_code: '"hypothèse · test · données · conclusion"',
+    op09_msg: 'Aujourd\'hui : j\'étais un <b>scientifique</b> ! J\'ai deviné, testé, lu la courbe, conclu. Pareil que la NASA !',
+    op09_draw: '▸ Mon expérience : tapis vs sol dur',
+    op09_t1: 'Mon HYPOTHÈSE', op09_t1v: 'Le tapis ralentit de ____%',
+    op09_t2: 'Dur moyen', op09_t3: 'Tapis moyen', op09_t4: 'Différence',
+    op09_t5: 'J\'avais raison ?', op09_t5v: 'OUI / NON / un peu',
+    op09_chal: 'Fais une hypothèse · trompe-toi exprès une fois !',
+    op09_clue: '"Tort = la science gagne quand même" 🔬',
+    op10_name: 'Trouveur de Chemin', op10_code: '"recherche A* · même logique que Google Maps"',
+    op10_msg: 'Aujourd\'hui : j\'ai résolu un labyrinthe. Puis j\'ai vu <b>A*</b> le résoudre plus vite ! Les algorithmes sont des recettes. Pareil que Google Maps !',
+    op10_fact: 'Google Maps utilise A* à chaque demande d\'itinéraire. Des milliards de fois par jour. Même algorithme que je viens de voir !',
+    op10_b1: 'Algorithme =', op10_b2: 'Chemin vert A* =', op10_b3: 'Utilisé par',
+    op10_draw: '▸ Designe ton labyrinthe · trace le plus court chemin !',
+    op10_chal: 'Résoudre un labyrinthe 5×5 papier en moins de 30 sec !',
+    op10_clue: 'Mon temps : ____ sec 🏃',
+    op11_name: 'Duels Robots', op11_code: '"2 robots · compétition · coopération"',
+    op11_msg: 'Aujourd\'hui : 2 robots ! On a <b>combattu</b> avec des épées sonar ⚔️ et essayé de <b>coopérer</b>. La coopération c\'est plus dur que se battre !',
+    op11_b1: 'Mes victoires', op11_b2: 'Mon binôme', op11_b3: 'Latence c\'est',
+    op11_draw: '▸ Dessine le duel ÉPIQUE — ton robot vs le sien !',
+    op11_chal: 'Gagner un duel sans prendre un seul coup !',
+    op11_clue: 'Score final : ____ vs ____ 🏆',
+    op12_name: 'Grande Mission !', op12_code: '"designer · construire · présenter · être un héros"',
+    op12_msg: 'MISSION FINALE ! Équipe de 3. On a eu un vrai <b>scénario</b>, on a planifié, construit, et <b>présenté</b>. 12 missions de compétences en UN seul gros show !',
+    op12_b1: 'Code mission', op12_b2: 'Mon équipe', op12_b3: 'Score / 10',
+    op12_draw: '▸ Esquisse le plan de mission de ton équipe !',
+    op12_chal: 'Utilise au moins 3 fonctions différentes en UNE mission !',
+    op12_clue: 'Fonctions utilisées : __________________________',
+    challenge: '▸ DÉFI DE ROBI',
+    learned: 'J\'ai appris', best: 'Mon moment fav', hard: 'Le plus dur',
+    badge_connector: 'CONNECTEUR<br>DÉBLOQUÉ', badge_velocity: 'SPÉCIALISTE<br>VITESSE',
+    badge_recon: 'SCOUT<br>CAPTEURS', badge_brain: 'HACKER<br>CERVEAU',
+    badge_carto: 'CARTOGRAPHE', badge_prog: 'PROGRAMMEUR<br>DÉBLOQUÉ',
+    badge_signal: 'COMPOSITEUR<br>DÉBLOQUÉ', badge_eng: 'INGÉNIEUR<br>DÉBLOQUÉ',
+    badge_data: 'SCIENTIFIQUE<br>DONNÉES', badge_path: 'TROUVEUR<br>DE CHEMIN',
+    badge_multi: 'MAÎTRE<br>DUEL', badge_final: 'HÉROS<br>GRANDE MISSION',
+    cert_title: 'Tu l\'as fait !', cert_sub: '12 missions · 1 inventeur courageux',
+    cert_certifies: 'Ceci certifie que',
+    cert_text: 'a bravement complété les <b>12 missions robot</b>,<br>survécu à <b>d\'innombrables slaloms</b>, et est officiellement :',
+    cert_designation: '▸ INVENTEUR ROBOT JUNIOR ▸',
+    sig_robi: 'Robi-9 le Robot 🤖', sig_handler: 'Animateur d\'atelier',
+    cert_date: 'Date :',
+    foot_pow: 'propulsé par <a href="https://workshop-diy.org" target="_blank" rel="noopener">workshop-diy.org</a>'
+  },
+  ar: {
+    logo: 'مغامرتي مع الروبوت',
+    print: '🖨 طباعة',
+    cov_badge: '▸ مغامرتي مع الروبوت',
+    cov_t1: 'مغامرتي', cov_t2: 'مع الروبوت !',
+    cov_sub: '// 12 مهمّة مسجّلة · 18 ساعة من المرح',
+    cov_tag: '"من أوّل اتّصال إلى المهمّة الكبرى النهائية !"',
+    cov_foot: '// <b>ملك :</b> المخترع المذكور أعلاه',
+    card_name: 'اسمي :', card_age: 'عمري :', card_robot: 'روبوتي :', card_date: 'بدأت في :',
+    idx_title: '▸ مهمّاتي الـ12',
+    idx_msg: '<b>أهلاً أيّها المخترع !</b> ضع علامة ✓ بعد كل مهمّة. الـ12 = أنت سيّد الروبوتات !',
+    op01_name: 'إيقاظ الروبوت', op01_code: '"الاتصال بالبلوتوث · إتقان زرّ STOP"',
+    op01_msg: 'اليوم : تعلّمت إيقاظ روبوتي بالـ<b>بلوتوث</b> واستخدام زرّ <b>STOP</b> الأحمر الكبير. حصلت على شارتي الأولى : <b>المُتّصل</b> !',
+    op01_draw: '▸ ارسم روبوتك يستيقظ !',
+    op01_chal: 'اتّصل ← قُد ← STOP، الكلّ في أقلّ من 10 ثوانٍ !',
+    op01_clue: 'وقتي : ____ ثا ⏱',
+    op02_name: 'مختبر السرعة', op02_code: '"معايرة الدواسة · اختبار الفرامل"',
+    op02_msg: 'اليوم : اختبرت <b>مسافة الفرملة</b> على 30/60/100% ورسمت أوّل <b>منحنى علمي</b> لي. الطاقة ليست خطّيّة — رائع !',
+    op02_draw: '▸ منحنى السرعة (3 نقاط · ارسم المنحنى !)',
+    op02_chal: 'الرسوّ في المربّع 3 مرّات متتالية !',
+    op02_clue: 'محاولات : ____ 🅿️',
+    brake_lbl: 'فرامل (سم)',
+    op03_name: 'حواس الروبوت', op03_code: '"سونار · حساسات الخط · أشعة تحت حمراء — مثل الخفّاش !"',
+    op03_msg: 'اليوم : اختبرت <b>3 حواسّ</b> لروبوتي — السونار (آذان خفّاش !)، حساسات الخط، والأشعة تحت الحمراء. نفس فيزياء الخفّاش !',
+    op03_fact: 'الخفافيش تجد الحشرات في الظلام بالأمواج فوق الصوتية. سونار الروبوت يفعل نفس الشيء — ضربة 40 كيلوهرتز، اسمع الصدى.',
+    op03_sonar: 'السونار يقرأ بـ', op03_line: 'الأرض السوداء =', op03_fav: 'حساسي المفضّل',
+    op03_draw: '▸ ارسم الروبوت. علِّم كل الحساسات !',
+    op03_chal: 'تنبّأ بقراءة السونار 5 مرّات متتالية !',
+    op03_clue: 'أفضل سلسلة : ____ 🎯',
+    op04_name: 'دماغ الروبوت', op04_code: '"4 شخصيّات · ما هو \'التفكير\' حقّاً ؟"',
+    op04_msg: 'اليوم : اختبرت <b>4 شخصيّات روبوت</b>. سرّ كبير : الذكاء الاصطناعي = حساسات + قواعد + سرعة. <b>لا سحر !</b> نفس حلقة ChatGPT !',
+    op04_fav: 'مفضّلتي',
+    op04_draw: '▸ صمّم شخصيّتك !',
+    op04_d1: 'الاسم : <span style="border-bottom: 2px solid #1a2230; display: inline-block; min-width: 200px;"></span>',
+    op04_d2: 'إذا السونار &lt; ___ سم ← العمل : ____________________',
+    op04_d3: 'إذا الطريق فارغ ← العمل : ____________________',
+    op04_chal: 'راقب وضع الاستكشاف · عُدّ تجنّب العقبات في دقيقتين !',
+    op04_clue: 'تجنّبات : ____ 🚧',
+    op05_name: 'خريطة حيّة', op05_code: '"ابنِ خريطة من دورات العجلات · اكتشف الانحراف"',
+    op05_msg: 'اليوم : بنيت <b>خريطة SLAM</b> من دورات العجلات ! دورة واحدة = 25 سم. لكن الخريطة تنحرف — لذلك يوجد GPS !',
+    op05_b1: 'دورة واحدة =', op05_b2: 'الانحراف يعني', op05_b3: 'لماذا GPS',
+    op05_draw: '▸ ارسم غرفتك أو طريق المدرسة كخريطة !',
+    op05_chal: 'قُد مربّعاً مثاليّاً · قِس فجوة الانحراف !',
+    op05_clue: 'الانحراف : ____ سم 📏',
+    op06_name: 'الرسم = البرمجة', op06_code: '"أوّل برنامج لك · بدون كتابة !"',
+    op06_msg: 'اليوم : رسمت مساراً بإصبعي والروبوت تبعه وحده ! حُفِظ كملف JSON = <b>أوّل برنامج لي</b> !',
+    op06_b1: 'القيادة =', op06_b2: 'البرمجة =', op06_b3: 'اسم ملفّي',
+    op06_draw: '▸ ارسم المسار الذي برمجته !',
+    op06_chal: 'اجعل الروبوت يرسم الحرف الأوّل من اسمك !',
+    op06_clue: 'حرفي : ____ ✏️',
+    op07_name: 'مختبر الصوت', op07_code: '"الصوت بيانات · التردّد = الطبقة"',
+    op07_msg: 'اليوم : عزفت <b>أغنية 4 نغمات</b> على الجرس وفككت Morse ! الصوت مجرّد أرقام — نفس Spotify !',
+    op07_fact: 'Spotify، السمّاعات، الرسائل الصوتية — كلّ صوت هو أرقام. حتى أغانيك المفضّلة !',
+    op07_draw: '▸ أغنيتي 4 نغمات !',
+    op07_d1: 'اسم الأغنية :', op07_notes: 'النغمات :',
+    op07_b1: 'طبقة عالية =', op07_b2: 'طبقة منخفضة =', op07_b3: 'Morse SOS',
+    op07_chal: 'فُكّ كلمة Morse 5 حروف في أقلّ من 30 ثا !',
+    op07_clue: 'وقتي : ____ ثا ⏱',
+    op08_name: 'مهندس سيرفو', op08_code: '"زوايا دقيقة · 0-180° · صمّم ملحقاً"',
+    op08_msg: 'اليوم : أرسلت السيرفو إلى <b>زوايا محدّدة</b> (0°، 45°، 90°...). صمّمت ملحقي الورقي — أنا <b>مهندس</b> !',
+    op08_b1: 'محرّك =', op08_b2: 'سيرفو =', op08_b3: 'مسح =',
+    op08_draw: '▸ ارسم اختراع السيرفو الخاص بك !',
+    op08_d1: 'اسم الاختراع : <span style="border-bottom: 2px solid #1a2230; display: inline-block; min-width: 220px;"></span>',
+    op08_d2: 'ما يفعله : ___________________________________',
+    op08_d3: 'عند 0° ← ____________  ·  عند 90° ← ____________  ·  عند 180° ← ____________',
+    op08_chal: 'اضغط 5 زوايا عشوائية · أسرع رد فعل !',
+    op08_clue: 'رد الفعل : ____ ms ⚡',
+    op09_name: 'محقّق البيانات', op09_code: '"فرضيّة · اختبار · بيانات · استنتاج"',
+    op09_msg: 'اليوم : كنت <b>عالِماً</b> ! حدست، اختبرت، قرأت المنحنى، استنتجت. نفس طريقة ناسا !',
+    op09_draw: '▸ تجربتي : السجّاد ضدّ الأرض الصلبة',
+    op09_t1: 'فرضيّتي', op09_t1v: 'السجّاد يبطّئ بـ ____%',
+    op09_t2: 'متوسّط الصلب', op09_t3: 'متوسّط السجّاد', op09_t4: 'الفرق',
+    op09_t5: 'هل كنت محقّاً ؟', op09_t5v: 'نعم / لا / تقريباً',
+    op09_chal: 'اعمل فرضيّة · اخطئ عمداً مرّة !',
+    op09_clue: '"الخطأ = العلم لا يزال يفوز" 🔬',
+    op10_name: 'باحث المسار', op10_code: '"بحث A* · نفس منطق Google Maps"',
+    op10_msg: 'اليوم : حللت متاهة. ثم رأيت <b>A*</b> يحلّها أسرع ! الخوارزميات وصفات. نفس ما يستخدمه Google Maps !',
+    op10_fact: 'Google Maps يستخدم A* في كل طلب اتّجاهات. مليار مرّة يوميّاً. نفس الخوارزمية التي رأيتها !',
+    op10_b1: 'الخوارزمية =', op10_b2: 'مسار A* الأخضر =', op10_b3: 'مستخدمة من',
+    op10_draw: '▸ صمّم متاهتك · ارسم أقصر مسار !',
+    op10_chal: 'حلّ متاهة 5×5 ورقيّة في أقلّ من 30 ثا !',
+    op10_clue: 'وقتي : ____ ثا 🏃',
+    op11_name: 'مبارزات الروبوتات', op11_code: '"2 روبوتات · تنافس · تعاون"',
+    op11_msg: 'اليوم : 2 روبوتات ! <b>تبارزنا</b> بسيوف السونار ⚔️ وحاولنا <b>التعاون</b>. التعاون أصعب من القتال !',
+    op11_b1: 'انتصاراتي', op11_b2: 'شريكي', op11_b3: 'التأخّر يعني',
+    op11_draw: '▸ ارسم المبارزة الملحميّة — روبوتك ضدّهم !',
+    op11_chal: 'افز بمبارزة دون تلقّي ضربة واحدة !',
+    op11_clue: 'النتيجة النهائية : ____ ضدّ ____ 🏆',
+    op12_name: 'المهمّة الكبرى !', op12_code: '"صمّم · ابنِ · اعرض · كن بطلاً"',
+    op12_msg: 'المهمّة النهائيّة ! فريق من 3. حصلنا على <b>سيناريو</b> حقيقي، خطّطنا، بنينا، و<b>عرضنا</b>. 12 مهمّة من المهارات في عرض واحد كبير !',
+    op12_b1: 'كود المهمّة', op12_b2: 'فريقي', op12_b3: 'النتيجة / 10',
+    op12_draw: '▸ ارسم خطّة مهمّة فريقك !',
+    op12_chal: 'استخدم 3 ميزات مختلفة على الأقلّ في مهمّة واحدة !',
+    op12_clue: 'الميزات المستخدمة : __________________________',
+    challenge: '▸ تحدّي روبي',
+    learned: 'تعلّمت', best: 'لحظتي المفضّلة', hard: 'الأصعب',
+    badge_connector: 'مُتّصل<br>مفتوح', badge_velocity: 'متخصّص<br>السرعة',
+    badge_recon: 'كشّاف<br>الحساسات', badge_brain: 'هاكر<br>الدماغ',
+    badge_carto: 'صانع<br>الخرائط', badge_prog: 'مبرمج<br>مفتوح',
+    badge_signal: 'ملحّن<br>مفتوح', badge_eng: 'مهندس<br>مفتوح',
+    badge_data: 'عالم<br>البيانات', badge_path: 'باحث<br>المسار',
+    badge_multi: 'سيّد<br>المبارزة', badge_final: 'بطل<br>المهمّة الكبرى',
+    cert_title: 'لقد فعلتها !', cert_sub: '12 مهمّة · مخترع شجاع واحد',
+    cert_certifies: 'هذه شهادة بأنّ',
+    cert_text: 'قد أتمّ بشجاعة جميع <b>الـ12 مهمّة روبوت</b>،<br>ونجا من <b>تعرّجات لا تُحصى</b>، وهو الآن رسميّاً :',
+    cert_designation: '▸ مخترع روبوت مبتدئ ▸',
+    sig_robi: 'روبي-9 الروبوت 🤖', sig_handler: 'قائد الورشة',
+    cert_date: 'التاريخ :',
+    foot_pow: 'مدعوم بـ <a href="https://workshop-diy.org" target="_blank" rel="noopener">workshop-diy.org</a>'
+  }
+};
+
+let currentLang = 'en';
+
+function setL(lang) {
+  currentLang = lang;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const k = el.dataset.i18n;
+    if (T[lang] && T[lang][k]) el.innerHTML = T[lang][k];
+  });
+  document.body.classList.toggle('rtl', lang === 'ar');
+  document.documentElement.lang = lang;
+  document.documentElement.dir = (lang === 'ar') ? 'rtl' : 'ltr';
+  ['langEn','langFr','langAr'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.background = '';
+  });
+  const active = document.getElementById('lang' + lang.charAt(0).toUpperCase() + lang.slice(1));
+  if (active) active.style.background = 'var(--neon)';
+  try { localStorage.setItem('robi.lang', lang); } catch (e) {}
+}
+
+const themeSel = document.getElementById('themeSelect');
+function applyTheme(t) {
+  document.documentElement.setAttribute('data-theme', t);
+  themeSel.value = t;
+  try { localStorage.setItem('robi.theme', t); } catch (e) {}
+}
+themeSel.addEventListener('change', e => applyTheme(e.target.value));
+
+try {
+  const sl = localStorage.getItem('robi.lang'); if (sl) setL(sl); else setL('en');
+  const th = localStorage.getItem('robi.theme'); if (th) applyTheme(th);
+} catch (e) { setL('en'); }
+</script>
+
+</body>
+</html>

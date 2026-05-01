@@ -1,0 +1,1279 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="carbon">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ROBI-9 // Quick Games · Inter-Phase</title>
+<link rel="stylesheet" href="workshops-theme.css">
+<style>
+/* Theme variables defined in workshops-theme.css per [data-theme] */
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
+    repeating-linear-gradient(0deg, transparent 0 39px, var(--grid) 39px 40px),
+    repeating-linear-gradient(90deg, transparent 0 39px, var(--grid) 39px 40px),
+    var(--bg);
+  color: var(--text); font-family: 'JetBrains Mono', 'Consolas', monospace;
+  line-height: 1.5; min-height: 100vh; padding: 30px 20px;
+}
+body.rtl { direction: rtl; font-family: 'Tajawal', 'Cairo', system-ui, sans-serif; }
+
+.lang-bar {
+  position: fixed; top: 8px; right: 12px; z-index: 200;
+  display: flex; gap: 4px;
+  background: var(--bg-card); border: 1px solid var(--neon);
+  padding: 4px;
+}
+body.rtl .lang-bar { left: 12px; right: auto; }
+.lang-bar a {
+  color: var(--steel); cursor: pointer;
+  padding: 4px 10px; font-size: 11px; font-weight: 700;
+}
+.lang-bar a.active { background: var(--neon); color: var(--ink); }
+
+.container { max-width: 1200px; margin: 0 auto; }
+
+header {
+  text-align: center; margin-bottom: 40px;
+  position: relative;
+}
+header .clearance {
+  display: inline-block;
+  background: var(--orange); color: var(--ink);
+  padding: 4px 12px; font-size: 11px;
+  font-weight: 800; letter-spacing: 0.15em;
+  margin-bottom: 14px;
+}
+header h1 {
+  font-size: 2.6rem; margin: 0;
+  color: var(--neon); letter-spacing: -0.01em;
+  text-shadow: 0 0 30px rgba(34,197,94,0.3);
+}
+header .sub {
+  font-size: 1.05rem; color: var(--cyan);
+  margin-top: 8px; font-style: italic;
+  letter-spacing: 0.05em;
+}
+header .badge {
+  display: inline-block;
+  background: var(--bg-card);
+  border: 2px solid var(--neon);
+  color: var(--neon);
+  padding: 8px 14px;
+  font-size: 28px; font-family: monospace;
+  margin: 16px 0;
+}
+
+/* DECISION MATRIX */
+.matrix {
+  background: var(--bg-card);
+  border: 1px solid var(--neon);
+  padding: 24px 28px;
+  margin-bottom: 40px;
+  position: relative;
+}
+.matrix::before {
+  content: '[ Which game to pick? ]';
+  position: absolute; top: -10px; left: 18px;
+  background: var(--bg); color: var(--neon);
+  padding: 0 8px; font-size: 0.72rem; letter-spacing: 0.1em;
+}
+body.rtl .matrix::before { right: 18px; left: auto; }
+.matrix h2 {
+  font-size: 1.4rem; margin: 0 0 14px;
+  color: var(--cyan); letter-spacing: 0.04em;
+}
+.matrix-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 10px;
+}
+.matrix-row {
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--neon);
+  padding: 10px 14px;
+  font-size: 0.9rem;
+}
+body.rtl .matrix-row { border-left: 1px solid var(--border); border-right: 3px solid var(--neon); }
+.matrix-row b { color: var(--amber); }
+.matrix-row .arrow { color: var(--cyan); font-weight: 800; margin: 0 4px; }
+.matrix-row .target { color: var(--neon); font-weight: 800; }
+.matrix-row.cyan { border-left-color: var(--cyan); }
+body.rtl .matrix-row.cyan { border-right-color: var(--cyan); }
+.matrix-row.amber { border-left-color: var(--amber); }
+body.rtl .matrix-row.amber { border-right-color: var(--amber); }
+.matrix-row.orange { border-left-color: var(--orange); }
+body.rtl .matrix-row.orange { border-right-color: var(--orange); }
+.matrix-row.danger { border-left-color: var(--danger); }
+body.rtl .matrix-row.danger { border-right-color: var(--danger); }
+
+/* CATEGORY */
+.category { margin: 50px 0; }
+.cat-header {
+  display: flex; align-items: center; gap: 14px;
+  margin-bottom: 18px; flex-wrap: wrap;
+  border-bottom: 2px solid var(--neon);
+  padding-bottom: 8px;
+}
+.cat-header h2 {
+  font-size: 1.7rem; margin: 0;
+  letter-spacing: 0.05em;
+  color: var(--neon);
+}
+.cat-header.cyan h2   { color: var(--cyan); }
+.cat-header.amber h2  { color: var(--amber); }
+.cat-header.orange h2 { color: var(--orange); }
+.cat-header.danger h2 { color: var(--danger); }
+.cat-header.cyan   { border-bottom-color: var(--cyan); }
+.cat-header.amber  { border-bottom-color: var(--amber); }
+.cat-header.orange { border-bottom-color: var(--orange); }
+.cat-header.danger { border-bottom-color: var(--danger); }
+.cat-header .lozenge {
+  background: var(--bg-card); border: 1px solid var(--steel);
+  color: var(--steel); padding: 3px 10px;
+  font-size: 0.78rem; letter-spacing: 0.06em;
+}
+
+.games {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 14px;
+}
+.game {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-top: 4px solid var(--neon);
+  padding: 16px 20px;
+  position: relative;
+  transition: all 0.15s ease;
+}
+.game:hover {
+  border-top-color: var(--cyan);
+  background: var(--bg-soft);
+}
+.game.cyan   { border-top-color: var(--cyan); }
+.game.amber  { border-top-color: var(--amber); }
+.game.orange { border-top-color: var(--orange); }
+.game.danger { border-top-color: var(--danger); }
+.game .id {
+  display: inline-block;
+  background: var(--ink); color: var(--neon);
+  border: 1px solid var(--neon);
+  padding: 2px 8px;
+  font-size: 0.7rem; font-weight: 800;
+  letter-spacing: 0.06em; margin-bottom: 6px;
+}
+.game.cyan   .id { color: var(--cyan); border-color: var(--cyan); }
+.game.amber  .id { color: var(--amber); border-color: var(--amber); }
+.game.orange .id { color: var(--orange); border-color: var(--orange); }
+.game.danger .id { color: var(--danger); border-color: var(--danger); }
+.game h3 {
+  margin: 4px 0 6px;
+  font-size: 1.15rem;
+  color: var(--neon);
+  letter-spacing: 0.02em;
+}
+.game.cyan   h3 { color: var(--cyan); }
+.game.amber  h3 { color: var(--amber); }
+.game.orange h3 { color: var(--orange); }
+.game.danger h3 { color: var(--danger); }
+.game .desc {
+  color: var(--steel);
+  font-size: 0.88rem;
+  font-style: italic;
+  margin: 6px 0 10px;
+}
+.game h4 {
+  margin: 10px 0 4px;
+  font-size: 0.78rem;
+  color: var(--orange);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-bottom: 1px dotted var(--border);
+  padding-bottom: 2px;
+}
+.game ol { padding-left: 20px; margin: 4px 0; font-size: 0.88rem; }
+body.rtl .game ol { padding-left: 0; padding-right: 20px; }
+.game ol li { margin: 3px 0; }
+.game .meta {
+  margin-top: 10px;
+  display: flex;
+  gap: 6px;
+  font-size: 0.72rem;
+  flex-wrap: wrap;
+}
+.game .meta span {
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  padding: 2px 8px;
+  color: var(--steel);
+}
+.game .why {
+  margin-top: 8px;
+  background: var(--bg-soft);
+  border-left: 2px solid var(--cyan);
+  padding: 6px 10px;
+  font-size: 0.82rem;
+  color: var(--text);
+}
+body.rtl .game .why { border-left: none; border-right: 2px solid var(--cyan); }
+.game .why b { color: var(--cyan); }
+
+.signoff {
+  background: var(--bg-card);
+  border: 1px solid var(--orange);
+  padding: 22px 28px;
+  margin: 50px auto 30px;
+  text-align: center;
+  position: relative;
+  max-width: 700px;
+}
+.signoff::before {
+  content: '[ EOF // ROBI-9 ]';
+  position: absolute; top: -10px; left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg); color: var(--orange);
+  padding: 0 8px; font-size: 0.72rem;
+  letter-spacing: 0.1em;
+}
+.signoff .stat {
+  font-size: 1.4rem; color: var(--neon);
+  font-weight: 800; letter-spacing: 0.05em;
+  margin-bottom: 8px;
+}
+.signoff .text {
+  font-size: 0.92rem; color: var(--cyan);
+  line-height: 1.6;
+}
+.signoff .text b { color: var(--amber); }
+
+@media print {
+  body { background: #fff; color: #000; }
+  .game { break-inside: avoid; border-color: #000; }
+  .lang-bar, header .badge { display: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="lang-bar">
+  <a onclick="setL('en')" id="langEn" class="active">EN</a>
+  <a onclick="setL('fr')" id="langFr">FR</a>
+  <a onclick="setL('ar')" id="langAr">AR</a>
+  <select class="wd-select" id="themeSelect" aria-label="Theme" style="font-size:11px; padding:2px 6px; margin-left:4px;">
+    <option value="carbon">▣ Carbon</option>
+    <option value="forest">▣ Forest</option>
+    <option value="steel">▣ Steel</option>
+    <option value="paper">☼ Paper</option>
+    <option value="pearl">☼ Pearl</option>
+  </select>
+</div>
+
+<div class="container">
+
+<header>
+  <span class="clearance" data-i18n="hd_clearance">▸ FUN BREAKS</span>
+  <h1 data-i18n="hd_title">Quick Games</h1>
+  <div class="sub" data-i18n="hd_sub">"25 quick games · play between mission parts"</div>
+  <div class="badge">▣</div>
+</header>
+
+<div class="matrix">
+  <h2 data-i18n="mx_title">▸ WHICH GAME TO PICK?</h2>
+  <p style="color: var(--steel); font-size: 0.85rem; margin-bottom: 14px;" data-i18n="mx_help">// pick a game that matches what the kids need</p>
+  <div class="matrix-grid">
+    <div class="matrix-row" data-i18n="mx_r1">⚡ Kids <b>fidgety</b>?<span class="arrow">→</span><span class="target">POWER-UP</span></div>
+    <div class="matrix-row danger" data-i18n="mx_r2">⚠️ Kids <b>too wild</b>?<span class="arrow">→</span><span class="target">SYS RESET</span></div>
+    <div class="matrix-row cyan" data-i18n="mx_r3">▣ Stuck on a <b>problem</b>?<span class="arrow">→</span><span class="target">COGNITIVE DRILL</span></div>
+    <div class="matrix-row amber" data-i18n="mx_r4">◆ Group <b>not getting along</b>?<span class="arrow">→</span><span class="target">SQUAD DRILL</span></div>
+    <div class="matrix-row orange" data-i18n="mx_r5">↻ Need a <b>laugh</b>?<span class="arrow">→</span><span class="target">MORALE BREAK</span></div>
+  </div>
+</div>
+
+<!-- POWER-UP DRILLS -->
+<section class="category">
+  <div class="cat-header">
+    <h2 data-i18n="cat1_title">⚡ WAKE-UP GAMES</h2>
+    <span class="lozenge" data-i18n="cat1_sub">// high energy · wake the group</span>
+  </div>
+  <div class="games">
+    <div class="game">
+      <span class="id">G-01</span>
+      <h3 data-i18n="g01_title">ROBOT SAYS</h3>
+      <div class="desc" data-i18n="g01_desc">Like Simon Says — but with robot commands.</div>
+      <h4 data-i18n="protocol">▸ HOW TO PLAY</h4>
+      <ol>
+        <li data-i18n="g01_s1">Grown-up: "Robot says ROTATE!" → all group rotate</li>
+        <li data-i18n="g01_s2">"Robot says BEEP!" → all beep</li>
+        <li data-i18n="g01_s3">"Walk forward!" (no "Robot says"!) → who moves = OUT</li>
+        <li data-i18n="g01_s4">Last operator standing = victor</li>
+      </ol>
+      <div class="meta"><span>⏱ 3-5 min</span><span>🔊🔊🔊</span><span data-i18n="any_size">👥 any size</span></div>
+      <div class="why"><b>EFFECT:</b> <span data-i18n="g01_why">listening + body movement = perfect wake-up</span></div>
+    </div>
+
+    <div class="game cyan">
+      <span class="id">G-02</span>
+      <h3 data-i18n="g02_title">SIGNAL FREEZE</h3>
+      <div class="desc" data-i18n="g02_desc">Music ON = move. Music OFF = STATUE.</div>
+      <h4 data-i18n="protocol">▸ HOW TO PLAY</h4>
+      <ol>
+        <li data-i18n="g02_s1">Play any energetic track</li>
+        <li data-i18n="g02_s2">Group moves like field kids</li>
+        <li data-i18n="g02_s3">Pause music randomly → all FREEZE</li>
+        <li data-i18n="g02_s4">Whoever moves = sit out (or 5 push-ups)</li>
+      </ol>
+      <div class="meta"><span>⏱ 3 min</span><span>🔊🔊🔊</span><span>👥 5+</span></div>
+      <div class="why"><b>EFFECT:</b> <span data-i18n="g02_why">burns kinetic energy · sharpens reaction time</span></div>
+    </div>
+
+    <div class="game amber">
+      <span class="id">G-03</span>
+      <h3 data-i18n="g03_title">BATTERY RECHARGE</h3>
+      <div class="desc" data-i18n="g03_desc">Group cardio framed as power restoration.</div>
+      <h4 data-i18n="protocol">▸ HOW TO PLAY</h4>
+      <ol>
+        <li data-i18n="g03_s1">All standing. "Battery: 0%! [STATUS: CRITICAL]"</li>
+        <li data-i18n="g03_s2">10 jumping jacks → "BATTERY: 25%"</li>
+        <li data-i18n="g03_s3">10 squats → "BATTERY: 50%"</li>
+        <li data-i18n="g03_s4">10 high-fives with neighbour → "BATTERY: 100% · OPERATIONAL"</li>
+      </ol>
+      <div class="meta"><span>⏱ 2 min</span><span>🔊🔊</span><span data-i18n="any_size">👥 any</span></div>
+      <div class="why"><b>EFFECT:</b> <span data-i18n="g03_why">quick cardio · keeps the robot theme going</span></div>
+    </div>
+
+    <div class="game orange">
+      <span class="id">G-04</span>
+      <h3 data-i18n="g04_title">ROBOT WALK RELAY</h3>
+      <div class="desc" data-i18n="g04_desc">Stiff-legged walk relay between teams.</div>
+      <h4 data-i18n="protocol">▸ HOW TO PLAY</h4>
+      <ol>
+        <li data-i18n="g04_s1">2 teams. Stiff "robot walk" only</li>
+        <li data-i18n="g04_s2">Tag teammate at end → next kid goes</li>
+        <li data-i18n="g04_s3">First team done = field champions</li>
+        <li data-i18n="g04_s4">Bonus: must beep at every turn</li>
+      </ol>
+      <div class="meta"><span>⏱ 5 min</span><span>🔊🔊🔊</span><span>👥 6+</span></div>
+      <div class="why"><b>EFFECT:</b> <span data-i18n="g04_why">cardio + competition + ridiculous walking</span></div>
+    </div>
+
+    <div class="game">
+      <span class="id">G-05</span>
+      <h3 data-i18n="g05_title">BEEP-BOOP TAG</h3>
+      <div class="desc" data-i18n="g05_desc">Tag, but every tag requires vocal signal.</div>
+      <h4 data-i18n="protocol">▸ HOW TO PLAY</h4>
+      <ol>
+        <li data-i18n="g05_s1">1 operator is "active"</li>
+        <li data-i18n="g05_s2">Tag = touch + say "BEEP"</li>
+        <li data-i18n="g05_s3">Tagged operator becomes active + says "BOOP"</li>
+        <li data-i18n="g05_s4">Forgetting signal = stuck for 5 sec</li>
+      </ol>
+      <div class="meta"><span>⏱ 5 min</span><span>🔊🔊🔊</span><span>👥 6+</span></div>
+      <div class="why"><b>EFFECT:</b> <span data-i18n="g05_why">classic tag + cognitive overhead = harder than it looks</span></div>
+    </div>
+
+    <div class="game cyan">
+      <span class="id">G-06</span>
+      <h3 data-i18n="g06_title">RECON HUNT</h3>
+      <div class="desc" data-i18n="g06_desc">"Locate something RED in 30 sec! GO!"</div>
+      <h4 data-i18n="protocol">▸ HOW TO PLAY</h4>
+      <ol>
+        <li data-i18n="g06_s1">Grown-up names a property: "round" / "blue" / "soft"</li>
+        <li data-i18n="g06_s2">30-second timer</li>
+        <li data-i18n="g06_s3">Group scrambles to retrieve matching object</li>
+        <li data-i18n="g06_s4">Best find / fastest find = points</li>
+      </ol>
+      <div class="meta"><span>⏱ 3-5 min</span><span>🔊🔊🔊</span><span>👥 4+</span></div>
+      <div class="why"><b>EFFECT:</b> <span data-i18n="g06_why">sensors theme + scavenger hunt energy</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- COGNITIVE DRILLS -->
+<section class="category">
+  <div class="cat-header cyan">
+    <h2 data-i18n="cat2_title">🧠 BRAIN GAMES</h2>
+    <span class="lozenge" data-i18n="cat2_sub">// focus · thinking · stuck-buster</span>
+  </div>
+  <div class="games">
+    <div class="game cyan">
+      <span class="id">G-07</span>
+      <h3 data-i18n="g07_title">MISSING ASSET</h3>
+      <div class="desc" data-i18n="g07_desc">Memory test with 8 robot components.</div>
+      <h4 data-i18n="protocol">▸ HOW TO PLAY</h4>
+      <ol>
+        <li data-i18n="g07_s1">Lay 8 small objects on a tray (cap, pen, key…)</li>
+        <li data-i18n="g07_s2">Group observes for 30 sec, then closes eyes</li>
+        <li data-i18n="g07_s3">Remove ONE object</li>
+        <li data-i18n="g07_s4">Open eyes → first to identify missing item wins</li>
+      </ol>
+      <div class="meta"><span>⏱ 3 min</span><span>🔊</span><span data-i18n="any_size">👥 any</span></div>
+      <div class="why"><b>EFFECT:</b> <span data-i18n="g07_why">resets attention · quiet but engaging</span></div>
+    </div>
+
+    <div class="game cyan">
+      <span class="id">G-08</span>
+      <h3 data-i18n="g08_title">CHAIN BRIEFING</h3>
+      <div class="desc" data-i18n="g08_desc">Each kid adds one sentence to a robot log.</div>
+      <h4 data-i18n="protocol">▸ HOW TO PLAY</h4>
+      <ol>
+        <li data-i18n="g08_s1">Circle. Open with: "Robot ROBI-7 detected an unusual signal..."</li>
+        <li data-i18n="g08_s2">Next kid adds 1 sentence</li>
+        <li data-i18n="g08_s3">Continue around circle</li>
+        <li data-i18n="g08_s4">Stop when log = absurd (5 min max)</li>
+      </ol>
+      <div class="meta"><span>⏱ 5 min</span><span>🔊🔊</span><span>👥 5-12</span></div>
+      <div class="why"><b>EFFECT:</b> <span data-i18n="g08_why">listening + creativity + safe failure</span></div>
+    </div>
+
+    <div class="game cyan">
+      <span class="id">G-09</span>
+      <h3 data-i18n="g09_title">ALGORITHM CHARADES</h3>
+      <div class="desc" data-i18n="g09_desc">Act out an algorithm. Group guesses each step.</div>
+      <h4 data-i18n="protocol">▸ HOW TO PLAY</h4>
+      <ol>
+        <li data-i18n="g09_s1">Volunteer picks card: "make sandwich", "brush teeth", "tie laces"</li>
+        <li data-i18n="g09_s2">Acts it STEP-BY-STEP, no speaking</li>
+        <li data-i18n="g09_s3">Group guesses each step</li>
+        <li data-i18n="g09_s4">Bonus: "what was step 4?" tests memory</li>
+      </ol>
+      <div class="meta"><span>⏱ 5 min</span><span>🔊🔊</span><span>👥 4+</span></div>
+      <div class="why"><b>EFFECT:</b> <span data-i18n="g09_why">reinforces "algorithm = ordered steps" theme</span></div>
+    </div>
+
+    <div class="game cyan">
+      <span class="id">G-10</span>
+      <h3 data-i18n="g10_title">SIGNAL TELEPHONE</h3>
+      <div class="desc" data-i18n="g10_desc">Broken-phone, but with movement sequences.</div>
+      <h4 data-i18n="protocol">▸ HOW TO PLAY</h4>
+      <ol>
+        <li data-i18n="g10_s1">First operator does 3-move sequence (rotate, jump, clap)</li>
+        <li data-i18n="g10_s2">Shows next operator ONCE</li>
+        <li data-i18n="g10_s3">Each operator passes to next</li>
+        <li data-i18n="g10_s4">Last one performs → compare to original</li>
+      </ol>
+      <div class="meta"><span>⏱ 5 min</span><span>🔊🔊</span><span>👥 6+</span></div>
+      <div class="why"><b>EFFECT:</b> <span data-i18n="g10_why">memory + observation · hilarious distortion</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- SQUAD DRILLS -->
+<section class="category">
+  <div class="cat-header amber">
+    <h2 data-i18n="cat3_title">🤝 TEAM GAMES</h2>
+    <span class="lozenge" data-i18n="cat3_sub">// cooperation · bonding · reset divisions</span>
+  </div>
+  <div class="games">
+    <div class="game amber">
+      <span class="id">G-11</span>
+      <h3 data-i18n="g11_title">TACTICAL KNOT</h3>
+      <div class="desc" data-i18n="g11_desc">Untangle yourselves without breaking formation.</div>
+      <h4 data-i18n="protocol">▸ HOW TO PLAY</h4>
+      <ol>
+        <li data-i18n="g11_s1">Stand in circle. Reach across, grip 2 random hands</li>
+        <li data-i18n="g11_s2">Don't grip a neighbour</li>
+        <li data-i18n="g11_s3">Without breaking grip → untangle into circle</li>
+        <li data-i18n="g11_s4">Talk · plan · move slow</li>
+      </ol>
+      <div class="meta"><span>⏱ 5-10 min</span><span>🔊🔊</span><span>👥 6-12</span></div>
+      <div class="why"><b>EFFECT:</b> <span data-i18n="g11_why">forces cooperation + spatial reasoning</span></div>
+    </div>
+
+    <div class="game amber">
+      <span class="id">G-12</span>
+      <h3 data-i18n="g12_title">SHADOW PROTOCOL</h3>
+      <div class="desc" data-i18n="g12_desc">Pair up. One leads, one mirrors EXACTLY.</div>
+      <h4 data-i18n="protocol">▸ HOW TO PLAY</h4>
+      <ol>
+        <li data-i18n="g12_s1">Pairs face each other. NO talking</li>
+        <li data-i18n="g12_s2">Lead kid makes slow movements</li>
+        <li data-i18n="g12_s3">Shadow copies EXACTLY in real-time</li>
+        <li data-i18n="g12_s4">30 sec → swap roles</li>
+      </ol>
+      <div class="meta"><span>⏱ 4 min</span><span>🔊</span><span data-i18n="pairs">👥 pairs</span></div>
+      <div class="why"><b>EFFECT:</b> <span data-i18n="g12_why">builds focus + non-verbal sync</span></div>
+    </div>
+
+    <div class="game amber">
+      <span class="id">G-13</span>
+      <h3 data-i18n="g13_title">2 TRUTHS · 1 DECOY</h3>
+      <div class="desc" data-i18n="g13_desc">3 robot-related statements. 2 true. 1 fake.</div>
+      <h4 data-i18n="protocol">▸ HOW TO PLAY</h4>
+      <ol>
+        <li data-i18n="g13_s1">Each kid gives 3 robot statements</li>
+        <li data-i18n="g13_s2">2 are TRUE · 1 is DECOY</li>
+        <li data-i18n="g13_s3">Group votes on the decoy</li>
+        <li data-i18n="g13_s4">Reveal · bonus point for fooling everyone</li>
+      </ol>
+      <div class="meta"><span>⏱ 5 min</span><span>🔊🔊</span><span>👥 4-10</span></div>
+      <div class="why"><b>EFFECT:</b> <span data-i18n="g13_why">sharing facts + reading bluffs = bonding</span></div>
+    </div>
+
+    <div class="game amber">
+      <span class="id">G-14</span>
+      <h3 data-i18n="g14_title">ASSEMBLY OPERATION</h3>
+      <div class="desc" data-i18n="g14_desc">Stack 10 cups in 3 min using string ring.</div>
+      <h4 data-i18n="protocol">▸ HOW TO PLAY</h4>
+      <ol>
+        <li data-i18n="g14_s1">Each team: 10 plastic cups + 1 rubber band with 4 strings</li>
+        <li data-i18n="g14_s2">Each kid holds 1 string</li>
+        <li data-i18n="g14_s3">Build pyramid using ONLY the strings</li>
+        <li data-i18n="g14_s4">No hands on cups</li>
+      </ol>
+      <div class="meta"><span>⏱ 8 min</span><span>🔊🔊</span><span data-i18n="four_per">👥 4/team</span></div>
+      <div class="why"><b>EFFECT:</b> <span data-i18n="g14_why">pure cooperation · hilarious failures, satisfying wins</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- MORALE BREAKS -->
+<section class="category">
+  <div class="cat-header orange">
+    <h2 data-i18n="cat4_title">😄 LAUGH BREAKS</h2>
+    <span class="lozenge" data-i18n="cat4_sub">// quick laughs · break the tension</span>
+  </div>
+  <div class="games">
+    <div class="game orange">
+      <span class="id">G-15</span>
+      <h3 data-i18n="g15_title">ROBOT IMPRESSION</h3>
+      <div class="desc" data-i18n="g15_desc">Worst robot impression wins.</div>
+      <h4 data-i18n="protocol">▸ HOW TO PLAY</h4>
+      <ol>
+        <li data-i18n="g15_s1">Each kid does best robot impression + voice</li>
+        <li data-i18n="g15_s2">One by one. Audience scores 1-10</li>
+        <li data-i18n="g15_s3">Most absurd = victor</li>
+        <li data-i18n="g15_s4">Bonus: grown-up goes too</li>
+      </ol>
+      <div class="meta"><span>⏱ 3 min</span><span>🔊🔊🔊</span><span data-i18n="any_size">👥 any</span></div>
+      <div class="why"><b>EFFECT:</b> <span data-i18n="g15_why">self-deprecating laughs are the best</span></div>
+    </div>
+
+    <div class="game orange">
+      <span class="id">G-16</span>
+      <h3 data-i18n="g16_title">FREQUENCY CHOIR</h3>
+      <div class="desc" data-i18n="g16_desc">Everyone outputs robot sounds simultaneously.</div>
+      <h4 data-i18n="protocol">▸ HOW TO PLAY</h4>
+      <ol>
+        <li data-i18n="g16_s1">Form a circle</li>
+        <li data-i18n="g16_s2">Grown-up: "READY... BEEP!" → all beep in unison</li>
+        <li data-i18n="g16_s3">Then: "BOOP!" "ZAP!" "BEEEEP!"</li>
+        <li data-i18n="g16_s4">End with 30 sec ambient robot noise</li>
+      </ol>
+      <div class="meta"><span>⏱ 2 min</span><span>🔊🔊🔊</span><span>👥 4+</span></div>
+      <div class="why"><b>EFFECT:</b> <span data-i18n="g16_why">absurd · releases inhibitions</span></div>
+    </div>
+
+    <div class="game orange">
+      <span class="id">G-17</span>
+      <h3 data-i18n="g17_title">ROBOT-SENSOR-POWER</h3>
+      <div class="desc" data-i18n="g17_desc">Rock-paper-scissors with robot themes.</div>
+      <h4 data-i18n="protocol">▸ HOW TO PLAY</h4>
+      <ol>
+        <li data-i18n="g17_s1">ROBOT beats SENSOR (smashes it)</li>
+        <li data-i18n="g17_s2">SENSOR beats POWER (drains it)</li>
+        <li data-i18n="g17_s3">POWER beats ROBOT (powers off)</li>
+        <li data-i18n="g17_s4">Use poses · best of 5</li>
+      </ol>
+      <div class="meta"><span>⏱ 2 min</span><span>🔊🔊</span><span data-i18n="pairs">👥 pairs</span></div>
+      <div class="why"><b>EFFECT:</b> <span data-i18n="g17_why">quick · themed · easy to learn</span></div>
+    </div>
+
+    <div class="game orange">
+      <span class="id">G-18</span>
+      <h3 data-i18n="g18_title">STARE PROTOCOL</h3>
+      <div class="desc" data-i18n="g18_desc">Pair stares. First to break LOSES.</div>
+      <h4 data-i18n="protocol">▸ HOW TO PLAY</h4>
+      <ol>
+        <li data-i18n="g18_s1">Pairs face each other 30 cm apart</li>
+        <li data-i18n="g18_s2">Stare into each other's eyes — NO breaking</li>
+        <li data-i18n="g18_s3">Audience can make weird faces in background</li>
+        <li data-i18n="g18_s4">Last pair to last 30 sec wins</li>
+      </ol>
+      <div class="meta"><span>⏱ 3 min</span><span>🔊🔊</span><span data-i18n="pairs">👥 pairs</span></div>
+      <div class="why"><b>EFFECT:</b> <span data-i18n="g18_why">builds trust + uncontrollable laughter</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- SYS RESET -->
+<section class="category">
+  <div class="cat-header danger">
+    <h2 data-i18n="cat5_title">🧘 CALM-DOWN GAMES</h2>
+    <span class="lozenge" data-i18n="cat5_sub">// after wild moments · reset focus</span>
+  </div>
+  <div class="games">
+    <div class="game danger">
+      <span class="id">G-19</span>
+      <h3 data-i18n="g19_title">LOW-POWER MODE</h3>
+      <div class="desc" data-i18n="g19_desc">Slow breathing as "robot powering down".</div>
+      <h4 data-i18n="protocol">▸ HOW TO PLAY</h4>
+      <ol>
+        <li data-i18n="g19_s1">"Battery critical · conserving power"</li>
+        <li data-i18n="g19_s2">Inhale 4 sec → hold 4 sec → exhale 4 sec</li>
+        <li data-i18n="g19_s3">Repeat 5 cycles</li>
+        <li data-i18n="g19_s4">"System reboot complete"</li>
+      </ol>
+      <div class="meta"><span>⏱ 2 min</span><span>🔇</span><span data-i18n="any_size">👥 any</span></div>
+      <div class="why"><b>EFFECT:</b> <span data-i18n="g19_why">box breathing · genuine calm-down science</span></div>
+    </div>
+
+    <div class="game danger">
+      <span class="id">G-20</span>
+      <h3 data-i18n="g20_title">STATUE STATE</h3>
+      <div class="desc" data-i18n="g20_desc">Last kid to move WINS.</div>
+      <h4 data-i18n="protocol">▸ HOW TO PLAY</h4>
+      <ol>
+        <li data-i18n="g20_s1">"Robots POWER OFF"</li>
+        <li data-i18n="g20_s2">Everyone freezes in their pose</li>
+        <li data-i18n="g20_s3">Grown-up times — must NOT move at all</li>
+        <li data-i18n="g20_s4">Last 3 standing get a sticker</li>
+      </ol>
+      <div class="meta"><span>⏱ 3 min</span><span>🔇</span><span data-i18n="any_size">👥 any</span></div>
+      <div class="why"><b>EFFECT:</b> <span data-i18n="g20_why">forces stillness · builds patience</span></div>
+    </div>
+
+    <div class="game danger">
+      <span class="id">G-21</span>
+      <h3 data-i18n="g21_title">FOCUS CALIBRATION</h3>
+      <div class="desc" data-i18n="g21_desc">Count clicks. Reset the cognitive stack.</div>
+      <h4 data-i18n="protocol">▸ HOW TO PLAY</h4>
+      <ol>
+        <li data-i18n="g21_s1">Sit cross-legged, eyes closed</li>
+        <li data-i18n="g21_s2">Listen for grown-up clicker (5 clicks)</li>
+        <li data-i18n="g21_s3">Count silently: 1...2...3...4...5</li>
+        <li data-i18n="g21_s4">Open eyes → ready for next OP</li>
+      </ol>
+      <div class="meta"><span>⏱ 2 min</span><span>🔇</span><span data-i18n="any_size">👥 any</span></div>
+      <div class="why"><b>EFFECT:</b> <span data-i18n="g21_why">mini-meditation · focused listening</span></div>
+    </div>
+
+    <div class="game danger">
+      <span class="id">G-22</span>
+      <h3 data-i18n="g22_title">SHUTDOWN SEQUENCE</h3>
+      <div class="desc" data-i18n="g22_desc">Pretend to slowly power down body parts.</div>
+      <h4 data-i18n="protocol">▸ HOW TO PLAY</h4>
+      <ol>
+        <li data-i18n="g22_s1">Standing. "Disengaging arms" → arms drop</li>
+        <li data-i18n="g22_s2">"Disengaging legs" → wobbly knees</li>
+        <li data-i18n="g22_s3">"Powering off head" → head drops</li>
+        <li data-i18n="g22_s4">Slowly settle to floor</li>
+      </ol>
+      <div class="meta"><span>⏱ 2 min</span><span>🔊</span><span data-i18n="any_size">👥 any</span></div>
+      <div class="why"><b>EFFECT:</b> <span data-i18n="g22_why">body scan + relaxation in robot framing</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- BONUS DRILLS -->
+<section class="category">
+  <div class="cat-header">
+    <h2 data-i18n="cat6_title">+ BONUS DRILLS</h2>
+    <span class="lozenge" data-i18n="cat6_sub">// mix &amp; match favourites</span>
+  </div>
+  <div class="games">
+    <div class="game">
+      <span class="id">G-23</span>
+      <h3 data-i18n="g23_title">DECENTRALIZED COUNT</h3>
+      <div class="desc" data-i18n="g23_desc">Group counts to 20 — no leader.</div>
+      <h4 data-i18n="protocol">▸ HOW TO PLAY</h4>
+      <ol>
+        <li data-i18n="g23_s1">Group counts aloud: 1, 2, 3... up to 20</li>
+        <li data-i18n="g23_s2">No assigned order — anyone can call a number</li>
+        <li data-i18n="g23_s3">2 operators speak at once → restart from 1</li>
+        <li data-i18n="g23_s4">Reach 20 = group cheer</li>
+      </ol>
+      <div class="meta"><span>⏱ 5 min</span><span>🔊</span><span>👥 4+</span></div>
+      <div class="why"><b>EFFECT:</b> <span data-i18n="g23_why">forces listening · group consciousness</span></div>
+    </div>
+
+    <div class="game">
+      <span class="id">G-24</span>
+      <h3 data-i18n="g24_title">RAPID DESIGN</h3>
+      <div class="desc" data-i18n="g24_desc">90 seconds to sketch a custom robot.</div>
+      <h4 data-i18n="protocol">▸ HOW TO PLAY</h4>
+      <ol>
+        <li data-i18n="g24_s1">Each kid: paper + pen</li>
+        <li data-i18n="g24_s2">90 seconds. EXECUTE.</li>
+        <li data-i18n="g24_s3">Show all designs around the group</li>
+        <li data-i18n="g24_s4">Vote: most creative · most operational · weirdest</li>
+      </ol>
+      <div class="meta"><span>⏱ 3 min</span><span>🔊</span><span data-i18n="any_size">👥 any</span></div>
+      <div class="why"><b>EFFECT:</b> <span data-i18n="g24_why">quick burst of creativity · easy success</span></div>
+    </div>
+
+    <div class="game cyan">
+      <span class="id">G-25</span>
+      <h3 data-i18n="g25_title">ROTATION TEST</h3>
+      <div class="desc" data-i18n="g25_desc">Spin in place. Then FREEZE on command.</div>
+      <h4 data-i18n="protocol">▸ HOW TO PLAY</h4>
+      <ol>
+        <li data-i18n="g25_s1">All spin slowly on the spot</li>
+        <li data-i18n="g25_s2">"FREEZE" → all halt</li>
+        <li data-i18n="g25_s3">Whoever wobbles or falls = sit out</li>
+        <li data-i18n="g25_s4">Last kid standing wins</li>
+      </ol>
+      <div class="meta"><span>⏱ 3 min</span><span>🔊🔊</span><span data-i18n="any_size">👥 any</span></div>
+      <div class="why"><b>EFFECT:</b> <span data-i18n="g25_why">cardio + balance + amusing failures</span></div>
+    </div>
+  </div>
+</section>
+
+<div class="signoff">
+  <div class="stat" data-i18n="ending_stat">[ ▶ 25 DRILLS // OPERATIONAL ]</div>
+  <div class="text" data-i18n="ending_text">Mix and match. <b>2-5 minutes each.</b><br>// pro tip: 1 drill between every 2 op phases keeps energy stable across the 90-min session</div>
+</div>
+
+</div>
+
+<div class="wd-band wd-band-bottom"></div>
+<footer class="wd-footer">
+  <span>powered by <a href="https://workshop-diy.org" target="_blank" rel="noopener">workshop-diy.org</a></span>
+  <span class="sep">·</span>
+  <span>ROBI-9 OPS COMMAND</span>
+  <span class="sep">·</span>
+  <span class="badge">v1.2</span>
+</footer>
+
+<script>
+const T = {
+  en: {
+    hd_clearance:'▸ FUN BREAKS',
+    hd_title:'Quick Games',
+    hd_sub:'"25 quick games · play between mission parts"',
+    mx_title:'▸ WHICH GAME TO PICK?',
+    mx_help:'// pick the routine that matches the group\'s state',
+    mx_r1:'⚡ Kids <b>fidgety</b>?<span class="arrow">→</span><span class="target">POWER-UP</span>',
+    mx_r2:'⚠️ Kids <b>too wild</b>?<span class="arrow">→</span><span class="target">SYS RESET</span>',
+    mx_r3:'▣ Stuck on a <b>problem</b>?<span class="arrow">→</span><span class="target">COGNITIVE DRILL</span>',
+    mx_r4:'◆ Group <b>not getting along</b>?<span class="arrow">→</span><span class="target">SQUAD DRILL</span>',
+    mx_r5:'↻ Need a <b>laugh</b>?<span class="arrow">→</span><span class="target">MORALE BREAK</span>',
+    cat1_title:'⚡ WAKE-UP GAMES', cat1_sub:'// high energy · wake the group',
+    cat2_title:'🧠 BRAIN GAMES', cat2_sub:'// focus · thinking · stuck-buster',
+    cat3_title:'🤝 TEAM GAMES', cat3_sub:'// cooperation · bonding · reset divisions',
+    cat4_title:'😄 LAUGH BREAKS', cat4_sub:'// quick laughs · break the tension',
+    cat5_title:'🧘 CALM-DOWN GAMES', cat5_sub:'// after wild moments · reset focus',
+    cat6_title:'+ BONUS DRILLS', cat6_sub:'// mix &amp; match favourites',
+    protocol:'▸ HOW TO PLAY', any_size:'👥 any size', pairs:'👥 pairs', four_per:'👥 4/team',
+    g01_title:'ROBOT PROTOCOL', g01_desc:'Like Simon Says — but with robot commands.',
+    g01_s1:'Grown-up: "Robot says ROTATE!" → all group rotate',
+    g01_s2:'"Robot says BEEP!" → all beep',
+    g01_s3:'"Walk forward!" (no "Robot says"!) → who moves = OUT',
+    g01_s4:'Last operator standing = victor',
+    g01_why:'listening + body movement = perfect wake-up',
+    g02_title:'SIGNAL FREEZE', g02_desc:'Music ON = move. Music OFF = STATUE.',
+    g02_s1:'Play any energetic track', g02_s2:'Group moves like field kids',
+    g02_s3:'Pause music randomly → all FREEZE',
+    g02_s4:'Whoever moves = sit out (or 5 push-ups)',
+    g02_why:'burns kinetic energy · sharpens reaction time',
+    g03_title:'BATTERY RECHARGE', g03_desc:'Group cardio framed as power restoration.',
+    g03_s1:'All standing. "Battery: 0%! [STATUS: CRITICAL]"',
+    g03_s2:'10 jumping jacks → "BATTERY: 25%"',
+    g03_s3:'10 squats → "BATTERY: 50%"',
+    g03_s4:'10 high-fives with neighbour → "BATTERY: 100% · OPERATIONAL"',
+    g03_why:'quick cardio · keeps the robot theme going',
+    g04_title:'ROBOT WALK RELAY', g04_desc:'Stiff-legged walk relay between teams.',
+    g04_s1:'2 teams. Stiff "robot walk" only', g04_s2:'Tag teammate at end → next kid goes',
+    g04_s3:'First team done = field champions', g04_s4:'Bonus: must beep at every turn',
+    g04_why:'cardio + competition + ridiculous walking',
+    g05_title:'BEEP-BOOP TAG', g05_desc:'Tag, but every tag requires vocal signal.',
+    g05_s1:'1 operator is "active"', g05_s2:'Tag = touch + say "BEEP"',
+    g05_s3:'Tagged operator becomes active + says "BOOP"', g05_s4:'Forgetting signal = stuck for 5 sec',
+    g05_why:'classic tag + cognitive overhead = harder than it looks',
+    g06_title:'RECON HUNT', g06_desc:'"Locate something RED in 30 sec! GO!"',
+    g06_s1:'Grown-up names a property: "round" / "blue" / "soft"',
+    g06_s2:'30-second timer', g06_s3:'Group scrambles to retrieve matching object',
+    g06_s4:'Best find / fastest find = points',
+    g06_why:'sensors theme + scavenger hunt energy',
+    g07_title:'MISSING ASSET', g07_desc:'Memory test with 8 robot components.',
+    g07_s1:'Lay 8 small objects on a tray (cap, pen, key…)',
+    g07_s2:'Group observes for 30 sec, then closes eyes',
+    g07_s3:'Remove ONE object',
+    g07_s4:'Open eyes → first to identify missing item wins',
+    g07_why:'resets attention · quiet but engaging',
+    g08_title:'CHAIN BRIEFING', g08_desc:'Each kid adds one sentence to a robot log.',
+    g08_s1:'Circle. Open with: "Robot ROBI-7 detected an unusual signal..."',
+    g08_s2:'Next kid adds 1 sentence',
+    g08_s3:'Continue around circle',
+    g08_s4:'Stop when log = absurd (5 min max)',
+    g08_why:'listening + creativity + safe failure',
+    g09_title:'ALGORITHM CHARADES', g09_desc:'Act out an algorithm. Group guesses each step.',
+    g09_s1:'Volunteer picks card: "make sandwich", "brush teeth", "tie laces"',
+    g09_s2:'Acts it STEP-BY-STEP, no speaking',
+    g09_s3:'Group guesses each step',
+    g09_s4:'Bonus: "what was step 4?" tests memory',
+    g09_why:'reinforces "algorithm = ordered steps" theme',
+    g10_title:'SIGNAL TELEPHONE', g10_desc:'Broken-phone, but with movement sequences.',
+    g10_s1:'First operator does 3-move sequence (rotate, jump, clap)',
+    g10_s2:'Shows next operator ONCE',
+    g10_s3:'Each operator passes to next',
+    g10_s4:'Last one performs → compare to original',
+    g10_why:'memory + observation · hilarious distortion',
+    g11_title:'TACTICAL KNOT', g11_desc:'Untangle yourselves without breaking formation.',
+    g11_s1:'Stand in circle. Reach across, grip 2 random hands',
+    g11_s2:'Don\'t grip a neighbour',
+    g11_s3:'Without breaking grip → untangle into circle',
+    g11_s4:'Talk · plan · move slow',
+    g11_why:'forces cooperation + spatial reasoning',
+    g12_title:'SHADOW PROTOCOL', g12_desc:'Pair up. One leads, one mirrors EXACTLY.',
+    g12_s1:'Pairs face each other. NO talking',
+    g12_s2:'Lead kid makes slow movements',
+    g12_s3:'Shadow copies EXACTLY in real-time',
+    g12_s4:'30 sec → swap roles',
+    g12_why:'builds focus + non-verbal sync',
+    g13_title:'2 TRUTHS · 1 DECOY', g13_desc:'3 robot-related statements. 2 true. 1 fake.',
+    g13_s1:'Each kid gives 3 robot statements',
+    g13_s2:'2 are TRUE · 1 is DECOY',
+    g13_s3:'Group votes on the decoy',
+    g13_s4:'Reveal · bonus point for fooling everyone',
+    g13_why:'sharing facts + reading bluffs = bonding',
+    g14_title:'ASSEMBLY OPERATION', g14_desc:'Stack 10 cups in 3 min using string ring.',
+    g14_s1:'Each team: 10 plastic cups + 1 rubber band with 4 strings',
+    g14_s2:'Each kid holds 1 string',
+    g14_s3:'Build pyramid using ONLY the strings',
+    g14_s4:'No hands on cups',
+    g14_why:'pure cooperation · hilarious failures, satisfying wins',
+    g15_title:'ROBOT IMPRESSION', g15_desc:'Worst robot impression wins.',
+    g15_s1:'Each kid does best robot impression + voice',
+    g15_s2:'One by one. Audience scores 1-10',
+    g15_s3:'Most absurd = victor',
+    g15_s4:'Bonus: grown-up goes too',
+    g15_why:'self-deprecating laughs are the best',
+    g16_title:'FREQUENCY CHOIR', g16_desc:'Everyone outputs robot sounds simultaneously.',
+    g16_s1:'Form a circle',
+    g16_s2:'Grown-up: "READY... BEEP!" → all beep in unison',
+    g16_s3:'Then: "BOOP!" "ZAP!" "BEEEEP!"',
+    g16_s4:'End with 30 sec ambient robot noise',
+    g16_why:'absurd · releases inhibitions',
+    g17_title:'ROBOT-SENSOR-POWER', g17_desc:'Rock-paper-scissors with robot themes.',
+    g17_s1:'ROBOT beats SENSOR (smashes it)',
+    g17_s2:'SENSOR beats POWER (drains it)',
+    g17_s3:'POWER beats ROBOT (powers off)',
+    g17_s4:'Use poses · best of 5',
+    g17_why:'quick · themed · easy to learn',
+    g18_title:'STARE PROTOCOL', g18_desc:'Pair stares. First to break LOSES.',
+    g18_s1:'Pairs face each other 30 cm apart',
+    g18_s2:'Stare into each other\'s eyes — NO breaking',
+    g18_s3:'Audience can make weird faces in background',
+    g18_s4:'Last pair to last 30 sec wins',
+    g18_why:'builds trust + uncontrollable laughter',
+    g19_title:'LOW-POWER MODE', g19_desc:'Slow breathing as "robot powering down".',
+    g19_s1:'"Battery critical · conserving power"',
+    g19_s2:'Inhale 4 sec → hold 4 sec → exhale 4 sec',
+    g19_s3:'Repeat 5 cycles',
+    g19_s4:'"System reboot complete"',
+    g19_why:'box breathing · genuine calm-down science',
+    g20_title:'STATUE STATE', g20_desc:'Last kid to move WINS.',
+    g20_s1:'"Robots POWER OFF"',
+    g20_s2:'Everyone freezes in their pose',
+    g20_s3:'Grown-up times — must NOT move at all',
+    g20_s4:'Last 3 standing get a sticker',
+    g20_why:'forces stillness · builds patience',
+    g21_title:'FOCUS CALIBRATION', g21_desc:'Count clicks. Reset the cognitive stack.',
+    g21_s1:'Sit cross-legged, eyes closed',
+    g21_s2:'Listen for grown-up clicker (5 clicks)',
+    g21_s3:'Count silently: 1...2...3...4...5',
+    g21_s4:'Open eyes → ready for next OP',
+    g21_why:'mini-meditation · focused listening',
+    g22_title:'SHUTDOWN SEQUENCE', g22_desc:'Pretend to slowly power down body parts.',
+    g22_s1:'Standing. "Disengaging arms" → arms drop',
+    g22_s2:'"Disengaging legs" → wobbly knees',
+    g22_s3:'"Powering off head" → head drops',
+    g22_s4:'Slowly settle to floor',
+    g22_why:'body scan + relaxation in robot framing',
+    g23_title:'DECENTRALIZED COUNT', g23_desc:'Group counts to 20 — no leader.',
+    g23_s1:'Group counts aloud: 1, 2, 3... up to 20',
+    g23_s2:'No assigned order — anyone can call a number',
+    g23_s3:'2 operators speak at once → restart from 1',
+    g23_s4:'Reach 20 = group cheer',
+    g23_why:'forces listening · group consciousness',
+    g24_title:'RAPID DESIGN', g24_desc:'90 seconds to sketch a custom robot.',
+    g24_s1:'Each kid: paper + pen',
+    g24_s2:'90 seconds. EXECUTE.',
+    g24_s3:'Show all designs around the group',
+    g24_s4:'Vote: most creative · most operational · weirdest',
+    g24_why:'quick burst of creativity · easy success',
+    g25_title:'ROTATION TEST', g25_desc:'Spin in place. Then FREEZE on command.',
+    g25_s1:'All spin slowly on the spot',
+    g25_s2:'"FREEZE" → all halt',
+    g25_s3:'Whoever wobbles or falls = sit out',
+    g25_s4:'Last kid standing wins',
+    g25_why:'cardio + balance + amusing failures',
+    ending_stat:'[ ▶ 25 DRILLS // OPERATIONAL ]',
+    ending_text:'Mix and match. <b>2-5 minutes each.</b><br>// pro tip: 1 drill between every 2 op phases keeps energy stable across the 90-min session'
+  },
+  fr: {
+    hd_clearance:'[ ▶ DRILLS TACTIQUES · CLASSIFIÉ ]',
+    hd_title:'DRILLS TACTIQUES',
+    hd_sub:'"25+ courtes routines · entre les phases d\'opération"',
+    mx_title:'▶ MATRICE DE DÉPLOIEMENT',
+    mx_help:'// choisir la routine selon l\'état du groupe',
+    mx_r1:'⚡ Groupe <b>agité</b> ?<span class="arrow">→</span><span class="target">POWER-UP</span>',
+    mx_r2:'⚠️ Groupe <b>survolté</b> ?<span class="arrow">→</span><span class="target">SYS RESET</span>',
+    mx_r3:'▣ Bloqué sur un <b>problème</b> ?<span class="arrow">→</span><span class="target">DRILL COGNITIF</span>',
+    mx_r4:'◆ Groupe <b>fragmenté</b> ?<span class="arrow">→</span><span class="target">DRILL SQUAD</span>',
+    mx_r5:'↻ Besoin de <b>relâcher la tension</b> ?<span class="arrow">→</span><span class="target">PAUSE MORALE</span>',
+    cat1_title:'⚡ DRILLS POWER-UP', cat1_sub:'// haute énergie · réveiller le groupe',
+    cat2_title:'▣ DRILLS COGNITIFS', cat2_sub:'// focus · réflexion · débloque',
+    cat3_title:'◆ DRILLS SQUAD', cat3_sub:'// coopération · liens · reset',
+    cat4_title:'↻ PAUSES MORALE', cat4_sub:'// rires rapides · décrocher la tension',
+    cat5_title:'⏻ RESET SYSTÈME', cat5_sub:'// après moments fous · refocus',
+    cat6_title:'+ DRILLS BONUS', cat6_sub:'// mix &amp; match favoris',
+    protocol:'▸ HOW TO PLAYE', any_size:'👥 toute taille', pairs:'👥 paires', four_per:'👥 4/équipe',
+    g01_title:'PROTOCOLE ROBOTÉ', g01_desc:'Comme Jacques a dit — avec commandes robot.',
+    g01_s1:'Instructeur : "L\'roboté dit TOURNE !" → tous tournent',
+    g01_s2:'"L\'roboté dit BIP !" → tous bippent',
+    g01_s3:'"Marche !" (sans "L\'roboté dit") → qui bouge = ÉLIMINÉ',
+    g01_s4:'Dernier debout = vainqueur',
+    g01_why:'écoute + mouvement = parfait réveil',
+    g02_title:'GEL SIGNAL', g02_desc:'Musique ON = bouge. Musique OFF = STATUE.',
+    g02_s1:'Lancer un morceau énergique',
+    g02_s2:'Le groupe bouge comme des opératifs',
+    g02_s3:'Couper la musique aléatoirement → tous GÈLENT',
+    g02_s4:'Qui bouge = sort (ou 5 pompes)',
+    g02_why:'brûle l\'énergie · aiguise les réflexes',
+    g03_title:'RECHARGE BATTERIE', g03_desc:'Cardio cadré comme restauration de puissance.',
+    g03_s1:'Tous debout. "Batterie : 0% ! [CRITIQUE]"',
+    g03_s2:'10 jumping jacks → "BATTERIE : 25%"',
+    g03_s3:'10 squats → "BATTERIE : 50%"',
+    g03_s4:'10 high-fives → "BATTERIE : 100% · OPÉRATIONNEL"',
+    g03_why:'boost cardiovasculaire · thème ops',
+    g04_title:'RELAIS ROBOTÉ', g04_desc:'Relais de marche raide entre équipes.',
+    g04_s1:'2 équipes. "Marche roboté" raide uniquement',
+    g04_s2:'Tag équipier à la fin → suivant',
+    g04_s3:'Première équipe finie = champions',
+    g04_s4:'Bonus : doit bipper à chaque tour',
+    g04_why:'cardio + compétition + marche ridicule',
+    g05_title:'TAG BIP-BOOP', g05_desc:'Tag, mais chaque tag exige un signal vocal.',
+    g05_s1:'1 opératif est "actif"',
+    g05_s2:'Tag = toucher + dire "BIP"',
+    g05_s3:'Le tagué devient actif + dit "BOOP"',
+    g05_s4:'Oublier le signal = bloqué 5 sec',
+    g05_why:'tag classique + charge cognitive',
+    g06_title:'CHASSE RECON', g06_desc:'"Trouvez quelque chose de ROUGE en 30 sec !"',
+    g06_s1:'Instructeur nomme une propriété : "rond" / "bleu" / "doux"',
+    g06_s2:'Chronomètre 30 sec',
+    g06_s3:'Le groupe court chercher l\'objet',
+    g06_s4:'Meilleure trouvaille / plus rapide = points',
+    g06_why:'thème capteurs + chasse au trésor',
+    g07_title:'OBJET DISPARU', g07_desc:'Test mémoire avec 8 composants.',
+    g07_s1:'8 petits objets sur un plateau (capuchon, stylo, clé…)',
+    g07_s2:'Le groupe observe 30 sec, puis ferme les yeux',
+    g07_s3:'Retirer UN objet',
+    g07_s4:'Ouvrir les yeux → premier à identifier gagne',
+    g07_why:'reset l\'attention · calme mais engageant',
+    g08_title:'BRIEFING EN CHAÎNE', g08_desc:'Chaque opératif ajoute une phrase au log.',
+    g08_s1:'Cercle. Ouverture : "Roboté ROBI-7 a détecté un signal inhabituel..."',
+    g08_s2:'Suivant ajoute 1 phrase',
+    g08_s3:'Continue dans le cercle',
+    g08_s4:'Arrêt quand le log est absurde (5 min max)',
+    g08_why:'écoute + créativité + échec sécurisé',
+    g09_title:'CHARADES ALGO', g09_desc:'Mimer un algorithme. Le groupe devine.',
+    g09_s1:'Volontaire pioche : "faire sandwich", "se brosser les dents", "lacer chaussures"',
+    g09_s2:'Mimer ÉTAPE PAR ÉTAPE, sans parler',
+    g09_s3:'Le groupe devine chaque étape',
+    g09_s4:'Bonus : "c\'était l\'étape 4 ?" test mémoire',
+    g09_why:'renforce "algorithme = étapes ordonnées"',
+    g10_title:'TÉLÉPHONE SIGNAL', g10_desc:'Téléphone arabe avec séquences mouvement.',
+    g10_s1:'Premier fait séquence 3-mouvements (tourne, saute, claque)',
+    g10_s2:'Montre au suivant UNE FOIS',
+    g10_s3:'Chaque passe au suivant',
+    g10_s4:'Dernier performe → comparer à l\'original',
+    g10_why:'mémoire + observation · distorsion comique',
+    g11_title:'NŒUD TACTIQUE', g11_desc:'Vous démêler sans rompre la formation.',
+    g11_s1:'Cercle. Tendre les mains, saisir 2 mains aléatoires',
+    g11_s2:'Ne pas saisir un voisin',
+    g11_s3:'Sans rompre la prise → démêler en cercle',
+    g11_s4:'Parler · planifier · bouger lentement',
+    g11_why:'force coopération + raisonnement spatial',
+    g12_title:'PROTOCOLE OMBRE', g12_desc:'Paire. Un mène, l\'autre miroir EXACTEMENT.',
+    g12_s1:'Paires face à face. PAS de parole',
+    g12_s2:'Le leader fait des mouvements lents',
+    g12_s3:'L\'ombre copie EXACTEMENT en temps réel',
+    g12_s4:'30 sec → swap',
+    g12_why:'focus + sync non-verbal',
+    g13_title:'2 VRAIS · 1 LEURRE', g13_desc:'3 affirmations robot. 2 vraies. 1 fausse.',
+    g13_s1:'Chaque opératif donne 3 affirmations robot',
+    g13_s2:'2 sont VRAIES · 1 LEURRE',
+    g13_s3:'Le groupe vote sur le leurre',
+    g13_s4:'Révélation · bonus si tout le monde est trompé',
+    g13_why:'partage faits + lecture bluff = liens',
+    g14_title:'OPÉRATION ASSEMBLAGE', g14_desc:'Empiler 10 gobelets en 3 min via anneau.',
+    g14_s1:'Chaque équipe : 10 gobelets + 1 élastique avec 4 ficelles',
+    g14_s2:'Chaque opératif tient 1 ficelle',
+    g14_s3:'Construire pyramide AVEC les ficelles uniquement',
+    g14_s4:'Pas de mains sur les gobelets',
+    g14_why:'pure coopération · échecs comiques, victoires',
+    g15_title:'IMITATION ROBOTÉ', g15_desc:'La pire imitation robot gagne.',
+    g15_s1:'Chaque opératif fait sa meilleure imitation + voix',
+    g15_s2:'Un par un. Public note 1-10',
+    g15_s3:'Plus absurde = vainqueur',
+    g15_s4:'Bonus : l\'instructeur y va aussi',
+    g15_why:'rires auto-dérision sont les meilleurs',
+    g16_title:'CHŒUR FRÉQUENCE', g16_desc:'Tout le monde émet sons robot en même temps.',
+    g16_s1:'Former un cercle',
+    g16_s2:'Instructeur : "PRÊT... BIP !" → tous bippent à l\'unisson',
+    g16_s3:'Puis : "BOOP !" "ZAP !" "BIIIIP !"',
+    g16_s4:'Finir par 30 sec de bruit roboté ambiant',
+    g16_why:'absurde · libère les inhibitions',
+    g17_title:'ROBOTÉ-CAPTEUR-PUISSANCE', g17_desc:'Pierre-papier-ciseaux thématique.',
+    g17_s1:'ROBOTÉ bat CAPTEUR (l\'écrase)',
+    g17_s2:'CAPTEUR bat PUISSANCE (la draine)',
+    g17_s3:'PUISSANCE bat ROBOTÉ (l\'éteint)',
+    g17_s4:'Poses · meilleur sur 5',
+    g17_why:'rapide · thématique · facile',
+    g18_title:'PROTOCOLE FIXE', g18_desc:'Paire se fixe. Premier à craquer PERD.',
+    g18_s1:'Paires à 30 cm de face',
+    g18_s2:'Se fixer dans les yeux — NE PAS rompre',
+    g18_s3:'Le public peut faire des grimaces en arrière-plan',
+    g18_s4:'Dernière paire à tenir 30 sec gagne',
+    g18_why:'confiance + rires incontrôlables',
+    g19_title:'MODE BASSE PUISSANCE', g19_desc:'Respiration lente comme "roboté s\'éteint".',
+    g19_s1:'"Batterie critique · économie d\'énergie"',
+    g19_s2:'Inspire 4 sec → tient 4 sec → expire 4 sec',
+    g19_s3:'Répéter 5 cycles',
+    g19_s4:'"Reboot système terminé"',
+    g19_why:'respiration carrée · vraie science calme',
+    g20_title:'ÉTAT STATUE', g20_desc:'Dernier opératif à bouger GAGNE.',
+    g20_s1:'"Robotés POWER OFF"',
+    g20_s2:'Tous gèlent dans leur pose',
+    g20_s3:'Instructeur chronomètre — NE PAS bouger du tout',
+    g20_s4:'Derniers 3 debout = sticker',
+    g20_why:'force l\'immobilité · construit patience',
+    g21_title:'CALIBRATION FOCUS', g21_desc:'Compter les clics. Reset cognitif.',
+    g21_s1:'Assis en tailleur, yeux fermés',
+    g21_s2:'Écouter le clicker (5 clics)',
+    g21_s3:'Compter en silence : 1...2...3...4...5',
+    g21_s4:'Ouvrir les yeux → prêt pour OP suivante',
+    g21_why:'mini-méditation · écoute focalisée',
+    g22_title:'SÉQUENCE EXTINCTION', g22_desc:'Faire semblant d\'éteindre les parties du corps.',
+    g22_s1:'Debout. "Désengagement bras" → bras tombent',
+    g22_s2:'"Désengagement jambes" → genoux mous',
+    g22_s3:'"Extinction tête" → tête tombe',
+    g22_s4:'S\'asseoir lentement au sol',
+    g22_why:'scan corporel + détente en cadre roboté',
+    g23_title:'COMPTE DÉCENTRALISÉ', g23_desc:'Le groupe compte jusqu\'à 20 — pas de leader.',
+    g23_s1:'Le groupe compte tout haut : 1, 2, 3... jusqu\'à 20',
+    g23_s2:'Pas d\'ordre assigné — n\'importe qui appelle',
+    g23_s3:'2 opératifs parlent en même temps → recommencer à 1',
+    g23_s4:'Atteindre 20 = ovation groupe',
+    g23_why:'force l\'écoute · conscience de groupe',
+    g24_title:'DESIGN RAPIDE', g24_desc:'90 secondes pour esquisser une roboté custom.',
+    g24_s1:'Chaque opératif : papier + stylo',
+    g24_s2:'90 secondes. EXÉCUTER.',
+    g24_s3:'Montrer toutes les designs au groupe',
+    g24_s4:'Voter : plus créatif · plus opérationnel · plus bizarre',
+    g24_why:'salve de créativité · succès facile',
+    g25_title:'TEST ROTATION', g25_desc:'Tourner sur place. FIGER au commandement.',
+    g25_s1:'Tous tournent lentement sur place',
+    g25_s2:'"FIGER" → tous halte',
+    g25_s3:'Qui vacille ou tombe = sort',
+    g25_s4:'Dernier opératif debout gagne',
+    g25_why:'cardio + équilibre + échecs amusants',
+    ending_stat:'[ ▶ 25 DRILLS // OPÉRATIONNEL ]',
+    ending_text:'Mix and match. <b>2-5 minutes chacun.</b><br>// pro tip : 1 drill entre 2 phases d\'op maintient l\'énergie sur 1h30'
+  },
+  ar: {
+    hd_clearance:'[ ▶ تدريبات تكتيكية · سرّيّ ]',
+    hd_title:'تدريبات تكتيكية',
+    hd_sub:'"25+ روتيناً قصيراً · بين مراحل العمليّات"',
+    mx_title:'▶ مصفوفة النشر',
+    mx_help:'// اختر الروتين المناسب لحالة الفريق',
+    mx_r1:'⚡ الفريق <b>متململ</b>؟<span class="arrow">→</span><span class="target">شحن</span>',
+    mx_r2:'⚠️ الفريق <b>متهيّج</b>؟<span class="arrow">→</span><span class="target">إعادة ضبط</span>',
+    mx_r3:'▣ عالقون في <b>مشكلة</b>؟<span class="arrow">→</span><span class="target">تدريب معرفي</span>',
+    mx_r4:'◆ الفريق <b>مُجَزّأ</b>؟<span class="arrow">→</span><span class="target">تدريب جماعي</span>',
+    mx_r5:'↻ تحتاج <b>كسر التوتّر</b>؟<span class="arrow">→</span><span class="target">استراحة معنويات</span>',
+    cat1_title:'⚡ تدريبات الشحن', cat1_sub:'// طاقة عالية · إيقاظ الفريق',
+    cat2_title:'▣ تدريبات معرفية', cat2_sub:'// تركيز · تفكير · فك إغلاق',
+    cat3_title:'◆ تدريبات جماعية', cat3_sub:'// تعاون · ترابط · حل تجزئة',
+    cat4_title:'↻ استراحات معنويات', cat4_sub:'// ضحكات سريعة · كسر التوتّر',
+    cat5_title:'⏻ إعادة ضبط', cat5_sub:'// بعد لحظات جامحة · إعادة تركيز',
+    cat6_title:'+ تدريبات إضافية', cat6_sub:'// مزج وتوفيق المفضّلات',
+    protocol:'▶ البروتوكول', any_size:'👥 أيّ حجم', pairs:'👥 أزواج', four_per:'👥 4/فريق',
+    g01_title:'بروتوكول الوحدة', g01_desc:'مثل سيمون يقول — لكن بأوامر روبوت.',
+    g01_s1:'المُدرِّب : "الوحدة تقول دُر !" → الجميع يدور',
+    g01_s2:'"الوحدة تقول صفِّر !" → الجميع يصفّر',
+    g01_s3:'"اِمشِ !" (بدون "الوحدة تقول") → من يتحرّك = خارج',
+    g01_s4:'آخر مَن يبقى = الفائز',
+    g01_why:'إصغاء + حركة جسدية = إيقاظ مثالي',
+    g02_title:'تجميد الإشارة', g02_desc:'الموسيقى مُشَغَّلة = تَحَرَّك. مُغلَقة = تمثال.',
+    g02_s1:'شغِّل أيّ أغنية حيوية',
+    g02_s2:'الفريق يتحرّك مثل العملاء الميدانيّين',
+    g02_s3:'أوقف الموسيقى عشوائيّاً → الجميع يَجْمُد',
+    g02_s4:'مَن يتحرّك = يخرج (أو 5 ضغطات)',
+    g02_why:'يحرق طاقة حركية · يُحدِّد ردّ الفعل',
+    g03_title:'إعادة شحن البطّاريّة', g03_desc:'كارديو الفريق مُؤطَّر كاستعادة طاقة.',
+    g03_s1:'الجميع واقف. "البطّاريّة : 0% ! [حرج]"',
+    g03_s2:'10 قفزات jumping jacks → "البطّاريّة : 25%"',
+    g03_s3:'10 سكوتات → "البطّاريّة : 50%"',
+    g03_s4:'10 صفقات يد → "البطّاريّة : 100% · جاهز"',
+    g03_why:'دفعة قلبية وعائية · يُلائم موضوع العمليّات',
+    g04_title:'سباق مشي وحدة', g04_desc:'سباق تتابع بمشية صلبة بين فِرَق.',
+    g04_s1:'فريقان. مشية وحدة صلبة فقط',
+    g04_s2:'الوسم في النهاية → التالي ينطلق',
+    g04_s3:'أوّل فريق ينتهي = أبطال الميدان',
+    g04_s4:'إضافة : يجب الصفير في كل دور',
+    g04_why:'كارديو + منافسة + مشية مضحكة',
+    g05_title:'وسم بيب-بوب', g05_desc:'وسم، لكن كل وسمة تتطلّب إشارة صوتية.',
+    g05_s1:'1 عميل "نشط"',
+    g05_s2:'الوسم = اللمس + قول "بيب"',
+    g05_s3:'المُوسَم يصبح نشطاً + يقول "بوب"',
+    g05_s4:'نسيان الإشارة = عالق 5 ثوانٍ',
+    g05_why:'وسم كلاسيكي + حِمل معرفي',
+    g06_title:'مطاردة استطلاع', g06_desc:'"اِعثر على شيء أحمر في 30 ثا !"',
+    g06_s1:'المُدرِّب يُسمّي خاصية : "مدوّر" / "أزرق" / "ناعم"',
+    g06_s2:'مؤقّت 30 ثانية',
+    g06_s3:'الفريق يهرع لإحضار شيء مطابق',
+    g06_s4:'أفضل عثور / أسرع = نقاط',
+    g06_why:'موضوع حساسات + طاقة بحث عن الكنز',
+    g07_title:'أصل مفقود', g07_desc:'اختبار ذاكرة بـ 8 مكوّنات.',
+    g07_s1:'ضع 8 أشياء صغيرة على صينيّة (غطاء، قلم، مفتاح…)',
+    g07_s2:'الفريق يراقب 30 ثا، ثم يُغمض عينيه',
+    g07_s3:'أَزِل واحداً',
+    g07_s4:'فتح العينين → أوّل مَن يحدّد المفقود يفوز',
+    g07_why:'يُعيد ضبط الانتباه · هادئ ومُستثيرٌ',
+    g08_title:'موجز سلسلة', g08_desc:'كل عميل يُضيف جملة لسجلّ الوحدة.',
+    g08_s1:'دائرة. الافتتاح : "اكتشفت الوحدة ROBI-7 إشارة غير عادية..."',
+    g08_s2:'التالي يُضيف جملة',
+    g08_s3:'استمرار حول الدائرة',
+    g08_s4:'توقّف عندما يصبح السجلّ سخيفاً (5 د كحدّ أقصى)',
+    g08_why:'إصغاء + إبداع + فشل آمن',
+    g09_title:'تمثيل خوارزمية', g09_desc:'تمثيل خوارزمية. الفريق يخمّن.',
+    g09_s1:'متطوّع يختار بطاقة : "صنع شطيرة"، "تنظيف الأسنان"، "ربط الحذاء"',
+    g09_s2:'تمثيل خطوة بخطوة، بدون كلام',
+    g09_s3:'الفريق يُخمّن كل خطوة',
+    g09_s4:'إضافة : "ما كانت الخطوة 4 ؟" اختبار ذاكرة',
+    g09_why:'يُعزِّز "خوارزمية = خطوات مرتّبة"',
+    g10_title:'هاتف إشارة', g10_desc:'هاتف عربي بسلاسل حركة.',
+    g10_s1:'الأوّل يفعل تتابع 3 حركات (دوران، قفز، تصفيق)',
+    g10_s2:'يُريه للتالي مرّة واحدة',
+    g10_s3:'كلٌّ يُمرِّر للتالي',
+    g10_s4:'الأخير يُؤدّي → قارن بالأصل',
+    g10_why:'ذاكرة + ملاحظة · تحريف مضحك',
+    g11_title:'عقدة تكتيكية', g11_desc:'فُكَّ نفسك دون كسر التشكيل.',
+    g11_s1:'دائرة. مُدّ يديك، أمسك يدين عشوائيّتين',
+    g11_s2:'لا تُمسك يد جار',
+    g11_s3:'دون كسر القبضة → فُكّ إلى دائرة',
+    g11_s4:'تكلَّم · خَطِّط · تحرَّك ببطء',
+    g11_why:'يجبر التعاون + تفكير مكاني',
+    g12_title:'بروتوكول الظلّ', g12_desc:'اِزدوج. واحد يقود، الآخر يعكس بدقّة.',
+    g12_s1:'أزواج وجهاً لوجه. ممنوع الكلام',
+    g12_s2:'القائد يُؤدّي حركات بطيئة',
+    g12_s3:'الظلّ يَنسخ بدقّة في الزمن الحقيقي',
+    g12_s4:'30 ثانية → تبادُل',
+    g12_why:'يبني تركيز + مزامنة غير لفظية',
+    g13_title:'2 صحيح · 1 خداع', g13_desc:'3 تصريحات روبوت. 2 صحيحة. 1 وهمية.',
+    g13_s1:'كل عميل يُعطي 3 تصريحات روبوت',
+    g13_s2:'2 صحيحة · 1 خِدعة',
+    g13_s3:'الفريق يصوّت على الخدعة',
+    g13_s4:'كَشف · نقطة إضافية لمَن يخدع الجميع',
+    g13_why:'مشاركة حقائق + قراءة خداع = ترابط',
+    g14_title:'عملية تجميع', g14_desc:'اِسْكُل 10 أكواب في 3 د بحلقة خيوط.',
+    g14_s1:'كل فريق : 10 كؤوس + 1 رباط مطّاطي بـ 4 خيوط',
+    g14_s2:'كل عميل يُمسك خيطاً واحداً',
+    g14_s3:'بناء هرم بالخيوط فقط',
+    g14_s4:'لا يدين على الكؤوس',
+    g14_why:'تعاون نقيّ · إخفاقات مضحكة، انتصارات',
+    g15_title:'تقليد وحدة', g15_desc:'أسوأ تقليد روبوت يفوز.',
+    g15_s1:'كل عميل يفعل أفضل تقليد + صوت',
+    g15_s2:'واحداً تلو الآخر. الجمهور يقيّم 1-10',
+    g15_s3:'الأكثر سخفاً = الفائز',
+    g15_s4:'إضافة : المُدرِّب يشارك أيضاً',
+    g15_why:'الضحكات الذاتية الأفضل',
+    g16_title:'جوقة التردد', g16_desc:'الجميع يُصدر أصوات روبوت في وقت واحد.',
+    g16_s1:'تشكيل دائرة',
+    g16_s2:'المُدرِّب : "جاهز... بيب !" → الجميع يبيب جماعيّاً',
+    g16_s3:'ثم : "بوب !" "زاب !" "بيييييب !"',
+    g16_s4:'انتهاء بـ 30 ثانية ضوضاء وحدة محيطة',
+    g16_why:'سخيف · يُحرّر التثبيطات',
+    g17_title:'وحدة-حساس-طاقة', g17_desc:'حجر-ورقة-مقص بمواضيع روبوت.',
+    g17_s1:'الوحدة تهزم الحساس (تحطّمه)',
+    g17_s2:'الحساس يهزم الطاقة (يستنزفها)',
+    g17_s3:'الطاقة تهزم الوحدة (تُطفئها)',
+    g17_s4:'استخدم وضعيّات · أفضل من 5',
+    g17_why:'سريع · موضوعي · سهل التعلّم',
+    g18_title:'بروتوكول التحديق', g18_desc:'زوج يتحدّق. أوّل مَن يكسر يخسر.',
+    g18_s1:'أزواج وجهاً لوجه على بُعد 30 سم',
+    g18_s2:'حدِّق في عيني الآخر — لا تكسر',
+    g18_s3:'الجمهور يفعل وجوهاً غريبة في الخلفية',
+    g18_s4:'آخر زوج يصمد 30 ثانية يفوز',
+    g18_why:'يبني ثقة + ضحكات لا تُسيطَر',
+    g19_title:'وضع طاقة منخفضة', g19_desc:'تنفّس بطيء كـ "إيقاف وحدة".',
+    g19_s1:'"بطّاريّة حرجة · توفير الطاقة"',
+    g19_s2:'استنشق 4 ثا → اِبقِ 4 ثا → ازفر 4 ثا',
+    g19_s3:'كرّر 5 دورات',
+    g19_s4:'"إعادة تشغيل النظام مكتملة"',
+    g19_why:'تنفّس مربّع · علم تهدئة حقيقي',
+    g20_title:'حالة تمثال', g20_desc:'آخر عميل يتحرّك يفوز.',
+    g20_s1:'"الوحدات إيقاف الطاقة"',
+    g20_s2:'الجميع يَجْمُدُ في وَضعيّته',
+    g20_s3:'المُدرِّب يقيس الزمن — لا تتحرّك إطلاقاً',
+    g20_s4:'آخر 3 واقفين = ملصق',
+    g20_why:'يجبر السكون · يبني صبراً',
+    g21_title:'معايرة التركيز', g21_desc:'عُدَّ النقرات. أعِد ضبط الذاكرة.',
+    g21_s1:'اِجلس متربّعاً، أَغلِق العينين',
+    g21_s2:'استمع لنقّار المُدرِّب (5 نقرات)',
+    g21_s3:'عُدَّ بصمت : 1...2...3...4...5',
+    g21_s4:'افتح العينين → جاهز للعملية التالية',
+    g21_why:'تأمّل صغير · إصغاء مُركَّز',
+    g22_title:'تتابع الإيقاف', g22_desc:'تظاهر بإيقاف الجسم تدريجيّاً.',
+    g22_s1:'واقف. "تحرير الذراعين" → الذراعان تَسقُطان',
+    g22_s2:'"تحرير الساقين" → ركبتان واهنتان',
+    g22_s3:'"إيقاف الرأس" → الرأس تنحني',
+    g22_s4:'استَقِرَّ ببطء على الأرض',
+    g22_why:'مسح جسدي + استرخاء في إطار وحدة',
+    g23_title:'عَدّ لامركزي', g23_desc:'الفريق يعدّ إلى 20 — بلا قائد.',
+    g23_s1:'المجموعة تعدّ بصوت عالٍ : 1، 2، 3... حتى 20',
+    g23_s2:'لا ترتيب مُعَيَّن — أيّ شخص يُنادي رقماً',
+    g23_s3:'إذا تكلّم 2 معاً → عُد إلى 1',
+    g23_s4:'الوصول إلى 20 = هتاف الفريق',
+    g23_why:'يجبر الإصغاء · وعي الجماعة',
+    g24_title:'تصميم سريع', g24_desc:'90 ثانية لرسم وحدة مخصّصة.',
+    g24_s1:'كل عميل : ورق + قلم',
+    g24_s2:'90 ثانية. نفِّذ.',
+    g24_s3:'اعرض كل التصاميم على الفريق',
+    g24_s4:'صَوِّت : الأكثر إبداعاً · الأكثر تشغيليّاً · الأغرب',
+    g24_why:'موجة إبداع سريعة · نجاح سهل',
+    g25_title:'اختبار الدوران', g25_desc:'دُر في المكان. اِجمَد عند الأمر.',
+    g25_s1:'الجميع يدور ببطء في المكان',
+    g25_s2:'"اِجمَد" → الجميع يتوقّف',
+    g25_s3:'مَن يَترنَّح أو يقع = يخرج',
+    g25_s4:'آخر عميل واقف يفوز',
+    g25_why:'كارديو + توازن + إخفاقات مُسلّية',
+    ending_stat:'[ ▶ 25 تدريباً // عمليّاتيّ ]',
+    ending_text:'مزج وتوفيق. <b>2-5 دقائق لكلٍّ.</b><br>// نصيحة احترافية : 1 تدريب بين كل مرحلتي عملية يحافظ على الطاقة طوال جلسة 90 د'
+  }
+};
+
+function setL(lang) {
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const k = el.dataset.i18n;
+    if (T[lang] && T[lang][k]) el.innerHTML = T[lang][k];
+  });
+  document.querySelectorAll('.lang-bar a').forEach(a => a.classList.remove('active'));
+  document.getElementById('lang' + lang.charAt(0).toUpperCase() + lang.slice(1)).classList.add('active');
+  document.body.classList.toggle('rtl', lang === 'ar');
+  document.documentElement.lang = lang;
+  document.documentElement.dir = (lang === 'ar') ? 'rtl' : 'ltr';
+  try { localStorage.setItem('robi.energLang', lang); } catch (e) {}
+}
+try {
+  const saved = localStorage.getItem('robi.energLang');
+  if (saved && T[saved]) setL(saved);
+} catch (e) {}
+
+(function() {
+  const sel = document.getElementById('themeSelect');
+  function apply(t) {
+    document.documentElement.setAttribute('data-theme', t);
+    if (sel) sel.value = t;
+    try { localStorage.setItem('robi.theme', t); } catch (e) {}
+  }
+  if (sel) sel.addEventListener('change', e => apply(e.target.value));
+  try { const s = localStorage.getItem('robi.theme'); if (s) apply(s); } catch (e) {}
+})();
+</script>
+</body>
+</html>

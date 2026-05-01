@@ -1,0 +1,273 @@
+/* ═══════════════════════════════════════════════════════════════════
+   WORKSHOP-DIY · ROBI-9 LAB · Multi-Theme Sheet (kids 10y+)
+   5 themes · serious-but-friendly · NO pink, NO violet, NO rainbow
+   Fonts: Righteous (display) · Tajawal (body) · Orbitron (tech accents)
+   Drop-in stylesheet for all workshop-* and start.html files.
+   ═══════════════════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Righteous&family=Tajawal:wght@400;500;700;900&family=Orbitron:wght@500;700&family=JetBrains+Mono:wght@400;700&family=Amiri:wght@400;700&display=swap');
+
+/* ────── 1. CARBON · default · friendly dark navy ──────────────────── */
+[data-theme="carbon"] {
+  --bg: #142036;
+  --bg-card: #1c2a45;
+  --bg-soft: #243456;
+  --grid: rgba(74,222,128,0.04);
+  --neon: #4ade80;       /* friendly green (not too neon) */
+  --cyan: #38bdf8;       /* sky blue */
+  --amber: #fbbf24;      /* warm amber */
+  --orange: #fb923c;     /* warm orange */
+  --danger: #ef4444;     /* clear red */
+  --steel: #a8b8cc;      /* readable muted */
+  --text: #ecf2fa;       /* warm white */
+  --border: #364860;
+  --ink: #0a1220;
+  --paper: #fef9e7;
+  --hero-glow: rgba(74,222,128,0.18);
+  --band1: #4ade80; --band2: #38bdf8; --band3: #fbbf24;
+  --shadow: 0 6px 22px rgba(74,222,128,0.18);
+  --font-display: 'Righteous', 'Tajawal', 'Bangers', sans-serif;
+  --font-body: 'Tajawal', 'Inter', system-ui, sans-serif;
+  --font-tech: 'Orbitron', 'Righteous', sans-serif;
+}
+
+/* ────── 2. FOREST · medium · friendly explorer green ─────────────── */
+[data-theme="forest"] {
+  --bg: #1a2e22;
+  --bg-card: #233e2e;
+  --bg-soft: #2d4d3a;
+  --grid: rgba(163,230,53,0.05);
+  --neon: #a3e635;
+  --cyan: #14b8a6;
+  --amber: #facc15;
+  --orange: #f97316;
+  --danger: #dc2626;
+  --steel: #a8c0a8;
+  --text: #f0f5e8;
+  --border: #3d5a45;
+  --ink: #0a1410;
+  --paper: #fef9e7;
+  --hero-glow: rgba(163,230,53,0.20);
+  --band1: #a3e635; --band2: #14b8a6; --band3: #facc15;
+  --shadow: 0 6px 22px rgba(163,230,53,0.18);
+  --font-display: 'Bangers', 'Righteous', sans-serif;
+  --font-body: 'Tajawal', system-ui, sans-serif;
+  --font-tech: 'Orbitron', sans-serif;
+}
+
+/* ────── 3. STEEL · medium · industrial sky-blue ──────────────────── */
+[data-theme="steel"] {
+  --bg: #1f2c3e;
+  --bg-card: #283854;
+  --bg-soft: #324666;
+  --grid: rgba(56,189,248,0.06);
+  --neon: #38bdf8;
+  --cyan: #67e8f9;
+  --amber: #fbbf24;
+  --orange: #fb923c;
+  --danger: #ef4444;
+  --steel: #b0c4d8;
+  --text: #f0f6fc;
+  --border: #44587a;
+  --ink: #0a1320;
+  --paper: #f5f9fc;
+  --hero-glow: rgba(56,189,248,0.20);
+  --band1: #38bdf8; --band2: #fbbf24; --band3: #67e8f9;
+  --shadow: 0 6px 22px rgba(56,189,248,0.18);
+  --font-display: 'Orbitron', 'Righteous', sans-serif;
+  --font-body: 'Tajawal', system-ui, sans-serif;
+  --font-tech: 'Orbitron', sans-serif;
+}
+
+/* ────── 4. PAPER · LIGHT · ivory lab notebook ────────────────────── */
+[data-theme="paper"] {
+  --bg: #fef9e7;
+  --bg-card: #ffffff;
+  --bg-soft: #f5edd0;
+  --grid: rgba(20,40,60,0.03);
+  --neon: #16a34a;
+  --cyan: #0284c7;
+  --amber: #d97706;
+  --orange: #c2410c;
+  --danger: #b91c1c;
+  --steel: #6b7c8e;
+  --text: #1a2230;
+  --border: #d4c8a0;
+  --ink: #0a1018;
+  --paper: #fef9e7;
+  --hero-glow: rgba(22,163,74,0.10);
+  --band1: #16a34a; --band2: #0284c7; --band3: #d97706;
+  --shadow: 0 6px 18px rgba(20,40,60,0.10);
+  --font-display: 'Righteous', 'Bangers', sans-serif;
+  --font-body: 'Tajawal', system-ui, sans-serif;
+  --font-tech: 'Orbitron', sans-serif;
+}
+
+/* ────── 5. PEARL · LIGHT · cool pearl/ocean ──────────────────────── */
+[data-theme="pearl"] {
+  --bg: #eef3f8;
+  --bg-card: #ffffff;
+  --bg-soft: #dee7f0;
+  --grid: rgba(15,40,60,0.04);
+  --neon: #0e7c6b;
+  --cyan: #0369a1;
+  --amber: #b45309;
+  --orange: #c2410c;
+  --danger: #b91c1c;
+  --steel: #5a6e82;
+  --text: #142030;
+  --border: #b8c4d4;
+  --ink: #0a1018;
+  --paper: #ffffff;
+  --hero-glow: rgba(14,124,107,0.10);
+  --band1: #0e7c6b; --band2: #0369a1; --band3: #b45309;
+  --shadow: 0 6px 18px rgba(20,40,60,0.10);
+  --font-display: 'Righteous', sans-serif;
+  --font-body: 'Tajawal', system-ui, sans-serif;
+  --font-tech: 'Orbitron', sans-serif;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   GLOBAL TYPOGRAPHY · friendly defaults for kids
+   ═══════════════════════════════════════════════════════════════════ */
+
+html { font-family: var(--font-body, 'Tajawal', system-ui, sans-serif); }
+body { font-family: var(--font-body, 'Tajawal', system-ui, sans-serif); }
+h1, h2, h3, .display { font-family: var(--font-display, 'Righteous', sans-serif); }
+.tech, .tech-label { font-family: var(--font-tech, 'Orbitron', sans-serif); }
+code, .mono, kbd { font-family: 'JetBrains Mono', 'Consolas', monospace; }
+
+/* Restore arabic-friendly sans for RTL */
+[dir="rtl"], body.rtl { font-family: 'Tajawal', 'Amiri', system-ui, sans-serif; }
+[dir="rtl"] h1, [dir="rtl"] h2, [dir="rtl"] h3,
+body.rtl h1, body.rtl h2, body.rtl h3 { font-family: 'Tajawal', 'Amiri', sans-serif; letter-spacing: 0; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   WORKSHOP-DIY HEADER + FOOTER · friendly inventor lab
+   ═══════════════════════════════════════════════════════════════════ */
+
+.wd-band {
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--band1), var(--band2), var(--band3), var(--band2), var(--band1), transparent);
+  opacity: 0.7;
+}
+.wd-band-top    { position: sticky; top: 0; z-index: 50; }
+.wd-band-bottom { margin-top: 30px; }
+
+.wd-header {
+  background:
+    radial-gradient(ellipse at top right, var(--hero-glow), transparent 50%),
+    var(--bg-card);
+  border-bottom: 2px solid var(--border);
+  padding: 18px 22px;
+  display: flex; align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  position: relative;
+}
+.wd-header .title-block {
+  display: flex; align-items: center; gap: 14px;
+}
+.wd-header .logo-mark {
+  background: linear-gradient(135deg, var(--neon), var(--cyan));
+  color: var(--ink);
+  padding: 10px 14px;
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 800;
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+  line-height: 1;
+}
+.wd-header h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  color: var(--neon);
+}
+.wd-header .subtitle {
+  font-size: 0.8rem;
+  color: var(--steel);
+  letter-spacing: 0.02em;
+  margin-top: 3px;
+  font-family: var(--font-body);
+}
+.wd-header-right {
+  display: flex; align-items: center; gap: 10px;
+  flex-wrap: wrap;
+}
+.wd-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 12px;
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: 0.75rem;
+  color: var(--text);
+  letter-spacing: 0.04em;
+  font-weight: 600;
+}
+.wd-pill .dot {
+  width: 8px; height: 8px;
+  background: var(--neon);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--neon);
+}
+
+.wd-select {
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 6px 12px;
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 8px;
+  letter-spacing: 0.02em;
+}
+.wd-select:hover { border-color: var(--neon); }
+.wd-select:focus { outline: none; border-color: var(--neon); box-shadow: 0 0 0 3px rgba(74,222,128,0.25); }
+
+.wd-footer {
+  display: flex; align-items: center; justify-content: center;
+  gap: 14px;
+  padding: 18px 20px;
+  font-size: 0.78rem;
+  color: var(--steel);
+  letter-spacing: 0.02em;
+  flex-wrap: wrap;
+  opacity: 0.85;
+  font-family: var(--font-body);
+}
+.wd-footer:hover { opacity: 1; }
+.wd-footer a {
+  color: var(--neon);
+  text-decoration: none;
+  font-weight: 700;
+}
+.wd-footer a:hover { opacity: 0.7; text-decoration: underline; }
+.wd-footer .sep { color: var(--border); }
+.wd-footer .badge {
+  display: inline-block;
+  padding: 3px 10px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-family: var(--font-tech);
+  font-size: 0.72rem;
+  color: var(--neon);
+  font-weight: 700;
+}
+
+body.rtl .wd-header,
+[dir="rtl"] .wd-header { flex-direction: row-reverse; }
+body.rtl .wd-footer,
+[dir="rtl"] .wd-footer { flex-direction: row-reverse; }
+
+@media print {
+  .wd-band, .wd-header, .wd-footer { display: none !important; }
+}

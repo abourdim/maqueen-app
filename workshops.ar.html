@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="carbon">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ROBI-9 // عمليات ميدانية · دليل العميل</title>
+<link rel="stylesheet" href="workshops-theme.css">
+<style>
+/* Theme variables defined in workshops-theme.css per [data-theme] */
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
+    repeating-linear-gradient(0deg, transparent 0 39px, var(--grid) 39px 40px),
+    repeating-linear-gradient(90deg, transparent 0 39px, var(--grid) 39px 40px),
+    var(--bg);
+  color: var(--text);
+  font-family: 'Tajawal', 'Cairo', 'Noto Sans Arabic', system-ui, sans-serif;
+  line-height: 1.7; min-height: 100vh; direction: rtl;
+}
+code, .mono { font-family: 'JetBrains Mono', 'Consolas', monospace; direction: ltr; unicode-bidi: embed; }
+.lang-bar { position: fixed; top: 8px; left: 12px; z-index: 200; display: flex; gap: 4px; background: var(--bg-card); border: 1px solid var(--neon); padding: 4px; border-radius: 4px; direction: ltr; }
+.lang-bar a { color: var(--steel); text-decoration: none; padding: 4px 10px; font-size: 11px; font-weight: 700; border-radius: 2px; }
+.lang-bar a.active { background: var(--neon); color: var(--ink); }
+.wrap { display: grid; grid-template-columns: 1fr 280px; min-height: 100vh; }
+aside.nav { background: rgba(5,8,16,0.92); border-left: 1px solid var(--neon); padding: 16px 12px; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+aside.nav .logo { background: var(--neon); color: var(--ink); padding: 8px 10px; border-radius: 2px; font-size: 0.9rem; font-weight: 800; margin-bottom: 4px; }
+aside.nav .sub { font-size: 0.78rem; color: var(--steel); border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-bottom: 12px; }
+aside.nav a.op { display: flex; gap: 8px; align-items: center; padding: 7px 10px; margin: 2px 0; color: var(--text); text-decoration: none; font-size: 0.85rem; font-weight: 600; border-right: 2px solid transparent; }
+aside.nav a.op:hover { background: rgba(34,197,94,0.08); border-right-color: var(--cyan); }
+aside.nav a.op.active { background: rgba(34,197,94,0.15); border-right-color: var(--neon); color: var(--neon); }
+aside.nav a.op .id { font-size: 0.7rem; background: var(--bg-soft); border: 1px solid var(--border); padding: 2px 6px; min-width: 38px; text-align: center; font-family: monospace; direction: ltr; }
+aside.nav a.op.active .id { background: var(--neon); color: var(--ink); border-color: var(--neon); }
+main { padding: 26px 40px; max-width: 1100px; margin-right: auto; }
+.workshop { display: none; } .workshop.active { display: block; }
+.brief { border: 1px solid var(--neon); padding: 18px 22px; margin-bottom: 22px; position: relative; background: linear-gradient(135deg, rgba(34,197,94,0.04), transparent); }
+.brief::before { content: '[ سرّي // إيجاز المهمة ]'; position: absolute; top: -10px; right: 14px; background: var(--bg); color: var(--neon); padding: 0 8px; font-size: 0.78rem; }
+.brief .id { display: inline-block; background: var(--orange); color: var(--ink); padding: 3px 10px; font-size: 0.78rem; font-weight: 800; margin-bottom: 10px; }
+.brief h2 { font-size: 1.95rem; margin: 4px 0; color: var(--neon); }
+.brief .codename { color: var(--cyan); font-size: 1.05rem; font-style: italic; }
+.brief .specs { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; font-size: 0.85rem; }
+.brief .specs span { border: 1px solid var(--border); padding: 3px 8px; background: var(--bg-soft); color: var(--steel); }
+.brief .specs span b { color: var(--amber); }
+.section { border: 1px solid var(--border); background: var(--bg-card); padding: 18px 22px; margin-bottom: 18px; }
+.section h3 { margin: 0 0 12px; color: var(--cyan); font-size: 1.1rem; border-bottom: 1px dashed var(--border); padding-bottom: 6px; }
+.section h3 .tag { background: var(--cyan); color: var(--ink); font-size: 0.7rem; font-weight: 800; padding: 2px 7px; margin-left: 8px; font-family: monospace; direction: ltr; }
+.section h4 { margin: 14px 0 6px; color: var(--neon); font-size: 0.95rem; }
+.transmit { display: flex; gap: 12px; margin: 12px 0; border: 1px solid var(--cyan); background: linear-gradient(90deg, rgba(0,212,255,0.06), transparent); padding: 12px 14px; position: relative; }
+.transmit::before { content: '< وارد'; position: absolute; top: -8px; right: 10px; background: var(--bg); color: var(--cyan); padding: 0 6px; font-size: 0.72rem; }
+.transmit .src { flex-shrink: 0; width: 60px; padding-top: 6px; font-size: 0.75rem; color: var(--cyan); text-align: center; }
+.transmit .src .ico { font-size: 2rem; display: block; filter: drop-shadow(0 0 6px var(--cyan)); }
+.transmit .msg { flex: 1; padding: 4px 0; font-size: 0.98rem; }
+.transmit .msg b { color: var(--amber); }
+.steps { counter-reset: s; padding: 0; list-style: none; margin: 8px 0; }
+.steps li { counter-increment: s; background: var(--bg-soft); border: 1px solid var(--border); border-right: 3px solid var(--neon); padding: 10px 48px 10px 14px; margin: 6px 0; position: relative; font-size: 0.98rem; }
+.steps li::before { content: '[' counter(s, decimal-leading-zero) ']'; position: absolute; right: 8px; top: 10px; color: var(--neon); font-weight: 800; font-size: 0.82rem; font-family: monospace; direction: ltr; }
+.steps li.crit { border-right-color: var(--orange); background: rgba(255,107,0,0.05); }
+.steps li.crit::before { color: var(--orange); }
+.steps li.exec { border-right-color: var(--amber); }
+.steps li.exec::before { color: var(--amber); }
+.steps li b { color: var(--amber); }
+.steps li code { background: var(--ink); color: var(--neon); padding: 1px 5px; border: 1px solid var(--neon); font-size: 0.85rem; }
+.alert { border: 1px solid var(--orange); background: rgba(255,107,0,0.08); padding: 10px 14px; margin: 12px 0; font-size: 0.95rem; }
+.alert::before { content: '! تحذير'; background: var(--orange); color: var(--ink); padding: 1px 6px; font-size: 0.72rem; font-weight: 800; margin-left: 8px; }
+.intel { border: 1px solid var(--cyan); background: rgba(0,212,255,0.05); padding: 10px 14px; margin: 12px 0; font-size: 0.95rem; }
+.intel::before { content: '< معلومة'; background: var(--cyan); color: var(--ink); padding: 1px 6px; font-size: 0.72rem; font-weight: 800; margin-left: 8px; }
+.lab { border: 1px solid var(--amber); background: rgba(255,204,0,0.05); padding: 10px 14px; margin: 12px 0; font-size: 0.95rem; }
+.lab::before { content: '⚗ مختبر'; background: var(--amber); color: var(--ink); padding: 1px 6px; font-size: 0.72rem; font-weight: 800; margin-left: 8px; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.objective { background: var(--bg-soft); border: 1px solid var(--border); border-top: 3px solid var(--neon); padding: 10px 14px; }
+.objective .lbl { color: var(--neon); font-size: 0.78rem; font-weight: 800; margin-bottom: 4px; }
+.checklist { padding: 0; list-style: none; }
+.checklist li { padding: 4px 22px 4px 0; position: relative; font-size: 0.95rem; }
+.checklist li::before { content: '[ ]'; position: absolute; right: 0; top: 4px; color: var(--neon); font-family: monospace; }
+table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 0.92rem; }
+th, td { padding: 7px 10px; text-align: right; border: 1px solid var(--border); }
+th { background: var(--bg-soft); color: var(--neon); font-size: 0.82rem; }
+td b { color: var(--amber); }
+.handout { background: #f5f3e8; color: #0a1020; border: 2px dashed var(--orange); padding: 14px 18px; margin: 12px 0; }
+.handout h4 { color: var(--orange); margin: 0 0 10px; border-bottom: 1px dashed var(--orange); padding-bottom: 4px; }
+.handout .tear { border-top: 1px dashed var(--orange); margin: 10px 0 0; text-align: center; color: var(--orange); font-size: 0.78rem; }
+.nav-foot { display: flex; justify-content: space-between; margin: 26px 0 12px; }
+.nav-foot a { background: var(--bg-card); color: var(--neon); border: 1px solid var(--neon); padding: 8px 16px; text-decoration: none; font-size: 0.92rem; font-weight: 700; }
+.schematic { background: var(--ink); border: 1px solid var(--neon); padding: 14px; margin: 12px 0; position: relative; }
+.schematic::before { content: '[ مخطط ]'; position: absolute; top: -8px; right: 12px; background: var(--bg); color: var(--neon); padding: 0 6px; font-size: 0.72rem; }
+.schematic svg { width: 100%; height: auto; max-height: 280px; display: block; direction: ltr; }
+.schematic .cap { margin-top: 8px; font-size: 0.85rem; color: var(--steel); font-style: italic; text-align: center; }
+@media print { aside.nav, .lang-bar { display: none; } .wrap { grid-template-columns: 1fr; } .workshop { display: block !important; page-break-after: always; } body { background: #fff; color: #000; } }
+@media (max-width: 800px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } .wrap { grid-template-columns: 1fr; } aside.nav { position: relative; height: auto; } main { padding: 18px; } }
+@keyframes spin { to { transform: rotate(360deg); } }
+.spin { animation: spin 2s linear infinite; transform-origin: center; transform-box: fill-box; }
+</style>
+</head>
+<body>
+
+<div class="wd-band wd-band-top"></div>
+<header class="wd-header">
+  <div class="title-block">
+    <div class="logo-mark">▣</div>
+    <div>
+      <h1>ROBI-9 // دليل الميدان</h1>
+      <div class="subtitle">// 12 عمليّات · العملاء 10 سنوات+ · WORKSHOP DIY</div>
+    </div>
+  </div>
+  <div class="wd-header-right">
+    <select class="wd-select" id="themeSelect" aria-label="ثيم">
+      <option value="carbon">▣ Carbon</option>
+      <option value="forest">▣ Forest</option>
+      <option value="steel">▣ Steel</option>
+      <option value="paper">☼ Paper</option>
+      <option value="pearl">☼ Pearl</option>
+    </select>
+    <select class="wd-select" id="langSelect" aria-label="لغة" onchange="if(this.value==='en')location.href='workshops.html';else if(this.value==='fr')location.href='workshops.fr.html';">
+      <option value="en">🇬🇧 EN</option>
+      <option value="fr">🇫🇷 FR</option>
+      <option value="ar" selected>🇩🇿 AR</option>
+    </select>
+  </div>
+</header>
+
+<div class="lang-bar" style="display:none;">
+  <a href="workshops.html">EN</a>
+  <a href="workshops.fr.html">FR</a>
+  <a href="workshops.ar.html" class="active">AR</a>
+</div>
+
+<div class="wrap">
+
+<aside class="nav">
+  <div class="logo">▶ ROBI-9 // عمليات</div>
+  <div class="sub">12 عملية ميدانية · العميل المستوى+1</div>
+  <a class="op" href="#start"><span class="id">HQ</span>المقر الرئيسي</a>
+  <a class="op" href="#op01"><span class="id">OP-01</span>إيقاظ الوحدة</a>
+  <a class="op" href="#op02"><span class="id">OP-02</span>مختبر السرعة</a>
+  <a class="op" href="#op03"><span class="id">OP-03</span>استطلاع الحساسات</a>
+  <a class="op" href="#op04"><span class="id">OP-04</span>قلب السلوك</a>
+  <a class="op" href="#op05"><span class="id">OP-05</span>رسم الخرائط</a>
+  <a class="op" href="#op06"><span class="id">OP-06</span>كود المسار</a>
+  <a class="op" href="#op07"><span class="id">OP-07</span>مختبر الإشارة</a>
+  <a class="op" href="#op08"><span class="id">OP-08</span>هندسة المحرك الدقيق</a>
+  <a class="op" href="#op09"><span class="id">OP-09</span>القياس عن بعد</a>
+  <a class="op" href="#op10"><span class="id">OP-10</span>مكتشف المسار</a>
+  <a class="op" href="#op11"><span class="id">OP-11</span>عمليات متعددة</a>
+  <a class="op" href="#op12"><span class="id">OP-12</span>العملية النهائية</a>
+  <div style="margin-top:14px; padding-top:10px; border-top:1px solid var(--border); font-size:0.78rem; color:var(--steel);">
+    [ Ctrl+P ] تصدير PDF<br>[ #op## ] رابط مباشر
+  </div>
+</aside>
+
+<main>
+
+<section id="start" class="workshop active">
+<div class="brief">
+  <span class="id">▶ المقر الرئيسي</span>
+  <h2>ROBI-9 // دليل العميل الميداني</h2>
+  <div class="codename">12 عملية · 90 دقيقة لكل واحدة · للعملاء 10 سنوات+</div>
+  <div class="specs">
+    <span><b>التصريح:</b> عميل المستوى 1+</span>
+    <span><b>المعدات:</b> Maqueen Lite v4</span>
+    <span><b>الهدف:</b> اِبنِ · اخترق · انشر</span>
+  </div>
+</div>
+
+<div class="transmit">
+  <div class="src"><span class="ico">▣</span>ROBI-9</div>
+  <div class="msg">
+    [الإشارة مُتأسِّسة]<br>أهلاً بك في مقر المختبر، أيها العميل. ستُنجز <b>12 عملية</b> على مدى <b>18 ساعة من العمل الميداني</b>.
+    ملف المهمة: <b>بناء مكدس مُشغِّل روبوت تكتيكي</b> من الاتصال الأوّلي حتى النشر الذاتي.<br>
+    نفس سلسلة الأدوات التي يستخدمها مهندسو JPL و MIT و CERN. مقياس أصغر. منطق مماثل.
+  </div>
+</div>
+
+<div class="section">
+  <h3><span class="tag">DOC-01</span>إيقاع العمليات</h3>
+  <p>كل عملية تتبع الدورة المعيارية: استطلاع ← استكشاف ← تحدِّ ← استخلاص.</p>
+  <div class="schematic">
+    <svg viewBox="0 0 700 140">
+      <defs><marker id="ar1" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#22c55e"/></marker></defs>
+      <line x1="50" y1="70" x2="650" y2="70" stroke="#22c55e" stroke-width="1" stroke-dasharray="3 3"/>
+      <g font-family="monospace" font-size="11" fill="#e2e8f0">
+        <g transform="translate(100 70)"><rect x="-40" y="-22" width="80" height="44" fill="#0e1424" stroke="#22c55e"/><text y="3" text-anchor="middle" fill="#22c55e" font-weight="700">[01] RECON</text></g>
+        <g transform="translate(280 70)"><rect x="-40" y="-22" width="80" height="44" fill="#0e1424" stroke="#00d4ff"/><text y="3" text-anchor="middle" fill="#00d4ff" font-weight="700">[02] EXPLOIT</text></g>
+        <g transform="translate(460 70)"><rect x="-40" y="-22" width="80" height="44" fill="#0e1424" stroke="#ffcc00"/><text y="3" text-anchor="middle" fill="#ffcc00" font-weight="700">[03] CHALLENGE</text></g>
+        <g transform="translate(640 70)"><rect x="-40" y="-22" width="80" height="44" fill="#0e1424" stroke="#ff6b00"/><text y="3" text-anchor="middle" fill="#ff6b00" font-weight="700">[04] DEBRIEF</text></g>
+      </g>
+    </svg>
+    <div class="cap">← دورة العمليات المعيارية. تتكرر داخل كل عملية.</div>
+  </div>
+</div>
+
+<div class="section">
+  <h3><span class="tag">DOC-02</span>فهرس العمليات</h3>
+  <table>
+    <tr><th>المعرّف</th><th>العملية</th><th>الطبقة</th><th>المفهوم الأساسي</th></tr>
+    <tr><td><b>OP-01</b></td><td>إيقاظ الوحدة</td><td>أساس</td><td>إشارة ← أمر ← تشغيل</td></tr>
+    <tr><td><b>OP-02</b></td><td>مختبر السرعة</td><td>أساس</td><td>المقايضة بين السرعة والتحكم</td></tr>
+    <tr><td><b>OP-03</b></td><td>استطلاع الحساسات</td><td>أساس</td><td>الحساسات = فيزيائي ← رقمي</td></tr>
+    <tr><td><b>OP-04</b></td><td>قلب السلوك</td><td>إدراك</td><td>الخوارزمية = حساس + قاعدة</td></tr>
+    <tr><td><b>OP-05</b></td><td>رسم الخرائط</td><td>إدراك</td><td>قياس المسافة · الانحراف التراكمي</td></tr>
+    <tr><td><b>OP-06</b></td><td>كود المسار</td><td>إدراك</td><td>البرمجة = عمليات مُسبقة التخطيط</td></tr>
+    <tr><td><b>OP-07</b></td><td>مختبر الإشارة</td><td>منطق</td><td>التردد · الإشارة كبيانات</td></tr>
+    <tr><td><b>OP-08</b></td><td>هندسة المحرك الدقيق</td><td>منطق</td><td>تحكم دقيق بالزاوية</td></tr>
+    <tr><td><b>OP-09</b></td><td>القياس عن بعد</td><td>منطق</td><td>بيانات ← فهم ← قرار</td></tr>
+    <tr><td><b>OP-10</b></td><td>مكتشف المسار</td><td>متقدم</td><td>خوارزمية البحث A*</td></tr>
+    <tr><td><b>OP-11</b></td><td>عمليات متعددة الوحدات</td><td>متقدم</td><td>شبكة · زمن استجابة · تنسيق</td></tr>
+    <tr><td><b>OP-12</b></td><td>العملية النهائية</td><td>نشر</td><td>تركيب + عرض</td></tr>
+  </table>
+</div>
+
+<div class="section">
+  <h3><span class="tag">DOC-03</span>عتاد المعيار</h3>
+  <div class="grid-2">
+    <div>
+      <h4>// المعدات</h4>
+      <ul class="checklist">
+        <li>وحدة Maqueen Lite v4 لكل 2-3 عملاء (مشحونة 100%)</li>
+        <li>micro:bit لكل وحدة (بفيرموير محدّث)</li>
+        <li>جهاز لوحي/حاسوب لكل مجموعة (بلوتوث مفعّل)</li>
+        <li>كابل USB-C (لشحن الطوارئ)</li>
+      </ul>
+    </div>
+    <div>
+      <h4>// المُستهلكات</h4>
+      <ul class="checklist">
+        <li>شريط لاصق أسود (لمسارات الخطوط)</li>
+        <li>أقماع / كؤوس (لمسار التعرّج)</li>
+        <li>ورق A4 + أقلام لكل عميل</li>
+        <li>ساعات إيقاف (واحدة لكل مجموعة)</li>
+      </ul>
+    </div>
+  </div>
+  <div class="alert"><b>قبل الإقلاع:</b> اشحن الوحدات قبل 24 ساعة. وحدة فارغة في منتصف العملية تُحطّم الزخم.</div>
+</div>
+
+<div class="section">
+  <h3><span class="tag">DOC-04</span>بروتوكول المُدرِّب</h3>
+  <div class="grid-2">
+    <div class="objective"><div class="lbl">[01]</div>اليدان بعيدتان عن لوحة المفاتيح. إن نقرتَ نيابةً عنهم، لن يتعلّموا.</div>
+    <div class="objective"><div class="lbl">[02]</div>اِحتضن الفشل بصوت مرتفع. "خطأ ممتاز — ماذا يقول لنا؟"</div>
+    <div class="objective"><div class="lbl">[03]</div>المؤقّت قانون. الساعة مرئية. تابع الحركة حتى لو كان البعض في منتصف المهمة.</div>
+    <div class="objective"><div class="lbl">[04]</div>اسأل، ولا تُخبر. "ماذا يحدث لو...؟" يهزم الشرح المُملّ.</div>
+    <div class="objective"><div class="lbl">[05]</div>كافِئ المحاولات. العميل الذي فشل 5 مرات تعلّم أكثر من فائز الضربة الواحدة.</div>
+    <div class="objective"><div class="lbl">[06]</div>الاستخلاص مُقدّس. آخر 10 دقائق دائماً للتأمّل. لا تنزف أبداً إلى التنظيف.</div>
+  </div>
+</div>
+</section>
+
+<!-- ═══ OP-01 AR ═══ -->
+<section id="op01" class="workshop">
+<div class="brief">
+  <span class="id">▶ OP-01 · المستوى: أساسي</span>
+  <h2>إيقاظ الوحدة</h2>
+  <div class="codename">"أنشئ الاتصال الأوّل. تحقّق من بروتوكول الإيقاف."</div>
+  <div class="specs"><span><b>المدة:</b> 90 د</span><span><b>الصعوبة:</b> ▰▱▱▱▱</span><span><b>المتطلبات:</b> لا شيء</span></div>
+</div>
+<div class="transmit"><div class="src"><span class="ico">▣</span>ROBI-9</div><div class="msg">[وضع السكون] الطاقة: 100%. في انتظار إشارة الإيقاظ.<br>مهمتك أيها العميل: إرسال <b>المصافحة</b> عبر البلوتوث وتأكيد <b>زر القتل</b>. إجراء معياري.</div></div>
+
+<div class="section">
+  <h3><span class="tag">OBJ</span>أهداف العملية</h3>
+  <div class="grid-3">
+    <div class="objective"><div class="lbl">المفهوم</div>التحكم اللاسلكي = سلسلة إشارة ← أمر ← تشغيل.</div>
+    <div class="objective"><div class="lbl">المهارة</div>الاقتران بالبلوتوث منفرداً. مفتاح اتجاه. ردّ فعل الإيقاف.</div>
+    <div class="objective"><div class="lbl">العقيدة</div>هدوء، تركيز، السلامة أولاً. الوحدة أداة، ليست لعبة.</div>
+  </div>
+</div>
+
+<div class="section">
+  <h3><span class="tag">SOP</span>الجدول الزمني للعملية</h3>
+
+  <h4>// المرحلة 1 · الاتصال (10 د)</h4>
+  <ul class="steps">
+    <li>اِجمع العملاء في نصف دائرة. اعرض الوحدة النائمة.</li>
+    <li>تساءَل: "كيف تصل إشارة الأمر إلى هذه الوحدة؟" اجمع الفرضيات (واي-فاي، تخاطر، سحر، أشعة كونية). اعترف بالكلّ، صادِق على <b>البلوتوث</b>.</li>
+    <li class="exec">عرض: المُدرِّب ينقر <code>⌘ CONNECT</code>. مؤشر الوحدة يستجيب. تقدّم ثانية واحدة. توقّف.</li>
+    <li>أعلِن أداتَي التحكم: <b>الأزرق ⌘ = اتصال، الأحمر ⏹ = إيقاف</b>. هذا هو اليوم بأكمله.</li>
+  </ul>
+
+  <h4>// المرحلة 2 · تدريب المصافحة (10 د)</h4>
+  <ul class="steps">
+    <li>قسّم المجموعة. كلٌّ يأخذ جهازاً + وحدة.</li>
+    <li>انقر <code>⌘</code> ← قائمة BLE ← اختر <b>"Maqueen…"</b> ← أكِّد <code>Pair</code>.</li>
+    <li>زرّ FAB يختفي عند النجاح = المصافحة مؤكّدة.</li>
+    <li class="exec">كل مجموعة: <b>اتصال، فصل، إعادة اتصال × 2</b>. بناء ذاكرة عضلية.</li>
+  </ul>
+  <div class="alert">فشل الاقتران = خطأ من جانب الجهاز، ليس الوحدة. أوقف/شغّل البلوتوث على الجهاز. أعد تشغيل التطبيق.</div>
+
+  <h4>// المرحلة 3 · استطلاع حر (20 د)</h4>
+  <ul class="steps">
+    <li class="exec">"لديكم 20 دقيقة. قُد. لا أهداف. لا تكسر شيئاً."</li>
+    <li><b>المُدرِّب يبقى يداه في جيبيه.</b> راقب. سجّل مَن سيحتاج المساعدة لاحقاً.</li>
+    <li>بعد 10 د: تلميح غير رسمي — "هل اختبر أحدكم منزلق السرعة؟"</li>
+    <li>5 د متبقّية: "نفّذ دوران 360° مثاليّاً."</li>
+  </ul>
+
+  <h4>// المرحلة 4 · عقيدة زر القتل (10 د)</h4>
+  <ul class="steps">
+    <li>كل الوحدات متوقّفة. الأجهزة مطويّة.</li>
+    <li class="crit">قُد بسرعة 100% نحو قدم المُدرِّب. <b>قبل نصف ثانية من الاصطدام: انقر ⏹.</b> الوحدة تتجمّد.</li>
+    <li>المجموعة تكرّر بصوت واحد: <b>"أحمر = إيقاف. متاح دائماً."</b></li>
+    <li>وقّعوا قانون السلوك التنفيذي أدناه.</li>
+  </ul>
+
+  <div class="handout">
+    <h4>// قانون السلوك التنفيذي للعميل</h4>
+    <p>أنا، العميل <b>__________________________</b>، أتعهّد بـ:</p>
+    <ol style="margin: 8px 0;">
+      <li>الحفاظ على الوعي الموقعي بزرّ <b>⏹ القتل</b> الأحمر في جميع الأوقات.</li>
+      <li>عدم توجيه الوحدة نحو الأشخاص أو الحيوانات أو المعدات.</li>
+      <li>الإيقاف افتراضياً عند أيّ شك.</li>
+    </ol>
+    <p>التوقيع: __________________________ &nbsp; التاريخ: ____________</p>
+    <div class="tear">- - - - قص · يحتفظ العميل بالنسخة - - - -</div>
+  </div>
+
+  <h4>// المرحلة 5 · تمرين التعرّج (25 د)</h4>
+  <ul class="steps">
+    <li>اضبط 4-6 أقماع في زيغ-زاغ، تباعد 50 سم.</li>
+    <li>الهدف: العبور دون احتكاك.</li>
+    <li><b>الجولة 1:</b> ركضة واحدة لكل عميل. مُؤقَّتة. مَن يلامس قمعاً يُستبعد.</li>
+    <li><b>الجولة 2:</b> العميل يختار السرعة (10/30/50/80%). معظمهم يفشلون عند 80% — درس طبيعي.</li>
+    <li class="crit"><b>الجولة 3:</b> عَصْب أعين القائد. الجناح يقدّم متجهات شفهية. تدريب ثقة + اتصالات.</li>
+  </ul>
+
+  <h4>// المرحلة 6 · الاستخلاص (15 د)</h4>
+  <ul class="steps">
+    <li>دائرة. الوحدات خارج الخدمة. الأجهزة مودَعَة.</li>
+    <li>كل عميل يُبلِّغ: 1× أصعب لحظة، 1× اكتشاف غير متوقّع.</li>
+    <li class="exec">المُدرِّب: "أنتم الآن <b>عملاء تنفيذيّون</b>. العملية القادمة: طيّارون."</li>
+  </ul>
+</div>
+<div class="nav-foot"><a href="#start">◀ المقر</a><a href="#op02">OP-02 ▶</a></div>
+</section>
+
+<!-- ═══ OP-02 AR ═══ -->
+<section id="op02" class="workshop">
+<div class="brief">
+  <span class="id">▶ OP-02 · المستوى: أساسي</span>
+  <h2>مختبر السرعة</h2>
+  <div class="codename">"عيِّر دواسة الوقود. صَوِّر منحنى المكابح. بيانات نقيّة."</div>
+  <div class="specs"><span><b>المدة:</b> 90 د</span><span><b>الصعوبة:</b> ▰▱▱▱▱</span><span><b>المتطلبات:</b> OP-01</span></div>
+</div>
+<div class="transmit"><div class="src"><span class="ico">▣</span>ROBI-9</div><div class="msg">[القياس عن بعد نشط] ستصوّر مغلِّفي التسارع والكبح عند مستويات دواسة متعدّدة. اِرسم المنحنى. اكتشف المقايضة: <b>السرعة مقابل التحكم</b>. هندسة 101.</div></div>
+
+<div class="section">
+  <h3><span class="tag">OBJ</span>الأهداف</h3>
+  <div class="grid-3">
+    <div class="objective"><div class="lbl">المفهوم</div>المقايضة: كل ربح له ثمن. السرعة تكلِّف الدقّة.</div>
+    <div class="objective"><div class="lbl">المهارة</div>معايرة الدواسة. قراءة وإنتاج رسم بياني.</div>
+    <div class="objective"><div class="lbl">العقيدة</div>"الحدّ الأقصى لكل شيء" نادراً ما يفوز. الصبر تكتيكيّ.</div>
+  </div>
+</div>
+
+<div class="section">
+  <h3><span class="tag">SOP</span>الجدول الزمني</h3>
+  <h4>// المرحلة 1 · إحماء (5 د)</h4>
+  <ul class="steps">
+    <li>سباق المصافحة السريع. أوّل المتّصلين يفوز.</li>
+    <li>سؤال السلامة: "أين ⏹؟" — كل العملاء يشيرون.</li>
+  </ul>
+  <h4>// المرحلة 2 · تجربة 3 سرعات (15 د)</h4>
+  <ul class="steps">
+    <li>ضع الدواسة عند 10%. تقدّم 3 ثوانٍ. علِّم موضع التوقّف.</li>
+    <li>أعد الضبط. ضع عند 50%. تقدّم 3 ثوانٍ. علِّم.</li>
+    <li class="exec">أعد. ضع عند 100%. تقدّم 3 ثوانٍ. علِّم. <b>قارن المسافات.</b> نفس الزمن، إزاحات مختلفة جدّاً.</li>
+  </ul>
+  <h4>// المرحلة 3 · تصوير المكابح (20 د)</h4>
+  <ul class="steps">
+    <li>اِشريط خطّ البداية على الأرض. الوحدة خلفه.</li>
+    <li>تقدّم. <b>اضغط ⏹ عند عبور المقدّمة لخط البداية.</b></li>
+    <li>علِّم موقع التوقف الفعلي. القياس = <b>مسافة الكبح</b>.</li>
+    <li>أعد عند 30%، 60%، 100%. 3 محاولات لكلٍّ. جدوِل.</li>
+  </ul>
+  <table>
+    <tr><th>الدواسة</th><th>محاولة 1</th><th>محاولة 2</th><th>محاولة 3</th><th>المتوسط</th></tr>
+    <tr><td><b>30%</b></td><td>__سم</td><td>__سم</td><td>__سم</td><td>__سم</td></tr>
+    <tr><td><b>60%</b></td><td>__سم</td><td>__سم</td><td>__سم</td><td>__سم</td></tr>
+    <tr><td><b>100%</b></td><td>__سم</td><td>__سم</td><td>__سم</td><td>__سم</td></tr>
+  </table>
+  <div class="lab"><b>اكتشاف:</b> مضاعفة السرعة تُضاعِف مسافة الكبح أكثر من مرّتين. الطاقة الحركية غير خطّية (∝ v²).</div>
+  <h4>// المرحلة 4 · رسوّ دقيق (25 د)</h4>
+  <ul class="steps">
+    <li>اِشريط مربّعاً 30×30 سم على بعد 1 متر.</li>
+    <li class="exec">الهدف: الرسوّ <b>كاملاً داخل</b> المنطقة.</li>
+    <li>3 محاولات. العميل يختار الدواسة.</li>
+    <li>التقييم: 3 = داخلياً تماماً. 1 = على الخط. 0 = خارج.</li>
+  </ul>
+  <h4>// المرحلة 5 · تخطيط البيانات (15 د)</h4>
+  <ul class="steps">
+    <li>كل عميل: ورقة بيانية.</li>
+    <li>المحور س: الدواسة %. المحور ص: مسافة الكبح (سم).</li>
+    <li>اِخطِّط 3 نقاط. اِربطها بخط.</li>
+    <li class="exec"><b>السؤال:</b> "هل الخط مستقيم؟" (لا) المنحنى يرتفع.</li>
+  </ul>
+  <h4>// المرحلة 6 · التطبيق (10 د)</h4>
+  <ul class="steps">
+    <li>"لماذا توجد مطبّات السرعة في المدارس؟"</li>
+    <li>"لماذا تستخدم سيّارات F1 مكابح سيراميك؟"</li>
+    <li>"نفس الرياضيات عند 0.5 م/ث وعند 90 م/ث. لقد قستَها للتوّ."</li>
+  </ul>
+</div>
+<div class="nav-foot"><a href="#op01">◀ OP-01</a><a href="#op03">OP-03 ▶</a></div>
+</section>
+
+<!-- ═══ OP-03 AR ═══ -->
+<section id="op03" class="workshop">
+<div class="brief">
+  <span class="id">▶ OP-03 · المستوى: أساسي</span>
+  <h2>استطلاع الحساسات</h2>
+  <div class="codename">"اِرسم خريطة شبكة إدراك الوحدة. اِسبر كل قناة."</div>
+  <div class="specs"><span><b>المدة:</b> 90 د</span><span><b>الصعوبة:</b> ▰▰▱▱▱</span><span><b>المتطلبات:</b> OP-01</span></div>
+</div>
+<div class="transmit"><div class="src"><span class="ico">▣</span>ROBI-9</div><div class="msg">[شبكة الحساسات على الخط] لديّ <b>ثلاث قنوات إدراك</b>: السونار (تحديد المسافة الصوتي)، الخط (انعكاس بصري)، الأشعة تحت الحمراء (IR مُعَدَّل). كلُّها تُحوِّل الواقع الفيزيائي ← أرقاماً.</div></div>
+<div class="section">
+  <h3><span class="tag">SOP</span>الجدول الزمني</h3>
+
+  <h4>// المرحلة 1 · تدريب الإعماء (10 د)</h4>
+  <ul class="steps">
+    <li>كل عميل بعصابة. الجناح يُعطي متّجهاً شفهيّاً فقط.</li>
+    <li>المشي بين قمعَيْن دون رؤية.</li>
+    <li class="exec">إطار: "هذه الحالة الافتراضية للوحدة — حتى نُضيف الحساسات."</li>
+  </ul>
+
+  <h4>// المرحلة 2 · القناة A · سونار (20 د)</h4>
+  <div class="lab"><b>حقيقة:</b> الخفافيش تُحدّد الفرائس في الظلام الدامس باستخدام تحديد المسافة فوق الصوتي. نفس الفيزياء. SR04 يبثّ نبضة 40 كيلوهرتز ويقيس الصدى.</div>
+  <ul class="steps">
+    <li>افتح شريط الحساسات الحيّ. أبرز قراءة السونار.</li>
+    <li>يد على بعد 10 سم ← اقرأ القيمة. 50 سم ← اقرأ مجدّداً.</li>
+    <li class="exec"><b>التنبّؤ ثم القياس:</b> المُدرِّب يحمل شيئاً، العملاء يكتبون التنبّؤ، ثم يقيسون. الأقرب يفوز.</li>
+  </ul>
+
+  <h4>// المرحلة 3 · القناة B · حساسات الخط (15 د)</h4>
+  <ul class="steps">
+    <li>ضع شريطاً أسوداً على أرض بيضاء (50 سم).</li>
+    <li>حرِّك الوحدة يدويّاً عبره. راقب قيم L/M/R.</li>
+    <li class="exec"><b>أسود = عائد منخفض. أبيض = عائد مرتفع.</b> انعكاس بصري.</li>
+  </ul>
+
+  <h4>// المرحلة 4 · توثيق الشبكة (25 د)</h4>
+  <ul class="steps">
+    <li>وزِّع مخطط الوحدة فارغاً.</li>
+    <li>سَمِّ كل حساس: اسم · قناة · وحدة · متجه (إلى أين يشير).</li>
+    <li>تشفير اللون: كهرماني=سونار، أخضر=خط، برتقالي=IR، سماوي=LED.</li>
+    <li class="exec">أفضل الخرائط على الجدار.</li>
+  </ul>
+
+  <h4>// المرحلة 5 · تدريب التنبّؤ (10 د)</h4>
+  <ul class="steps">
+    <li>المُدرِّب يُقدّم: يداً · كتاباً · وسادة · كأساً.</li>
+    <li>اكتب توقّع السونار قبل القياس. كَشْف. الأقرب = نقطة.</li>
+    <li class="crit"><b>شذوذ:</b> الوسادة تمتص فوق الصوتي ← قراءة أبعد من الواقع.</li>
+  </ul>
+
+  <h4>// المرحلة 6 · تطبيق ميداني (10 د)</h4>
+  <ul class="steps">
+    <li>صور: حساسات صفّ السيّارات · كشف العوائق للطائرات بدون طيّار · مكنسات روبوت.</li>
+    <li>"أيّ حساس ستُضيف إلى هذه الوحدة؟"</li>
+  </ul>
+</div>
+<div class="nav-foot"><a href="#op02">◀ OP-02</a><a href="#op04">OP-04 ▶</a></div>
+</section>
+
+<!-- ═══ OP-04 AR ═══ -->
+<section id="op04" class="workshop">
+<div class="brief">
+  <span class="id">▶ OP-04 · المستوى: متوسط</span>
+  <h2>قلب السلوك</h2>
+  <div class="codename">"اِسبر مكدس الذاتية. اِعكس هندسة القواعد."</div>
+  <div class="specs"><span><b>المدة:</b> 90 د</span><span><b>الصعوبة:</b> ▰▰▱▱▱</span><span><b>المتطلبات:</b> OP-01, OP-03</span></div>
+</div>
+<div class="transmit"><div class="src"><span class="ico">▣</span>ROBI-9</div><div class="msg">[وضع الذاتية] سأقود نفسي اليوم. <b>أنت لا تلمس عناصر التحكم.</b> أقرأ الحساسات، أُطبِّق القواعد، أُحرِّك المحرّكات. حلقة بـ 10 هرتز. مجموعات قواعد مختلفة = ملفّات سلوك مختلفة. اليوم: اخترق الأربعة.</div></div>
+<div class="section">
+  <h3><span class="tag">DOC</span>ملفات السلوك</h3>
+  <table>
+    <tr><th>الملف</th><th>منطق القاعدة</th><th>التوقيع</th></tr>
+    <tr><td><b>RECON</b></td><td>إذا سونار &lt; 25 سم: دوران عشوائي. وإلا: تقدّم بطيء.</td><td>حذِر · بطيء</td></tr>
+    <tr><td><b>STANDARD</b></td><td>إذا سونار &lt; 20 سم: دوران بعيداً عن التماس. وإلا: تقدّم.</td><td>ذكي · متوازن</td></tr>
+    <tr><td><b>STRIKE</b></td><td>إذا سونار &lt; 15 سم: دوران سريع. تقدّم بسرعة عالية.</td><td>عدواني · سرعة عالية</td></tr>
+    <tr><td><b>DEMO</b></td><td>كوريوغرافيا مُسبقة الترميز (شكل-8، حلزون).</td><td>عرض · مسرود</td></tr>
+  </table>
+</div>
+<div class="section">
+  <h3><span class="tag">SOP</span>الجدول الزمني</h3>
+  <h4>// المرحلة 1 · عرض ذاتي (10 د)</h4>
+  <ul class="steps">
+    <li>سَلِّح وحدة في ملف STANDARD مسبقاً.</li>
+    <li>ضعها في الساحة. فعِّل.</li>
+    <li class="exec">امشِ أمامها. تدور بعيداً. توقّف للتفاعل.</li>
+    <li><b>سؤال مفتوح:</b> "هل هذا تفكير؟" اجمع الإجابات. لا تكشف بعد.</li>
+  </ul>
+  <h4>// المرحلة 2 · جولة الملفات (15 د)</h4>
+  <ul class="steps">
+    <li>RECON · 1 د · STANDARD · 1 د · STRIKE · 1 د · DEMO · 1 د.</li>
+  </ul>
+  <h4>// المرحلة 3 · مراقبة علميّة (20 د)</h4>
+  <ul class="steps">
+    <li>كل مجموعة: ملف واحد. وثّق: السرعة · زمن الاستجابة · 3 صفات · ظروف العَلَق.</li>
+  </ul>
+  <h4>// المرحلة 4 · موجز معلوماتي (10 د)</h4>
+  <ul class="steps"><li>90 ثانية لكل مجموعة. عرض + صفات + ملاحظات.</li></ul>
+  <h4>// المرحلة 5 · بروتوكول النقاش (15 د)</h4>
+  <ul class="steps">
+    <li class="crit"><b>السؤال:</b> "Wander الذاتيّ = ذكاء؟"</li>
+    <li>معسكران. 4 دقائق حُجج لكلٍّ.</li>
+    <li class="exec"><b>النتيجة:</b> "الذكاء الاصطناعي = حساسات + قواعد + سرعة. لا سحر."</li>
+  </ul>
+  <div class="intel">نفس الحلقة تُشغِّل: تصحيح هاتفك التلقائي · توصيات Netflix · ChatGPT · سيارات ذاتية القيادة. مجموعات قواعد أكبر، نفس البنية.</div>
+  <h4>// المرحلة 6 · تصميم ملف مُخصَّص (15 د)</h4>
+  <ul class="steps">
+    <li>كل عميل يُصمِّم ملفه #5: اسم · قواعد · سيناريو استخدام تكتيكي.</li>
+  </ul>
+</div>
+<div class="nav-foot"><a href="#op03">◀ OP-03</a><a href="#op05">OP-05 ▶</a></div>
+</section>
+
+<!-- ═══ OP-05 AR ═══ -->
+<section id="op05" class="workshop">
+<div class="brief">
+  <span class="id">▶ OP-05 · المستوى: متقدّم</span>
+  <h2>رسم الخرائط</h2>
+  <div class="codename">"اِبنِ خريطة حيّة من قياس العجلات. صَوِّر الانحراف."</div>
+  <div class="specs"><span><b>المدة:</b> 90 د</span><span><b>الصعوبة:</b> ▰▰▰▱▱</span><span><b>المتطلبات:</b> OP-01, OP-03</span></div>
+</div>
+<div class="transmit"><div class="src"><span class="ico">▣</span>ROBI-9</div><div class="msg">[قياس المسافة على الخط] أعدّ دورات العجلة. 1 دورة = 25 سم. اضرب. أَضِف للموقع المُقدَّر. كرِّر. <b>هذا تقدير الميت.</b> تقنية مُستخدَمة منذ 1500. موثوقة... لكن الأخطاء تتراكم.</div></div>
+<div class="section">
+  <h3><span class="tag">SOP</span>الجدول الزمني</h3>
+  <h4>// المرحلة 1 · دلالة الخريطة (10 د)</h4>
+  <ul class="steps">
+    <li>اعرض 3 خرائط: مترو · مخطط طابق · أقمار صناعية.</li>
+    <li>تساءَل: "ما البيانات المُشَفَّرة؟ ما المُحذوف؟"</li>
+  </ul>
+  <h4>// المرحلة 2 · بناء حيّ (20 د)</h4>
+  <ul class="steps">
+    <li>افتح علامة المرحلة. لوحة فارغة.</li>
+    <li>تقدّم 1 متر ← يظهر متّجه أخضر.</li>
+    <li>قُد مربعاً 1×1 متر ← يُرسَم المسار.</li>
+    <li class="exec">نبضات السونار = علامات حمراء.</li>
+  </ul>
+  <h4>// المرحلة 3 · تصوير الانحراف (15 د)</h4>
+  <ul class="steps">
+    <li>ضَع علامة بداية.</li>
+    <li>قُد مربعاً 2×2 متر. عُد للأصل.</li>
+    <li class="crit"><b>قِس:</b> الموضع الحقيقي مقابل الموضع المُقدَّر للخريطة.</li>
+    <li>الفجوة = <b>الانحراف</b>. قِسها بالسنتيمتر.</li>
+  </ul>
+  <div class="alert"><b>مصادر الانحراف:</b> انزلاق العجلة · تفاوت السطح · معايرة محرك · ضوضاء حساس. كلها واقعية. كلها تراكمية.</div>
+  <h4>// المرحلة 4 · تجربة مقارنة (15 د)</h4>
+  <ul class="steps">
+    <li>وحدتان · نفس الطريق. قارن الخرائط جنباً إلى جنب.</li>
+    <li>"متطابقتان؟" لا. كل وحدة تنحرف بشكل فريد.</li>
+  </ul>
+  <h4>// المرحلة 5 · عقيدة GPS (10 د)</h4>
+  <ul class="steps">
+    <li>"تخيّل سيارة ذاتية القيادة باستخدام قياس المسافة فقط."</li>
+    <li>احسب: 1% انحراف × 10 كم = 100 متر. فشل المهمة.</li>
+    <li class="exec"><b>الحل:</b> اندماج الحساسات = قياس المسافة + GPS + كاميرات + IMU + ليدار.</li>
+  </ul>
+  <h4>// المرحلة 6 · خريطة تكتيكية (15 د)</h4>
+  <ul class="steps"><li>اِرسم غرفتك (أو طريق المدرسة) بأسلوب SLAM.</li></ul>
+</div>
+<div class="nav-foot"><a href="#op04">◀ OP-04</a><a href="#op06">OP-06 ▶</a></div>
+</section>
+
+<!-- ═══ OP-06 AR ═══ -->
+<section id="op06" class="workshop">
+<div class="brief">
+  <span class="id">▶ OP-06 · المستوى: متقدّم</span>
+  <h2>كود المسار</h2>
+  <div class="codename">"بَرمِج مساراً مُسبَقاً. احفظ. أَعِد التشغيل. أهلاً بك في البرمجة."</div>
+  <div class="specs"><span><b>المدة:</b> 90 د</span><span><b>الصعوبة:</b> ▰▰▰▱▱</span><span><b>المتطلبات:</b> OP-05</span></div>
+</div>
+<div class="transmit"><div class="src"><span class="ico">▣</span>ROBI-9</div><div class="msg">[وحدة الطيار الآلي مُحَمَّلة] أنت ترسم مساراً. أَتْبَعُه ذاتيّاً. حفظ الملف = أوّل <b>برنامج</b> لك. لا لوحة مفاتيح. لا صياغة. منطق نقيّ. المهندسون الحقيقيّون يفعلون هذا بالكود، لكن المبدأ: مماثل.</div></div>
+<div class="section">
+  <h3><span class="tag">SOP</span>الجدول الزمني</h3>
+  <h4>// المرحلة 1 · عرض الطيّار الآلي (10 د)</h4>
+  <ul class="steps">
+    <li>افتح علامة الخريطة. انقر وضع المسار (✏️).</li>
+    <li>اِرسم منحنى بالإصبع.</li>
+    <li class="exec">حرِّر. الوحدة تتبع ذاتيّاً.</li>
+  </ul>
+  <h4>// المرحلة 2 · أشكال أوّليّة (20 د)</h4>
+  <ul class="steps">
+    <li>كل عميل: متّجه مستقيم. نفِّذ. مثلث. حلقة.</li>
+    <li>الوحدة لا تُطابِق تماماً. <b>لماذا؟</b> الانحراف (OP-05).</li>
+  </ul>
+  <h4>// المرحلة 3 · حفظ البرنامج (10 د)</h4>
+  <ul class="steps">
+    <li>انقر SAVE. المتصفّح يُصدِّر JSON.</li>
+    <li class="exec"><b>راقب:</b> المسار الآن أرقام. <code>{x:12, y:30}, ...</code></li>
+    <li>"هكذا يبدو الكود تحت الصياغة."</li>
+  </ul>
+  <h4>// المرحلة 4 · عملية تتبّع الحرف (25 د)</h4>
+  <ul class="steps">
+    <li>الهدف: المسار يتتبّع الحرف الأول من اسمك.</li>
+    <li>اِشريط ورقة بيضاء على الأرض.</li>
+    <li class="exec">صَوِّت: أفضل حرف = مُبَرمِج.</li>
+  </ul>
+  <h4>// المرحلة 5 · إعادة تشغيل متبادلة (10 د)</h4>
+  <ul class="steps">
+    <li>كل عميل يُحمِّل JSON شريك. ينفّذ على وحدته.</li>
+    <li class="crit"><b>اكتشاف:</b> ملف مماثل، وحدة مختلفة، نتيجة مختلفة. تباين العتاد + الانحراف.</li>
+  </ul>
+  <h4>// المرحلة 6 · مسابقة أفضل مسار (10 د)</h4>
+  <ul class="steps">
+    <li>شكل هدف: نجمة · مسار. درجة: الانحراف عن الهدف. الفائز: مُبَرمِج المستوى 1.</li>
+  </ul>
+</div>
+<div class="nav-foot"><a href="#op05">◀ OP-05</a><a href="#op07">OP-07 ▶</a></div>
+</section>
+
+<!-- ═══ OP-07 AR ═══ -->
+<section id="op07" class="workshop">
+<div class="brief">
+  <span class="id">▶ OP-07 · المستوى: متوسط</span>
+  <h2>مختبر الإشارة</h2>
+  <div class="codename">"الصوت بيانات. التردد = طبقة. شَفِّر وفُكَّ."</div>
+  <div class="specs"><span><b>المدة:</b> 90 د</span><span><b>الصعوبة:</b> ▰▰▱▱▱</span><span><b>المتطلبات:</b> OP-01</span></div>
+</div>
+<div class="transmit"><div class="src"><span class="ico">▣</span>ROBI-9</div><div class="msg">[وحدة Piezo نشطة] صفّاري يُصدِر موجات مربّعة بأي تردد آمر به. <b>التردد = الطبقة. المُدّة = الإيقاع.</b> ستُؤلِّف توقيعاً 4 نغمات وتفكّ شفرة Morse. هندسة اتصالات حقيقية.</div></div>
+<div class="section">
+  <h3><span class="tag">SOP</span>الجدول الزمني</h3>
+  <h4>// المرحلة 1 · سبر الصفّارة (10 د)</h4>
+  <ul class="steps">
+    <li>تَعرَّف على الوحدة. افتح BUZZER. أصدِر 100 هرتز · 440 هرتز · 2000 هرتز.</li>
+  </ul>
+  <h4>// المرحلة 2 · واجهة البيانو (20 د)</h4>
+  <ul class="steps"><li>مفاتيح البيانو. 5 د لعب حرّ. اِعثر على تتابع.</li></ul>
+  <h4>// المرحلة 3 · توقيع 4 نغمات (25 د)</h4>
+  <ul class="steps">
+    <li>أزواج. 5 د لتأليف توقيع.</li>
+    <li>شَفِّر على ورقة: <code>C4 - E4 - G4 - C5 (250 ms each)</code></li>
+    <li class="exec">أَنتِج 3× مُماثل = توقيع مُعتَمَد.</li>
+  </ul>
+  <h4>// المرحلة 4 · تدريب البث (15 د)</h4>
+  <ul class="steps"><li>كل زوج يُؤدّي توقيعه. تصويت على الوضوح والأصالة.</li></ul>
+  <h4>// المرحلة 5 · فك Morse (10 د)</h4>
+  <div class="lab"><b>سياق:</b> Morse = أقدم بروتوكول رقمي. مُستخدَم 1844 إلى الآن. SOS = · · · ─ ─ ─ · · ·</div>
+  <ul class="steps">
+    <li>افتح المُفكِّك. المُدرِّب يُرسِل اسم نداء 5 أحرف.</li>
+    <li class="exec">أوّل من يستخرج = نقطة.</li>
+  </ul>
+  <h4>// المرحلة 6 · تطبيقات (10 د)</h4>
+  <ul class="steps">
+    <li>Spotify · سمّاعات · ملاحظات صوتية — كل صوت = عيّنات رقمية.</li>
+  </ul>
+</div>
+<div class="nav-foot"><a href="#op06">◀ OP-06</a><a href="#op08">OP-08 ▶</a></div>
+</section>
+
+<!-- ═══ OP-08 AR ═══ -->
+<section id="op08" class="workshop">
+<div class="brief">
+  <span class="id">▶ OP-08 · المستوى: متقدّم</span>
+  <h2>هندسة المحرك الدقيق</h2>
+  <div class="codename">"محرّك مُتحَكَّم بالموضع. دقّة 0-180°. صَمِّم حِملك."</div>
+  <div class="specs"><span><b>المدة:</b> 90 د</span><span><b>الصعوبة:</b> ▰▰▰▱▱</span><span><b>المتطلبات:</b> OP-01</span></div>
+</div>
+<div class="transmit"><div class="src"><span class="ico">▣</span>ROBI-9</div><div class="msg">[منفذ S1/S2 نشط] السيرفو يختلف عن المحرك العاديّ. <b>سيرفو = زاوية دقيقة.</b> محرك = دوران مستمرّ. تأمر بـ 47°. السيرفو يذهب إلى 47° بالضبط. مُستخدَم في: طابعات ثلاثية الأبعاد، روبوتات جراحية، طائرات RC، animatronics.</div></div>
+<div class="section">
+  <h3><span class="tag">SOP</span>الجدول الزمني</h3>
+  <h4>// المرحلة 1 · مقدمة سيرفو (10 د)</h4>
+  <ul class="steps">
+    <li>مرّر SG90 حقيقي. حدِّد الوصلة، القرن، الجسم.</li>
+    <li>اقرأ 0° / 90° / 180°. افتح SERVO. أرسِل 0°.</li>
+    <li class="exec">استجابة على الشاشة + سيرفو فيزيائي.</li>
+  </ul>
+  <h4>// المرحلة 2 · تدريب رد فعل الزاوية (15 د)</h4>
+  <ul class="steps">
+    <li>المُدرِّب: "45!" العملاء يضغطون 45° بأقصى سرعة.</li>
+    <li>تتابع: 75 · 135 · 0 · 180.</li>
+    <li class="exec"><b>إضافة:</b> "حيِّني." العميل يبرمج كنس.</li>
+  </ul>
+  <h4>// المرحلة 3 · وضع الكنس (10 د)</h4>
+  <ul class="steps">
+    <li>فعِّل كنس مستمرّ 0↔180. عدِّل التردد.</li>
+    <li>"موازيات صناعية؟" ← مروحة · ماسح سونار · رشّاش · مساحة سيارة.</li>
+  </ul>
+  <h4>// المرحلة 4 · تصميم الحِمل (30 د)</h4>
+  <ul class="steps">
+    <li class="exec">أنت المهندس.</li>
+    <li>صَمِّم مُلحَقاً ورقيّاً للقرن. يجب أن يستخدم 0-180°. يجب أن يخدم وظيفة تكتيكية.</li>
+    <li>إلهام: ناشر علم · مؤشر · برج سونار · مخلب · عصا طبل.</li>
+  </ul>
+  <h4>// المرحلة 5 · موجز التصميم (15 د)</h4>
+  <ul class="steps">
+    <li>60 ثانية لكل عميل. تصويت: فائدة تكتيكية · إبداع هندسي · وضع فشل مُحتمَل.</li>
+    <li class="exec">أفضل تصميم = مهندس ميكانيكي.</li>
+  </ul>
+  <h4>// المرحلة 6 · تطبيقات (10 د)</h4>
+  <ul class="steps"><li>طابعات 3D · جراحة روبوتية · أسطح طائرات RC · animatronics ديزني.</li></ul>
+</div>
+<div class="nav-foot"><a href="#op07">◀ OP-07</a><a href="#op09">OP-09 ▶</a></div>
+</section>
+
+<!-- ═══ OP-09 AR ═══ -->
+<section id="op09" class="workshop">
+<div class="brief">
+  <span class="id">▶ OP-09 · المستوى: متقدّم</span>
+  <h2>القياس عن بعد</h2>
+  <div class="codename">"تدفّقات بيانات حيّة. فرضية. اختبر. استنتج. منهج هندسي."</div>
+  <div class="specs"><span><b>المدة:</b> 90 د</span><span><b>الصعوبة:</b> ▰▰▰▱▱</span><span><b>المتطلبات:</b> OP-02, OP-03</span></div>
+</div>
+<div class="transmit"><div class="src"><span class="ico">▣</span>ROBI-9</div><div class="msg">[تدفّق القياس عن بعد نشط] أنت تصبح مهندساً. شَكِّل فرضية. اختبرها. اقرأ الرسوم البيانية الحيّة. استنتِج. <b>نفس البروتوكول المُستخدَم في JPL · CERN · أبحاث Tesla.</b> مقياس أصغر. منهج مماثل.</div></div>
+<div class="section">
+  <h3><span class="tag">SOP</span>الجدول الزمني</h3>
+  <h4>// المرحلة 1 · موجز القياس (10 د)</h4>
+  <ul class="steps">
+    <li>صور: لوحة قيادة F1 · مركز التحكم بـ ISS · تدفّق بيانات مركبات الفضاء.</li>
+    <li>افتح علامة GRAPH. قُد. الرسم يبني حيّاً.</li>
+  </ul>
+  <h4>// المرحلة 2 · قراءة الرسم (15 د)</h4>
+  <ul class="steps">
+    <li>قُد بثبات عند 50%. الرسم = خط مستقيم.</li>
+    <li>قُد 100% × 2 ثا، توقّف. ارتفاع + هبوط.</li>
+    <li>المحور س: الزمن. المحور ص: السرعة.</li>
+  </ul>
+  <h4>// المرحلة 3 · إعداد التجربة (20 د)</h4>
+  <ul class="steps">
+    <li class="exec"><b>الفرضية:</b> "هل تخفّض السجّادة السرعة مقارنةً بالأرض الصلبة؟"</li>
+    <li>كل عميل يكتب التنبّؤ: نعم/لا؟ بمقدار؟</li>
+    <li>الإعداد: 1 متر صلب + 1 متر سجّادة.</li>
+  </ul>
+  <h4>// المرحلة 4 · تنفيذ التجارب (20 د)</h4>
+  <ul class="steps">
+    <li>كل مجموعة: 3 محاولات لكل سطح. 6 إجمالاً. اقرأ السرعة القُصوى. حساب المتوسط لكل سطح.</li>
+  </ul>
+  <h4>// المرحلة 5 · الاستنتاج + التصدير (15 د)</h4>
+  <ul class="steps">
+    <li>استنتاج بجملة واحدة بأرقام حقيقية.</li>
+    <li class="exec">انقر EXPORT ← CSV. افتح. "هذا ما يحتفظ به الأطباء، خبراء الأرصاد، المهندسون."</li>
+  </ul>
+  <h4>// المرحلة 6 · موازيات صناعية (10 د)</h4>
+  <div class="intel"><b>نفس البروتوكول:</b> طبيب مع بيانات قلب · خبير أرصاد مع درجات حرارة · بنوك مع أسهم · Tesla مع Autopilot · NASA مع روفر. مُماثل في 5 خطوات.</div>
+</div>
+<div class="nav-foot"><a href="#op08">◀ OP-08</a><a href="#op10">OP-10 ▶</a></div>
+</section>
+
+<!-- ═══ OP-10 AR ═══ -->
+<section id="op10" class="workshop">
+<div class="brief">
+  <span class="id">▶ OP-10 · المستوى: نخبة</span>
+  <h2>مكتشف المسار</h2>
+  <div class="codename">"خوارزمية A*. نفس منطق Google Maps. مقياس أصغر."</div>
+  <div class="specs"><span><b>المدة:</b> 90 د</span><span><b>الصعوبة:</b> ▰▰▰▰▱</span><span><b>المتطلبات:</b> OP-05, OP-06</span></div>
+</div>
+<div class="transmit"><div class="src"><span class="ico">▣</span>ROBI-9</div><div class="msg">[المُخطِّط مُشَغَّل] الخوارزميّات وصفات للحاسوب. اليوم: حلّ متاهة على ورقة. ثم شاهد <b>خوارزمية A*</b> تحلّ نفس الخريطة ذاتيّاً. نفس الخوارزميّة تعمل في: Google Maps · شطرنج · ألعاب فيديو · توجيه مركبات ذاتية القيادة.</div></div>
+<div class="section">
+  <h3><span class="tag">SOP</span>الجدول الزمني</h3>
+  <h4>// المرحلة 1 · حلّ متاهة ورقية (15 د)</h4>
+  <ul class="steps">
+    <li>وزِّع متاهة 5×5 مطبوعة. البداية S ← الهدف G.</li>
+    <li>حُلَّها بقلم رصاص. قِس الزمن.</li>
+  </ul>
+  <h4>// المرحلة 2 · موجز الإستراتيجية (10 د)</h4>
+  <ul class="steps">
+    <li>كل عميل يصرّح بإستراتيجيّته في جملة واحدة.</li>
+    <li class="crit"><b>نتيجة:</b> كلّها <b>خوارزميّات</b>. لقد اخترعتَ البحث الإرشادي للتوّ.</li>
+  </ul>
+  <h4>// المرحلة 3 · تنفيذ A* (20 د)</h4>
+  <ul class="steps">
+    <li>افتح مُصَوِّر الخوارزميّة. انقر A*. اختر هدفاً.</li>
+    <li class="exec"><b>راقب:</b> سماوي = حدود · كهرماني = مُستكشَف · أخضر = المسار الأمثل.</li>
+    <li>"هل استكشف A* كل خلية؟" لا. الخلايا الواعدة فقط.</li>
+  </ul>
+  <h4>// المرحلة 4 · تحليل مقارن (15 د)</h4>
+  <ul class="steps">
+    <li>جنباً إلى جنب: مسار القلم vs مسار A* الأخضر.</li>
+    <li>"ماذا يفعل A* أفضل؟" · يحسب كل خطوة · يُقَيِّم كل الخيارات · لا يستسلم أبداً.</li>
+  </ul>
+  <h4>// المرحلة 5 · متاهة فيزيائية (15 د)</h4>
+  <ul class="steps">
+    <li>اِشريط عوائق على الأرض: متاهة فيزيائية. قُد الوحدة لرسم الخريطة (SLAM).</li>
+    <li class="exec">A* ينفّذ ← الوحدة تتنقّل ذاتيّاً.</li>
+  </ul>
+  <h4>// المرحلة 6 · تطبيقات صناعية (15 د)</h4>
+  <ul class="steps">
+    <li>Google Maps "أسرع طريق" = A* في الإنتاج.</li>
+    <li>Spotify · شطرنج · غسّالة · إكمال تلقائي.</li>
+    <li class="exec">"استخدمتَ خوارزميّات اليوم. دون كتابة كود."</li>
+  </ul>
+</div>
+<div class="nav-foot"><a href="#op09">◀ OP-09</a><a href="#op11">OP-11 ▶</a></div>
+</section>
+
+<!-- ═══ OP-11 AR ═══ -->
+<section id="op11" class="workshop">
+<div class="brief">
+  <span class="id">▶ OP-11 · المستوى: نخبة</span>
+  <h2>عمليات متعددة الوحدات</h2>
+  <div class="codename">"وحدتان. مهمّة واحدة. تنافس. تعاون. اِكشف زمن الاستجابة."</div>
+  <div class="specs"><span><b>المدة:</b> 90 د</span><span><b>الصعوبة:</b> ▰▰▰▱▱</span><span><b>المتطلبات:</b> OP-01, OP-03 · 2+ وحدات</span></div>
+</div>
+<div class="transmit"><div class="src"><span class="ico">▣</span>ROBI-9</div><div class="msg">[شبكة المسار مُفعَّلة] وحدتان في الميدان. اليوم: <b>عمليات مُتعدّدة العملاء</b>. اقتران · مزامنة · بروتوكول قتال · تدريب تعاون. ستكتشف: الشبكات لها زمن استجابة. الاتصال يتفوّق على الصمت.</div></div>
+<div class="section">
+  <h3><span class="tag">SOP</span>الجدول الزمني</h3>
+  <h4>// المرحلة 1 · اقتران الوحدات (10 د)</h4>
+  <ul class="steps">
+    <li>الوحدتان نشطتان. الكونسولان مفتوحان. انقر PAIR في كليهما. مصافحة WebRTC.</li>
+    <li class="exec">اختبر: قُد α ← β يعكس الإجراء.</li>
+  </ul>
+  <h4>// المرحلة 2 · ملاحظة زمن الاستجابة (10 د)</h4>
+  <ul class="steps">
+    <li>وضع المزامنة. كلتاهما تنفّذان نفس الأوامر.</li>
+    <li class="crit">المزامنة ليست مثالية. ~50 مللي ثانية لاسلكي.</li>
+    <li>"لماذا يتجمّد Zoom؟ لماذا يتأخّر اللعب الجماعي؟ نفس الفيزياء."</li>
+  </ul>
+  <h4>// المرحلة 3 · بروتوكول القتال (25 د)</h4>
+  <ul class="steps">
+    <li>وضع المبارزة. سونار كل وحدة = منطقة اشتباك.</li>
+    <li>كشف &lt; 12 سم = إصابة.</li>
+    <li class="exec"><b>أوّل من يصل إلى 3 إصابات يفوز.</b> أفضل من 5.</li>
+  </ul>
+  <h4>// المرحلة 4 · مهمّة تعاون (25 د)</h4>
+  <ul class="steps">
+    <li>هدف على الأرض. كلتا الوحدتين يجب أن تصلا في غضون ثانية واحدة من بعضهما.</li>
+    <li class="crit"><b>الجولة 1:</b> صمت. إشارات يد فقط.</li>
+    <li><b>الجولة 2:</b> صوت مسموح.</li>
+  </ul>
+  <h4>// المرحلة 5 · موجز تكتيكي (10 د)</h4>
+  <ul class="steps">
+    <li>ما الذي مكَّن الفوز؟ ما الذي كسر التنسيق؟</li>
+    <li class="intel">نفس المشاكل: أسراب طائرات بدون طيّار · شاحنات ذاتية القيادة · ألعاب جماعية · شبكات تداول.</li>
+  </ul>
+  <h4>// المرحلة 6 · حفل التكريم (10 د)</h4>
+  <ul class="steps"><li>أفضل عميل · أفضل فريق · أفضل سلوك (تصويت الأقران).</li></ul>
+</div>
+<div class="nav-foot"><a href="#op10">◀ OP-10</a><a href="#op12">OP-12 ▶</a></div>
+</section>
+
+<!-- ═══ OP-12 AR ═══ -->
+<section id="op12" class="workshop">
+<div class="brief">
+  <span class="id">▶ OP-12 · العملية النهائية</span>
+  <h2>النشر الميداني</h2>
+  <div class="codename">"صَمِّم. ابنِ. اعرض. أَظهِر القدرة الكاملة."</div>
+  <div class="specs"><span><b>المدة:</b> 90 د</span><span><b>الصعوبة:</b> ▰▰▰▰▰</span><span><b>المتطلبات:</b> OP-01 إلى OP-06 كحدّ أدنى</span></div>
+</div>
+<div class="transmit"><div class="src"><span class="ico">▣</span>ROBI-9</div><div class="msg">[منح التصريح النهائي] هذه عمليتك الختامية. فرق من 3. سيناريو مهمّة مُخصَّص. <b>خطّط · ابنِ · تدرَّب · انشر.</b> استخدم أيّ مهارة من العمليات 1-11. لا درجات — فقط الإنجاز.</div></div>
+<div class="section">
+  <h3><span class="tag">DOC</span>سيناريوهات المهمّة</h3>
+  <table>
+    <tr><th>الكود</th><th>المهمّة</th><th>الإيجاز</th><th>الوحدات</th></tr>
+    <tr><td><b>SC-01</b></td><td>توصيل حِمل</td><td>قُد A→B متجنّباً 3 عوائق. أَنزِل الحِمل عبر سيرفو.</td><td>قيادة · سونار · سيرفو</td></tr>
+    <tr><td><b>SC-02</b></td><td>دورية استطلاع</td><td>دورية في منطقة 60 ثا. عُدّ التماسات. تقرير صوتي.</td><td>تجوال · سونار · صفّارة</td></tr>
+    <tr><td><b>SC-03</b></td><td>مرافقة إشارة</td><td>قُد مساراً مع بثّ توقيع.</td><td>مسار · صفّارة</td></tr>
+    <tr><td><b>SC-04</b></td><td>تجربة زمنيّة</td><td>تعرّج 5 أقماع &lt; 20 ثا. 0 تماس.</td><td>قيادة · سرعة</td></tr>
+    <tr><td><b>SC-05</b></td><td>بحث واستخراج</td><td>اِعثر على هدف في متاهة. عُد للقاعدة.</td><td>SLAM · سونار · مسار</td></tr>
+    <tr><td><b>SC-06</b></td><td>عرض ميداني</td><td>خطّط + كوريوغرافيا 30 ثا. وثّق فيديو.</td><td>أيّ 3 وحدات</td></tr>
+  </table>
+</div>
+<div class="section">
+  <h3><span class="tag">SOP</span>الجدول الزمني</h3>
+  <h4>// المرحلة 1 · إيجاز المهمة (10 د)</h4>
+  <ul class="steps">
+    <li>فِرَق من 3. خَلَط مستويات المهارة عمداً.</li>
+    <li>اقرأ السيناريو. اعرض الساحة. وزِّع ورقة التخطيط.</li>
+    <li class="exec">حَدِّد معايير النجاح. على اللوحة.</li>
+  </ul>
+  <h4>// المرحلة 2 · تخطيط (15 د)</h4>
+  <ul class="steps">
+    <li class="crit"><b>لا عتاد بعد.</b> خطّط على ورق.</li>
+    <li>هندسة الحلّ: وحدات، ترتيب، أدوار (مُشَغِّل · مُحلِّل · مُقدِّم).</li>
+  </ul>
+  <h4>// المرحلة 3 · بناء وتكرار (35 د)</h4>
+  <ul class="steps">
+    <li>35 دقيقة تنفيذ.</li>
+    <li class="crit">المُدرِّبون يطرحون أسئلة فقط.</li>
+    <li>T-20: "10 د قبل الجريّة الجافّة." T-30: "5 د قبل النشر."</li>
+  </ul>
+  <div class="alert"><b>المؤقّت قانون.</b> الفرق التي تتجاوز الوقت تنشر بأي حالة لديها. هذه هي الهندسة.</div>
+  <h4>// المرحلة 4 · جريّة جافّة (10 د)</h4>
+  <ul class="steps"><li>تكرار كامل لكل فريق. لا إصلاحات أثناء التشغيل.</li></ul>
+  <h4>// المرحلة 5 · موجز النشر (20 د)</h4>
+  <ul class="steps">
+    <li>كل فريق: 4 د كحد أقصى. 1 د خطة · 2 د نشر حيّ · 1 د أسئلة وأجوبة.</li>
+    <li class="exec">المُدرِّب يُسجِّل وفق المعايير.</li>
+  </ul>
+</div>
+<div class="section">
+  <h3><span class="tag">EVAL</span>مصفوفة التسجيل</h3>
+  <table>
+    <tr><th>المعيار</th><th>0</th><th>1</th><th>2</th></tr>
+    <tr><td>اكتمال المهمّة</td><td>لا</td><td>جزئيّ</td><td>نعم</td></tr>
+    <tr><td>الوحدات المُستخدَمة (≥ 2)</td><td>0-1</td><td>2</td><td>3+</td></tr>
+    <tr><td>إيقاف آمن</td><td>تحطّم</td><td>إيقاف يدوي</td><td>إيقاف تلقائي</td></tr>
+    <tr><td>وضوح الإيجاز</td><td>مرتبك</td><td>كافٍ</td><td>جذّاب</td></tr>
+    <tr><td>تنسيق الفريق</td><td>منفرد</td><td>تشارك</td><td>فريق حقيقي</td></tr>
+  </table>
+</div>
+<div class="section">
+  <h3><span class="tag">FINAL</span>حفل النشر</h3>
+  <ul class="steps">
+    <li class="exec">التصنيف النهائي: <b>قائد ميدان</b>.</li>
+    <li>كل عميل يتلقّى شهادة تسرد العمليات الـ12.</li>
+    <li>صورة جماعية مع الوحدات.</li>
+    <li class="crit">الإيجاز النهائي: <b>"نفس المهارات تعمل على مركبات فضاء حقيقيّة، طائرات بدون طيّار، مركبات ذاتية القيادة. اِنشُرها."</b></li>
+  </ul>
+</div>
+<div class="nav-foot"><a href="#op11">◀ OP-11</a><a href="#start">▶ المقر</a></div>
+</section>
+
+</main>
+</div>
+
+<div class="wd-band wd-band-bottom"></div>
+<footer class="wd-footer">
+  <span>مدعوم بـ <a href="https://workshop-diy.org" target="_blank" rel="noopener">workshop-diy.org</a></span>
+  <span class="sep">·</span>
+  <span>ROBI-9 OPS COMMAND</span>
+  <span class="sep">·</span>
+  <span class="badge">v1.2</span>
+</footer>
+
+<script>
+(function() {
+  const sel = document.getElementById('themeSelect');
+  function apply(t) {
+    document.documentElement.setAttribute('data-theme', t);
+    if (sel) sel.value = t;
+    try { localStorage.setItem('robi.theme', t); } catch (e) {}
+  }
+  if (sel) sel.addEventListener('change', e => apply(e.target.value));
+  try { const s = localStorage.getItem('robi.theme'); if (s) apply(s); } catch (e) {}
+})();
+</script>
+
+<script>
+function show(id) {
+  document.querySelectorAll('.workshop').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('aside.nav a.op').forEach(a => a.classList.remove('active'));
+  const sec = document.getElementById(id);
+  const link = document.querySelector(`aside.nav a.op[href="#${id}"]`);
+  if (sec) sec.classList.add('active');
+  if (link) link.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const tgt = a.getAttribute('href').slice(1);
+    if (document.getElementById(tgt)) {
+      e.preventDefault();
+      history.replaceState(null, '', '#' + tgt);
+      show(tgt);
+    }
+  });
+});
+const h = location.hash.slice(1);
+if (h && document.getElementById(h)) show(h);
+window.addEventListener('beforeprint', () => document.querySelectorAll('.workshop').forEach(s => s.classList.add('active')));
+window.addEventListener('afterprint', () => {
+  document.querySelectorAll('.workshop').forEach(s => s.classList.remove('active'));
+  show(location.hash.slice(1) || 'start');
+});
+</script>
+</body>
+</html>
