@@ -1,5 +1,5 @@
 {
-    "name": "Maqueen Lab",
+    "name": "Robi-9 Lab",
     "short_name": "Maqueen",
     "description": "BLE component lab for the DFRobot Maqueen Lite v4 — every actuator and sensor, live in your browser",
     "start_url": "index.html",

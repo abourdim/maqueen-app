@@ -2,7 +2,7 @@
 <html lang="en" data-theme="cosmos">
 <head>
     <meta charset="UTF-8">
-    <title>Maqueen Lab</title>
+    <title>Robi-9 Lab</title>
     <!-- Pre-paint theme bootstrap. Runs synchronously before stylesheet
          resolves so first-paint is already in the right palette (no
          workshop-orange flash on cold loads). Default = cosmos. Saved
@@ -32,7 +32,7 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="delight.css">
     <style>
-        /* Maqueen Lab: single-mode UI — drop bit-playground's beginner/expert split */
+        /* Robi-9 Lab: single-mode UI — drop bit-playground's beginner/expert split */
         .beginner-only { display: none !important; }
     </style>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -136,7 +136,7 @@ html[dir="rtl"] .hint ol { padding-left: 0; padding-right: 20px; }
   <span class="c-ic">⚠️</span>
   <div class="c-msg">
     <strong>Your browser doesn't support Web Bluetooth.</strong>
-    Maqueen Lab needs <strong>Chrome</strong>, <strong>Edge</strong>, or <strong>Opera</strong> on desktop / Android.
+    Robi-9 Lab needs <strong>Chrome</strong>, <strong>Edge</strong>, or <strong>Opera</strong> on desktop / Android.
     It will <strong>not</strong> connect to a micro:bit on Safari, Firefox, iPhone, or iPad.
   </div>
   <button onclick="this.parentElement.style.display='none';try{localStorage.setItem('compatBannerDismissed','1')}catch{}">Got it</button>
@@ -178,8 +178,8 @@ html[dir="rtl"] .hint ol { padding-left: 0; padding-right: 20px; }
          ============================================================ -->
 <div class="header">
     <div class="title-block">
-        <img src="assets/logo.svg" alt="Maqueen Lab Logo" class="site-logo animated-logo">
-        <h1 data-i18n="app_title">Maqueen Lab</h1>
+        <img src="assets/logo.svg" alt="Robi-9 Lab Logo" class="site-logo animated-logo">
+        <h1 data-i18n="app_title">Robi-9 Lab</h1>
         <div class="subtitle"><span data-i18n="app_subtitle">Play • Learn • Create</span></div>
     </div>
     <div class="header-actions">
@@ -218,8 +218,8 @@ html[dir="rtl"] .hint ol { padding-left: 0; padding-right: 20px; }
         <a href="workshops/manual.html" target="_blank" title="Mission Guide · all 12 missions step-by-step">📚 <span>Missions</span></a>
         <a href="workshops/booklet.html" target="_blank" title="My Robot Adventure Journal · printable for kids">🎒 <span>Journal</span></a>
         <a id="userGuideLink" href="docs/guide.html" target="_blank" title="App reference guide">📖 <span>Guide</span></a>
-        <button id="qrShareBtn" type="button" title="Scan to open Maqueen Lab on a phone">📱</button>
-        <button id="mqPairBtn"  type="button" title="Pair with a second Maqueen Lab tab">🤝</button>
+        <button id="qrShareBtn" type="button" title="Scan to open Robi-9 Lab on a phone">📱</button>
+        <button id="mqPairBtn"  type="button" title="Pair with a second Robi-9 Lab tab">🤝</button>
         <button id="clearCacheBtn" title="Reset">🗑️</button>
     </div>
 </div>
@@ -349,7 +349,7 @@ html[dir="rtl"] .hint ol { padding-left: 0; padding-right: 20px; }
                                 </div>
 
                                 <div class="hint" id="appBuildInfo" style="font-family:'JetBrains Mono', monospace; font-size:12px; line-height:1.7;">
-                                    <div style="font-weight:700; color:#00d4ff; font-size:13px;">🤖 Maqueen Lab</div>
+                                    <div style="font-weight:700; color:#00d4ff; font-size:13px;">🤖 Robi-9 Lab</div>
                                     <div style="opacity:0.7;">version <span style="color:#00d4ff;" id="appVersion">0.1.0</span></div>
                                     <div style="opacity:0.7;">built <span style="color:#00d4ff;" id="appBuildDate">2026-04-26</span></div>
                                     <div style="opacity:0.55; margin-top:4px;">commit <span style="color:#00d4ff;" id="appCommit">main</span></div>
@@ -4283,12 +4283,12 @@ serial.writeLine("GRAPH:Force:" + force)</code></pre>
 
         </div>
 
-        <!-- ROW: Maqueen Lab footer link bar — HIDDEN. Same nav links
+        <!-- ROW: Robi-9 Lab footer link bar — HIDDEN. Same nav links
              now live inside the Help slide-out drawer. Kept in DOM so
              the userGuideLinkFooter language-routing script keeps
              working without errors. -->
         <div style="display:none; margin-top:8px; padding:14px 20px; background:linear-gradient(90deg, rgba(0,212,255,0.06), rgba(56,189,248,0.04)); border:1px solid rgba(0,212,255,0.2); border-radius:12px; flex-wrap:wrap; gap:6px 14px; align-items:center; font-family:-apple-system, BlinkMacSystemFont, Inter, sans-serif; font-size:13.5px; color:var(--text-secondary, #93a8c4); width:100%;">
-            <span style="font-weight:700; color:#00d4ff; padding-right:6px;">🤖 Maqueen Lab</span>
+            <span style="font-weight:700; color:#00d4ff; padding-right:6px;">🤖 Robi-9 Lab</span>
             <a id="userGuideLinkFooter" href="docs/guide.html" style="color:#e6eef9; text-decoration:none; padding:4px 10px; border-radius:6px;">📖 User Guide</a>
             <script>
               // Same lang-routing for the footer link as the header icon.
@@ -4363,7 +4363,7 @@ serial.writeLine("GRAPH:Force:" + force)</code></pre>
 <!-- Onboarding Overlay (first visit) -->
 <div id="onboardingOverlay" class="overlay">
     <div class="overlay-card onboarding-card">
-        <div class="overlay-title" data-i18n="welcome">🤖 Welcome to Maqueen Lab!</div>
+        <div class="overlay-title" data-i18n="welcome">🤖 Welcome to Robi-9 Lab!</div>
         <div class="onboarding-steps">
             <div class="ob-step"><span class="ob-num">1</span> <span data-i18n="ob_step1">Power on your Maqueen Lite v4 (micro:bit inside)</span></div>
             <div class="ob-step"><span class="ob-num">2</span> <span data-i18n="ob_step2">Click Connect and pair with the micro:bit</span></div>
