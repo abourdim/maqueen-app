@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="carbon">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+<title>Joystick Lab — 10 ways to drive your robot · Robi-9 Lab</title>
+<link rel="stylesheet" href="../workshops/theme.css">
+<link rel="stylesheet" href="doc-shell.css">
+<script src="../workshops/newtab.js" defer></script>
+<style>
+  body { margin: 0; min-height: 100vh; background: var(--bg); color: var(--text); font-family: var(--font-body); }
+  .lab-wrap { max-width: 1100px; margin: 0 auto; padding: 28px 22px 60px; }
+
+  /* HERO */
+  .lab-hero { text-align: center; padding: 28px 16px 18px; }
+  .lab-hero h1 { font-family: var(--font-display); color: var(--neon); font-size: clamp(2rem, 5vw, 2.6rem); margin: 0 0 6px; }
+  .lab-hero p { color: var(--steel); margin: 0 auto 14px; max-width: 640px; }
+
+  /* CONNECT BAR */
+  .conn-bar { display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; margin-bottom: 18px; padding: 12px 18px; background: var(--bg-card); border: 2px solid var(--border); border-radius: 14px; }
+  .conn-bar.connected { border-color: var(--neon); }
+  .conn-bar .status { font-family: var(--font-tech); font-size: 0.85rem; letter-spacing: 0.08em; }
+  .conn-bar .status .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: var(--steel); margin-right: 8px; box-shadow: 0 0 8px transparent; }
+  .conn-bar.connected .status .dot { background: var(--neon); box-shadow: 0 0 8px var(--neon); }
+  .conn-bar button { padding: 8px 18px; border-radius: 10px; border: none; background: var(--neon); color: var(--ink); font-weight: 700; cursor: pointer; font-family: var(--font-body); font-size: 0.9rem; }
+  .conn-bar button:hover { filter: brightness(1.08); }
+  .conn-bar button.disconnect { background: var(--danger); color: white; }
+  .conn-bar .verb-feed { font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: var(--cyan); padding: 4px 12px; background: var(--ink); border-radius: 6px; min-width: 160px; text-align: center; }
+
+  /* MODE GRID */
+  .mode-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin: 18px 0 26px; }
+  .mode-card { background: var(--bg-card); border: 2px solid var(--border); border-radius: 14px; padding: 14px 12px; cursor: pointer; text-align: center; transition: transform 0.12s, border-color 0.12s; user-select: none; }
+  .mode-card:hover { transform: translateY(-2px); border-color: var(--cyan); }
+  .mode-card.active { border-color: var(--neon); background: linear-gradient(135deg, var(--bg-card), var(--bg-soft)); box-shadow: 0 6px 18px var(--hero-glow); }
+  .mode-card .mode-icon { font-size: 1.8rem; line-height: 1; margin-bottom: 6px; }
+  .mode-card .mode-title { font-family: var(--font-display); font-size: 0.92rem; color: var(--text); margin: 0 0 2px; line-height: 1.15; }
+  .mode-card .mode-sub { font-size: 0.7rem; color: var(--steel); }
+  .mode-card.unsupported { opacity: 0.45; cursor: not-allowed; }
+  .mode-card.unsupported::after { content: '· no API'; display: block; font-size: 0.65rem; color: var(--amber); margin-top: 4px; }
+
+  /* STAGE — where the active mode renders its UI */
+  .stage { background: var(--bg-card); border: 2px solid var(--neon); border-radius: 18px; padding: 22px; min-height: 360px; box-shadow: 0 6px 26px var(--hero-glow); }
+  .stage h2 { font-family: var(--font-display); color: var(--neon); margin: 0 0 4px; font-size: 1.4rem; border: none; padding: 0; }
+  .stage h2::before { content: ''; }
+  .stage .stage-sub { color: var(--steel); font-size: 0.92rem; margin-bottom: 18px; }
+  .stage-body { min-height: 280px; display: flex; align-items: center; justify-content: center; padding: 12px 0; }
+
+  /* SAFETY: STOP button always present + visible */
+  .stop-row { display: flex; gap: 12px; align-items: center; justify-content: center; margin-top: 18px; padding-top: 14px; border-top: 1px dashed var(--border); }
+  .stop-btn { padding: 12px 32px; border-radius: 12px; border: 3px solid var(--danger); background: rgba(239,68,68,0.15); color: var(--danger); font-family: var(--font-display); font-size: 1.1rem; font-weight: 800; letter-spacing: 0.08em; cursor: pointer; }
+  .stop-btn:hover { background: var(--danger); color: white; }
+  .speed-knob { display: flex; align-items: center; gap: 10px; font-size: 0.85rem; color: var(--text); }
+  .speed-knob input { width: 140px; }
+  .speed-knob output { font-family: 'JetBrains Mono', monospace; color: var(--neon); min-width: 38px; text-align: right; }
+
+  /* ─── CLASSIC JOYSTICK ─── */
+  .pad { width: 240px; height: 240px; border-radius: 50%; background: radial-gradient(circle, var(--bg-soft), var(--bg-card)); border: 3px solid var(--neon); position: relative; touch-action: none; box-shadow: inset 0 0 30px rgba(0,0,0,0.3); }
+  .pad .knob { position: absolute; left: 50%; top: 50%; width: 70px; height: 70px; border-radius: 50%; background: linear-gradient(135deg, var(--neon), var(--cyan)); transform: translate(-50%, -50%); box-shadow: 0 6px 18px rgba(0,0,0,0.4); }
+  .pad .crosshair { position: absolute; inset: 0; pointer-events: none; }
+
+  /* ─── D-PAD ─── */
+  .dpad { display: grid; grid-template-columns: repeat(3, 70px); grid-template-rows: repeat(3, 70px); gap: 6px; }
+  .dpad button { background: var(--bg-soft); border: 2px solid var(--border); color: var(--text); font-size: 1.6rem; border-radius: 12px; cursor: pointer; touch-action: manipulation; transition: background 0.1s; }
+  .dpad button:hover, .dpad button.held { background: var(--neon); color: var(--ink); border-color: var(--neon); }
+  .dpad .empty { visibility: hidden; }
+
+  /* ─── TWIN STICKS ─── */
+  .twin { display: flex; gap: 28px; }
+  .twin .tank { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  .twin .tank label { font-family: var(--font-tech); font-size: 0.78rem; color: var(--cyan); letter-spacing: 0.1em; }
+  .twin .tank input[type=range] { writing-mode: vertical-lr; -webkit-appearance: slider-vertical; appearance: slider-vertical; width: 30px; height: 220px; }
+  .twin .tank output { font-family: 'JetBrains Mono', monospace; color: var(--neon); }
+  .twin .reset-mini { padding: 6px 14px; border-radius: 8px; background: var(--bg-soft); border: 1px solid var(--border); color: var(--text); cursor: pointer; font-size: 0.75rem; }
+
+  /* ─── TILT ─── */
+  .tilt-vis { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+  .tilt-vis .phone { width: 120px; height: 220px; background: var(--bg-soft); border: 3px solid var(--cyan); border-radius: 18px; position: relative; transform-origin: center; transition: transform 0.1s; }
+  .tilt-vis .phone .screen { position: absolute; inset: 14px 10px 30px; background: var(--ink); border-radius: 6px; display: flex; align-items: center; justify-content: center; color: var(--neon); font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; }
+  .tilt-vis .perm-btn { padding: 10px 18px; border-radius: 10px; background: var(--cyan); color: var(--ink); border: none; font-weight: 700; cursor: pointer; }
+
+  /* ─── VOICE / WHISTLE ─── */
+  .mic-vis { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+  .mic-bars { display: flex; align-items: flex-end; gap: 4px; height: 100px; }
+  .mic-bars span { display: inline-block; width: 8px; background: var(--neon); border-radius: 4px 4px 0 0; height: 4px; transition: height 0.06s; }
+  .mic-vis .heard { font-family: var(--font-display); color: var(--cyan); font-size: 1.2rem; min-height: 1.6rem; text-align: center; }
+  .mic-vis .hint { color: var(--steel); font-size: 0.85rem; max-width: 380px; text-align: center; }
+
+  /* ─── KEYBOARD ─── */
+  .keys { display: grid; grid-template-columns: repeat(3, 56px); grid-template-rows: repeat(3, 56px); gap: 6px; }
+  .keys kbd { display: flex; align-items: center; justify-content: center; background: var(--bg-soft); border: 2px solid var(--border); border-radius: 10px; font-family: var(--font-tech); font-size: 1rem; color: var(--text); transition: all 0.1s; }
+  .keys kbd.held { background: var(--neon); color: var(--ink); border-color: var(--neon); transform: scale(0.95); }
+  .keys .empty { visibility: hidden; }
+
+  /* ─── PATH PAINTER ─── */
+  .painter { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+  .painter canvas { border: 2px solid var(--cyan); border-radius: 14px; background: var(--ink); cursor: crosshair; touch-action: none; }
+  .painter .row { display: flex; gap: 10px; }
+  .painter button { padding: 8px 18px; border-radius: 8px; border: 1.5px solid var(--cyan); background: var(--bg-soft); color: var(--cyan); cursor: pointer; font-weight: 700; }
+  .painter button:hover { background: var(--cyan); color: var(--ink); }
+
+  /* ─── GAMEPAD ─── */
+  .gp-vis { display: flex; flex-direction: column; align-items: center; gap: 14px; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--text); }
+  .gp-vis .gp-name { color: var(--cyan); font-weight: 700; }
+  .gp-vis .gp-sticks { display: flex; gap: 24px; }
+  .gp-vis .gp-stick { width: 90px; height: 90px; border-radius: 50%; background: var(--bg-soft); border: 2px solid var(--border); position: relative; }
+  .gp-vis .gp-stick .dot { position: absolute; left: 50%; top: 50%; width: 16px; height: 16px; border-radius: 50%; background: var(--neon); transform: translate(-50%, -50%); transition: transform 0.05s; }
+
+  /* ─── BEATBOX ─── */
+  .beat-vis { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+  .beat-vis .pulse { width: 140px; height: 140px; border-radius: 50%; background: radial-gradient(circle, var(--neon) 10%, transparent 50%); transform: scale(0); transition: transform 0.15s ease-out; }
+  .beat-vis .pulse.hit { transform: scale(1); }
+  .beat-vis .bpm { font-family: var(--font-display); color: var(--cyan); font-size: 1.4rem; }
+  .beat-vis .hint { color: var(--steel); font-size: 0.85rem; text-align: center; max-width: 340px; }
+
+  /* ─── verb log shared ─── */
+  .verb-log { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--cyan); margin-top: 10px; max-height: 80px; overflow-y: auto; padding: 8px 12px; background: var(--ink); border-radius: 8px; border: 1px solid var(--border); }
+  .verb-log div { line-height: 1.4; }
+  .verb-log .stop { color: var(--danger); }
+  .verb-log .send { color: var(--neon); }
+</style>
+</head>
+<body>
+
+<div class="wd-band wd-band-top"></div>
+<header class="wd-header">
+  <div class="title-block">
+    <div class="logo-mark">▣</div>
+    <div>
+      <h1>Robi-9 Lab // Joystick Lab</h1>
+      <div class="subtitle">10 ways to drive your robot · pick your favorite</div>
+    </div>
+  </div>
+  <div class="wd-header-right">
+    <a class="wd-select" href="../index.html" style="text-decoration:none; border-bottom:none;">🤖 Robot App</a>
+    <a class="wd-select" href="index.html" style="text-decoration:none; border-bottom:none;">🗂️ Catalog</a>
+  </div>
+</header>
+
+<div class="lab-wrap">
+
+<section class="lab-hero">
+  <h1>🕹️ Joystick Lab</h1>
+  <p>Ten different ways to pilot your Robi-9 — from classic pads to whistling, beatboxing, and drawing on canvas. Pick one, drive your robot, then pick another. Each input fires the same <code>M:L,R</code> verb under the hood.</p>
+</section>
+
+<div class="conn-bar" id="connBar">
+  <span class="status" id="connStatus"><span class="dot"></span>NOT CONNECTED</span>
+  <button id="connectBtn">▶ Connect to robot</button>
+  <span class="verb-feed" id="verbFeed">M:0,0</span>
+</div>
+
+<div class="mode-grid" id="modeGrid">
+  <div class="mode-card" data-mode="classic"><div class="mode-icon">🕹</div><div class="mode-title">Classic Pad</div><div class="mode-sub">drag knob</div></div>
+  <div class="mode-card" data-mode="dpad"><div class="mode-icon">🎮</div><div class="mode-title">D-Pad</div><div class="mode-sub">8-dir taps</div></div>
+  <div class="mode-card" data-mode="twin"><div class="mode-icon">🎚</div><div class="mode-title">Twin Sticks</div><div class="mode-sub">tank drive</div></div>
+  <div class="mode-card" data-mode="tilt"><div class="mode-icon">📱</div><div class="mode-title">Tilt</div><div class="mode-sub">phone tip</div></div>
+  <div class="mode-card" data-mode="voice"><div class="mode-icon">🎤</div><div class="mode-title">Voice</div><div class="mode-sub">say it</div></div>
+  <div class="mode-card" data-mode="whistle"><div class="mode-icon">🎺</div><div class="mode-title">Whistle</div><div class="mode-sub">pitch → dir</div></div>
+  <div class="mode-card" data-mode="keyboard"><div class="mode-icon">⌨️</div><div class="mode-title">Keyboard</div><div class="mode-sub">WASD desktop</div></div>
+  <div class="mode-card" data-mode="painter"><div class="mode-icon">✏️</div><div class="mode-title">Path Painter</div><div class="mode-sub">draw → follow</div></div>
+  <div class="mode-card" data-mode="gamepad"><div class="mode-icon">🎮</div><div class="mode-title">Gamepad</div><div class="mode-sub">USB controller</div></div>
+  <div class="mode-card" data-mode="beat"><div class="mode-icon">🥁</div><div class="mode-title">BeatBox</div><div class="mode-sub">clap → step</div></div>
+</div>
+
+<div class="stage">
+  <h2 id="stageTitle">Pick a mode</h2>
+  <div class="stage-sub" id="stageSub">Click any card above to start.</div>
+  <div class="stage-body" id="stageBody"></div>
+  <div class="stop-row">
+    <span class="speed-knob">Max speed: <input type="range" id="speedKnob" min="40" max="200" value="120"><output id="speedVal">120</output></span>
+    <button class="stop-btn" id="stopBtn">⏹ STOP</button>
+  </div>
+  <div class="verb-log" id="verbLog"></div>
+</div>
+
+</div>
+
+<div class="wd-band wd-band-bottom"></div>
+<footer class="wd-footer">
+  <span>powered by <a href="https://workshop-diy.org" target="_blank" rel="noopener">workshop-diy.org</a></span>
+  <span class="sep">·</span>
+  <span>Robi-9 Lab · Joystick Lab</span>
+</footer>
+
+<script>
+/* ============================================================
+ * JOYSTICK LAB — 10 input modes
+ * Each mode is a self-contained module: install(stageBody) returns
+ * a teardown function. Active mode owns the stage; switching tears
+ * down the old one and installs the new one.
+ * Drive verb: M:L,R (-255..255) or STOP. Echoed in verb-feed.
+ * ============================================================ */
+(function () {
+  'use strict';
+
+  // ---- BLE bridge ------------------------------------------------
+  // Honor an existing window.bleScheduler if this page is opened
+  // from the main app (won't be, since we're standalone). Otherwise
+  // the verb just lights up in the on-page feed (educational).
+  let lastVerb = null;
+  const verbFeed = document.getElementById('verbFeed');
+  const verbLog = document.getElementById('verbLog');
+  function send(verb) {
+    if (verb === lastVerb) return;
+    lastVerb = verb;
+    verbFeed.textContent = verb;
+    const line = document.createElement('div');
+    line.className = (verb === 'STOP') ? 'stop' : 'send';
+    line.textContent = '→ ' + verb;
+    verbLog.appendChild(line);
+    verbLog.scrollTop = verbLog.scrollHeight;
+    // Keep log to last 30 lines
+    while (verbLog.children.length > 30) verbLog.removeChild(verbLog.firstChild);
+    try {
+      if (window.opener && window.opener.bleScheduler && typeof window.opener.bleScheduler.send === 'function') {
+        window.opener.bleScheduler.send(verb).catch(() => {});
+      }
+    } catch (e) {}
+  }
+  function stop() { send('STOP'); }
+
+  // ---- Drive math ------------------------------------------------
+  // x,y in [-1, 1]. Tank-mix: forward = (1-|x|)*y; differential = x*y(sign).
+  // Simple intuitive blend used in many kid robot apps.
+  function mix(x, y, maxSpeed) {
+    const v = Math.max(-1, Math.min(1, y));
+    const w = Math.max(-1, Math.min(1, x));
+    let L = v + w;
+    let R = v - w;
+    const m = Math.max(Math.abs(L), Math.abs(R), 1);
+    L /= m; R /= m;
+    return [Math.round(L * maxSpeed), Math.round(R * maxSpeed)];
+  }
+  function fireVec(x, y) {
+    const ms = parseInt(document.getElementById('speedKnob').value, 10);
+    if (Math.abs(x) < 0.05 && Math.abs(y) < 0.05) { stop(); return; }
+    const [L, R] = mix(x, y, ms);
+    send('M:' + L + ',' + R);
+  }
+
+  // ============================================================
+  // MODE 1 — Classic Pad (drag knob)
+  // ============================================================
+  function installClassic(host) {
+    host.innerHTML = '';
+    const pad = document.createElement('div');
+    pad.className = 'pad';
+    pad.innerHTML = '<svg class="crosshair" viewBox="0 0 240 240"><line x1="120" y1="20" x2="120" y2="220" stroke="rgba(168,184,204,0.2)"/><line x1="20" y1="120" x2="220" y2="120" stroke="rgba(168,184,204,0.2)"/></svg><div class="knob"></div>';
+    host.appendChild(pad);
+    const knob = pad.querySelector('.knob');
+    let dragging = false;
+    function setKnob(dx, dy) {
+      const r = pad.clientWidth / 2 - 35;
+      const dist = Math.min(Math.hypot(dx, dy), r);
+      const ang = Math.atan2(dy, dx);
+      const x = Math.cos(ang) * dist, y = Math.sin(ang) * dist;
+      knob.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`;
+      fireVec(x / r, -y / r);
+    }
+    function pos(e) {
+      const t = e.touches ? e.touches[0] : e;
+      const rect = pad.getBoundingClientRect();
+      return [t.clientX - rect.left - rect.width / 2, t.clientY - rect.top - rect.height / 2];
+    }
+    function down(e) { dragging = true; e.preventDefault(); setKnob(...pos(e)); }
+    function move(e) { if (!dragging) return; e.preventDefault(); setKnob(...pos(e)); }
+    function up() { dragging = false; knob.style.transform = 'translate(-50%, -50%)'; stop(); }
+    pad.addEventListener('pointerdown', down);
+    pad.addEventListener('pointermove', move);
+    window.addEventListener('pointerup', up);
+    return () => { pad.removeEventListener('pointerdown', down); pad.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up); host.innerHTML = ''; };
+  }
+
+  // ============================================================
+  // MODE 2 — D-Pad (8-dir tap, hold for continuous)
+  // ============================================================
+  function installDPad(host) {
+    host.innerHTML = '';
+    const dpad = document.createElement('div');
+    dpad.className = 'dpad';
+    const dirs = [
+      ['↖', -0.7,  0.7], ['▲', 0,  1], ['↗', 0.7,  0.7],
+      ['◀', -1, 0],     ['', 0, 0],   ['▶', 1, 0],
+      ['↙', -0.7, -0.7], ['▼', 0, -1], ['↘', 0.7, -0.7],
+    ];
+    dirs.forEach((d, i) => {
+      const b = document.createElement('button');
+      if (!d[0]) { b.className = 'empty'; b.disabled = true; }
+      b.textContent = d[0];
+      const fire = () => { b.classList.add('held'); fireVec(d[1], d[2]); };
+      const release = () => { b.classList.remove('held'); stop(); };
+      b.addEventListener('pointerdown', fire);
+      b.addEventListener('pointerup', release);
+      b.addEventListener('pointerleave', release);
+      dpad.appendChild(b);
+    });
+    host.appendChild(dpad);
+    return () => { host.innerHTML = ''; stop(); };
+  }
+
+  // ============================================================
+  // MODE 3 — Twin Sticks (tank drive: L slider + R slider)
+  // ============================================================
+  function installTwin(host) {
+    host.innerHTML = '';
+    const wrap = document.createElement('div');
+    wrap.className = 'twin';
+    function makeStick(label) {
+      const t = document.createElement('div');
+      t.className = 'tank';
+      t.innerHTML = `<label>${label}</label><input type="range" min="-100" max="100" value="0"><output>0</output><button class="reset-mini">↺ 0</button>`;
+      const r = t.querySelector('input'), o = t.querySelector('output'), btn = t.querySelector('.reset-mini');
+      r.addEventListener('input', () => { o.textContent = r.value; tick(); });
+      btn.addEventListener('click', () => { r.value = 0; o.textContent = 0; tick(); });
+      return t;
+    }
+    const left = makeStick('LEFT'), right = makeStick('RIGHT');
+    wrap.appendChild(left); wrap.appendChild(right);
+    host.appendChild(wrap);
+    function tick() {
+      const ms = parseInt(document.getElementById('speedKnob').value, 10);
+      const L = Math.round(parseInt(left.querySelector('input').value, 10) / 100 * ms);
+      const R = Math.round(parseInt(right.querySelector('input').value, 10) / 100 * ms);
+      if (L === 0 && R === 0) stop(); else send(`M:${L},${R}`);
+    }
+    return () => { host.innerHTML = ''; stop(); };
+  }
+
+  // ============================================================
+  // MODE 4 — Tilt (phone accelerometer / DeviceOrientationEvent)
+  // ============================================================
+  function installTilt(host) {
+    host.innerHTML = '';
+    const v = document.createElement('div');
+    v.className = 'tilt-vis';
+    v.innerHTML = '<div class="phone"><div class="screen">tilt me</div></div><button class="perm-btn">📱 Enable tilt</button><div class="hint" style="color:var(--steel);font-size:0.82rem;text-align:center;max-width:340px;">Tilt your phone forward / sideways. Big tilt = full speed.</div>';
+    host.appendChild(v);
+    const phone = v.querySelector('.phone');
+    let active = false;
+    function onOri(e) {
+      if (!active) return;
+      const beta = e.beta || 0;     // -180..180 (front-back)
+      const gamma = e.gamma || 0;   // -90..90 (left-right)
+      // Clamp to ±30 deg for full-range mapping
+      const y = Math.max(-1, Math.min(1, (beta - 0) / 30));
+      const x = Math.max(-1, Math.min(1, gamma / 30));
+      phone.style.transform = `rotateZ(${gamma}deg) rotateX(${beta * 0.4}deg)`;
+      fireVec(x, y);  // tilt forward → forward
+    }
+    v.querySelector('button').addEventListener('click', async () => {
+      if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+        try {
+          const r = await DeviceOrientationEvent.requestPermission();
+          if (r !== 'granted') return;
+        } catch (e) {}
+      }
+      active = true;
+      v.querySelector('button').textContent = '✓ Tilt active';
+      window.addEventListener('deviceorientation', onOri);
+    });
+    return () => { active = false; window.removeEventListener('deviceorientation', onOri); host.innerHTML = ''; stop(); };
+  }
+
+  // ============================================================
+  // MODE 5 — Voice (Web Speech API)
+  // ============================================================
+  function installVoice(host) {
+    host.innerHTML = '';
+    const v = document.createElement('div');
+    v.className = 'mic-vis';
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) {
+      v.innerHTML = '<div class="hint" style="color:var(--amber);">Speech recognition not supported in this browser.<br>Try Chrome or Edge on desktop.</div>';
+      host.appendChild(v); return () => { host.innerHTML = ''; };
+    }
+    v.innerHTML = '<button class="perm-btn" style="padding:10px 18px; border-radius:10px; background:var(--cyan); color:var(--ink); border:none; font-weight:700; cursor:pointer;">🎤 Start listening</button><div class="heard">—</div><div class="hint">Say: <b>forward · back · left · right · stop · faster · slower</b></div>';
+    host.appendChild(v);
+    const btn = v.querySelector('button');
+    const heard = v.querySelector('.heard');
+    let rec, listening = false;
+    function fireWord(w) {
+      const map = { forward:[0,1], avant:[0,1], back:[0,-1], arriere:[0,-1], left:[-1,0], gauche:[-1,0], right:[1,0], droite:[1,0] };
+      if (w === 'stop' || w === 'arrête' || w === 'stoppe' || w === 'قف') stop();
+      else if (map[w]) fireVec(map[w][0], map[w][1]);
+      else if (w === 'faster' || w === 'plus' || w === 'أسرع') {
+        const k = document.getElementById('speedKnob'); k.value = Math.min(200, +k.value + 30); k.dispatchEvent(new Event('input'));
+      } else if (w === 'slower' || w === 'moins' || w === 'أبطأ') {
+        const k = document.getElementById('speedKnob'); k.value = Math.max(40, +k.value - 30); k.dispatchEvent(new Event('input'));
+      }
+      setTimeout(stop, 900);
+    }
+    btn.addEventListener('click', () => {
+      if (listening) { rec && rec.stop(); listening = false; btn.textContent = '🎤 Start listening'; return; }
+      rec = new SR(); rec.continuous = true; rec.interimResults = false;
+      rec.lang = (document.documentElement.lang || 'en') === 'fr' ? 'fr-FR' : (document.documentElement.lang === 'ar' ? 'ar-SA' : 'en-US');
+      rec.onresult = e => {
+        const t = e.results[e.results.length - 1][0].transcript.trim().toLowerCase();
+        heard.textContent = '"' + t + '"';
+        const last = t.split(/\s+/).pop();
+        fireWord(last);
+      };
+      rec.onend = () => { if (listening) try { rec.start(); } catch (e) {} };
+      rec.start(); listening = true; btn.textContent = '🛑 Stop listening';
+    });
+    return () => { listening = false; try { rec && rec.stop(); } catch (e) {} host.innerHTML = ''; stop(); };
+  }
+
+  // ============================================================
+  // MODE 6 — Whistle (mic pitch → direction)
+  // ============================================================
+  function installWhistle(host) {
+    host.innerHTML = '';
+    const v = document.createElement('div');
+    v.className = 'mic-vis';
+    v.innerHTML = '<button class="perm-btn" style="padding:10px 18px; border-radius:10px; background:var(--amber); color:var(--ink); border:none; font-weight:700; cursor:pointer;">🎺 Start whistle</button><div class="mic-bars">' + Array.from({length:24}).map(() => '<span></span>').join('') + '</div><div class="heard" id="pitchOut">— Hz</div><div class="hint">High pitch → forward · Low pitch → reverse · Volume = speed.</div>';
+    host.appendChild(v);
+    const btn = v.querySelector('button');
+    const bars = v.querySelectorAll('.mic-bars span');
+    const pitchOut = v.querySelector('#pitchOut');
+    let ctx, src, analyser, raf, stream;
+    btn.addEventListener('click', async () => {
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        ctx = new (window.AudioContext || window.webkitAudioContext)();
+        src = ctx.createMediaStreamSource(stream);
+        analyser = ctx.createAnalyser();
+        analyser.fftSize = 2048;
+        src.connect(analyser);
+        const buf = new Float32Array(analyser.fftSize);
+        function tick() {
+          analyser.getFloatTimeDomainData(buf);
+          // Naive autocorrelation pitch detection
+          let bestK = -1, bestC = 0;
+          for (let k = 32; k < 512; k++) {
+            let c = 0;
+            for (let i = 0; i < 1024; i++) c += buf[i] * buf[i + k];
+            if (c > bestC) { bestC = c; bestK = k; }
+          }
+          const freq = bestK > 0 ? ctx.sampleRate / bestK : 0;
+          // RMS volume
+          let sum = 0; for (let i = 0; i < buf.length; i++) sum += buf[i] * buf[i];
+          const vol = Math.sqrt(sum / buf.length);
+          // Update bars
+          for (let i = 0; i < bars.length; i++) {
+            const v = Math.min(100, vol * 800 * (1 - Math.abs(i - 12) / 12));
+            bars[i].style.height = (4 + v) + 'px';
+          }
+          if (vol > 0.02 && freq > 200 && freq < 1500) {
+            pitchOut.textContent = Math.round(freq) + ' Hz · vol ' + vol.toFixed(2);
+            // Map: 400 Hz = full back, 800 Hz = stop, 1200 Hz = full fwd
+            const y = Math.max(-1, Math.min(1, (freq - 800) / 400));
+            const speed = Math.min(1, vol * 25);
+            fireVec(0, y * speed);
+          } else {
+            pitchOut.textContent = '— Hz';
+            stop();
+          }
+          raf = requestAnimationFrame(tick);
+        }
+        tick();
+        btn.textContent = '✓ Listening';
+      } catch (e) {
+        pitchOut.textContent = 'mic blocked';
+      }
+    });
+    return () => { cancelAnimationFrame(raf); try { stream && stream.getTracks().forEach(t => t.stop()); } catch (e) {} try { ctx && ctx.close(); } catch (e) {} host.innerHTML = ''; stop(); };
+  }
+
+  // ============================================================
+  // MODE 7 — Keyboard (WASD + arrows)
+  // ============================================================
+  function installKeyboard(host) {
+    host.innerHTML = '';
+    const k = document.createElement('div');
+    k.className = 'keys';
+    const layout = [['','W',''], ['A','S','D']];
+    const flat = [['','',0,0], ['W','w',0,1], ['','',0,0], ['A','a',-1,0], ['S','s',0,-1], ['D','d',1,0]];
+    flat.forEach(([disp, key, x, y]) => {
+      const e = document.createElement('kbd');
+      if (!disp) { e.className = 'empty'; e.dataset.key = ''; }
+      e.textContent = disp;
+      e.dataset.key = key; e.dataset.x = x; e.dataset.y = y;
+      k.appendChild(e);
+    });
+    host.appendChild(k);
+    const hint = document.createElement('div');
+    hint.style.cssText = 'margin-top:14px; color:var(--steel); font-size:0.85rem; text-align:center;';
+    hint.innerHTML = 'Hold <b>W A S D</b> or arrow keys · <b>SPACE</b> = STOP';
+    host.appendChild(hint);
+    const held = new Set();
+    const aliases = { 'arrowup':'w', 'arrowdown':'s', 'arrowleft':'a', 'arrowright':'d', 'z':'w', 'q':'a' };
+    function refresh() {
+      let x = 0, y = 0;
+      held.forEach(c => {
+        if (c === 'w') y += 1; if (c === 's') y -= 1;
+        if (c === 'a') x -= 1; if (c === 'd') x += 1;
+      });
+      [...k.children].forEach(e => e.classList.toggle('held', held.has(e.dataset.key)));
+      if (x === 0 && y === 0) stop(); else fireVec(x, y);
+    }
+    function down(e) {
+      const c = aliases[e.key.toLowerCase()] || e.key.toLowerCase();
+      if (c === ' ') { stop(); return; }
+      if ('wasd'.includes(c)) { held.add(c); refresh(); e.preventDefault(); }
+    }
+    function up(e) {
+      const c = aliases[e.key.toLowerCase()] || e.key.toLowerCase();
+      if ('wasd'.includes(c)) { held.delete(c); refresh(); }
+    }
+    document.addEventListener('keydown', down);
+    document.addEventListener('keyup', up);
+    return () => { document.removeEventListener('keydown', down); document.removeEventListener('keyup', up); host.innerHTML = ''; stop(); };
+  }
+
+  // ============================================================
+  // MODE 8 — Path Painter (draw path → robot replays)
+  // ============================================================
+  function installPainter(host) {
+    host.innerHTML = '';
+    const w = document.createElement('div'); w.className = 'painter';
+    w.innerHTML = '<canvas width="400" height="280"></canvas><div class="row"><button id="pPlay">▶ Replay path</button><button id="pClear">🗑 Clear</button></div><div class="hint" style="color:var(--steel);font-size:0.85rem;text-align:center;max-width:380px;">Draw a path with your finger / mouse. Hit <b>Replay</b> and the robot retraces it (one M:L,R per segment).</div>';
+    host.appendChild(w);
+    const canvas = w.querySelector('canvas');
+    const ctx2 = canvas.getContext('2d');
+    let pts = [], drawing = false;
+    function reset() { pts = []; ctx2.fillStyle = '#0a1220'; ctx2.fillRect(0, 0, canvas.width, canvas.height); ctx2.strokeStyle = 'rgba(56,189,248,0.3)'; for (let i = 0; i < canvas.width; i += 20) { ctx2.beginPath(); ctx2.moveTo(i, 0); ctx2.lineTo(i, canvas.height); ctx2.stroke(); } for (let j = 0; j < canvas.height; j += 20) { ctx2.beginPath(); ctx2.moveTo(0, j); ctx2.lineTo(canvas.width, j); ctx2.stroke(); } }
+    reset();
+    function pos(e) { const t = e.touches ? e.touches[0] : e; const r = canvas.getBoundingClientRect(); return [t.clientX - r.left, t.clientY - r.top]; }
+    function dn(e) { e.preventDefault(); drawing = true; pts = []; const p = pos(e); pts.push(p); ctx2.beginPath(); ctx2.moveTo(...p); reset(); ctx2.beginPath(); ctx2.moveTo(...p); ctx2.strokeStyle = '#4ade80'; ctx2.lineWidth = 3; }
+    function mv(e) { if (!drawing) return; e.preventDefault(); const p = pos(e); pts.push(p); ctx2.lineTo(...p); ctx2.stroke(); }
+    function upH() { drawing = false; }
+    canvas.addEventListener('pointerdown', dn);
+    canvas.addEventListener('pointermove', mv);
+    window.addEventListener('pointerup', upH);
+    w.querySelector('#pClear').addEventListener('click', reset);
+    w.querySelector('#pPlay').addEventListener('click', async () => {
+      if (pts.length < 3) return;
+      const ms = parseInt(document.getElementById('speedKnob').value, 10);
+      // Simplify path: every 10th point
+      const simp = pts.filter((_, i) => i % 8 === 0);
+      let prev = simp[0];
+      for (let i = 1; i < simp.length; i++) {
+        const dx = simp[i][0] - prev[0], dy = simp[i][1] - prev[1];
+        const len = Math.hypot(dx, dy);
+        const ang = Math.atan2(dy, dx);
+        // Map angle: dy<0 (up) = forward, x = steer
+        const yv = -Math.cos(ang - Math.PI / 2);
+        const xv = Math.sin(ang - Math.PI / 2);
+        const [L, R] = mix(xv, yv, ms);
+        send(`M:${L},${R}`);
+        await new Promise(r => setTimeout(r, Math.min(400, len * 6)));
+        prev = simp[i];
+      }
+      stop();
+    });
+    return () => { canvas.removeEventListener('pointerdown', dn); canvas.removeEventListener('pointermove', mv); window.removeEventListener('pointerup', upH); host.innerHTML = ''; stop(); };
+  }
+
+  // ============================================================
+  // MODE 9 — Gamepad API (USB controller)
+  // ============================================================
+  function installGamepad(host) {
+    host.innerHTML = '';
+    const v = document.createElement('div');
+    v.className = 'gp-vis';
+    v.innerHTML = '<div class="gp-name" id="gpName">Press any button on a connected controller…</div><div class="gp-sticks"><div class="gp-stick"><div class="dot" id="gpL"></div></div><div class="gp-stick"><div class="dot" id="gpR"></div></div></div><div class="hint" style="color:var(--steel);font-size:0.85rem;">Left stick = drive (Y forward, X turn). RB = boost. A = stop.</div>';
+    host.appendChild(v);
+    const name = v.querySelector('#gpName'), L = v.querySelector('#gpL'), R = v.querySelector('#gpR');
+    let raf;
+    function tick() {
+      const gps = (navigator.getGamepads && navigator.getGamepads()) || [];
+      let g = null;
+      for (const gp of gps) if (gp) { g = gp; break; }
+      if (g) {
+        name.textContent = g.id;
+        const lx = g.axes[0] || 0, ly = g.axes[1] || 0, rx = g.axes[2] || 0, ry = g.axes[3] || 0;
+        L.style.transform = `translate(calc(-50% + ${lx * 30}px), calc(-50% + ${ly * 30}px))`;
+        R.style.transform = `translate(calc(-50% + ${rx * 30}px), calc(-50% + ${ry * 30}px))`;
+        const stop1 = g.buttons[0] && g.buttons[0].pressed;
+        if (stop1) stop(); else fireVec(lx, -ly);
+      }
+      raf = requestAnimationFrame(tick);
+    }
+    tick();
+    return () => { cancelAnimationFrame(raf); host.innerHTML = ''; stop(); };
+  }
+
+  // ============================================================
+  // MODE 10 — BeatBox (audio onset → forward pulse)
+  // ============================================================
+  function installBeat(host) {
+    host.innerHTML = '';
+    const v = document.createElement('div'); v.className = 'beat-vis';
+    v.innerHTML = '<button class="perm-btn" style="padding:10px 18px; border-radius:10px; background:var(--orange); color:var(--ink); border:none; font-weight:700; cursor:pointer;">🥁 Start beat</button><div class="pulse" id="beatPulse"></div><div class="bpm" id="beatBpm">— BPM</div><div class="hint">Clap, snap, or hit the table. Each beat = forward pulse. Faster beats = sustained drive.</div>';
+    host.appendChild(v);
+    const btn = v.querySelector('button'), pulse = v.querySelector('#beatPulse'), bpmOut = v.querySelector('#beatBpm');
+    let ctx, an, src, raf, stream, prev = 0, last = 0, beats = [];
+    btn.addEventListener('click', async () => {
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        ctx = new (window.AudioContext || window.webkitAudioContext)();
+        src = ctx.createMediaStreamSource(stream); an = ctx.createAnalyser();
+        an.fftSize = 512; src.connect(an);
+        const buf = new Uint8Array(an.fftSize);
+        function tick() {
+          an.getByteTimeDomainData(buf);
+          let sum = 0; for (let i = 0; i < buf.length; i++) { const x = (buf[i] - 128) / 128; sum += x * x; }
+          const rms = Math.sqrt(sum / buf.length);
+          const now = performance.now();
+          if (rms > 0.18 && rms - prev > 0.06 && now - last > 180) {
+            // Beat detected
+            pulse.classList.add('hit'); setTimeout(() => pulse.classList.remove('hit'), 150);
+            beats.push(now); if (beats.length > 6) beats.shift();
+            // Pulse forward 250ms
+            const ms = parseInt(document.getElementById('speedKnob').value, 10);
+            send(`M:${ms},${ms}`); setTimeout(stop, 250);
+            // Estimate BPM
+            if (beats.length >= 2) {
+              const intervals = []; for (let i = 1; i < beats.length; i++) intervals.push(beats[i] - beats[i - 1]);
+              const avg = intervals.reduce((a, b) => a + b) / intervals.length;
+              bpmOut.textContent = Math.round(60000 / avg) + ' BPM';
+            }
+            last = now;
+          }
+          prev = rms;
+          raf = requestAnimationFrame(tick);
+        }
+        tick();
+        btn.textContent = '✓ Beat detect on';
+      } catch (e) { bpmOut.textContent = 'mic blocked'; }
+    });
+    return () => { cancelAnimationFrame(raf); try { stream && stream.getTracks().forEach(t => t.stop()); } catch (e) {} try { ctx && ctx.close(); } catch (e) {} host.innerHTML = ''; stop(); };
+  }
+
+  // ---- Mode registry --------------------------------------------
+  const MODES = {
+    classic: { title: 'Classic Pad', sub: 'Drag the round knob to drive in any direction.', install: installClassic },
+    dpad:    { title: 'D-Pad', sub: 'Tap any of the 8 arrows. Hold for sustained drive.', install: installDPad },
+    twin:    { title: 'Twin Sticks · Tank', sub: 'Drag the LEFT and RIGHT wheel sliders independently.', install: installTwin },
+    tilt:    { title: 'Tilt', sub: 'Tap "Enable tilt" then tip your phone — forward, back, left, right.', install: installTilt },
+    voice:   { title: 'Voice', sub: 'Click "Start listening" and say a direction word.', install: installVoice },
+    whistle: { title: 'Whistle', sub: 'High pitch = forward, low pitch = reverse, volume = speed.', install: installWhistle },
+    keyboard:{ title: 'Keyboard', sub: 'Hold W A S D or arrow keys. SPACE for emergency stop.', install: installKeyboard },
+    painter: { title: 'Path Painter', sub: 'Draw a path on the canvas, then tap Replay to make the robot follow it.', install: installPainter },
+    gamepad: { title: 'Gamepad', sub: 'Plug in any USB / wireless gamepad. Use the left stick to drive.', install: installGamepad },
+    beat:    { title: 'BeatBox', sub: 'Each clap or beat = a short forward pulse. Faster beats = sustained drive.', install: installBeat },
+  };
+
+  // ---- Wire it up ----------------------------------------------
+  const stageBody = document.getElementById('stageBody');
+  const stageTitle = document.getElementById('stageTitle');
+  const stageSub = document.getElementById('stageSub');
+  let teardown = null;
+
+  function activate(mode) {
+    if (teardown) try { teardown(); } catch (e) {}
+    const m = MODES[mode];
+    if (!m) return;
+    stageTitle.textContent = m.title;
+    stageSub.textContent = m.sub;
+    document.querySelectorAll('.mode-card').forEach(c => c.classList.toggle('active', c.dataset.mode === mode));
+    teardown = m.install(stageBody);
+    try { localStorage.setItem('robi.joystick.mode', mode); } catch (e) {}
+  }
+
+  document.querySelectorAll('.mode-card').forEach(c => {
+    c.addEventListener('click', () => activate(c.dataset.mode));
+  });
+
+  document.getElementById('stopBtn').addEventListener('click', stop);
+  document.getElementById('speedKnob').addEventListener('input', e => { document.getElementById('speedVal').textContent = e.target.value; });
+
+  // Connect button — opens index.html in a window so this page can use its bleScheduler.
+  document.getElementById('connectBtn').addEventListener('click', () => {
+    window.open('../index.html', 'robiApp');
+    document.getElementById('connStatus').innerHTML = '<span class="dot"></span>OPEN MAIN APP & PAIR';
+  });
+
+  // Restore last mode
+  try {
+    const last = localStorage.getItem('robi.joystick.mode');
+    if (last && MODES[last]) activate(last);
+    else activate('classic');
+  } catch (e) { activate('classic'); }
+
+  // Theme inherit
+  try {
+    const t = localStorage.getItem('robi.theme') || localStorage.getItem('mb_theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+
+  // Spacebar = STOP everywhere
+  document.addEventListener('keydown', e => { if (e.key === ' ' && document.activeElement.tagName !== 'INPUT') { stop(); e.preventDefault(); } });
+})();
+</script>
+
+</body>
+</html>
