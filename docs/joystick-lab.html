@@ -147,6 +147,7 @@
   <span class="status" id="connStatus"><span class="dot"></span>NOT CONNECTED</span>
   <button id="connectBtn">▶ Connect to robot</button>
   <span class="verb-feed" id="verbFeed">M:0,0</span>
+  <button id="debugBtn" style="padding:6px 12px; border-radius:8px; background:var(--bg-soft); border:1px solid var(--border); color:var(--text); cursor:pointer; font-size:12px;">🐞 Debug</button>
 </div>
 
 <div class="mode-grid" id="modeGrid">
@@ -246,16 +247,26 @@
       for (const c of chars) {
         if (c.uuid.toLowerCase().includes('6e400002')) rxChar = c;
       }
+      // Build a debug summary visible in the verb log
+      const dbg = document.createElement('div');
+      dbg.style.color = 'var(--amber)';
+      dbg.textContent = '🐞 chars=' + chars.length + ' uuids=' + chars.map(c => c.uuid.slice(0, 8)).join(',');
+      verbLog.appendChild(dbg);
       if (!rxChar) { alert('UART RX characteristic not found.'); return; }
       // Also subscribe to the TX characteristic so we can SEE the firmware's
       // ECHO replies — proves whether bytes are reaching the parser.
-      let txChar = null;
+      window._txChar = null;
       for (const c of chars) {
-        if (c.uuid.toLowerCase().includes('6e400003')) txChar = c;
+        if (c.uuid.toLowerCase().includes('6e400003')) window._txChar = c;
       }
+      const txChar = window._txChar;
       if (txChar) {
         try {
           await txChar.startNotifications();
+          const dbg2 = document.createElement('div');
+          dbg2.style.color = 'var(--amber)';
+          dbg2.textContent = '🐞 TX notifications subscribed OK (uuid=' + txChar.uuid.slice(0,8) + ')';
+          verbLog.appendChild(dbg2);
           txChar.addEventListener('characteristicvaluechanged', e => {
             const txt = new TextDecoder().decode(e.target.value);
             txt.split(/\r?\n/).forEach(line => {
@@ -268,7 +279,18 @@
               while (verbLog.children.length > 30) verbLog.removeChild(verbLog.firstChild);
             });
           });
-        } catch (e) { console.warn('TX notify subscribe failed', e); }
+        } catch (e) {
+          console.warn('TX notify subscribe failed', e);
+          const dbg3 = document.createElement('div');
+          dbg3.style.color = 'var(--danger)';
+          dbg3.textContent = '🐞 TX subscribe FAILED: ' + e.message;
+          verbLog.appendChild(dbg3);
+        }
+      } else {
+        const dbg3 = document.createElement('div');
+        dbg3.style.color = 'var(--danger)';
+        dbg3.textContent = '🐞 TX char NOT FOUND (no 6e400003 in chars)';
+        verbLog.appendChild(dbg3);
       }
       setConnected(true);
       writeRaw('HELLO');
@@ -793,6 +815,26 @@
   // Connect button — direct Web Bluetooth pairing with the micro:bit
   connectBtn.addEventListener('click', () => {
     if (connected) disconnect(); else connect();
+  });
+
+  // Debug button — dumps live state into verb log
+  document.getElementById('debugBtn').addEventListener('click', () => {
+    const lines = [
+      '🐞 BUILD-CHECK ' + new Date().toISOString(),
+      '🐞 connected = ' + connected,
+      '🐞 btDev = ' + (btDev ? btDev.name + ' (gatt.connected=' + btDev.gatt.connected + ')' : 'null'),
+      '🐞 rxChar = ' + (rxChar ? rxChar.uuid.slice(0,8) : 'null'),
+      '🐞 txChar = ' + (window._txChar ? window._txChar.uuid.slice(0,8) : 'null'),
+      '🐞 nextSeq = ' + nextSeq,
+      '🐞 page URL = ' + location.href,
+    ];
+    lines.forEach(t => {
+      const el = document.createElement('div');
+      el.style.color = 'var(--amber)';
+      el.textContent = t;
+      verbLog.appendChild(el);
+    });
+    verbLog.scrollTop = verbLog.scrollHeight;
   });
 
   // Restore last mode
