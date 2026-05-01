@@ -1,4 +1,4 @@
-# Robi-9 Lab
+# Maqueen Lab
 
 **Web-based BLE component lab for the DFRobot Maqueen Lite v4 + Mechanic Kits.**
 
