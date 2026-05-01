@@ -10,8 +10,11 @@
 <!-- Reuse the main app's BLE module (ble.js) via a tiny shim. -->
 <script src="../js/ble-shim.js"></script>
 <script src="../js/ble.js"></script>
-<!-- Camera-driven input modes (10 of them). -->
+<!-- Camera-driven input modes (10). -->
 <script src="../js/camera-inputs.js" defer></script>
+<!-- Gaming-inspired modes (10): Aim & Click, Wheel + Pedals, Spring Stick, Combo Keys,
+     Step Sequencer, Traffic Light, Roulette, Gesture Shapes, Pendulum, Polar Pad. -->
+<script src="../js/gaming-inputs.js" defer></script>
 <style>
   body { margin: 0; min-height: 100vh; background: var(--bg); color: var(--text); font-family: var(--font-body); }
   .lab-wrap { max-width: 1100px; margin: 0 auto; padding: 28px 22px 60px; }
@@ -193,6 +196,21 @@
     <div class="mode-card" data-mode="beat"><div class="mode-icon">🥁</div><div class="mode-title" data-i18n="m_beat_t">BeatBox</div><div class="mode-sub" data-i18n="m_beat_s">clap → step</div></div>
   </div>
 </details>
+<details class="mode-cat" id="cat-game" open>
+  <summary class="cat-label"><span class="cat-icon">🎮</span><span data-i18n="cat_game">Gaming-Inspired</span><span class="cat-count">(10)</span></summary>
+  <div class="mode-grid">
+    <div class="mode-card" data-mode="aim"><div class="mode-icon">🎯</div><div class="mode-title" data-i18n="m_aim_t">Aim &amp; Click</div><div class="mode-sub" data-i18n="m_aim_s">click-to-move</div></div>
+    <div class="mode-card" data-mode="wheel"><div class="mode-icon">🏎️</div><div class="mode-title" data-i18n="m_wheel_t">Wheel + Pedals</div><div class="mode-sub" data-i18n="m_wheel_s">arcade racer</div></div>
+    <div class="mode-card" data-mode="spring"><div class="mode-icon">🪂</div><div class="mode-title" data-i18n="m_spring_t">Spring Stick</div><div class="mode-sub" data-i18n="m_spring_s">physics return</div></div>
+    <div class="mode-card" data-mode="combo"><div class="mode-icon">⚡</div><div class="mode-title" data-i18n="m_combo_t">Combo Keys</div><div class="mode-sub" data-i18n="m_combo_s">fighting moves</div></div>
+    <div class="mode-card" data-mode="sequencer"><div class="mode-icon">🎼</div><div class="mode-title" data-i18n="m_seq_t">Step Sequencer</div><div class="mode-sub" data-i18n="m_seq_s">4×8 grid</div></div>
+    <div class="mode-card" data-mode="traffic"><div class="mode-icon">🚦</div><div class="mode-title" data-i18n="m_traffic_t">Traffic Light</div><div class="mode-sub" data-i18n="m_traffic_s">red/yellow/green</div></div>
+    <div class="mode-card" data-mode="roulette"><div class="mode-icon">🎰</div><div class="mode-title" data-i18n="m_roul_t">Roulette</div><div class="mode-sub" data-i18n="m_roul_s">spin the wheel</div></div>
+    <div class="mode-card" data-mode="gesture"><div class="mode-icon">✍️</div><div class="mode-title" data-i18n="m_gest_t">Gesture Shapes</div><div class="mode-sub" data-i18n="m_gest_s">draw a shape</div></div>
+    <div class="mode-card" data-mode="pendulum"><div class="mode-icon">🪀</div><div class="mode-title" data-i18n="m_pen_t">Pendulum</div><div class="mode-sub" data-i18n="m_pen_s">swing physics</div></div>
+    <div class="mode-card" data-mode="polar"><div class="mode-icon">🎡</div><div class="mode-title" data-i18n="m_polar_t">Polar Pad</div><div class="mode-sub" data-i18n="m_polar_s">radial joystick</div></div>
+  </div>
+</details>
 <details class="mode-cat" id="cat-cam" open>
   <summary class="cat-label"><span class="cat-icon">📷</span><span data-i18n="cat_cam">Camera</span><span class="cat-count">(10)</span></summary>
   <div class="mode-grid">
@@ -256,7 +274,7 @@
       not_connected: 'NOT CONNECTED',
       btn_connect: '▶ Connect to robot',
       btn_disconnect: '⏏ Disconnect',
-      cat_touch: 'Touch & Pointer', cat_hw: 'Hardware', cat_audio: 'Audio', cat_cam: 'Camera',
+      cat_touch: 'Touch & Pointer', cat_hw: 'Hardware', cat_audio: 'Audio', cat_cam: 'Camera', cat_game: 'Gaming-Inspired',
       stage_pick: 'Pick a mode', stage_pick_sub: 'Click any card above to start.',
       max_speed: 'Max speed:',
       m_classic_t:'Classic Pad',     m_classic_s:'drag knob',
@@ -279,6 +297,16 @@
       m_pose_t:'Pose',               m_pose_s:'arms up = drive',
       m_lean_t:'Lean Forward',       m_lean_s:'closer = faster',
       m_colorwand_t:'Color Wand',    m_colorwand_s:'trace + replay',
+      m_aim_t:'Aim & Click',         m_aim_s:'click-to-move',
+      m_wheel_t:'Wheel + Pedals',    m_wheel_s:'arcade racer',
+      m_spring_t:'Spring Stick',     m_spring_s:'physics return',
+      m_combo_t:'Combo Keys',        m_combo_s:'fighting moves',
+      m_seq_t:'Step Sequencer',      m_seq_s:'4×8 grid',
+      m_traffic_t:'Traffic Light',   m_traffic_s:'red/yellow/green',
+      m_roul_t:'Roulette',           m_roul_s:'spin the wheel',
+      m_gest_t:'Gesture Shapes',     m_gest_s:'draw a shape',
+      m_pen_t:'Pendulum',            m_pen_s:'swing physics',
+      m_polar_t:'Polar Pad',         m_polar_s:'radial joystick',
     },
     fr: {
       header_title: 'Robi-9 Lab // Joystick Lab',
@@ -290,7 +318,7 @@
       not_connected: 'NON CONNECTÉ',
       btn_connect: '▶ Connecter le robot',
       btn_disconnect: '⏏ Déconnecter',
-      cat_touch: 'Tactile & Pointeur', cat_hw: 'Matériel', cat_audio: 'Audio', cat_cam: 'Caméra',
+      cat_touch: 'Tactile & Pointeur', cat_hw: 'Matériel', cat_audio: 'Audio', cat_cam: 'Caméra', cat_game: 'Inspiration jeux',
       stage_pick: 'Choisis un mode', stage_pick_sub: 'Tape une carte ci-dessus pour commencer.',
       max_speed: 'Vitesse max :',
       m_classic_t:'Pad classique',   m_classic_s:'glisser le bouton',
@@ -313,6 +341,16 @@
       m_pose_t:'Posture',            m_pose_s:'bras levés = roule',
       m_lean_t:'Penche-toi',         m_lean_s:'plus près = +rapide',
       m_colorwand_t:'Baguette couleur', m_colorwand_s:'trace + rejoue',
+      m_aim_t:'Vise & Clique',       m_aim_s:'clic = aller',
+      m_wheel_t:'Volant + Pédales',  m_wheel_s:'arcade course',
+      m_spring_t:'Stick à ressort',  m_spring_s:'retour physique',
+      m_combo_t:'Combos',            m_combo_s:'combats arcade',
+      m_seq_t:'Séquenceur',          m_seq_s:'grille 4×8',
+      m_traffic_t:'Feu tricolore',   m_traffic_s:'rouge/jaune/vert',
+      m_roul_t:'Roulette',           m_roul_s:'fais tourner',
+      m_gest_t:'Formes gestuelles',  m_gest_s:'dessine forme',
+      m_pen_t:'Pendule',             m_pen_s:'physique balancier',
+      m_polar_t:'Pad polaire',       m_polar_s:'joystick radial',
     },
     ar: {
       header_title: 'Robi-9 Lab // مختبر الجويستيك',
@@ -324,7 +362,7 @@
       not_connected: 'غير متّصل',
       btn_connect: '▶ اتّصل بالروبوت',
       btn_disconnect: '⏏ اقطع',
-      cat_touch: 'اللمس والمؤشّر', cat_hw: 'العتاد', cat_audio: 'الصوت', cat_cam: 'الكاميرا',
+      cat_touch: 'اللمس والمؤشّر', cat_hw: 'العتاد', cat_audio: 'الصوت', cat_cam: 'الكاميرا', cat_game: 'إلهام الألعاب',
       stage_pick: 'اختر وضعاً', stage_pick_sub: 'انقر بطاقة من الأعلى للبدء.',
       max_speed: 'السرعة القصوى:',
       m_classic_t:'لوح كلاسيكيّ', m_classic_s:'اسحب الزرّ',
@@ -347,6 +385,16 @@
       m_pose_t:'وضعيّة',              m_pose_s:'يدان أعلى = قيادة',
       m_lean_t:'اقترب',               m_lean_s:'أقرب = أسرع',
       m_colorwand_t:'عصا اللون',       m_colorwand_s:'أثر + إعادة',
+      m_aim_t:'وَجِّه وانقر',           m_aim_s:'نقر = اذهب',
+      m_wheel_t:'مقود + دواسات',       m_wheel_s:'سباق أركيد',
+      m_spring_t:'عصا نابضة',          m_spring_s:'فيزياء الرجوع',
+      m_combo_t:'تركيبات',             m_combo_s:'حركات قتاليّة',
+      m_seq_t:'مُسَلسل خطوات',          m_seq_s:'شبكة 4×8',
+      m_traffic_t:'إشارة المرور',      m_traffic_s:'أحمر/أصفر/أخضر',
+      m_roul_t:'الروليت',               m_roul_s:'دَوِّر العجلة',
+      m_gest_t:'أشكال إيمائية',         m_gest_s:'ارسم شكلاً',
+      m_pen_t:'البندول',                m_pen_s:'فيزياء التأرجح',
+      m_polar_t:'لوح قطبيّ',            m_polar_s:'جويستيك دائري',
     },
   };
   let curLang = 'en';
@@ -873,23 +921,25 @@
     gamepad: { title: 'Gamepad', sub: 'Plug in any USB / wireless gamepad. Use the left stick to drive.', install: installGamepad },
     beat:    { title: 'BeatBox', sub: 'Each clap or beat = a short forward pulse. Faster beats = sustained drive.', install: installBeat },
   };
-  // Camera modes are loaded from js/camera-inputs.js and merged in.
-  function mergeCameraModes() {
-    if (!window.CameraInputs) return;
-    Object.keys(window.CameraInputs).forEach(key => {
-      const m = window.CameraInputs[key];
-      MODES[key] = {
-        title: m.title,
-        sub: m.sub,
-        install: (host) => m.install(host, fireVec, stop, send),
-      };
+  // Camera & Gaming modes are loaded from sibling JS files and merged in.
+  function mergeExtraModes() {
+    [window.CameraInputs, window.GamingInputs].forEach(reg => {
+      if (!reg) return;
+      Object.keys(reg).forEach(key => {
+        const m = reg[key];
+        MODES[key] = {
+          title: m.title,
+          sub: m.sub,
+          install: (host) => m.install(host, fireVec, stop, send),
+        };
+      });
     });
   }
-  // CameraInputs is loaded with `defer`, so it's ready at this point in
-  // execution if the inline <script> runs after DOMContentLoaded. But to
-  // be safe, retry if not yet defined.
-  if (window.CameraInputs) mergeCameraModes();
-  else window.addEventListener('load', mergeCameraModes);
+  // The deferred extra-mode scripts may not be ready when the inline
+  // <script> runs. We try at execution time AND on window 'load' so
+  // the registry is always populated before the user can click a card.
+  if (window.CameraInputs || window.GamingInputs) mergeExtraModes();
+  window.addEventListener('load', mergeExtraModes);
 
   // ---- Wire it up ----------------------------------------------
   const stageBody = document.getElementById('stageBody');
