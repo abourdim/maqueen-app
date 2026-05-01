@@ -1005,7 +1005,9 @@ themeSel.addEventListener('change', e => applyTheme(e.target.value));
 
 // Init
 try {
-  const sav = localStorage.getItem('robi.lang'); if (sav) setL(sav);
+  // Inherit language from main app (mb_lang) or local override (robi.lang)
+  const sav = localStorage.getItem('robi.lang') || localStorage.getItem('mb_lang');
+  if (sav) setL(sav);
   const th = localStorage.getItem('robi.theme'); if (th) applyTheme(th);
   const prog = JSON.parse(localStorage.getItem('robi.startProg') || '[]');
   prog.forEach(n => markDone(n));
