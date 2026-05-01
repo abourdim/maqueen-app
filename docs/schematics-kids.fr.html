@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="carbon">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Découvre ton robot ! · Robi-9 Lab</title>
+<link rel="stylesheet" href="../workshops/theme.css">
+<link rel="stylesheet" href="doc-shell.css">
+<script src="../workshops/newtab.js" defer></script>
+<style>
+  .doc-wrap { max-width: 1280px; }
+  h1.kid { font-size: clamp(2rem, 5vw, 2.6rem); text-align: center; margin: 0 0 8px; color: var(--neon); border: none; }
+  h1.kid::before { content: ''; }
+  .kid-subtitle { text-align: center; color: var(--steel); font-size: 17px; margin-bottom: 24px; border: none; padding: 0; }
+  .stage-wrap { background: var(--bg-card); border: 2px solid var(--neon); border-radius: 22px; padding: 24px; box-shadow: 0 0 40px var(--hero-glow); overflow: hidden; position: relative; }
+  svg.stage { display: block; width: 100%; height: auto; max-width: 100%; }
+  .tooltip { position: absolute; background: var(--bg-card); border: 2px solid var(--neon); border-radius: 16px; padding: 14px 20px; box-shadow: 0 8px 24px rgba(0,0,0,0.5), 0 0 24px var(--hero-glow); pointer-events: none; opacity: 0; transition: opacity 0.18s, transform 0.18s; transform: translate(-50%, calc(-100% - 18px)) scale(0.9); max-width: 280px; text-align: center; z-index: 10; }
+  .tooltip.show { opacity: 1; transform: translate(-50%, calc(-100% - 18px)) scale(1); }
+  .tooltip h3 { margin: 0 0 6px; font-size: 17px; color: var(--neon); border: none; }
+  .tooltip h3::before { content: ''; }
+  .tooltip p { margin: 0; font-size: 14px; color: var(--text); }
+  .comp { cursor: pointer; transition: transform 0.2s; transform-origin: center; transform-box: fill-box; }
+  .comp:hover { transform: scale(1.06); } .comp:active { transform: scale(0.95); }
+  .rgb-pulse { animation: pulse 1.6s ease-in-out infinite; transform-origin: center; transform-box: fill-box; } .rgb-pulse:nth-child(2) { animation-delay: 0.4s; } .rgb-pulse:nth-child(3) { animation-delay: 0.8s; } .rgb-pulse:nth-child(4) { animation-delay: 1.2s; }
+  @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.9; } 50% { transform: scale(1.25); opacity: 1; } }
+  .wave { animation: wave-out 1.6s ease-out infinite; opacity: 0; transform-origin: center; transform-box: fill-box; } .wave:nth-child(2) { animation-delay: 0.3s; } .wave:nth-child(3) { animation-delay: 0.6s; }
+  @keyframes wave-out { 0% { opacity: 0.8; transform: scale(0.4); } 100% { opacity: 0; transform: scale(1.5); } }
+  .wheel-spokes { animation: spin 3s linear infinite; transform-origin: center; transform-box: fill-box; } @keyframes spin { to { transform: rotate(360deg); } }
+  .led-blink { animation: blink 4s ease-in-out infinite; } @keyframes blink { 0%, 90%, 100% { opacity: 0.95; } 92%, 95% { opacity: 0.3; } }
+  .controls { margin-top: 16px; display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+  .btn { background: var(--neon); color: var(--ink); border: none; padding: 10px 22px; border-radius: 999px; font-family: var(--font-body); font-size: 15px; font-weight: 700; cursor: pointer; transition: transform 0.1s, box-shadow 0.1s; text-decoration: none; display: inline-block; }
+  .btn:hover { box-shadow: 0 0 20px var(--hero-glow); transform: scale(1.04); }
+  .btn.secondary { background: var(--bg-card); color: var(--neon); border: 2px solid var(--neon); }
+  .tip { text-align: center; color: var(--steel); font-size: 14px; margin-top: 12px; font-style: italic; }
+  .pin-badge { font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700; dominant-baseline: middle; }
+</style>
+</head>
+<body>
+
+<div class="wd-band wd-band-top"></div>
+<header class="wd-header">
+  <div class="title-block">
+    <div class="logo-mark">▣</div>
+    <div><h1>Robi-9 Lab // Mon Robot</h1><div class="subtitle">Visite enfant · tape chaque pièce</div></div>
+  </div>
+  <div class="wd-header-right">
+    <select class="wd-select" id="themeSelect" aria-label="Thème">
+      <option value="carbon">▣ Carbon</option><option value="forest">▣ Forest</option><option value="steel">▣ Steel</option><option value="paper">☼ Paper</option><option value="pearl">☼ Pearl</option>
+    </select>
+    <a class="wd-select" href="../index.html" style="text-decoration:none; border-bottom:none;">🤖 App Robot</a>
+  </div>
+</header>
+
+<div class="doc-wrap">
+
+<div class="langbar">
+  <a href="schematics-kids.html">🇬🇧 EN</a>
+  <a href="schematics-kids.fr.html" class="active">🇫🇷 FR</a>
+  <a href="schematics-kids.ar.html">🇩🇿 AR</a>
+</div>
+
+<h1 class="kid">Découvre ton robot ! 🤖</h1>
+<div class="kid-subtitle">Tape chaque pièce pour apprendre ce qu'elle fait</div>
+
+<div class="stage-wrap">
+  <div id="tooltip" class="tooltip"><h3 id="tt-title"></h3><p id="tt-desc"></p></div>
+  <svg class="stage" viewBox="0 0 1280 920" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <filter id="glow" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+      <filter id="soft-glow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="1.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+      <radialGradient id="ledGlow" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#fef08a"/><stop offset="60%" stop-color="#facc15"/><stop offset="100%" stop-color="#a16207"/></radialGradient>
+      <radialGradient id="rgbR" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#fff"/><stop offset="50%" stop-color="#ef4444"/><stop offset="100%" stop-color="#7f1d1d"/></radialGradient>
+      <radialGradient id="rgbG" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#fff"/><stop offset="50%" stop-color="#22c55e"/><stop offset="100%" stop-color="#14532d"/></radialGradient>
+      <radialGradient id="rgbB" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#fff"/><stop offset="50%" stop-color="#3b82f6"/><stop offset="100%" stop-color="#1e3a8a"/></radialGradient>
+      <radialGradient id="rgbP" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#fff"/><stop offset="50%" stop-color="#a855f7"/><stop offset="100%" stop-color="#581c87"/></radialGradient>
+      <linearGradient id="microbitPCB" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#1a4d2e"/><stop offset="100%" stop-color="#0f3320"/></linearGradient>
+      <linearGradient id="chassisGrad" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#3b82f6"/><stop offset="60%" stop-color="#1e3a8a"/><stop offset="100%" stop-color="#0a1628"/></linearGradient>
+      <radialGradient id="chassisHi" cx="30%" cy="20%" r="80%"><stop offset="0%" stop-color="#fff" stop-opacity="0.18"/><stop offset="50%" stop-color="#fff" stop-opacity="0.04"/><stop offset="100%" stop-color="#fff" stop-opacity="0"/></radialGradient>
+      <radialGradient id="rimMetal" cx="35%" cy="30%" r="80%"><stop offset="0%" stop-color="#9ca3af"/><stop offset="50%" stop-color="#5a6068"/><stop offset="100%" stop-color="#1a1c20"/></radialGradient>
+      <radialGradient id="tireRubber" cx="50%" cy="50%" r="50%"><stop offset="80%" stop-color="#1a1a1c"/><stop offset="100%" stop-color="#000"/></radialGradient>
+      <radialGradient id="ledDome" cx="38%" cy="32%" r="62%"><stop offset="0%" stop-color="#fefce8"/><stop offset="20%" stop-color="#fef9c3"/><stop offset="55%" stop-color="#facc15"/><stop offset="100%" stop-color="#854d0e"/></radialGradient>
+      <radialGradient id="ledHalo" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#fef08a" stop-opacity="0.7"/><stop offset="50%" stop-color="#facc15" stop-opacity="0.25"/><stop offset="100%" stop-color="#facc15" stop-opacity="0"/></radialGradient>
+      <radialGradient id="piezoBrass" cx="40%" cy="35%" r="65%"><stop offset="0%" stop-color="#fde68a"/><stop offset="40%" stop-color="#eab308"/><stop offset="100%" stop-color="#854d0e"/></radialGradient>
+      <radialGradient id="piezoCeramic" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#9ca3af"/><stop offset="100%" stop-color="#374151"/></radialGradient>
+      <linearGradient id="chipBody" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#3a3a3e"/><stop offset="50%" stop-color="#1f1f22"/><stop offset="100%" stop-color="#0a0a0c"/></linearGradient>
+      <linearGradient id="servoBlue" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#60a5fa"/><stop offset="55%" stop-color="#2563eb"/><stop offset="100%" stop-color="#1e3a8a"/></linearGradient>
+      <radialGradient id="servoHorn" cx="40%" cy="35%" r="65%"><stop offset="0%" stop-color="#fff"/><stop offset="60%" stop-color="#e5e7eb"/><stop offset="100%" stop-color="#9ca3af"/></radialGradient>
+      <symbol id="sideWheel" viewBox="-100 -100 200 200"><circle cx="0" cy="0" r="92" fill="url(#tireRubber)" stroke="#000" stroke-width="2.5"/><circle cx="0" cy="0" r="62" fill="url(#rimMetal)" stroke="#0a0a0c" stroke-width="2"/></symbol>
+      <symbol id="servoSG90" viewBox="0 0 100 130"><rect x="0" y="38" width="100" height="14" rx="3" fill="url(#servoBlue)" stroke="#0c1a3a" stroke-width="1"/><rect x="22" y="14" width="56" height="100" rx="3" fill="url(#servoBlue)" stroke="#0c1a3a" stroke-width="1.5"/><rect x="28" y="60" width="44" height="22" rx="1.5" fill="#fff" opacity="0.92"/><text x="50" y="71" text-anchor="middle" fill="#1e3a8a" font-size="6" font-weight="900">TowerPro</text><text x="50" y="79" text-anchor="middle" fill="#1e3a8a" font-size="7" font-weight="900">SG90</text></symbol>
+      <symbol id="servoHornArm" viewBox="0 0 70 70"><circle cx="35" cy="35" r="14" fill="url(#servoHorn)" stroke="#374151" stroke-width="1"/><rect x="33" y="2" width="4" height="34" fill="url(#servoHorn)"/></symbol>
+    </defs>
+
+    <g font-weight="700" fill="#93a8c4" font-size="14"><text x="640" y="32" text-anchor="middle">▲ AVANT</text><text x="640" y="900" text-anchor="middle">▼ ARRIÈRE</text></g>
+
+    <g class="comp" data-name="motorL" data-title="Roue gauche + moteur ⚙️" data-desc="Le moteur qui fait tourner la roue de GAUCHE. Fais-le tourner en avant ou en arrière pour bouger le robot !">
+      <use href="#sideWheel" x="105" y="385" width="190" height="190"/>
+      <g class="wheel-spokes" style="transform-origin: 200px 480px;" stroke="#c0c5cc" stroke-width="6" stroke-linecap="round"><line x1="200" y1="480" x2="200" y2="426"/><line x1="200" y1="480" x2="251" y2="463"/><line x1="200" y1="480" x2="232" y2="525"/><line x1="200" y1="480" x2="168" y2="525"/><line x1="200" y1="480" x2="149" y2="463"/></g>
+      <circle cx="200" cy="480" r="18" fill="#5a6068"/><circle cx="200" cy="480" r="13" fill="#2a2e34"/>
+      <text x="200" y="600" text-anchor="middle" fill="#fb923c" font-size="14" font-weight="700">Roue gauche</text>
+      <text x="200" y="616" text-anchor="middle" fill="#93a8c4" font-size="11">Moteur N20</text>
+      <rect x="166" y="624" width="68" height="22" rx="11" fill="#0a1628" stroke="#fb923c" stroke-width="1.2"/><text x="200" y="636" text-anchor="middle" fill="#fb923c" class="pin-badge">I2C·0x00</text>
+    </g>
+
+    <g class="comp" data-name="motorR" data-title="Roue droite + moteur ⚙️" data-desc="Le moteur qui fait tourner la roue de DROITE. Fais tourner les deux roues pareil pour aller tout droit, ou différent pour tourner !">
+      <use href="#sideWheel" x="985" y="385" width="190" height="190"/>
+      <g class="wheel-spokes" style="transform-origin: 1080px 480px;" stroke="#c0c5cc" stroke-width="6" stroke-linecap="round"><line x1="1080" y1="480" x2="1080" y2="426"/><line x1="1080" y1="480" x2="1131" y2="463"/><line x1="1080" y1="480" x2="1112" y2="525"/><line x1="1080" y1="480" x2="1048" y2="525"/><line x1="1080" y1="480" x2="1029" y2="463"/></g>
+      <circle cx="1080" cy="480" r="18" fill="#5a6068"/><circle cx="1080" cy="480" r="13" fill="#2a2e34"/>
+      <text x="1080" y="600" text-anchor="middle" fill="#fb923c" font-size="14" font-weight="700">Roue droite</text>
+      <text x="1080" y="616" text-anchor="middle" fill="#93a8c4" font-size="11">Moteur N20</text>
+      <rect x="1046" y="624" width="68" height="22" rx="11" fill="#0a1628" stroke="#fb923c" stroke-width="1.2"/><text x="1080" y="636" text-anchor="middle" fill="#fb923c" class="pin-badge">I2C·0x02</text>
+    </g>
+
+    <g><circle cx="640" cy="780" r="28" fill="#374151" stroke="#9ca3af" stroke-width="2"/><circle cx="640" cy="780" r="22" fill="#1f2937"/></g>
+    <g>
+      <rect x="260" y="80" width="760" height="720" rx="80" fill="url(#chassisGrad)" stroke="#00d4ff" stroke-width="3" filter="url(#soft-glow)"/>
+      <rect x="260" y="80" width="760" height="720" rx="80" fill="url(#chassisHi)"/>
+      <text x="290" y="105" fill="#00d4ff" font-size="11" font-weight="700" opacity="0.6">Châssis Maqueen Lite v4</text>
+    </g>
+
+    <g class="comp" data-name="ultrasonic" data-title="Yeux ultrason 👀" data-desc="Deux petits yeux qui envoient des ondes sonores et écoutent l'écho. C'est comme ça que le robot 'voit' à quelle distance sont les choses !">
+      <g fill="none" stroke="#4ade80" stroke-width="2.5" opacity="0.55"><path d="M 580 145 Q 540 100, 540 50" stroke-dasharray="6 4"/><path d="M 700 145 Q 740 100, 740 50" stroke-dasharray="6 4"/><path d="M 640 130 Q 640 80, 640 30" stroke-dasharray="6 4"/></g>
+      <rect x="570" y="125" width="140" height="55" rx="8" fill="#1a4d8e" stroke="#4ade80" stroke-width="3"/>
+      <circle cx="600" cy="152" r="20" fill="#9ca3af" stroke="#fff" stroke-width="2"/><circle cx="600" cy="152" r="14" fill="#1d3556"/><circle cx="600" cy="152" r="3" fill="#4ade80"/>
+      <circle cx="680" cy="152" r="20" fill="#9ca3af" stroke="#fff" stroke-width="2"/><circle cx="680" cy="152" r="14" fill="#1d3556"/><circle cx="680" cy="152" r="3" fill="#4ade80"/>
+      <text x="640" y="200" text-anchor="middle" fill="#4ade80" font-size="14" font-weight="700">Yeux ultrason</text>
+      <rect x="592" y="208" width="44" height="22" rx="11" fill="#0a1628" stroke="#4ade80" stroke-width="1.2"/><text x="614" y="220" text-anchor="middle" fill="#4ade80" class="pin-badge">P1·TR</text>
+      <rect x="644" y="208" width="44" height="22" rx="11" fill="#0a1628" stroke="#4ade80" stroke-width="1.2"/><text x="666" y="220" text-anchor="middle" fill="#4ade80" class="pin-badge">P2·EC</text>
+    </g>
+
+    <g class="comp" data-name="ir" data-title="Récepteur IR 📺" data-desc="Un œil magique à l'avant du robot. Pointe une télécommande TV dessus et appuie sur les boutons — le robot écoute !">
+      <ellipse cx="850" cy="155" rx="22" ry="28" fill="#1d3556" stroke="#c084fc" stroke-width="2.5"/>
+      <ellipse cx="844" cy="143" rx="6" ry="9" fill="#c084fc" opacity="0.6"/>
+      <text x="850" y="208" text-anchor="middle" fill="#c084fc" font-size="13" font-weight="700">Œil IR</text>
+      <rect x="822" y="216" width="56" height="22" rx="11" fill="#0a1628" stroke="#c084fc" stroke-width="1.2"/><text x="850" y="228" text-anchor="middle" fill="#c084fc" class="pin-badge">P16</text>
+    </g>
+
+    <g class="comp" data-name="buzzer" data-title="Buzzer 🔊" data-desc="Le petit haut-parleur qui joue des bips et des mélodies ! Il peut chanter des notes graves et aiguës !">
+      <g fill="none" stroke="#fbbf24" stroke-width="2.5"><circle class="wave" cx="430" cy="155" r="34" style="transform-origin:430px 155px;"/><circle class="wave" cx="430" cy="155" r="34" style="transform-origin:430px 155px;"/><circle class="wave" cx="430" cy="155" r="34" style="transform-origin:430px 155px;"/></g>
+      <circle cx="430" cy="155" r="32" fill="url(#piezoBrass)" stroke="#3a2906" stroke-width="2"/>
+      <circle cx="430" cy="155" r="22" fill="url(#piezoCeramic)" stroke="#1a1c20" stroke-width="1.5"/>
+      <text x="468" y="125" font-size="22" fill="#fbbf24" filter="url(#soft-glow)">♪</text>
+      <text x="430" y="220" text-anchor="middle" fill="#fbbf24" font-size="13" font-weight="700">Buzzer</text>
+      <rect x="412" y="228" width="36" height="22" rx="11" fill="#0a1628" stroke="#fbbf24" stroke-width="1.2"/><text x="430" y="240" text-anchor="middle" fill="#fbbf24" class="pin-badge">P0</text>
+    </g>
+
+    <g class="comp" data-name="rgb" data-title="NeoPixels × 4 — Lumières arc-en-ciel 🌈" data-desc="Quatre lumières magiques aux coins qui peuvent briller dans N'IMPORTE QUELLE couleur ! Chacune s'appelle un NeoPixel et se contrôle séparément.">
+      <g style="transform-origin:320px 220px;"><circle cx="320" cy="220" r="46" fill="#ef4444" opacity="0.18" filter="url(#glow)"/><circle class="rgb-pulse" cx="320" cy="220" r="24" fill="url(#rgbR)" stroke="#fff" stroke-width="2" filter="url(#soft-glow)" style="transform-origin:320px 220px;"/><text x="320" y="278" text-anchor="middle" fill="#f472b6" font-size="13" font-weight="700">RGB 0</text></g>
+      <g style="transform-origin:320px 700px;"><circle cx="320" cy="700" r="46" fill="#22c55e" opacity="0.18" filter="url(#glow)"/><circle class="rgb-pulse" cx="320" cy="700" r="24" fill="url(#rgbG)" stroke="#fff" stroke-width="2" filter="url(#soft-glow)" style="transform-origin:320px 700px;"/><text x="320" y="666" text-anchor="middle" fill="#f472b6" font-size="13" font-weight="700">RGB 1</text></g>
+      <g style="transform-origin:960px 220px;"><circle cx="960" cy="220" r="46" fill="#3b82f6" opacity="0.18" filter="url(#glow)"/><circle class="rgb-pulse" cx="960" cy="220" r="24" fill="url(#rgbB)" stroke="#fff" stroke-width="2" filter="url(#soft-glow)" style="transform-origin:960px 220px;"/><text x="960" y="278" text-anchor="middle" fill="#f472b6" font-size="13" font-weight="700">RGB 2</text></g>
+      <g style="transform-origin:960px 700px;"><circle cx="960" cy="700" r="46" fill="#a855f7" opacity="0.18" filter="url(#glow)"/><circle class="rgb-pulse" cx="960" cy="700" r="24" fill="url(#rgbP)" stroke="#fff" stroke-width="2" filter="url(#soft-glow)" style="transform-origin:960px 700px;"/><text x="960" y="666" text-anchor="middle" fill="#f472b6" font-size="13" font-weight="700">RGB 3</text></g>
+      <text x="640" y="50" text-anchor="middle" fill="#f472b6" font-size="13" font-weight="700">✨ NeoPixels × 4 — Lumières arc-en-ciel ✨</text>
+      <rect x="600" y="58" width="80" height="22" rx="11" fill="#0a1628" stroke="#f472b6" stroke-width="1.2"/><text x="640" y="70" text-anchor="middle" fill="#f472b6" class="pin-badge">I2C·0x10·0x32</text>
+    </g>
+
+    <g class="comp" data-name="ledL" data-title="LED Gauche 💡" data-desc="Une lumière jaune brillante sur le côté GAUCHE du robot. Allume-la ou éteins-la pour faire un signal !">
+      <circle cx="380" cy="318" r="56" fill="url(#ledHalo)"/>
+      <ellipse cx="380" cy="335" rx="22" ry="6" fill="#374151"/>
+      <ellipse cx="380" cy="318" rx="20" ry="22" fill="url(#ledDome)" stroke="#fbbf24" stroke-width="1.5" filter="url(#soft-glow)"/>
+      <ellipse cx="372" cy="306" rx="6" ry="9" fill="#fff" opacity="0.85"/>
+      <text x="380" y="392" text-anchor="middle" fill="#facc15" font-size="13" font-weight="700">LED G</text>
+      <rect x="362" y="400" width="36" height="22" rx="11" fill="#0a1628" stroke="#facc15" stroke-width="1.2"/><text x="380" y="412" text-anchor="middle" fill="#facc15" class="pin-badge">P8</text>
+    </g>
+
+    <g class="comp" data-name="ledR" data-title="LED Droite 💡" data-desc="Une lumière jaune brillante sur le côté DROIT. Combine avec LED Gauche pour des motifs clignotants !">
+      <circle cx="900" cy="318" r="56" fill="url(#ledHalo)"/>
+      <ellipse cx="900" cy="335" rx="22" ry="6" fill="#374151"/>
+      <ellipse cx="900" cy="318" rx="20" ry="22" fill="url(#ledDome)" stroke="#fbbf24" stroke-width="1.5" filter="url(#soft-glow)"/>
+      <ellipse cx="892" cy="306" rx="6" ry="9" fill="#fff" opacity="0.85"/>
+      <text x="900" y="392" text-anchor="middle" fill="#facc15" font-size="13" font-weight="700">LED D</text>
+      <rect x="880" y="400" width="40" height="22" rx="11" fill="#0a1628" stroke="#facc15" stroke-width="1.2"/><text x="900" y="412" text-anchor="middle" fill="#facc15" class="pin-badge">P12</text>
+    </g>
+
+    <g class="comp" data-name="microbit" data-title="Le cerveau micro:bit 🧠" data-desc="Le petit ordinateur qui réfléchit pour le robot ! Il écoute ton téléphone par Bluetooth et dit à chaque pièce quoi faire.">
+      <rect x="540" y="290" width="200" height="170" rx="22" fill="url(#microbitPCB)" stroke="#fff" stroke-width="2.5" filter="url(#glow)"/>
+      <g fill="#fbbf24"><rect x="560" y="455" width="14" height="10"/><rect x="585" y="455" width="14" height="10"/><rect x="610" y="455" width="14" height="10"/><rect x="635" y="455" width="14" height="10"/><rect x="660" y="455" width="14" height="10"/><rect x="685" y="455" width="14" height="10"/><rect x="710" y="455" width="14" height="10"/></g>
+      <g fill="url(#ledGlow)" filter="url(#soft-glow)" class="led-blink"><rect x="588" y="335" width="8" height="8" rx="1"/><rect x="628" y="335" width="8" height="8" rx="1"/><rect x="568" y="375" width="8" height="8" rx="1"/><rect x="648" y="375" width="8" height="8" rx="1"/><rect x="588" y="395" width="8" height="8" rx="1"/><rect x="608" y="395" width="8" height="8" rx="1"/><rect x="628" y="395" width="8" height="8" rx="1"/></g>
+      <circle cx="556" cy="410" r="13" fill="#fff" stroke="#000" stroke-width="2"/><text x="556" y="416" text-anchor="middle" font-size="13" font-weight="900" fill="#000">A</text>
+      <circle cx="724" cy="410" r="13" fill="#fff" stroke="#000" stroke-width="2"/><text x="724" y="416" text-anchor="middle" font-size="13" font-weight="900" fill="#000">B</text>
+      <text x="640" y="282" text-anchor="middle" fill="#fff" font-size="14" font-weight="900">cerveau micro:bit</text>
+    </g>
+
+    <g class="comp" data-name="i2c" data-title="Standard magique 📡" data-desc="Une petite puce assistante à qui le cerveau parle. Elle pilote les roues, les servos et les lumières arc-en-ciel d'un coup !">
+      <rect x="540" y="502" width="214" height="86" rx="6" fill="url(#chipBody)" stroke="#0a0a0c" stroke-width="1.5"/>
+      <text x="640" y="528" text-anchor="middle" fill="#7a8290" font-size="9" font-family="JetBrains Mono, monospace" letter-spacing="2">DRV8833 · I2C 0x10</text>
+      <circle cx="612" cy="552" r="5" fill="#c084fc"/><circle cx="613" cy="553" r="2" fill="#0a0a0c"/>
+      <circle cx="668" cy="552" r="5" fill="#c084fc"/><circle cx="669" cy="553" r="2" fill="#0a0a0c"/>
+      <path d="M 610 568 Q 640 580, 670 568" stroke="#c084fc" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <text x="640" y="618" text-anchor="middle" fill="#c084fc" font-size="13" font-weight="700">Puce standard</text>
+      <rect x="582" y="626" width="56" height="22" rx="11" fill="#0a1628" stroke="#c084fc" stroke-width="1.2"/><text x="610" y="638" text-anchor="middle" fill="#c084fc" class="pin-badge">P19·SCL</text>
+      <rect x="642" y="626" width="56" height="22" rx="11" fill="#0a1628" stroke="#c084fc" stroke-width="1.2"/><text x="670" y="638" text-anchor="middle" fill="#c084fc" class="pin-badge">P20·SDA</text>
+    </g>
+
+    <g class="comp" data-name="servos" data-title="Bras servos S1 + S2 🦾" data-desc="Deux petits bras à l'arrière qui se balancent à n'importe quel angle ! Utilise-les pour soulever, attraper ou pousser — parfait pour les kits Forklift, Beetle et Loader !">
+      <g transform="translate(465 615)"><use href="#servoSG90" width="100" height="130" x="0" y="0"/><g transform="rotate(-25 50 28)"><use href="#servoHornArm" width="70" height="70" x="15" y="-7"/></g><text x="50" y="148" text-anchor="middle" fill="#60a5fa" font-size="13" font-weight="900">S1</text></g>
+      <g transform="translate(715 615)"><use href="#servoSG90" width="100" height="130" x="0" y="0"/><g transform="rotate(35 50 28)"><use href="#servoHornArm" width="70" height="70" x="15" y="-7"/></g><text x="50" y="148" text-anchor="middle" fill="#60a5fa" font-size="13" font-weight="900">S2</text></g>
+      <text x="640" y="785" text-anchor="middle" fill="#00d4ff" font-size="13" font-weight="700">Bras servos (S1 + S2)</text>
+      <rect x="500" y="793" width="68" height="22" rx="11" fill="#0a1628" stroke="#00d4ff" stroke-width="1.2"/><text x="534" y="805" text-anchor="middle" fill="#00d4ff" class="pin-badge">I2C·0x14</text>
+      <rect x="710" y="793" width="68" height="22" rx="11" fill="#0a1628" stroke="#00d4ff" stroke-width="1.2"/><text x="744" y="805" text-anchor="middle" fill="#00d4ff" class="pin-badge">I2C·0x15</text>
+    </g>
+
+    <g class="comp" data-name="lineL" data-title="Œil ligne Gauche 👁" data-desc="Un œil sous l'avant-gauche qui regarde le sol. Il voit s'il y a une ligne noire dessous — pour suivre des pistes en ruban !">
+      <rect x="345" y="745" width="80" height="40" rx="6" fill="#1a4d2e" stroke="#4ade80" stroke-width="2" stroke-dasharray="5 3"/>
+      <circle cx="385" cy="765" r="11" fill="#fff"/><circle cx="385" cy="769" r="6" fill="#000"/>
+      <text x="385" y="810" text-anchor="middle" fill="#4ade80" font-size="12" font-weight="700">Œil ligne G (sous)</text>
+      <rect x="365" y="818" width="40" height="22" rx="11" fill="#0a1628" stroke="#4ade80" stroke-width="1.2"/><text x="385" y="830" text-anchor="middle" fill="#4ade80" class="pin-badge">P13</text>
+    </g>
+    <g class="comp" data-name="lineR" data-title="Œil ligne Droite 👁" data-desc="L'autre œil scrutant le sol, sous l'avant-droit. Avec Œil ligne G, le robot peut rester sur une ligne en ruban !">
+      <rect x="855" y="745" width="80" height="40" rx="6" fill="#1a4d2e" stroke="#4ade80" stroke-width="2" stroke-dasharray="5 3"/>
+      <circle cx="895" cy="765" r="11" fill="#fff"/><circle cx="895" cy="769" r="6" fill="#000"/>
+      <text x="895" y="810" text-anchor="middle" fill="#4ade80" font-size="12" font-weight="700">Œil ligne D (sous)</text>
+      <rect x="875" y="818" width="40" height="22" rx="11" fill="#0a1628" stroke="#4ade80" stroke-width="1.2"/><text x="895" y="830" text-anchor="middle" fill="#4ade80" class="pin-badge">P14</text>
+    </g>
+  </svg>
+</div>
+
+<div class="tip">💡 Survole une pièce pour voir ce qu'elle fait · Clique pour l'entendre à voix haute</div>
+
+<div class="controls">
+  <button class="btn" id="play-tour">▶ Visite guidée de toutes les pièces</button>
+  <button class="btn secondary" id="toggle-voice">🔇 Voix : off</button>
+  <a href="schematics.fr.html" class="btn secondary">Pour les grands → vue ingénieur</a>
+</div>
+
+<a class="back-link" href="../index.html" style="margin-top:24px;">← Retour à l'App Robot</a>
+
+</div>
+
+<div class="wd-band wd-band-bottom"></div>
+<footer class="wd-footer">
+  <span>propulsé par <a href="https://workshop-diy.org" target="_blank" rel="noopener">workshop-diy.org</a></span>
+  <span class="sep">·</span>
+  <span>Robi-9 Lab · Mon Robot</span>
+</footer>
+
+<script>
+  (function () {
+    const sel = document.getElementById('themeSelect');
+    function apply(t) { document.documentElement.setAttribute('data-theme', t); if (sel) sel.value = t; try { localStorage.setItem('robi.theme', t); } catch (e) {} }
+    try { const t = localStorage.getItem('robi.theme') || localStorage.getItem('mb_theme'); if (t) apply(t); } catch (e) {}
+    if (sel) sel.addEventListener('change', e => apply(e.target.value));
+  })();
+  const tooltip = document.getElementById('tooltip');
+  const ttTitle = document.getElementById('tt-title'); const ttDesc = document.getElementById('tt-desc');
+  const stage = document.querySelector('.stage-wrap');
+  const voiceBtn = document.getElementById('toggle-voice'); const tourBtn = document.getElementById('play-tour');
+  let voiceOn = false;
+  voiceBtn.addEventListener('click', () => { voiceOn = !voiceOn; voiceBtn.textContent = voiceOn ? '🔊 Voix : on' : '🔇 Voix : off'; });
+  function speak(text) { if (!voiceOn || !window.speechSynthesis) return; speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); u.lang = 'fr-FR'; u.rate = 0.95; u.pitch = 1.1; speechSynthesis.speak(u); }
+  function showTooltip(t) { const r = t.getBoundingClientRect(); const sr = stage.getBoundingClientRect(); ttTitle.textContent = t.dataset.title; ttDesc.textContent = t.dataset.desc; tooltip.style.left = (r.left - sr.left + r.width/2) + 'px'; tooltip.style.top = (r.top - sr.top + r.height/2) + 'px'; tooltip.classList.add('show'); }
+  function hideTooltip() { tooltip.classList.remove('show'); }
+  document.querySelectorAll('.comp').forEach(c => { c.addEventListener('mouseenter', () => showTooltip(c)); c.addEventListener('mouseleave', hideTooltip); c.addEventListener('click', () => { showTooltip(c); speak(c.dataset.title.replace(/[^\w\sÀ-ÿ]/g, '') + '. ' + c.dataset.desc); }); });
+  tourBtn.addEventListener('click', async () => { const comps = Array.from(document.querySelectorAll('.comp')); for (const c of comps) { showTooltip(c); speak(c.dataset.title.replace(/[^\w\sÀ-ÿ]/g, '') + '. ' + c.dataset.desc); await new Promise(r => setTimeout(r, voiceOn ? 4500 : 2200)); } hideTooltip(); });
+</script>
+
+</body>
+</html>
