@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="carbon">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Maqueen-App — Plan de construction · Robi-9 Lab</title>
+<link rel="stylesheet" href="../workshops/theme.css">
+<link rel="stylesheet" href="doc-shell.css">
+<script src="../workshops/newtab.js" defer></script>
+<style>
+  .meta { display: grid; grid-template-columns: 140px 1fr; gap: 4px 16px; margin-bottom: 24px; font-size: 14px; }
+  .meta dt { color: var(--steel); }
+  .meta dd { margin: 0; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--text); }
+  .toc { background: var(--bg-card); border: 1.5px solid var(--border); border-radius: 12px; padding: 18px 26px; margin-bottom: 36px; }
+  .toc h3 { margin-top: 0; color: var(--text); border: none; }
+  .toc ol { padding-left: 22px; }
+  .toc a { color: var(--steel); text-decoration: none; border-bottom: none; }
+  .toc a:hover { color: var(--neon); }
+  .ascii { font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.4; white-space: pre; color: var(--steel); }
+  .badge { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-right: 6px; font-family: var(--font-tech); }
+  .badge.keep    { background: rgba(74,222,128,0.15);  color: var(--neon);   border: 1px solid var(--neon); }
+  .badge.replace { background: rgba(251,191,36,0.15);  color: var(--amber);  border: 1px solid var(--amber); }
+  .badge.remove  { background: rgba(248,113,113,0.15); color: var(--danger); border: 1px solid var(--danger); }
+  .badge.review  { background: rgba(56,189,248,0.15);  color: var(--cyan);   border: 1px solid var(--cyan); }
+  .phase { background: var(--bg-card); border: 1.5px solid var(--border); border-radius: 12px; padding: 18px 22px; margin: 16px 0; }
+  .phase h3 { margin-top: 0; color: var(--neon); }
+  hr { border: none; border-top: 1px solid var(--border); margin: 48px 0; }
+</style>
+</head>
+<body>
+
+<div class="wd-band wd-band-top"></div>
+<header class="wd-header">
+  <div class="title-block">
+    <div class="logo-mark">▣</div>
+    <div>
+      <h1>Robi-9 Lab // Plan</h1>
+      <div class="subtitle">Comment l'app a été construite · fichier par fichier</div>
+    </div>
+  </div>
+  <div class="wd-header-right">
+    <select class="wd-select" id="themeSelect" aria-label="Thème">
+      <option value="carbon">▣ Carbon</option>
+      <option value="forest">▣ Forest</option>
+      <option value="steel">▣ Steel</option>
+      <option value="paper">☼ Paper</option>
+      <option value="pearl">☼ Pearl</option>
+    </select>
+    <a class="wd-select" href="../index.html" style="text-decoration:none; border-bottom:none;">🤖 App Robot</a>
+  </div>
+</header>
+
+<div class="doc-wrap">
+
+<div class="langbar">
+  <a href="plan.html">🇬🇧 EN</a>
+  <a href="plan.fr.html" class="active">🇫🇷 FR</a>
+  <a href="plan.ar.html">🇩🇿 AR</a>
+</div>
+
+<h1>Maqueen-App — Plan de construction</h1>
+<div class="subtitle">Forker bit-playground en un labo de composants pour Maqueen Lite v4 + Kits Mécaniques</div>
+
+<dl class="meta">
+  <dt>Dépôt cible</dt><dd>https://github.com/abourdim/maqueen-lab</dd>
+  <dt>Chemin local</dt><dd>D:\work\dev\16_workshop\102_etsy\maqueen-lab\</dd>
+  <dt>Stratégie</dt><dd>Forker bit-playground → dépouiller → reconstruire pour Maqueen Lite v4</dd>
+</dl>
+
+<div class="toc">
+  <h3>Sommaire</h3>
+  <ol>
+    <li><a href="#vision">Vision</a></li>
+    <li><a href="#hardware">Référence matérielle — Maqueen Lite v4</a></li>
+    <li><a href="#arch">Décisions d'architecture</a></li>
+    <li><a href="#explorer">Patron du Component Explorer</a></li>
+    <li><a href="#components">Spécifications par composant</a></li>
+    <li><a href="#kits">Kits mécaniques</a></li>
+    <li><a href="#telemetry">Surcouche de télémétrie</a></li>
+    <li><a href="#addons">Cadre des add-ons</a></li>
+    <li><a href="#identity">Identité visuelle</a></li>
+    <li><a href="#fork">Stratégie de fork fichier-par-fichier</a></li>
+    <li><a href="#phases">Phases &amp; portes de validation</a></li>
+    <li><a href="#open">Décisions ouvertes</a></li>
+  </ol>
+</div>
+
+<h2 id="vision">1. Vision</h2>
+<p>Pas une « télécommande de robot » — un <strong>labo de composants</strong>. Chaque actionneur et capteur de la Maqueen Lite a sa propre page <strong>Explorer</strong> où l'enfant peut :</p>
+<ul>
+  <li>Voir le composant visualisé de manière photoréaliste.</li>
+  <li>Le manipuler via curseurs, boutons, sélecteurs de couleur.</li>
+  <li>Lire en direct le code qui le pilote (TypeScript avec lib <code>maqueen.*</code> d'abord, <code>pins.*</code> brut ensuite).</li>
+  <li>Faire des micro-défis guidés (« Fais saluer le bras », « Trouve le centre »).</li>
+  <li>Voir les données capteurs réagir aux commandes sur un graphe de télémétrie partagé.</li>
+</ul>
+<p>Tout le contrôle passe par UART BLE. Chaque commande est confirmée par echo.</p>
+
+<h2 id="hardware">2. Référence matérielle — Maqueen Lite v4</h2>
+
+<h3>Carte des broches</h3>
+<table>
+  <tr><th>Broche</th><th>Utilisée par</th><th>Direction</th><th>Notes</th></tr>
+  <tr><td><strong>P0</strong></td><td>Buzzer</td><td>Sortie (PWM)</td><td>Broche <code>music</code> par défaut ; aussi port Gravity</td></tr>
+  <tr><td><strong>P1</strong></td><td>Ultrason TRIG</td><td>Sortie</td><td>Aussi port Gravity — conflit en cas de réassignation</td></tr>
+  <tr><td><strong>P2</strong></td><td>Ultrason ECHO</td><td>Entrée</td><td>Aussi port Gravity — conflit en cas de réassignation</td></tr>
+  <tr><td>P3, P4, P6, P7, P9, P10</td><td>Colonnes matrice LED</td><td>—</td><td>Libres si l'affichage est désactivé</td></tr>
+  <tr><td>P5</td><td>Bouton A</td><td>Entrée</td><td>Intégré micro:bit</td></tr>
+  <tr><td><strong>P8</strong></td><td>LED Gauche (simple)</td><td>Sortie</td><td>Numérique ON/OFF</td></tr>
+  <tr><td>P11</td><td>Bouton B</td><td>Entrée</td><td>Intégré micro:bit</td></tr>
+  <tr><td><strong>P12</strong></td><td>LED Droite (simple)</td><td>Sortie</td><td>Numérique ON/OFF</td></tr>
+  <tr><td><strong>P13</strong></td><td>Capteur de ligne gauche</td><td>Entrée</td><td>Numérique 0/1</td></tr>
+  <tr><td><strong>P14</strong></td><td>Capteur de ligne droit</td><td>Entrée</td><td>Numérique 0/1</td></tr>
+  <tr><td>P15, P16</td><td>—</td><td>libre</td><td>—</td></tr>
+  <tr><td><strong>P19</strong></td><td>I2C SCL</td><td>—</td><td>Moteurs + RGB + Servos (adresse <strong>0x10</strong>)</td></tr>
+  <tr><td><strong>P20</strong></td><td>I2C SDA</td><td>—</td><td>Même bus I2C</td></tr>
+</table>
+
+<h3>Carte des registres I2C 0x10 (chip pilote moteur)</h3>
+<table>
+  <tr><th>Registre</th><th>Fonction</th></tr>
+  <tr><td><code>0x00</code></td><td>Moteur M1 (gauche) : direction + vitesse</td></tr>
+  <tr><td><code>0x02</code></td><td>Moteur M2 (droite) : direction + vitesse</td></tr>
+  <tr><td><code>0x14</code></td><td>Angle servo S1</td></tr>
+  <tr><td><code>0x15</code></td><td>Angle servo S2</td></tr>
+  <tr><td><code>0x32</code></td><td>Données 4× LED RGB (16M de couleurs chacune)</td></tr>
+</table>
+
+<h3>Libres pour ajouts d'enfant</h3>
+<p>P3, P4, P6, P7, P9, P10, P15, P16 (P3/4/6/7/9/10 partagent l'afficheur LED — désactiver l'affichage d'abord).</p>
+
+<h3>Composants matériels</h3>
+<ul>
+  <li>2× moteurs N20 (pilotés en I2C)</li>
+  <li>4× LED RGB d'ambiance (I2C reg 0x32)</li>
+  <li>2× LEDs simples (P8, P12)</li>
+  <li>2× capteurs de ligne IR numériques (P13, P14)</li>
+  <li>1× ultrason SR04 (P1 trig, P2 echo)</li>
+  <li>1× récepteur IR (NEC, broche interne)</li>
+  <li>1× buzzer (P0)</li>
+  <li>2× ports servo S1, S2 (I2C 0x14, 0x15)</li>
+  <li>3× ports d'extension Gravity (P0, P1, P2 — tous sujets à conflit)</li>
+  <li>Bus I2C (P19/P20) pour add-ons</li>
+</ul>
+
+<h2 id="arch">3. Décisions d'architecture</h2>
+
+<h3>3.1 Protocole BLE — séquence + confirmation par echo</h3>
+<p>Chaque commande porte un numéro de séquence. Le micro:bit le retourne en echo. L'app web valide l'aller-retour.</p>
+<pre><code>Web → bit:   #42 SRV:1,90
+bit → Web:   ECHO:42 SRV:1,90
+bit → Web:   DONE:42                (optionnel, pour ops lentes)</code></pre>
+
+<p><strong>Côté web (<code>js/ble-scheduler.js</code>) :</strong></p>
+<ul>
+  <li><code>pendingCmds: Map&lt;seq, {verb, ts, resolve, reject}&gt;</code></li>
+  <li>Timeout 500 ms → reject + flash rouge UI + log console</li>
+  <li>Panneau benchmark : envoyés / echo'd / perdus / latence moyenne</li>
+  <li>Streams d'animation : coalescer <em>avant</em> d'assigner seq</li>
+</ul>
+
+<p><strong>UI par commande (panneau code) :</strong></p>
+<pre><code>ble.send('SRV:1,90')   ✅ 47ms
+ble.send('SRV:1,95')   ⏳
+ble.send('SRV:1,100')  ❌ timeout</code></pre>
+
+<h3>3.2 Double logging USB série</h3>
+<p>Le firmware mirror tout vers la console USB série à 115200 baud :</p>
+<pre><code>[boot] MaqueenApp firmware v0.1.0 built 2026-04-26 01:23 UTC
+[boot] hardware: Maqueen Lite v4
+[boot] BLE name: BBC micro:bit [vagiv]
+[ble]  connected
+[rx]   #42 SRV:1,90
+[exec] maqueen.servoRun(S1, 90)
+[tx]   ECHO:42 SRV:1,90</code></pre>
+<p><strong>Verbosité</strong> par BLE : <code>LOG:0</code> (silencieux), <code>LOG:1</code> (rx/tx), <code>LOG:2</code> (+exec), <code>LOG:3</code> (+sondages capteurs).</p>
+
+<h3>3.3 Bandeau de build</h3>
+<p><code>BUILD_VERSION</code> et <code>BUILD_DATE</code> sont deux lignes <code>const</code> en tête du firmware. À éditer à la main avant chaque flash. Le bandeau s'imprime au boot.</p>
+
+<h3>3.4 Animations pilotées par le web</h3>
+<p>Le firmware micro:bit est <strong>simple</strong> : pas de boucles embarquées. Toutes les animations (sweep, blink, rainbow) sont générées par l'app web qui envoie des commandes en flux.</p>
+<p><strong>Plafond de débit BLE :</strong> ~8 cmd/s de manière fiable. Le scheduler :</p>
+<ul>
+  <li>Coalesce les drags rapides de slider à la dernière valeur.</li>
+  <li>Limite le débit par caractéristique.</li>
+  <li>Registre d'animations : <code>scheduler.animate(verb, frame → value, fps)</code> synchronisé sur le rythme BLE, pas 60 Hz.</li>
+</ul>
+<p><strong>Le visuel reste à 60 fps localement</strong> — l'enfant ne sent jamais de lag, même quand BLE confirme plus lentement.</p>
+
+<h3>3.5 Deux pistes firmware (progression pédagogique)</h3>
+<pre><code>firmware/
+├── v1-maqueen-lib.ts        ← utilise maqueen.*  (défaut, livré v0.1.0)
+└── v2-raw-pins.ts           ← utilise pins.*    (avancé, livré plus tard)</code></pre>
+<p>Mêmes verbes UART dans les deux → la même app web fonctionne avec l'un ou l'autre. Le panneau code montre les deux traductions côte à côte par action.</p>
+
+<h2 id="explorer">4. Patron du Component Explorer</h2>
+<p>Chaque composant utilise la même mise en page :</p>
+<pre class="ascii">┌─────────────────────────────────────┐
+│  Visuel (live, animé, 60fps)        │  ~40%
+├─────────────────────────────────────┤
+│  Contrôles (curseurs, boutons)      │  ~30%
+├─────────────────────────────────────┤
+│  Code en direct (TS lib maqueen) 📋 │  ~20%
+├─────────────────────────────────────┤
+│  Essaie : [Préset A] [B] [C]        │  ~10%
+└─────────────────────────────────────┘</pre>
+<p><strong>Premier contact</strong> : auto-démo de 2 secondes la première fois que chaque Explorer s'ouvre.</p>
+<p><strong>Le panneau code</strong> montre deux versions côte à côte : <code>maqueen.*</code> (lib) et <code>pins.*</code> (brut). L'enfant voit l'abstraction, puis le mécanisme.</p>
+<p><strong>« Surligner ce qui a changé »</strong> : quand un curseur bouge, la ligne de code qui change clignote.</p>
+
+<h2 id="components">5. Spécifications par composant Explorer</h2>
+
+<h3>Servo (pilote — construit en premier)</h3>
+<ul>
+  <li><strong>Visuel</strong> : SVG vue de dessus d'un servo type Tower-Pro. Le palonnier tourne en direct avec le curseur. Bras fantôme indiquant l'angle cible. Règle angulaire 0–180°. Drag des goupilles de calibration sur la règle. Mode Sweep = traînée de motion blur. Son discret de cliquetis d'engrenage.</li>
+  <li><strong>Contrôles</strong> : angle 0–180, presets (0/45/90/135/180), mode Sweep + vitesse, mouvement lissé étapes/ms.</li>
+  <li><strong>Calibration</strong> : trouver le centre, fixer min/max utilisateur, sauver par port (S1/S2) dans localStorage, indexé par ID d'appareil BLE.</li>
+  <li><strong>Verbe</strong> : <code>SRV:i,a</code> (i ∈ 1,2 ; a ∈ 0..180).</li>
+</ul>
+
+<h3>LED simple</h3>
+<ul>
+  <li><strong>Visuel</strong> : dôme LED 5mm photoréaliste. OFF = verre faiblement éclairé. ON = montée en chauffe + couronne de bloom + particules photoniques.</li>
+  <li><strong>Contrôles</strong> : toggle ON/OFF, blink Hz, pulse, motif de fade.</li>
+  <li><strong>Vignette</strong> : mini-carte Maqueen montrant quelle LED est allumée.</li>
+  <li><strong>Verbe</strong> : <code>LED:i,s</code> (i ∈ 0,1 ; s ∈ 0,1).</li>
+</ul>
+
+<h3>RGB (4 px)</h3>
+<ul>
+  <li><strong>Visuel</strong> : rendu vue de dessus de la carte Maqueen avec 4 NeoPixels aux positions réelles. Cliquer un pixel → roue HSV personnalisée. La luminosité pilote le rayon de bloom.</li>
+  <li><strong>Contrôles</strong> : couleur par pixel, toggle « tous identiques », luminosité, animations (rainbow / chase / breathe / fade) avec vitesse.</li>
+  <li><strong>Verbe</strong> : <code>RGB:i,r,g,b</code> (i ∈ 0..3 ou <code>*</code> pour tous).</li>
+</ul>
+
+<h3>Moteurs</h3>
+<ul>
+  <li><strong>Visuel</strong> : robot vue de dessus avec SVG des roues. Les rayons tournent à un rythme ∝ vitesse. Reverse = sens inverse. Lignes de mouvement aux hautes vitesses.</li>
+  <li><strong>Contrôles</strong> : vitesse −255..+255, direction, frein, vitesse de rampe.</li>
+  <li><strong>Calibration</strong> : trim par roue (offset pour rouler droit), sauvegardé.</li>
+  <li><strong>Verbe</strong> : <code>M:L,R</code> (signé −255..255 chacun).</li>
+</ul>
+
+<h3>Buzzer</h3>
+<ul>
+  <li><strong>Visuel</strong> : SVG haut-parleur avec ondes sonores concentriques (rayon = volume, teinte = fréq). Clavier piano en bas. Web Audio joue le même ton dans le navigateur.</li>
+  <li><strong>Contrôles</strong> : fréquence, durée, notes presets, sélecteur de mélodie.</li>
+  <li><strong>Verbe</strong> : <code>BUZZ:f,ms</code>.</li>
+</ul>
+
+<h3>Ultrason</h3>
+<ul>
+  <li><strong>Visuel</strong> : arc de balayage sonar depuis l'avant du robot. Point distance épinglé sur l'arc. Grille polaire (10–100 cm). Traînée des 50 dernières lectures en points qui s'effacent. Bandes de seuil vert/jaune/rouge configurables. Lecture chunky.</li>
+  <li><strong>Contrôles</strong> : taux de polling, bouton ping manuel, zones de seuil.</li>
+  <li><strong>Calibration</strong> : offset zéro.</li>
+  <li><strong>Verbe</strong> : <code>DIST?</code> → <code>DIST:cm</code>.</li>
+</ul>
+
+<h3>Capteurs de ligne</h3>
+<ul>
+  <li><strong>Visuel</strong> : robot vue de dessous avec 2 « yeux ». En dessous : bande de ruban noir draggable que l'enfant peut faire passer sous les yeux ; les lectures réelles overlay la simulation.</li>
+  <li><strong>Contrôles</strong> : taux de polling, log des transitions.</li>
+  <li><strong>Verbe</strong> : <code>LINE?</code> → <code>LINE:l,r</code>.</li>
+</ul>
+
+<h3>Télécommande IR</h3>
+<ul>
+  <li><strong>Visuel</strong> : SVG photoréaliste de télécommande. La dernière touche pressée flashe + brille.</li>
+  <li><strong>Contrôles</strong> : mode raw-code / mode touche nommée. Mode apprentissage : l'enfant presse une touche physique, la nomme, l'app mappe le code.</li>
+  <li><strong>Verbe</strong> : événement push <code>IR:code</code> (ou poll <code>IR?</code>).</li>
+</ul>
+
+<h3>Drive Explorer (composite — utilise moteurs + télémétrie accel)</h3>
+<ul>
+  <li><strong>Visuel</strong> : joystick + bouton STOP + canvas robot fantôme (traînée de dead-reckoning).</li>
+  <li><strong>Télémétrie</strong> : graphe accel 3-axes en direct avec marqueurs verticaux de commande sur la timeline.</li>
+  <li><strong>Verbe</strong> : <code>M:L,R</code> + stream auto <code>ACC:x,y,z</code> ~20 Hz.</li>
+</ul>
+
+<h2 id="kits">6. Kits mécaniques (ajout Phase 4)</h2>
+<p><strong>Sélecteur Kit</strong> de top-level (Base / Forklift / Loader / Beetle / Push). Persiste dans localStorage. Adapte l'UI de l'onglet Servos par kit.</p>
+<table>
+  <tr><th>Kit</th><th>ID</th><th>Servos utilisés</th><th>Onglet de remplacement</th></tr>
+  <tr><td>Base</td><td>ROB0148</td><td>Curseurs S1/S2 génériques</td><td>Servos génériques</td></tr>
+  <tr><td>Forklift</td><td>ROB0156-F</td><td>S1=lift, S2=mast tilt ?</td><td><strong>Fork</strong> : lift haut/bas, mast tilt</td></tr>
+  <tr><td>Loader</td><td>ROB0156-L</td><td>S1=arm raise, S2=bucket dump</td><td><strong>Bucket</strong> : raise / dump</td></tr>
+  <tr><td>Beetle</td><td>ROB0156-B</td><td>S1=arm height, S2=gripper</td><td><strong>Gripper</strong> : open/close, arm up/down</td></tr>
+  <tr><td>Push</td><td>ROB0156-P</td><td>S1=blade raise/lower</td><td><strong>Blade</strong> : raise/lower</td></tr>
+</table>
+<p>Chaque onglet kit a des presets nommés (« Pickup », « Carry », « Drop ») plutôt que des angles bruts.</p>
+<p><strong>Panneau d'aide</strong> in-app par kit : photo + lien vers le PDF officiel DFRobot (lié, pas embarqué).</p>
+<p>Mapping servo→mécanisme confirmé contre les PDFs des kits avant de coder les presets.</p>
+
+<h2 id="telemetry">7. Surcouche de télémétrie</h2>
+<p>Dans le Drive Explorer, le panneau du bas = graphe accel 3-axes en direct avec marqueurs de commande.</p>
+<pre class="ascii">Accélération (g)
+  X ━━━━━╱╲━━━━━━╱╲╲━━━━     ← avant, puis tournant
+  Y ━━━━━━━━━━━╱──╲━━━━━     ← latéral en virage
+  Z ━━━━━━━━━━━━━━━━━━━━     ← baseline gravité
+        ↑           ↑
+   [▶ FWD 200]  [↻ L 150]    ← marqueurs commande sur timeline</pre>
+<p><strong>Fonctionnalités :</strong></p>
+<ul>
+  <li>Auto-scroll de la timeline (fenêtre 10 s, drag à deux doigts pour l'historique).</li>
+  <li>Hover n'importe quel point → tooltip avec valeur g + commande la plus proche.</li>
+  <li>Cliquer un marqueur → surligne le segment de courbe après lui.</li>
+  <li>Pause / play / snapshot (export PNG) / comparer-runs.</li>
+</ul>
+<p><strong>Réutilisable entre explorers</strong> via <code>js/telemetry.js</code> :</p>
+<ul>
+  <li>Servo : angle commandé vs temps + accel si bras en mouvement.</li>
+  <li>Moteurs : commande + accel + (plus tard) encodeurs roue.</li>
+  <li>Buzzer : forme d'onde réelle capturée par micro.</li>
+  <li>Ultrason : distance vs temps + marqueurs ping manuel.</li>
+</ul>
+
+<h2 id="addons">8. Cadre add-ons (stubbed en v0.1.0)</h2>
+<p>Réserver l'espace de noms des verbes maintenant pour que v0.2.0+ ne casse pas le protocole :</p>
+<pre><code>ADDON:LIST                       → ADDON:none|&lt;name&gt;,&lt;port&gt;|...
+ADDON:READ:&lt;port&gt;                → ADDON:&lt;port&gt;:&lt;value&gt;
+I2C:SCAN                         → I2C:0x10,0x3C,0x76,...
+I2C:READ:&lt;addr&gt;:&lt;reg&gt;:&lt;n&gt;        → I2C:&lt;addr&gt;:&lt;reg&gt;:&lt;bytes&gt;
+I2C:WRITE:&lt;addr&gt;:&lt;reg&gt;:&lt;bytes&gt;   → ECHO</code></pre>
+<p>Le firmware livre ces verbes <strong>stubés</strong> (retour <code>none</code> / vide). Ajouter de vrais add-ons Gravity/I2C plus tard = drop-in de fichiers <code>js/addons/&lt;name&gt;.js</code>, pas de bump de protocole.</p>
+
+<h2 id="identity">9. Identité visuelle</h2>
+<ul>
+  <li><strong>Thèmes</strong> : système 5 thèmes (Carbon · Forest · Steel · Paper · Pearl) — vibe labo d'inventeur amical</li>
+  <li><strong>Statuts</strong> : vert/ambre/rouge avec variantes en glow subtil</li>
+  <li><strong>Typographie</strong> : Righteous (display) · Tajawal (body, aussi arabe) · JetBrains Mono (code)</li>
+  <li><strong>Mode</strong> : sombre d'abord (Carbon par défaut) ; 2 thèmes clairs (Paper, Pearl)</li>
+  <li><strong>Animation</strong> : physique de ressort, jamais linéaire</li>
+  <li><strong>Son</strong> : off par défaut, prompt « 🔊 activer »</li>
+  <li><strong>Microinteractions</strong> : hover scale 1.02, active 0.98, focus ring avec glow</li>
+  <li><strong>Haptique</strong> : Vibration API sur snap de slider mobile + hits de bouton</li>
+</ul>
+
+<h3>Couche polish (construire une fois, réutiliser partout)</h3>
+<ul>
+  <li>SVG carte Maqueen partagé (utilisé comme base dans chaque Explorer).</li>
+  <li>Système de particules (~50 lignes).</li>
+  <li>Préset filtre CSS bloom.</li>
+  <li>Util physique de ressort.</li>
+  <li>Widget jauge configurable (arc / ticks / aiguille).</li>
+  <li>Kit son (synth Web Audio, pas de fichiers audio).</li>
+</ul>
+
+<h3>Discipline de stack</h3>
+<ul>
+  <li>SVG + CSS uniquement — pas de moteur 3D.</li>
+  <li>Web Animations API native — pas de bibliothèque d'animation.</li>
+  <li>JS vanilla — pas de framework, conserve le feel léger de bit-playground.</li>
+</ul>
+
+<h2 id="fork">10. Stratégie de fork fichier-par-fichier</h2>
+
+<h3><span class="badge keep">Garder</span> de bit-playground</h3>
+<table>
+  <tr><th>Fichier / dossier</th><th>Pourquoi</th></tr>
+  <tr><td><code>js/ble.js</code></td><td>Couche UART — étendre avec seq/echo</td></tr>
+  <tr><td><code>js/core.js</code></td><td>Bootstrap app, état, routing</td></tr>
+  <tr><td><code>js/lang.js</code> + <code>_locales/</code></td><td>Moteur EN/AR/FR</td></tr>
+  <tr><td><code>js/graph.js</code></td><td>Moteur graphe capteurs</td></tr>
+  <tr><td><code>js/board3d.js</code></td><td>Renderer 3D micro:bit</td></tr>
+  <tr><td><code>js/models/microbit.js</code></td><td>Le micro:bit lui-même</td></tr>
+  <tr><td><code>index.html</code>, <code>manifest.json</code>, <code>sw.js</code></td><td>Shell + PWA</td></tr>
+  <tr><td><code>tests.html</code></td><td>Harnais de tests</td></tr>
+  <tr><td><code>LICENSE</code>, <code>SETUP.md</code>, <code>CHANGELOG.md</code></td><td>Docs</td></tr>
+</table>
+
+<h3><span class="badge replace">Remplacer</span> (même rôle, contenu Maqueen)</h3>
+<table>
+  <tr><th>Fichier</th><th>Remplacer par</th></tr>
+  <tr><td><code>makecode.ts</code></td><td>Firmware Maqueen (verbes UART avec lib <code>maqueen.*</code>)</td></tr>
+  <tr><td><code>js/sensors.js</code></td><td>Capteurs Maqueen (ultrason, ligne L/R, IR, accel)</td></tr>
+  <tr><td><code>js/servos.js</code></td><td>S1/S2 Maqueen + modes kit</td></tr>
+  <tr><td><code>js/controls.js</code></td><td>Joystick drive + moteurs + RGB + LEDs simples + buzzer</td></tr>
+  <tr><td><code>js/others.js</code></td><td>Réduire aux utilitaires génériques</td></tr>
+  <tr><td><code>README.md</code></td><td>README Maqueen-app</td></tr>
+  <tr><td>Assets brandés</td><td>Marque Maqueen</td></tr>
+</table>
+
+<h3><span class="badge remove">Retirer</span></h3>
+<table>
+  <tr><th>Fichier / dossier</th><th>Raison</th></tr>
+  <tr><td><code>js/models/arm.js</code></td><td>Pas Maqueen</td></tr>
+  <tr><td><code>js/models/balance.js</code></td><td>Pas Maqueen</td></tr>
+  <tr><td><code>js/models/buggy.js</code></td><td>Remplacer par 3D Maqueen Lite plus tard</td></tr>
+  <tr><td><code>js/models/weather.js</code></td><td>Pas Maqueen</td></tr>
+  <tr><td><code>etsy-package/</code></td><td>Régénéré par dépôt via <code>etsy-package-template</code></td></tr>
+  <tr><td>Surcouche jauge servo (v0.7.177)</td><td>Redondant avec Servo Explorer</td></tr>
+  <tr><td>Branding bit-playground</td><td>—</td></tr>
+</table>
+
+<h3><span class="badge review">Revoir</span> (décider par fichier au moment voulu)</h3>
+<ul>
+  <li>Wizard d'onboarding / sélecteur de mode / sélecteur de templates — probablement <strong>garder &amp; rethemer</strong>.</li>
+  <li>Watermark (WDIY draggable) — garder marque atelier ou remplacer.</li>
+  <li>Son-dans-graphe-capteur (v0.7.177) — <strong>garder</strong>, s'applique à accel/ultrason.</li>
+  <li>Préfixe BLE double (<code>BBC micro:bit</code> + <code>uBit</code>) — <strong>garder</strong>.</li>
+  <li>Onglet console — <strong>garder</strong>, essentiel pour débogage protocole echo-confirmé.</li>
+</ul>
+
+<p><strong>Bilan</strong> : ~75% squelette bit-playground, ~25% code spécifique Maqueen.</p>
+
+<h2 id="phases">11. Phases &amp; portes de validation</h2>
+
+<div class="phase">
+  <h3>Phase 0 — Réinitialiser le dossier cible</h3>
+  <ul>
+    <li>Supprimer le placeholder <code>tobedeleted</code>. Garder <code>.git</code> (déjà câblé sur <code>github.com/abourdim/maqueen-lab</code>).</li>
+    <li>Vérifier <code>git remote -v</code>.</li>
+  </ul>
+</div>
+
+<div class="phase">
+  <h3>Phase 1 — Forker bit-playground</h3>
+  <ul>
+    <li>Copier la source bit-playground (dernier <code>main</code>) dans l'arbre de travail, en excluant <code>etsy-package/</code> et les assets bit-playground.</li>
+    <li>Commit unique : <code>init: fork from bit-playground vX.Y.Z</code>.</li>
+  </ul>
+</div>
+
+<div class="phase">
+  <h3>Phase 2 — Dépouiller</h3>
+  <ul>
+    <li>Retirer modèles 3D non-Maqueen, onglets redondants, assets brandés.</li>
+    <li>Strip branding bit-playground de <code>index.html</code>, <code>manifest.json</code>, <code>lang/*.json</code>, <code>README.md</code>.</li>
+  </ul>
+</div>
+
+<div class="phase">
+  <h3>Phase 3 — Firmware (Maqueen Lite v4)</h3>
+  <ul>
+    <li><code>firmware/v1-maqueen-lib.ts</code> — verbes UART BLE avec lib <code>maqueen.*</code>.</li>
+    <li>Mirror USB série + bandeau boot + verbe verbosité log.</li>
+    <li>Protocole Echo + séquence + DONE.</li>
+    <li>Verbes cadre add-ons stubbed.</li>
+  </ul>
+</div>
+
+<div class="phase">
+  <h3>Phase 3.5 — Scheduler BLE</h3>
+  <ul>
+    <li><code>js/ble-scheduler.js</code> : seq, validation echo, timeout, coalesce, rate-limit, registre animation, mètre benchmark.</li>
+    <li>Refactor de <code>js/ble.js</code> existant pour exposer les primitives sur lesquelles le scheduler bâtit.</li>
+  </ul>
+</div>
+
+<div class="phase">
+  <h3>Phase 4 — Component Explorers</h3>
+  <ul>
+    <li>Construire <strong>Servo Explorer</strong> en pilote gold-standard.</li>
+    <li>Cloner ensuite le patron : LED, RGB, Moteurs, Buzzer, Ultrason, Ligne, IR, Drive.</li>
+    <li>Surcouche télémétrie (<code>js/telemetry.js</code>) câblée sur Drive + hooks réutilisables.</li>
+  </ul>
+</div>
+
+<div class="phase">
+  <h3>Phase 4.5 — Sélecteur de kit</h3>
+  <ul>
+    <li>Sélecteur Kit de top-level. Variantes onglet Servos par kit (Forklift / Loader / Beetle / Push).</li>
+    <li>Panneau d'aide par kit avec lien vers PDF officiel DFRobot.</li>
+  </ul>
+</div>
+
+<div class="phase">
+  <h3>Phase 5 — Guide utilisateur</h3>
+  <ul>
+    <li><code>docs/guide.md</code> (trilingue EN/AR/FR) : aperçu matériel, pinout complet, carte registres I2C, avertissements de conflit, walkthrough par Explorer, spec protocole UART BLE, install firmware, dépannage.</li>
+    <li>Mirror du pinout court dans <code>README.md</code> et <code>CHANGELOG.md</code> v0.1.0.</li>
+  </ul>
+</div>
+
+<div class="phase">
+  <h3>Phase 6 — Branding &amp; i18n</h3>
+  <ul>
+    <li>Nom + logo + système 5 thèmes.</li>
+    <li>Strings EN/AR/FR pour chaque nouvel onglet + description verbe.</li>
+    <li><code>manifest.json</code>, favicon, placeholder OG image.</li>
+  </ul>
+</div>
+
+<div class="phase">
+  <h3>Phase 7 — Tests</h3>
+  <ul>
+    <li>Porter <code>tests.html</code> de bit-playground.</li>
+    <li>Ajouter tests : aller-retour send/echo de chaque verbe, math mapping joystick → moteurs, builder paquet I2C RGB, bornes jauge distance, affichage code IR.</li>
+  </ul>
+</div>
+
+<div class="phase">
+  <h3>Phase 8 — Release v0.1.0</h3>
+  <ul>
+    <li>Bump version dans <code>package.json</code> + <code>CHANGELOG.md</code>.</li>
+    <li>Push <code>main</code> sur <code>https://github.com/abourdim/maqueen-lab</code>.</li>
+    <li>(Session séparée plus tard) Générer <code>etsy-package/</code> via <code>etsy-package-template</code>.</li>
+  </ul>
+</div>
+
+<h2 id="open">12. Décisions ouvertes</h2>
+<ul>
+  <li>Nom d'affichage de l'app + tagline.</li>
+  <li>License (défaut : MIT pour matcher bit-playground).</li>
+  <li>Version initiale (défaut : <code>v0.1.0</code>).</li>
+  <li>Identité visuelle confirmée : système 5 thèmes, Carbon par défaut.</li>
+  <li>Son par défaut : <strong>off</strong>, avec prompt d'activation.</li>
+  <li>Messages DONE : <code>DONE:n</code> séparé après ops lentes, ou <code>ECHO:n</code> suffit ?</li>
+  <li>Scope add-ons v0.1.0 : <strong>kits mécaniques uniquement</strong>, cadre stubed pour le futur.</li>
+</ul>
+
+<blockquote>
+<strong>Règle de validation :</strong> après chaque phase — pause, résumé, attendre OK utilisateur avant phase suivante.
+</blockquote>
+
+<a class="back-link" href="../index.html">← Retour à l'App Robot</a>
+
+</div>
+
+<div class="wd-band wd-band-bottom"></div>
+<footer class="wd-footer">
+  <span>propulsé par <a href="https://workshop-diy.org" target="_blank" rel="noopener">workshop-diy.org</a></span>
+  <span class="sep">·</span>
+  <span>Robi-9 Lab · Plan</span>
+</footer>
+
+<script>
+  (function () {
+    const sel = document.getElementById('themeSelect');
+    function apply(t) {
+      document.documentElement.setAttribute('data-theme', t);
+      if (sel) sel.value = t;
+      try { localStorage.setItem('robi.theme', t); } catch (e) {}
+    }
+    try {
+      const t = localStorage.getItem('robi.theme') || localStorage.getItem('mb_theme');
+      if (t) apply(t);
+    } catch (e) {}
+    if (sel) sel.addEventListener('change', e => apply(e.target.value));
+  })();
+</script>
+
+</body>
+</html>

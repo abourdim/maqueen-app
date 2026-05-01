@@ -1,202 +1,63 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="carbon">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Maqueen-App — Build Plan</title>
+<title>Maqueen-App — Build Plan · Robi-9 Lab</title>
+<link rel="stylesheet" href="../workshops/theme.css">
+<link rel="stylesheet" href="doc-shell.css">
+<script src="../workshops/newtab.js" defer></script>
 <style>
-  :root {
-    --bg: #0a1628;
-    --bg-elev: #0f1e35;
-    --bg-card: #122844;
-    --border: #1d3556;
-    --text: #e6eef9;
-    --text-dim: #93a8c4;
-    --accent: #00d4ff;
-    --accent-glow: #00d4ff66;
-    --green: #4ade80;
-    --amber: #fbbf24;
-    --red: #f87171;
-    --mono: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
-  }
-  * { box-sizing: border-box; }
-  html, body {
-    margin: 0;
-    background: var(--bg);
-    color: var(--text);
-    font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
-    line-height: 1.6;
-    font-size: 15px;
-  }
-  body {
-    max-width: 980px;
-    margin: 0 auto;
-    padding: 48px 32px 96px;
-  }
-  h1 {
-    font-size: 38px;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    margin: 0 0 8px;
-    background: linear-gradient(135deg, #fff, var(--accent));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-  .subtitle {
-    color: var(--text-dim);
-    font-size: 16px;
-    margin-bottom: 40px;
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 24px;
-  }
-  .meta {
-    display: grid;
-    grid-template-columns: 140px 1fr;
-    gap: 4px 16px;
-    margin-bottom: 24px;
-    font-size: 14px;
-  }
-  .meta dt { color: var(--text-dim); }
-  .meta dd { margin: 0; font-family: var(--mono); font-size: 13px; }
-  h2 {
-    font-size: 24px;
-    margin-top: 56px;
-    margin-bottom: 16px;
-    padding-bottom: 8px;
-    border-bottom: 2px solid var(--accent);
-    display: inline-block;
-  }
-  h3 {
-    font-size: 18px;
-    margin-top: 32px;
-    margin-bottom: 12px;
-    color: var(--accent);
-  }
-  h4 {
-    font-size: 16px;
-    margin-top: 24px;
-    margin-bottom: 8px;
-    color: var(--text);
-  }
-  p { margin: 12px 0; }
-  ul, ol { margin: 12px 0; padding-left: 24px; }
-  li { margin: 6px 0; }
-  code {
-    font-family: var(--mono);
-    font-size: 13px;
-    background: var(--bg-elev);
-    padding: 2px 6px;
-    border-radius: 4px;
-    border: 1px solid var(--border);
-    color: var(--accent);
-  }
-  pre {
-    background: var(--bg-elev);
-    border: 1px solid var(--border);
-    border-left: 3px solid var(--accent);
-    border-radius: 6px;
-    padding: 16px 20px;
-    overflow-x: auto;
-    font-size: 13px;
-    line-height: 1.5;
-  }
-  pre code {
-    background: transparent;
-    border: none;
-    padding: 0;
-    color: var(--text);
-  }
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 16px 0;
-    font-size: 14px;
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    overflow: hidden;
-  }
-  th, td {
-    text-align: left;
-    padding: 10px 14px;
-    border-bottom: 1px solid var(--border);
-  }
-  th {
-    background: var(--bg-elev);
-    font-weight: 600;
-    color: var(--accent);
-    font-size: 13px;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-  }
-  tr:last-child td { border-bottom: none; }
-  tr:hover td { background: rgba(0, 212, 255, 0.04); }
-  td code { font-size: 12px; }
-  strong { color: #fff; }
-  blockquote {
-    border-left: 3px solid var(--amber);
-    background: rgba(251, 191, 36, 0.06);
-    padding: 12px 18px;
-    margin: 16px 0;
-    border-radius: 0 6px 6px 0;
-    color: var(--text-dim);
-  }
-  .phase {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 18px 22px;
-    margin: 16px 0;
-  }
-  .phase h3 {
-    margin-top: 0;
-    color: var(--accent);
-  }
-  .badge {
-    display: inline-block;
-    padding: 2px 10px;
-    border-radius: 999px;
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin-right: 6px;
-  }
-  .badge.keep { background: rgba(74, 222, 128, 0.15); color: var(--green); border: 1px solid rgba(74, 222, 128, 0.3); }
-  .badge.replace { background: rgba(251, 191, 36, 0.15); color: var(--amber); border: 1px solid rgba(251, 191, 36, 0.3); }
-  .badge.remove { background: rgba(248, 113, 113, 0.15); color: var(--red); border: 1px solid rgba(248, 113, 113, 0.3); }
-  .badge.review { background: rgba(0, 212, 255, 0.15); color: var(--accent); border: 1px solid rgba(0, 212, 255, 0.3); }
-  hr {
-    border: none;
-    border-top: 1px solid var(--border);
-    margin: 48px 0;
-  }
-  .toc {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 20px 28px;
-    margin-bottom: 40px;
-  }
+  /* plan.html-specific extras layered on doc-shell.css */
+  .meta { display: grid; grid-template-columns: 140px 1fr; gap: 4px 16px; margin-bottom: 24px; font-size: 14px; }
+  .meta dt { color: var(--steel); }
+  .meta dd { margin: 0; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--text); }
+  .toc { background: var(--bg-card); border: 1.5px solid var(--border); border-radius: 12px; padding: 18px 26px; margin-bottom: 36px; }
   .toc h3 { margin-top: 0; color: var(--text); border: none; }
   .toc ol { padding-left: 22px; }
-  .toc a {
-    color: var(--text-dim);
-    text-decoration: none;
-    transition: color 0.15s;
-  }
-  .toc a:hover { color: var(--accent); }
-  .ascii {
-    font-family: var(--mono);
-    font-size: 12px;
-    line-height: 1.4;
-    white-space: pre;
-    color: var(--text-dim);
-  }
+  .toc a { color: var(--steel); text-decoration: none; border-bottom: none; }
+  .toc a:hover { color: var(--neon); }
+  .ascii { font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.4; white-space: pre; color: var(--steel); }
+  .badge { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-right: 6px; font-family: var(--font-tech); }
+  .badge.keep    { background: rgba(74,222,128,0.15);  color: var(--neon);   border: 1px solid var(--neon); }
+  .badge.replace { background: rgba(251,191,36,0.15);  color: var(--amber);  border: 1px solid var(--amber); }
+  .badge.remove  { background: rgba(248,113,113,0.15); color: var(--danger); border: 1px solid var(--danger); }
+  .badge.review  { background: rgba(56,189,248,0.15);  color: var(--cyan);   border: 1px solid var(--cyan); }
+  .phase { background: var(--bg-card); border: 1.5px solid var(--border); border-radius: 12px; padding: 18px 22px; margin: 16px 0; }
+  .phase h3 { margin-top: 0; color: var(--neon); }
+  hr { border: none; border-top: 1px solid var(--border); margin: 48px 0; }
 </style>
 </head>
 <body>
+
+<div class="wd-band wd-band-top"></div>
+<header class="wd-header">
+  <div class="title-block">
+    <div class="logo-mark">▣</div>
+    <div>
+      <h1>Robi-9 Lab // Build Plan</h1>
+      <div class="subtitle">How this app was made · file-by-file</div>
+    </div>
+  </div>
+  <div class="wd-header-right">
+    <select class="wd-select" id="themeSelect" aria-label="Theme">
+      <option value="carbon">▣ Carbon</option>
+      <option value="forest">▣ Forest</option>
+      <option value="steel">▣ Steel</option>
+      <option value="paper">☼ Paper</option>
+      <option value="pearl">☼ Pearl</option>
+    </select>
+    <a class="wd-select" href="../index.html" style="text-decoration:none; border-bottom:none;">🤖 Robot App</a>
+  </div>
+</header>
+
+<div class="doc-wrap">
+
+<div class="langbar">
+  <a href="plan.html" class="active">🇬🇧 EN</a>
+  <a href="plan.fr.html">🇫🇷 FR</a>
+  <a href="plan.ar.html">🇩🇿 AR</a>
+</div>
 
 <h1>Maqueen-App — Build Plan</h1>
 <div class="subtitle">Forking bit-playground into a component lab for Maqueen Lite v4 + Mechanic Kits</div>
@@ -466,11 +327,10 @@ I2C:WRITE:&lt;addr&gt;:&lt;reg&gt;:&lt;bytes&gt;   → ECHO</code></pre>
 
 <h2 id="identity">9. Visual identity</h2>
 <ul>
-  <li><strong>Background</strong>: deep navy <code>#0a1628</code></li>
-  <li><strong>Accent</strong>: electric cyan <code>#00d4ff</code></li>
-  <li><strong>Status</strong>: green/amber/red with neon-glow variants</li>
-  <li><strong>Typography</strong>: rounded sans (Inter / system) for UI, JetBrains Mono for code, chunky display for readings</li>
-  <li><strong>Mode</strong>: dark-first; light toggle</li>
+  <li><strong>Themes</strong>: 5-theme system (Carbon · Forest · Steel · Paper · Pearl) — friendly inventor lab vibe</li>
+  <li><strong>Status</strong>: green/amber/red with subtle glow variants</li>
+  <li><strong>Typography</strong>: Righteous (display) · Tajawal (body, also Arabic) · JetBrains Mono (code)</li>
+  <li><strong>Mode</strong>: dark-first (Carbon default); 2 light themes (Paper, Pearl)</li>
   <li><strong>Animation</strong>: spring-physics, never linear</li>
   <li><strong>Sound</strong>: off by default, "🔊 enable" prompt</li>
   <li><strong>Microinteractions</strong>: hover scale 1.02, active 0.98, focus ring with glow</li>
@@ -609,7 +469,7 @@ I2C:WRITE:&lt;addr&gt;:&lt;reg&gt;:&lt;bytes&gt;   → ECHO</code></pre>
 <div class="phase">
   <h3>Phase 5 — User Guide</h3>
   <ul>
-    <li><code>docs/USER_GUIDE.md</code> (trilingual EN/AR/FR): hardware overview, full pinout, I2C register map, conflict warnings, per-Explorer walkthrough, BLE UART protocol spec, firmware install, troubleshooting.</li>
+    <li><code>docs/guide.md</code> (trilingual EN/AR/FR): hardware overview, full pinout, I2C register map, conflict warnings, per-Explorer walkthrough, BLE UART protocol spec, firmware install, troubleshooting.</li>
     <li>Mirror short pinout into <code>README.md</code> and <code>CHANGELOG.md</code> v0.1.0.</li>
   </ul>
 </div>
@@ -617,7 +477,7 @@ I2C:WRITE:&lt;addr&gt;:&lt;reg&gt;:&lt;bytes&gt;   → ECHO</code></pre>
 <div class="phase">
   <h3>Phase 6 — Branding &amp; i18n</h3>
   <ul>
-    <li>App name + logo + color theme.</li>
+    <li>App name + logo + 5-theme system.</li>
     <li>EN/AR/FR strings for every new tab + verb description.</li>
     <li><code>manifest.json</code>, favicon, OG image placeholder.</li>
   </ul>
@@ -645,7 +505,7 @@ I2C:WRITE:&lt;addr&gt;:&lt;reg&gt;:&lt;bytes&gt;   → ECHO</code></pre>
   <li>App display name + tagline.</li>
   <li>License (default: MIT to match bit-playground).</li>
   <li>Initial version (default: <code>v0.1.0</code>).</li>
-  <li>Visual identity confirmed: deep-navy <code>#0a1628</code> + cyan <code>#00d4ff</code>.</li>
+  <li>Visual identity confirmed: 5-theme system, Carbon as default.</li>
   <li>Sound default: <strong>off</strong>, with enable prompt.</li>
   <li>DONE messages: separate <code>DONE:n</code> after slow ops, or <code>ECHO:n</code> enough?</li>
   <li>v0.1.0 add-on scope: <strong>mechanic kits only</strong>, framework stubbed for future.</li>
@@ -654,6 +514,33 @@ I2C:WRITE:&lt;addr&gt;:&lt;reg&gt;:&lt;bytes&gt;   → ECHO</code></pre>
 <blockquote>
 <strong>Sign-off rule:</strong> after each phase — pause, summary, wait for user OK before next phase.
 </blockquote>
+
+<a class="back-link" href="../index.html">← Back to Robot App</a>
+
+</div>
+
+<div class="wd-band wd-band-bottom"></div>
+<footer class="wd-footer">
+  <span>powered by <a href="https://workshop-diy.org" target="_blank" rel="noopener">workshop-diy.org</a></span>
+  <span class="sep">·</span>
+  <span>Robi-9 Lab · Build Plan</span>
+</footer>
+
+<script>
+  (function () {
+    const sel = document.getElementById('themeSelect');
+    function apply(t) {
+      document.documentElement.setAttribute('data-theme', t);
+      if (sel) sel.value = t;
+      try { localStorage.setItem('robi.theme', t); } catch (e) {}
+    }
+    try {
+      const t = localStorage.getItem('robi.theme') || localStorage.getItem('mb_theme');
+      if (t) apply(t);
+    } catch (e) {}
+    if (sel) sel.addEventListener('change', e => apply(e.target.value));
+  })();
+</script>
 
 </body>
 </html>
