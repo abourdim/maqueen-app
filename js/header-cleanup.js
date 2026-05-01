@@ -125,6 +125,44 @@
       `;
       body.appendChild(appearance);
 
+      // --- Voices row (TTS voice picker per language) ---
+      // Lets the user choose which installed voice speaks for EN / FR / AR.
+      // Saved to localStorage.robi.voice.{lang}; honored by claude-dialogue,
+      // session-recap, youtuber-mode, and the schematics-kids tour.
+      if (window.RobiVoice) {
+        const voicesRow = document.createElement('div');
+        voicesRow.id = 'settingsVoicesRow';
+        voicesRow.style.cssText = 'padding-top:14px; margin-top:14px; border-top:1px solid rgba(56,189,248,0.15);';
+        voicesRow.innerHTML = `
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
+            <span style="font-size:16px;">🎤</span>
+            <span style="font-weight:700; color:#38bdf8; letter-spacing:0.05em; text-transform:uppercase; font-size:12px;">Voices</span>
+            <span style="font-size:11px; color:#94a3b8; margin-left:auto; font-style:italic;">picks remembered per language</span>
+          </div>
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:10px;">
+            <label style="display:flex; flex-direction:column; gap:4px; font-size:11px; color:#94a3b8;">
+              <span>🇬🇧 EN</span>
+              <span id="voiceMountEn"></span>
+            </label>
+            <label style="display:flex; flex-direction:column; gap:4px; font-size:11px; color:#94a3b8;">
+              <span>🇫🇷 FR</span>
+              <span id="voiceMountFr"></span>
+            </label>
+            <label style="display:flex; flex-direction:column; gap:4px; font-size:11px; color:#94a3b8;">
+              <span>🇩🇿 AR</span>
+              <span id="voiceMountAr"></span>
+            </label>
+          </div>
+        `;
+        body.appendChild(voicesRow);
+        const pickerStyle = 'background:rgba(56,189,248,0.08); border:1px solid rgba(56,189,248,0.25); border-radius:8px; color:#e6eef9; padding:7px 10px; font-size:12px; width:100%;';
+        try {
+          window.RobiVoice.mount(document.getElementById('voiceMountEn'), 'en', { style: pickerStyle, placeholder: '🎤 Auto (system)' });
+          window.RobiVoice.mount(document.getElementById('voiceMountFr'), 'fr', { style: pickerStyle, placeholder: '🎤 Auto (système)' });
+          window.RobiVoice.mount(document.getElementById('voiceMountAr'), 'ar', { style: pickerStyle, placeholder: '🎤 تلقائي' });
+        } catch (e) { console.warn('voice picker mount failed', e); }
+      }
+
       // --- Tools row (qr/pair/reset + nav links) ---
       const tools = document.createElement('div');
       tools.id = 'settingsToolsRow';

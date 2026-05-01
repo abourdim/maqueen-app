@@ -148,13 +148,17 @@
       const u = new SpeechSynthesisUtterance(s);
       u.pitch = pitch;
       u.rate  = rate;
-      // Pick a voice matching the document language if possible.
+      // Pick a voice — honor user's saved choice via RobiVoice when available
       try {
         const lang = (document.documentElement.lang || 'en').toLowerCase();
-        const voices = window.speechSynthesis.getVoices();
-        const target = ({ en: 'en-', fr: 'fr-', ar: 'ar-' })[lang] || 'en-';
-        const v = voices.find(x => x.lang.startsWith(target));
-        if (v) u.voice = v;
+        if (window.RobiVoice) {
+          window.RobiVoice.applyTo(u, lang);
+        } else {
+          const voices = window.speechSynthesis.getVoices();
+          const target = ({ en: 'en-', fr: 'fr-', ar: 'ar-' })[lang] || 'en-';
+          const v = voices.find(x => x.lang.startsWith(target));
+          if (v) u.voice = v;
+        }
       } catch {}
       // Stagger gaps after punctuation
       if (i > 0) {

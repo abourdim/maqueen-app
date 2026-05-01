@@ -212,6 +212,11 @@
       if (window.speechSynthesis) {
         const u = new SpeechSynthesisUtterance(buildNarration(snap));
         u.rate = 1.05; u.pitch = 1.1;
+        // Honor user's saved voice (via RobiVoice helper)
+        try {
+          const lang = (document.documentElement.lang || 'en').toLowerCase();
+          if (window.RobiVoice) window.RobiVoice.applyTo(u, lang);
+        } catch {}
         window.speechSynthesis.speak(u);
       }
     } catch {}

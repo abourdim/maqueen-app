@@ -109,12 +109,16 @@
     if (!window.speechSynthesis || !text) return;
     window.speechSynthesis.cancel();
     const u = new SpeechSynthesisUtterance(text);
-    // Match doc lang
+    // Match doc lang — honor user's saved voice via RobiVoice if available
     try {
       const lang = (document.documentElement.lang || 'en').toLowerCase();
-      const target = ({ en: 'en-', fr: 'fr-', ar: 'ar-' })[lang] || 'en-';
-      const v = window.speechSynthesis.getVoices().find(x => x.lang.startsWith(target));
-      if (v) u.voice = v;
+      if (window.RobiVoice) {
+        window.RobiVoice.applyTo(u, lang);
+      } else {
+        const target = ({ en: 'en-', fr: 'fr-', ar: 'ar-' })[lang] || 'en-';
+        const v = window.speechSynthesis.getVoices().find(x => x.lang.startsWith(target));
+        if (v) u.voice = v;
+      }
     } catch {}
     u.pitch = 1.05; u.rate = 1.05;
     window.speechSynthesis.speak(u);
