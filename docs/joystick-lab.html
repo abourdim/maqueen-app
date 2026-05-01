@@ -52,16 +52,18 @@
   .cat-content { min-height: 100px; }
   .mode-grid { display: none; flex-direction: column; gap: 4px; }
   .mode-grid.active { display: flex; }
-  /* Mode cards — compact horizontal row inside the sidebar */
-  .mode-card { display: flex; align-items: center; gap: 10px; background: var(--bg-soft); border: 1.5px solid var(--border); border-radius: 8px; padding: 8px 10px; cursor: pointer; text-align: left; transition: all 0.12s; user-select: none; }
-  .mode-card:hover { background: var(--bg-card); border-color: var(--cyan); }
-  .mode-card.active { border-color: var(--neon); background: linear-gradient(90deg, rgba(74,222,128,0.18), var(--bg-card)); box-shadow: inset 3px 0 0 var(--neon); }
-  .mode-card .mode-icon { font-size: 1.4rem; line-height: 1; margin-bottom: 0; flex-shrink: 0; width: 28px; text-align: center; }
+  /* Mode cards — kid-friendly chunky row: big icon + simple title */
+  .mode-card { display: flex; align-items: center; gap: 12px; background: var(--bg-soft); border: 2px solid var(--border); border-radius: 10px; padding: 10px 12px; cursor: pointer; text-align: left; transition: all 0.12s; user-select: none; }
+  .mode-card:hover { background: var(--bg-card); border-color: var(--cyan); transform: translateX(2px); }
+  .mode-card.active { border-color: var(--neon); background: linear-gradient(90deg, rgba(74,222,128,0.22), var(--bg-card)); box-shadow: inset 4px 0 0 var(--neon); }
+  .mode-card .mode-icon { font-size: 1.7rem; line-height: 1; margin-bottom: 0; flex-shrink: 0; width: 32px; text-align: center; }
   .mode-card .mode-text { display: flex; flex-direction: column; min-width: 0; flex: 1; }
-  .mode-card .mode-title { font-family: var(--font-display); font-size: 0.85rem; color: var(--text); margin: 0; line-height: 1.15; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .mode-card .mode-sub { font-size: 0.66rem; color: var(--steel); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .mode-card .mode-title { font-family: var(--font-display); font-size: 0.95rem; color: var(--text); margin: 0; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  /* Hide sub-line in the sidebar — kids only need the title here.
+     Each mode's full sub-description is shown in the stage subtitle
+     once they tap a card. Keeps the list clean and uncluttered. */
+  .mode-card .mode-sub { display: none; }
   .mode-card.unsupported { opacity: 0.45; cursor: not-allowed; }
-  .mode-card.unsupported .mode-sub::after { content: ' · no API'; color: var(--amber); }
 
   /* STAGE — where the active mode renders its UI */
   .stage { background: var(--bg-card); border: 2px solid var(--neon); border-radius: 18px; padding: 22px; min-height: 360px; box-shadow: 0 6px 26px var(--hero-glow); }
@@ -228,7 +230,7 @@
     <div class="mode-card" data-mode="twohand"><div class="mode-icon">✋</div><div class="mode-text"><div class="mode-title" data-i18n="m_twohand_t">Two-Hand Tank</div><div class="mode-sub" data-i18n="m_twohand_s">L/R wheel</div></div></div>
     <div class="mode-card" data-mode="pose"><div class="mode-icon">🤸</div><div class="mode-text"><div class="mode-title" data-i18n="m_pose_t">Pose</div><div class="mode-sub" data-i18n="m_pose_s">arms up = drive</div></div></div>
     <div class="mode-card" data-mode="lean"><div class="mode-icon">🫷</div><div class="mode-text"><div class="mode-title" data-i18n="m_lean_t">Lean Forward</div><div class="mode-sub" data-i18n="m_lean_s">closer = faster</div></div></div>
-    <div class="mode-card" data-mode="colorwand"><div class="mode-icon">🌈</div><div class="mode-text"><div class="mode-title" data-i18n="m_colorwand_t">Color Wand</div><div class="mode-sub" data-i18n="m_colorwand_s">trace + replay</div></div></div>
+    <div class="mode-card" data-mode="colorwand"><div class="mode-icon">🪄</div><div class="mode-text"><div class="mode-title" data-i18n="m_colorwand_t">Color Wand</div><div class="mode-sub" data-i18n="m_colorwand_s">trace + replay</div></div></div>
   </div>
 </div>
 </div>
