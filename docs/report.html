@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="carbon">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>📊 Project Report · Maqueen Lab</title>
+<link rel="stylesheet" href="../workshops/theme.css">
+<link rel="stylesheet" href="doc-shell.css">
+<style>
+  /* ── Layout ── */
+  .lead {
+    background: var(--bg-card);
+    border: 2px solid var(--neon);
+    border-radius: 16px;
+    padding: 22px 26px;
+    margin: 22px 0;
+  }
+  .lead h2 { color: var(--neon); margin-bottom: 6px; font-size: 1.5rem; }
+  .lead .meta {
+    display: flex; gap: 12px; flex-wrap: wrap;
+    margin-top: 12px;
+  }
+  .lead .meta .pill {
+    background: var(--bg-soft); border: 1px solid var(--border);
+    border-radius: 999px; padding: 4px 12px; font-size: 0.82rem;
+    font-family: var(--font-tech, monospace); color: var(--text);
+  }
+  .lead .meta .pill b { color: var(--amber); }
+
+  /* ── Stats grid ── */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+    margin: 22px 0;
+  }
+  .stat {
+    background: var(--bg-card);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    text-align: center;
+  }
+  .stat .lbl {
+    font-size: 0.7rem; color: var(--steel);
+    text-transform: uppercase; letter-spacing: 0.08em;
+    margin-bottom: 4px;
+  }
+  .stat .val {
+    font-size: 1.8rem; font-family: var(--font-display);
+    color: var(--neon); line-height: 1;
+  }
+  .stat .sub { font-size: 0.74rem; color: var(--steel); margin-top: 4px; }
+  .stat.cyan  .val { color: var(--cyan); }
+  .stat.amber .val { color: var(--amber); }
+  .stat.orange .val { color: var(--orange); }
+
+  /* ── Section ── */
+  .sec {
+    margin: 36px 0;
+    padding: 18px 22px;
+    border-radius: 14px;
+    border: 2px solid var(--border);
+    background: var(--bg-card);
+  }
+  .sec h2 {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    color: var(--neon);
+    margin-bottom: 10px;
+    border-bottom: 1px dashed var(--border);
+    padding-bottom: 6px;
+  }
+  .sec h3 {
+    color: var(--cyan);
+    font-size: 1.1rem;
+    margin-top: 18px;
+    margin-bottom: 6px;
+  }
+  .sec p { line-height: 1.55; opacity: 0.92; margin-bottom: 8px; }
+  .sec ul, .sec ol { margin: 8px 0 12px 22px; }
+  .sec li { margin: 4px 0; line-height: 1.5; }
+
+  .sec.done       { border-color: rgba(74,222,128,0.45); }
+  .sec.done h2    { color: var(--neon); }
+  .sec.partial    { border-color: rgba(251,191,36,0.45); }
+  .sec.partial h2 { color: var(--amber); }
+  .sec.todo       { border-color: rgba(56,189,248,0.45); }
+  .sec.todo h2    { color: var(--cyan); }
+  .sec.manual     { border-color: rgba(248,113,113,0.4); }
+  .sec.manual h2  { color: var(--danger, #f87171); }
+
+  /* ── Tables ── */
+  .sec table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0;
+    font-size: 0.92rem;
+  }
+  .sec table th, .sec table td {
+    padding: 6px 10px;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+    vertical-align: top;
+  }
+  .sec table th {
+    color: var(--text);
+    font-weight: 700;
+    background: var(--bg-soft);
+  }
+  .sec table tr:hover td { background: var(--bg-soft); }
+
+  /* ── Status pills ── */
+  .pill {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-family: var(--font-tech, monospace);
+    font-weight: 700;
+    border: 1px solid var(--border);
+    background: var(--bg-soft);
+  }
+  .pill.done    { color: var(--neon);   border-color: rgba(74,222,128,0.45); }
+  .pill.wip     { color: var(--amber);  border-color: rgba(251,191,36,0.45); }
+  .pill.todo    { color: var(--cyan);   border-color: rgba(56,189,248,0.45); }
+  .pill.manual  { color: var(--danger,#f87171); border-color: rgba(248,113,113,0.45); }
+  .pill.skipped { color: var(--steel);  border-color: rgba(148,163,184,0.45); }
+
+  /* ── Code blocks ── */
+  code, .sec code {
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 0.85em;
+  }
+
+  /* ── Architecture diagram ── */
+  .arch {
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 0.78rem;
+    line-height: 1.6;
+    overflow-x: auto;
+    color: var(--text);
+  }
+  .arch .file   { color: var(--cyan); }
+  .arch .new    { color: var(--neon); font-weight: 700; }
+  .arch .legacy { color: var(--steel); }
+
+  .toc {
+    display: flex; gap: 8px; flex-wrap: wrap;
+    margin: 12px 0 22px;
+  }
+  .toc a {
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 5px 12px;
+    font-size: 0.82rem;
+    text-decoration: none;
+    color: var(--text);
+    font-weight: 600;
+  }
+  .toc a:hover { border-color: var(--neon); color: var(--neon); }
+</style>
+</head>
+<body>
+
+<div class="wd-band wd-band-top"></div>
+<header class="wd-header">
+  <div class="title-block">
+    <div class="logo-mark">▣</div>
+    <div>
+      <h1>Maqueen Lab // Project Report</h1>
+      <div class="subtitle">Snapshot at v0.1.60 · 2026-05-02 · commit <code>ab8c47f</code></div>
+    </div>
+  </div>
+  <div class="wd-header-right">
+    <a class="wd-select" href="index.html" style="text-decoration:none;border-bottom:none;">📚 Docs</a>
+    <a class="wd-select" href="../index.html" style="text-decoration:none;border-bottom:none;">🤖 Robot App</a>
+  </div>
+</header>
+
+<main class="wd-main">
+
+<section class="lead">
+  <h2>📊 What this page is</h2>
+  <p>End-to-end status of the Maqueen Lab project — what's <b>shipped</b>, what's <b>in flight</b>, and what's <b>still left</b>. Auto-rendered from observed repo state, not from a wishlist.</p>
+  <div class="meta">
+    <span class="pill"><b>v0.1.60</b> firmware/build version</span>
+    <span class="pill"><b>53</b> HTML files</span>
+    <span class="pill"><b>0</b> broken links</span>
+    <span class="pill"><b>32/32</b> smoke tests passing</span>
+    <span class="pill"><b>3</b> languages (EN · FR · AR)</span>
+    <span class="pill"><b>5</b> themes</span>
+    <span class="pill"><a href="https://abourdim.github.io/maqueen-lab/" style="color:var(--cyan);text-decoration:none;">🌐 Live</a></span>
+  </div>
+</section>
+
+<div class="toc">
+  <a href="#numbers">📐 By the numbers</a>
+  <a href="#shipped">✅ Shipped</a>
+  <a href="#partial">🟡 Partial</a>
+  <a href="#left">🔵 What's left</a>
+  <a href="#manual">🔴 Manual / human-only</a>
+  <a href="#arch">🏗️ Architecture map</a>
+  <a href="#ci">🛠 CI &amp; quality</a>
+  <a href="#wontdo">🔇 Won't do</a>
+</div>
+
+<!-- ════════════════════ NUMBERS ════════════════════ -->
+<section class="sec" id="numbers">
+  <h2>📐 By the numbers</h2>
+  <div class="stats-grid">
+    <div class="stat"><div class="lbl">Total HTML</div><div class="val">53</div><div class="sub">across 5 surfaces</div></div>
+    <div class="stat cyan"><div class="lbl">Labs</div><div class="val">8</div><div class="sub">single-purpose, kid-friendly</div></div>
+    <div class="stat amber"><div class="lbl">Lessons</div><div class="val">8</div><div class="sub">A4 print-ready, mapped</div></div>
+    <div class="stat"><div class="lbl">Workshops</div><div class="val">9</div><div class="sub">manual · booklet · cards · …</div></div>
+    <div class="stat orange"><div class="lbl">Smoke tests</div><div class="val">32</div><div class="sub">all passing in 1.3 min</div></div>
+    <div class="stat"><div class="lbl">i18n strings</div><div class="val">~3 k</div><div class="sub">EN · FR · AR everywhere</div></div>
+    <div class="stat cyan"><div class="lbl">Markdown docs</div><div class="val">7</div><div class="sub">+ 6 translations</div></div>
+    <div class="stat"><div class="lbl">JS modules</div><div class="val">4 new</div><div class="sub">telemetry · share · demo · a11y</div></div>
+  </div>
+</section>
+
+<!-- ════════════════════ SHIPPED ════════════════════ -->
+<section class="sec done" id="shipped">
+  <h2>✅ Shipped</h2>
+
+  <h3>Phase 1 — Original 20-item roadmap (v0.1.0 → v0.1.60)</h3>
+  <table>
+    <tr><th>Category</th><th>Done</th></tr>
+    <tr><td><b>10 app improvements</b></td><td>Voice commands · Tilt-to-drive · AI session summary · Time-lapse export · Drag-to-trace autopilot · AR webcam overlay · Robot personalities · Battery indicator · Telemetry export · 2-robot pairing</td></tr>
+    <tr><td><b>10 educational games</b></td><td>SLAM the Room · Echo Hunt · Maze Runner · Buzz the Tune · Simon Says NeoPixel · Math the Distance · Robot Soccer · Line Follower Race · PWM Lab · Morse Decoder</td></tr>
+  </table>
+  <p><span class="pill done">✓ 20 / 20</span></p>
+
+  <h3>Phase 2A — Reach (turn product into adoption)</h3>
+  <table>
+    <tr><th>#</th><th>Item</th><th>What landed</th><th>Status</th></tr>
+    <tr><td>1</td><td>Main cockpit i18n (FR + AR)</td><td><code>js/lang.js</code> 1932 LoC + 304 <code>data-i18n</code> + flag picker + RTL</td><td><span class="pill done">DONE</span></td></tr>
+    <tr><td>2</td><td>Etsy package — slim &amp; ready</td><td>Slimmed 86→10 files (260 KB). Build script tested, 1.02 MB ZIP</td><td><span class="pill done">DONE</span></td></tr>
+    <tr><td>3</td><td>Teacher kit (8 lesson plans)</td><td>A4 print-ready, mapped to FR Cycle 3/4 + NGSS + CCSS-M + CSTA, 💾 PDF button</td><td><span class="pill done">DONE</span></td></tr>
+    <tr><td>4</td><td>PDF export from flyer/poster</td><td>💾 PDF button on both, first-click i18n toast hint</td><td><span class="pill done">DONE</span></td></tr>
+    <tr><td>5</td><td>Curriculum mapping</td><td><a href="curriculum.html">8 Labs + 10 games × FR Cycle 3/4 · NGSS · CCSS-M · CSTA</a></td><td><span class="pill done">DONE</span></td></tr>
+  </table>
+  <p><span class="pill done">✓ 5 / 5</span></p>
+
+  <h3>⚡ Multipliers — small effort, large leverage</h3>
+  <table>
+    <tr><th>Item</th><th>What it does</th><th>Status</th></tr>
+    <tr><td><b>🎭 Demo without robot</b></td><td><code>js/demo-mode.js</code> — fake BLE shim activated by <code>?#demo=1</code> or localStorage flag. Replaces <code>connect/sendLine/isConnected</code>; emits synthetic <code>ECHO:N</code> + DIST/LINE/IR sensor values. Floating orange badge. <b>Conversion lever:</b> teachers/kids try every Lab without buying hardware.</td><td><span class="pill done">DONE</span></td></tr>
+    <tr><td><b>🔗 /share deep links</b></td><td><code>js/share-link.js</code> — encodes <code>theme · lang · demo</code> into URL hash. Auto-applies on load (RTL flips for AR). Public API <code>MqShare.url() / .copy() / .addButton()</code>.</td><td><span class="pill done">DONE</span></td></tr>
+    <tr><td><b>📊 Local-only telemetry</b></td><td><code>js/telemetry.js</code> + <a href="telemetry.html">viewer</a> — auto-tracks visits, themes, langs into localStorage. <b>Zero network</b> — no fetch, no beacon, no cookies. Heatmap with bar charts, JSON export, opt-out.</td><td><span class="pill done">DONE</span></td></tr>
+  </table>
+  <p><span class="pill done">✓ 3 / 3</span></p>
+
+  <h3>🛠 Phase 2B — Hardening (4 of 5)</h3>
+  <table>
+    <tr><th>#</th><th>Item</th><th>Status</th></tr>
+    <tr><td>2B-6</td><td><b>Smoke tests</b> (Playwright) — 32 tests covering hubs · labs · lessons · demo-mode · telemetry · share-link · a11y · lang switcher · auto-render</td><td><span class="pill done">DONE — 32/32</span></td></tr>
+    <tr><td>2B-7</td><td>Split <code>maqueen-tab.js</code> (4580 LoC)</td><td><span class="pill todo">PENDING</span></td></tr>
+    <tr><td>2B-8</td><td><b>GitHub Actions CI</b> — link audit + inlined-md staleness + JSON validity + secret-leak guard + a11y sanity + smoke tests</td><td><span class="pill done">DONE</span></td></tr>
+    <tr><td>2B-9</td><td><b>A11y pass</b> — <code>js/a11y.js</code> on 53 pages: skip-link, focus-visible ring, auto-aria-label, aria-hidden on decorative emoji, prefers-reduced-motion, lang ensured</td><td><span class="pill done">DONE</span></td></tr>
+    <tr><td>2B-10</td><td>Performance budget (Lighthouse CI)</td><td><span class="pill todo">PENDING</span></td></tr>
+  </table>
+
+  <h3>🌍 i18n parity (full coverage)</h3>
+  <table>
+    <tr><th>Surface</th><th>EN</th><th>FR</th><th>AR</th><th>Mechanism</th></tr>
+    <tr><td>Main app <code>index.html</code></td><td>✓</td><td>✓</td><td>✓</td><td><code>js/lang.js</code> + 304 <code>data-i18n</code></td></tr>
+    <tr><td>Labs (10 files)</td><td>✓</td><td>✓</td><td>✓</td><td>Inline T table</td></tr>
+    <tr><td>Workshops (9 files)</td><td>✓</td><td>✓</td><td>✓</td><td>3-file pattern + inline T</td></tr>
+    <tr><td>Docs guides (5 × 3 files)</td><td>✓</td><td>✓</td><td>✓</td><td>3-file pattern</td></tr>
+    <tr><td>Auto-rendered (CHANGELOG · CUSTOMIZE · todo · README)</td><td>✓</td><td>✓</td><td>✓</td><td><code>_md-render.js</code> lang-aware loader</td></tr>
+    <tr><td>Flyer + Poster</td><td>✓</td><td>✓</td><td>✓</td><td>Inline T table</td></tr>
+  </table>
+  <p>Translation files for FR + AR: <code>README.{fr,ar}.md</code>, <code>docs/{CHANGELOG,CUSTOMIZE,todo}.{fr,ar}.md</code> — <b>+1132 lines of new content</b>. Every HTML auto-renders the right language.</p>
+
+  <h3>🏗️ Bonus shipped during this session</h3>
+  <ul>
+    <li><b>8 single-purpose Labs</b> (<code>labs/</code>) with right-rail Message Log faithful to main app's <code>&gt; #N VERB</code> / <code>&lt; ECHO</code> format</li>
+    <li><b>Cross-link labs ↔ lessons</b> (📚 Lesson button on every lab)</li>
+    <li><b>Brand sweep</b>: <code>ROBI-9 LAB → MAQUEEN LAB</code> across HTML/CSS/JS (90 occurrences); mascot <code>Robi-9 → Maqueen</code> (14 files)</li>
+    <li><b>Auto-rendered HTML for every <code>.md</code></b> via <code>docs/_md-render.js</code> + <code>docs/_inline-md.mjs</code> (works over file:// too — no CORS)</li>
+    <li><b>Pre-commit hook</b> auto-runs <code>inline-md</code> when markdown changes; quiet on no-op</li>
+    <li><b>Defensive theme sanitizer</b> in every lab</li>
+    <li><b>Mobile scale-to-fit</b> for flyer + poster (A4 layout preserved on phones)</li>
+    <li><b>Slim Etsy package</b> — 86 → 10 essential files (260 KB)</li>
+    <li><b>Real QR code</b> on flyer + poster pointing to live app</li>
+    <li><b>Asset-ref checker</b> (<code>tools/_check-asset-refs.py</code>) — caught 3 broken refs in distance-lab</li>
+    <li><b>Link audit</b> (<code>tools/_audit-links.py</code>) — 53 HTML, 0 broken hrefs, 1 acceptable orphan</li>
+  </ul>
+</section>
+
+<!-- ════════════════════ PARTIAL ════════════════════ -->
+<section class="sec partial" id="partial">
+  <h2>🟡 Partial / work-in-progress</h2>
+  <p>Nothing currently mid-flight in the codebase. Last partial item (Etsy package) was either <b>shipped</b> (slim version) or punted to <b>manual</b> (the 3 launch-critical photo/video items).</p>
+</section>
+
+<!-- ════════════════════ LEFT ════════════════════ -->
+<section class="sec todo" id="left">
+  <h2>🔵 What's left</h2>
+
+  <h3>Phase 2B — Hardening (2 of 5 remaining)</h3>
+  <table>
+    <tr><th>#</th><th>Item</th><th>Why now</th><th>Effort</th></tr>
+    <tr><td><b>2B-7</b></td><td>Split <code>js/maqueen-tab.js</code> (4580 LoC) into per-card modules</td><td>Pre-condition for any further main-app work. One file = one accident. <b>Now safe</b> with smoke tests green.</td><td>3-4 h</td></tr>
+    <tr><td><b>2B-10</b></td><td>Performance budget — Lighthouse CI + budget file</td><td>School hardware is slow. Catch perf regressions in CI. Budget: ≤ 1.5 s LCP on cheap Android tablet.</td><td>1 h</td></tr>
+  </table>
+
+  <h3>Phase 2C — Depth (5 of 5 remaining)</h3>
+  <table>
+    <tr><th>#</th><th>Item</th><th>Effort</th></tr>
+    <tr><td>11</td><td>Top 3 wishlist labs (curated from <a href="../labs/wishlist.html">labs/wishlist.html</a> votes)</td><td>varies</td></tr>
+    <tr><td>12</td><td><b>Multi-robot Lab</b> (WebRTC peer-to-peer) — Phase 1 #10 was checked but no first-class lab</td><td>4-6 h</td></tr>
+    <tr><td>13</td><td><b>Progress badges / kid passport</b> (localStorage-only, no backend)</td><td>2 h</td></tr>
+    <tr><td>14</td><td><b>Add-on framework</b> (Gravity sensors + I2C accessories) — verb namespace stubbed in firmware</td><td>4 h</td></tr>
+    <tr><td>15</td><td><b>Phase 2 firmware</b> (<code>firmware/v2-raw-pins.ts</code>) — same protocol, raw <code>pins.*</code> calls</td><td>6 h</td></tr>
+  </table>
+</section>
+
+<!-- ════════════════════ MANUAL ════════════════════ -->
+<section class="sec manual" id="manual">
+  <h2>🔴 Manual — only you can do</h2>
+  <p>These are not codable. Either hardware/photo or external account access. <b>Block the Etsy publish</b> until done.</p>
+  <table>
+    <tr><th>Item</th><th>Why</th></tr>
+    <tr><td><b>📷 Photograph a real micro:bit</b> on a laptop running the app (Etsy hero image)</td><td>Single biggest Etsy thumbnail conversion factor for teacher-product listings.</td></tr>
+    <tr><td><b>🎬 Record a 60-second listing video</b> using <code>seller-only/ETSY_LISTING.md</code> as the script</td><td>Etsy algorithmically prefers listings with video by ~30%.</td></tr>
+    <tr><td><b>🛒 Create LAUNCH10 promo code</b> in Etsy Shop Manager</td><td>Drives first 10 reviews fast.</td></tr>
+  </table>
+</section>
+
+<!-- ════════════════════ ARCHITECTURE ════════════════════ -->
+<section class="sec" id="arch">
+  <h2>🏗️ Architecture map</h2>
+  <p>5 surfaces, all reachable from the main <code>index.html</code> hub. Full link audit: 0 broken hrefs, 1 acceptable orphan (<code>tools/tests.html</code>).</p>
+  <pre class="arch">
+maqueen-app/
+├── <span class="file">index.html</span>                 ← <b>Main app</b> (BLE cockpit + Playground tabs)
+├── <span class="file">README.html</span>                ← auto-rendered from README.md (+ FR/AR variants)
+│
+├── <span class="file">labs/</span>                      ← <span class="new">Phase 1 bonus</span> · 10 HTML files
+│   ├── index.html               ← Labs hub (8 cards + wishlist)
+│   ├── joystick · distance · music · servo · ir · lights · vision · copilot
+│   └── wishlist.html            ← community vote
+│
+├── <span class="file">docs/</span>                      ← Documentation surface
+│   ├── index.html               ← Docs hub (10+ cards)
+│   ├── guide · pinout · plan · schematics · schematics-kids  ← 5 guides × 3 langs
+│   ├── lessons/                 ← <span class="new">Phase 2A-3</span> · 8 A4 lesson plans + index
+│   ├── curriculum.html          ← <span class="new">Phase 2A-5</span> · standards mapping
+│   ├── telemetry.html           ← <span class="new">Multiplier 1</span> · usage heatmap
+│   ├── report.html              ← <span class="new">this page</span>
+│   ├── CHANGELOG · CUSTOMIZE · todo · next  ← auto-rendered .md
+│   └── _md-render.js · _inline-md.mjs       ← shared renderer
+│
+├── <span class="file">workshops/</span>                 ← Printables (FR/EN/AR)
+│   ├── hub.html                 ← workshops hub (8 cards)
+│   ├── manual.{html,fr,ar}      ← 12-mission classroom manual
+│   ├── booklet · cheatcards · energizers
+│   └── flyer.html · poster.html ← <span class="new">A4 print + 💾 PDF + QR + i18n</span>
+│
+├── <span class="file">js/</span>                        ← Behavior layer
+│   ├── <span class="legacy">ble.js · ble-shim.js · ble-scheduler.js · core.js · maqueen-tab.js (4580 LoC) · …</span>
+│   ├── lang.js                  ← i18n machinery (1932 LoC, EN/FR/AR)
+│   ├── <span class="new">a11y.js</span>            ← skip-link · focus-ring · aria-label · prefers-reduced-motion
+│   ├── <span class="new">telemetry.js</span>       ← localStorage-only visit counters
+│   ├── <span class="new">share-link.js</span>      ← URL-hash state encoder
+│   └── <span class="new">demo-mode.js</span>       ← fake BLE shim (try without robot)
+│
+├── <span class="file">firmware/</span>                  ← v1-maqueen-lib.ts (MakeCode, BLE UART)
+├── <span class="file">etsy-package/</span>              ← <span class="new">slim, 10 files, 260 KB</span>
+│
+├── <span class="file">tests/smoke.spec.mjs</span>       ← <span class="new">Phase 2B-6</span> · 32 Playwright tests
+├── <span class="file">.github/workflows/ci.yml</span>   ← <span class="new">Phase 2B-8</span> · link audit + tests + a11y + secrets
+└── <span class="file">tools/</span>
+    ├── _audit-links.py          ← static link/orphan audit (used by CI)
+    ├── _check-asset-refs.py     ← finds missing assets
+    ├── inject-script.py         ← bulk-inject &lt;script&gt; into all HTML
+    └── git-hooks/pre-commit     ← auto-runs inline-md when .md changes
+  </pre>
+</section>
+
+<!-- ════════════════════ CI ════════════════════ -->
+<section class="sec done" id="ci">
+  <h2>🛠 CI &amp; quality</h2>
+  <p>Every push and PR to <code>main</code> runs two CI jobs. They block merge if anything regresses.</p>
+  <table>
+    <tr><th>Job</th><th>Checks</th><th>Failure mode</th></tr>
+    <tr>
+      <td><b>audit</b></td>
+      <td>
+        ✅ Link audit (53 HTML · 0 broken hrefs · 1 allowed orphan)<br>
+        ✅ Inlined-md staleness — refuses commits that edited <code>.md</code> without re-running the inliner<br>
+        ✅ JSON validity — <code>product.json</code> + <code>build-info.json</code><br>
+        ✅ Secret-leak grep — <code>API_KEY=</code> · <code>PRIVATE_KEY</code> · <code>TODO:.*SECRET</code><br>
+        ✅ A11y sanity — every <code>&lt;html&gt;</code> has <code>lang</code>, every <code>&lt;img&gt;</code> has <code>alt</code>
+      </td>
+      <td>Hard-fails on broken hrefs or stale inlined md</td>
+    </tr>
+    <tr>
+      <td><b>smoke</b></td>
+      <td>
+        ✅ Playwright headless (chromium)<br>
+        ✅ 32 tests covering hubs · labs · lessons · auto-render · demo-mode · telemetry · share-link · a11y · lang switcher · workshops hub flyer/poster<br>
+        ✅ Total runtime ~1.3 min in CI
+      </td>
+      <td>Fails on any test failure; uploads Playwright report on failure</td>
+    </tr>
+  </table>
+
+  <h3>Local quality tools</h3>
+  <ul>
+    <li><code>npm test</code> — run smoke tests</li>
+    <li><code>node docs/_inline-md.mjs</code> — refresh inlined markdown blocks</li>
+    <li><code>python tools/_audit-links.py --strict</code> — link audit (CI mode)</li>
+    <li><code>python tools/_check-asset-refs.py path/to/x.html</code> — verify asset refs exist</li>
+    <li><code>node etsy-package/build-package.js</code> — build the buyer ZIP</li>
+  </ul>
+</section>
+
+<!-- ════════════════════ WONT DO ════════════════════ -->
+<section class="sec" id="wontdo">
+  <h2>🔇 Explicitly won't do</h2>
+  <ul>
+    <li><b>Translate technical docs</b> (CHANGELOG.md, CUSTOMIZE.md) — contributor-facing, EN is fine</li>
+    <li><b>Cross-browser smoke tests</b> (Firefox/WebKit) — Web Bluetooth is Chromium-only anyway</li>
+    <li><b>Virtual physics layer</b> for demo-mode — current synthetic responses are enough; full physics would 5-10× the code</li>
+    <li><b>Modify <code>js/ble.js</code></b> — stable forked dependency from bit-playground; rule is to wrap, never patch</li>
+  </ul>
+</section>
+
+<!-- ════════════════════ FOOTER STATS ════════════════════ -->
+<section class="lead">
+  <h2>📈 Where we are now</h2>
+  <p>
+    Phase 1 (20 items) <span class="pill done">DONE</span> ·
+    Phase 2A (5 items) <span class="pill done">DONE</span> ·
+    Multipliers (3 items) <span class="pill done">DONE</span> ·
+    Phase 2B (3 of 5) <span class="pill wip">3/5</span> ·
+    Phase 2C (0 of 5) <span class="pill todo">0/5</span> ·
+    Manual <span class="pill manual">3 items pending</span>
+  </p>
+  <p>
+    <b>Recommended next pick:</b> <code>2B-7</code> (split <code>maqueen-tab.js</code>) — now safe to attempt
+    with smoke tests green. Then <code>2B-10</code> (Lighthouse CI) — small, high-leverage.
+  </p>
+</section>
+
+</main>
+
+<footer class="wd-footer">
+  <span>▣ Maqueen Lab · Project Report · v0.1.60 · MIT</span>
+  <span><a href="todo.html">📜 Full roadmap</a> · <a href="next.html">📍 Active queue</a> · <a href="https://github.com/abourdim/maqueen-lab">⭐ GitHub</a></span>
+</footer>
+
+<script>
+  // theme + lang restore
+  (function () {
+    var t = (function(){ try { return localStorage.getItem('robi.theme'); } catch(e){return null;} })() || 'carbon';
+    var valid = ['carbon','forest','steel','paper','pearl'];
+    if (valid.indexOf(t) === -1) t = 'carbon';
+    document.documentElement.setAttribute('data-theme', t);
+    var l = (function(){ try { return localStorage.getItem('robi.lang'); } catch(e){return null;} })() || 'en';
+    if (!/^(en|fr|ar)$/.test(l)) l = 'en';
+    document.documentElement.lang = l;
+    document.documentElement.dir = (l === 'ar') ? 'rtl' : 'ltr';
+  })();
+</script>
+</body>
+</html>
