@@ -51,14 +51,14 @@ The app is great; almost nobody knows it exists yet.
 
 | # | Item | Why now |
 |---|------|---------|
-| 1 | **i18n parity for the main cockpit** (FR + AR) | Docs & workshops are tri-lingual; the cockpit isn't. Blocks French/Arabic-speaking schools. ~1 day with the existing `T={en,fr,ar}` pattern. |
+| 1 | ~~**i18n parity for the main cockpit** (FR + AR)~~ — **DONE.** `js/lang.js` (1932 LoC) + 304 `data-i18n` attrs + EN/FR/AR dicts (~600 lines each) + 3-flag picker + RTL + localStorage. All HTML surfaces are trilingual. |
 | 2 | **Etsy package v1 ready-to-list** | `etsy-package/` is half-baked. Finish: hero photos, listing copy locked, quickstart card. This is your distribution. |
 | 3 | **Teacher kit** — 1-pager lesson plan + rubric per Lab | 8 labs × 1 lesson plan = 8 pages. Sells to schools instantly. |
 | 4 | **Print-quality flyer/poster export** (PDF) | Add a "Save as PDF" CTA + verified A4 print preview. Right now teachers have to know to Ctrl+P. |
 | 5 | **Curriculum-aligned challenge set** (Cycle 3/4 FR · K-8 EN) | Map existing Labs/games to formal learning objectives. Teachers need this verbatim. |
 
 ### Checklist
-- [ ] 1. i18n parity — main cockpit (FR + AR)
+- [x] 1. i18n parity — main cockpit (FR + AR) — already shipped via `js/lang.js`
 - [ ] 2. Etsy package v1 — listing-ready
 - [ ] 3. Teacher kit — 8 lesson plans + rubrics
 - [ ] 4. PDF export from flyer/poster
