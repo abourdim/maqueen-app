@@ -508,13 +508,18 @@
 <body>
 
 <div class="topbar">
-  <span class="title">📄 Flyer v2 · A4 · français · 8 ans+ · BAM! POW! ZAP!</span>
-  <button onclick="window.print()">🖨 Imprimer</button>
-  <a href="hub.html">🏠 Hub</a>
-  <a href="poster.html">📌 Affiche</a>
-  <a href="../index.html">🤖 App Robot</a>
-  <a href="../docs/index.html">🗂️ Catalogue</a>
-  <a href="../labs/index.html">🧪 Labos</a>
+  <span class="title" data-i18n="bar_title">📄 Flyer v2 · A4 · 8 ans+ · BAM! POW! ZAP!</span>
+  <select id="langSelect" aria-label="Language" style="background:var(--bg-soft);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:5px 8px;font-size:13px;cursor:pointer;">
+    <option value="en">🌐 EN</option>
+    <option value="fr">🇫🇷 FR</option>
+    <option value="ar">🇸🇦 AR</option>
+  </select>
+  <button onclick="window.print()" data-i18n="bar_print">🖨 Imprimer</button>
+  <a href="hub.html" data-i18n="bar_hub">🏠 Hub</a>
+  <a href="poster.html" data-i18n="bar_poster">📌 Affiche</a>
+  <a href="../index.html" data-i18n="bar_app">🤖 App Robot</a>
+  <a href="../docs/index.html" data-i18n="bar_docs">🗂️ Catalogue</a>
+  <a href="../labs/index.html" data-i18n="bar_labs">🧪 Labos</a>
 </div>
 
 <article class="flyer">
@@ -536,7 +541,7 @@
       <img src="../assets/logo.svg" alt="Maqueen Lab" class="app-logo">
       <span class="app-logo-text">MAQUEEN <span class="lab">LAB</span></span>
     </div>
-    <span class="badge">▸ MAQUEEN LAB · LE LABO QUI ROULE</span>
+    <span class="badge" data-i18n="badge">▸ MAQUEEN LAB · LE LABO QUI ROULE</span>
 
     <div class="hero-stage">
       <div class="mascot-wrap">
@@ -566,17 +571,17 @@
           <ellipse cx="80" cy="106" rx="8" ry="4" fill="var(--ink)" stroke="var(--neon)" stroke-width="1.5"/>
         </svg>
       </div>
-      <div class="speech">VROUM<br>VROUM!</div>
+      <div class="speech" data-i18n="speech">VROUM<br>VROUM!</div>
     </div>
 
-    <h1>Pilote ton <span class="accent">robot</span><br>comme un <span class="yell">ninja</span> <span class="red">ingénieur !</span></h1>
+    <h1 data-i18n-html="hero_h1">Pilote ton <span class="accent">robot</span><br>comme un <span class="yell">ninja</span> <span class="red">ingénieur !</span></h1>
 
-    <p class="pitch">Salut, c'est <b>Maqueen</b> ! Branche-moi en <b>1 clic</b>, joue avec moi de <b>30 façons folles</b>, et débloque <b>12 missions</b> de pro.</p>
+    <p class="pitch" data-i18n-html="hero_pitch">Salut, c'est <b>Maqueen</b> ! Branche-moi en <b>1 clic</b>, joue avec moi de <b>30 façons folles</b>, et débloque <b>12 missions</b> de pro.</p>
 
     <div class="stamps">
-      <span class="stamp amber">🎯 8 ANS +</span>
+      <span class="stamp amber" data-i18n="stamp_age">🎯 8 ANS +</span>
       <span class="stamp cyan">🌍 FR · EN · AR</span>
-      <span class="stamp neon">🔓 GRATUIT</span>
+      <span class="stamp neon" data-i18n="stamp_free">🔓 GRATUIT</span>
     </div>
   </section>
 
@@ -597,9 +602,9 @@
             <circle class="blip" cx="20" cy="38" r="1.5"/>
           </svg>
         </div>
-        <div class="cap-title">Radar Sonar</div>
+        <div class="cap-title" data-i18n="cap1_t">Radar Sonar</div>
       </div>
-      <p>Mon <b>capteur ultrason</b> mesure les obstacles. Sonar, parking parfait, alarme anti-frangin, thérémine !</p>
+      <p data-i18n-html="cap1_p">Mon <b>capteur ultrason</b> mesure les obstacles. Sonar, parking parfait, alarme anti-frangin, thérémine !</p>
     </div>
 
     <div class="cap amber">
@@ -612,9 +617,9 @@
             <circle cx="30" cy="48" r="3" fill="var(--ink)" stroke="var(--amber)" stroke-width="1"/>
           </svg>
         </div>
-        <div class="cap-title">Servos qui dansent</div>
+        <div class="cap-title" data-i18n="cap2_t">Servos qui dansent</div>
       </div>
-      <p><b>Deux servomoteurs</b> qui tournent partout. Salue, regarde autour, enregistre une chorégraphie !</p>
+      <p data-i18n-html="cap2_p"><b>Deux servomoteurs</b> qui tournent partout. Salue, regarde autour, enregistre une chorégraphie !</p>
     </div>
 
     <div class="cap neon">
@@ -626,9 +631,9 @@
             <text x="36" y="32">♪</text>
           </svg>
         </div>
-        <div class="cap-title">Musique &amp; Buzzer</div>
+        <div class="cap-title" data-i18n="cap3_t">Musique &amp; Buzzer</div>
       </div>
-      <p>Mon <b>buzzer</b> joue toutes les notes ! Compose, pianote, séquence 8 pas, fais-moi danser !</p>
+      <p data-i18n-html="cap3_p">Mon <b>buzzer</b> joue toutes les notes ! Compose, pianote, séquence 8 pas, fais-moi danser !</p>
     </div>
 
     <div class="cap red">
@@ -640,54 +645,54 @@
             <circle cx="40" cy="30" r="6"/>
           </svg>
         </div>
-        <div class="cap-title">Lumières &amp; Vision</div>
+        <div class="cap-title" data-i18n="cap4_t">Lumières &amp; Vision</div>
       </div>
-      <p><b>4 LED RGB</b>, <b>2 capteurs IR</b> pour suivre une ligne, et la caméra de ton ordi pour me piloter avec ton visage !</p>
+      <p data-i18n-html="cap4_p"><b>4 LED RGB</b>, <b>2 capteurs IR</b> pour suivre une ligne, et la caméra de ton ordi pour me piloter avec ton visage !</p>
     </div>
   </section>
 
   <!-- ============ HOW + QR ============ -->
   <section class="how-qr">
     <div class="how">
-      <h2>Comment on commence ?</h2>
+      <h2 data-i18n="how_h">Comment on commence ?</h2>
       <div class="steps">
         <div class="step">
           <span class="num">1</span>
-          <span class="verb">Allume Maqueen</span>
-          <span class="det">Bouton ON. Yeux verts !</span>
+          <span class="verb" data-i18n="step1_v">Allume Maqueen</span>
+          <span class="det" data-i18n="step1_d">Bouton ON. Yeux verts !</span>
         </div>
         <div class="step">
           <span class="num">2</span>
-          <span class="verb">Ouvre le site</span>
-          <span class="det">Chrome ou Edge</span>
+          <span class="verb" data-i18n="step2_v">Ouvre le site</span>
+          <span class="det" data-i18n="step2_d">Chrome ou Edge</span>
         </div>
         <div class="step">
           <span class="num">3</span>
-          <span class="verb">Tape Connect</span>
-          <span class="det">Et c'est parti !</span>
+          <span class="verb" data-i18n="step3_v">Tape Connect</span>
+          <span class="det" data-i18n="step3_d">Et c'est parti !</span>
         </div>
       </div>
     </div>
     <div class="qr-card">
       <div class="qr-box" id="qrFlyer"></div>
-      <div class="qr-label">📱 Scanne-moi !</div>
+      <div class="qr-label" data-i18n="qr_lbl">📱 Scanne-moi !</div>
     </div>
   </section>
 
   <!-- ============ FEATURE STRIP ============ -->
   <section class="features">
-    <div class="feat"><span class="num">3</span><span class="lbl">LANGUES</span></div>
-    <div class="feat"><span class="num">5</span><span class="lbl">THÈMES</span></div>
-    <div class="feat"><span class="num">8</span><span class="lbl">LABOS</span></div>
-    <div class="feat"><span class="num">12</span><span class="lbl">MISSIONS</span></div>
-    <div class="feat"><span class="num">25</span><span class="lbl">JEUX</span></div>
-    <div class="feat"><span class="num">∞</span><span class="lbl">OPEN<br>SOURCE</span></div>
+    <div class="feat"><span class="num">3</span><span class="lbl" data-i18n="feat_langs">LANGUES</span></div>
+    <div class="feat"><span class="num">5</span><span class="lbl" data-i18n="feat_themes">THÈMES</span></div>
+    <div class="feat"><span class="num">8</span><span class="lbl" data-i18n="feat_labs">LABOS</span></div>
+    <div class="feat"><span class="num">12</span><span class="lbl" data-i18n="feat_missions">MISSIONS</span></div>
+    <div class="feat"><span class="num">25</span><span class="lbl" data-i18n="feat_games">JEUX</span></div>
+    <div class="feat"><span class="num">∞</span><span class="lbl" data-i18n-html="feat_oss">OPEN<br>SOURCE</span></div>
   </section>
 
   <!-- ============ CTA ============ -->
   <section class="cta">
     <div class="url">abourdim.github.io/maqueen-lab</div>
-    <p class="sub">📱 Ouvre <b>Chrome</b> · 🔋 Charge ton Maqueen · ▶ Tape <b>Connect</b> · 🚀 PILOTE !</p>
+    <p class="sub" data-i18n-html="cta_sub">📱 Ouvre <b>Chrome</b> · 🔋 Charge ton Maqueen · ▶ Tape <b>Connect</b> · 🚀 PILOTE !</p>
   </section>
 
   <!-- FOOTER -->
@@ -698,6 +703,111 @@
   </footer>
 
 </article>
+
+<!-- ============ I18N — EN / FR / AR ============ -->
+<script>
+  const T = {
+    en: {
+      bar_title: '📄 Flyer v2 · A4 · 8 yrs+ · BAM! POW! ZAP!',
+      bar_print: '🖨 Print', bar_hub: '🏠 Hub', bar_poster: '📌 Poster',
+      bar_app: '🤖 Robot App', bar_docs: '🗂️ Catalog', bar_labs: '🧪 Labs',
+      badge: '▸ MAQUEEN LAB · THE LAB ON WHEELS',
+      speech: 'VROOM<br>VROOM!',
+      hero_h1: 'Drive your <span class="accent">robot</span><br>like a <span class="yell">ninja</span> <span class="red">engineer!</span>',
+      hero_pitch: 'Hey, I\'m <b>Maqueen</b>! Plug me in <b>1 click</b>, play with me <b>30 crazy ways</b>, and unlock <b>12 pro missions</b>.',
+      stamp_age: '🎯 8 YRS +', stamp_free: '🔓 FREE',
+      cap1_t: 'Sonar Radar',
+      cap1_p: 'My <b>ultrasonic sensor</b> measures obstacles. Sonar, perfect parking, anti-sibling alarm, theremin!',
+      cap2_t: 'Dancing Servos',
+      cap2_p: '<b>Two servomotors</b> spin everywhere. Wave, look around, record a choreography!',
+      cap3_t: 'Music & Buzzer',
+      cap3_p: 'My <b>buzzer</b> plays every note! Compose, piano, 8-step sequencer, make me dance!',
+      cap4_t: 'Lights & Vision',
+      cap4_p: '<b>4 RGB LEDs</b>, <b>2 IR sensors</b> to follow a line, and your computer\'s camera to drive me with your face!',
+      how_h: 'How do we start?',
+      step1_v: 'Turn on Maqueen', step1_d: 'ON button. Green eyes!',
+      step2_v: 'Open the site',   step2_d: 'Chrome or Edge',
+      step3_v: 'Tap Connect',     step3_d: 'And go!',
+      qr_lbl: '📱 Scan me!',
+      feat_langs: 'LANGUAGES', feat_themes: 'THEMES', feat_labs: 'LABS',
+      feat_missions: 'MISSIONS', feat_games: 'GAMES', feat_oss: 'OPEN<br>SOURCE',
+      cta_sub: '📱 Open <b>Chrome</b> · 🔋 Charge your Maqueen · ▶ Tap <b>Connect</b> · 🚀 DRIVE!',
+    },
+    fr: {
+      bar_title: '📄 Flyer v2 · A4 · 8 ans+ · BAM! POW! ZAP!',
+      bar_print: '🖨 Imprimer', bar_hub: '🏠 Hub', bar_poster: '📌 Affiche',
+      bar_app: '🤖 App Robot', bar_docs: '🗂️ Catalogue', bar_labs: '🧪 Labos',
+      badge: '▸ MAQUEEN LAB · LE LABO QUI ROULE',
+      speech: 'VROUM<br>VROUM!',
+      hero_h1: 'Pilote ton <span class="accent">robot</span><br>comme un <span class="yell">ninja</span> <span class="red">ingénieur !</span>',
+      hero_pitch: 'Salut, c\'est <b>Maqueen</b> ! Branche-moi en <b>1 clic</b>, joue avec moi de <b>30 façons folles</b>, et débloque <b>12 missions</b> de pro.',
+      stamp_age: '🎯 8 ANS +', stamp_free: '🔓 GRATUIT',
+      cap1_t: 'Radar Sonar',
+      cap1_p: 'Mon <b>capteur ultrason</b> mesure les obstacles. Sonar, parking parfait, alarme anti-frangin, thérémine !',
+      cap2_t: 'Servos qui dansent',
+      cap2_p: '<b>Deux servomoteurs</b> qui tournent partout. Salue, regarde autour, enregistre une chorégraphie !',
+      cap3_t: 'Musique &amp; Buzzer',
+      cap3_p: 'Mon <b>buzzer</b> joue toutes les notes ! Compose, pianote, séquence 8 pas, fais-moi danser !',
+      cap4_t: 'Lumières &amp; Vision',
+      cap4_p: '<b>4 LED RGB</b>, <b>2 capteurs IR</b> pour suivre une ligne, et la caméra de ton ordi pour me piloter avec ton visage !',
+      how_h: 'Comment on commence ?',
+      step1_v: 'Allume Maqueen', step1_d: 'Bouton ON. Yeux verts !',
+      step2_v: 'Ouvre le site',  step2_d: 'Chrome ou Edge',
+      step3_v: 'Tape Connect',   step3_d: 'Et c\'est parti !',
+      qr_lbl: '📱 Scanne-moi !',
+      feat_langs: 'LANGUES', feat_themes: 'THÈMES', feat_labs: 'LABOS',
+      feat_missions: 'MISSIONS', feat_games: 'JEUX', feat_oss: 'OPEN<br>SOURCE',
+      cta_sub: '📱 Ouvre <b>Chrome</b> · 🔋 Charge ton Maqueen · ▶ Tape <b>Connect</b> · 🚀 PILOTE !',
+    },
+    ar: {
+      bar_title: '📄 منشور v2 · A4 · 8 سنوات+ · BAM! POW! ZAP!',
+      bar_print: '🖨 طباعة', bar_hub: '🏠 المركز', bar_poster: '📌 ملصق',
+      bar_app: '🤖 تطبيق الروبوت', bar_docs: '🗂️ الفهرس', bar_labs: '🧪 المختبرات',
+      badge: '▸ MAQUEEN LAB · المختبر المتحرّك',
+      speech: 'فروم<br>فروم!',
+      hero_h1: 'قُد <span class="accent">روبوتك</span><br>كَنينجا <span class="yell">مهندس</span> <span class="red">!</span>',
+      hero_pitch: 'مرحبًا، أنا <b>Maqueen</b>! وصِّلني بنقرة <b>واحدة</b>، العب معي بـ<b>30 طريقة جنونيّة</b>، واكتشف <b>12 مهمّة</b> احترافيّة.',
+      stamp_age: '🎯 8 سنوات +', stamp_free: '🔓 مجّاني',
+      cap1_t: 'رادار سونار',
+      cap1_p: '<b>مستشعر الموجات فوق الصوتيّة</b> يقيس العقبات. سونار، ركن مثاليّ، إنذار ضدّ الإخوة، ثيرمين!',
+      cap2_t: 'سيرفوهات راقصة',
+      cap2_p: '<b>سيرفوان</b> يدوران في كلّ مكان. حيِّ، انظر حولك، سجِّل رقصة!',
+      cap3_t: 'موسيقى &amp; جرس',
+      cap3_p: '<b>الجرس</b> يعزف كلّ النوتات! ألِّف، اعزف بيانو، مسلسل 8 خطوات، اجعلني أرقص!',
+      cap4_t: 'إضاءة &amp; رؤية',
+      cap4_p: '<b>4 LEDs RGB</b>، <b>مستشعرَا IR</b> لمتابعة الخطّ، وكاميرا حاسوبك لقيادتي بوجهك!',
+      how_h: 'كيف نبدأ؟',
+      step1_v: 'شغِّل Maqueen', step1_d: 'زرّ ON. عينان خضراوان!',
+      step2_v: 'افتح الموقع',  step2_d: 'Chrome أو Edge',
+      step3_v: 'اضغط Connect', step3_d: 'وانطلق!',
+      qr_lbl: '📱 امسحني!',
+      feat_langs: 'لغات', feat_themes: 'مظاهر', feat_labs: 'مختبرات',
+      feat_missions: 'مهامّ', feat_games: 'ألعاب', feat_oss: 'مفتوح<br>المصدر',
+      cta_sub: '📱 افتح <b>Chrome</b> · 🔋 اشحن Maqueen · ▶ اضغط <b>Connect</b> · 🚀 قُد!',
+    }
+  };
+  function setL(l) {
+    if (!T[l]) l = 'en';
+    document.documentElement.lang = l;
+    document.documentElement.dir = (l === 'ar') ? 'rtl' : 'ltr';
+    try { localStorage.setItem('robi.lang', l); } catch(e) {}
+    const t = T[l];
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const k = el.getAttribute('data-i18n');
+      if (t[k] != null) el.textContent = t[k];
+    });
+    document.querySelectorAll('[data-i18n-html]').forEach(el => {
+      const k = el.getAttribute('data-i18n-html');
+      if (t[k] != null) el.innerHTML = t[k];
+    });
+  }
+  (function () {
+    const saved = (function(){ try { return localStorage.getItem('robi.lang'); } catch(e){return null;} })() || 'fr';
+    setL(saved);
+    const sel = document.getElementById('langSelect');
+    if (sel) { sel.value = saved; sel.addEventListener('change', e => setL(e.target.value)); }
+  })();
+</script>
 
 <!-- Real QR code library — same one the main app uses -->
 <script src="../js/qrcode.min.js"></script>
