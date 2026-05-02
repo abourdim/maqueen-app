@@ -1,6 +1,18 @@
-"""Read-only audit of HTML reachability + broken links across the repo."""
-import os, re
+"""Read-only audit of HTML reachability + broken links across the repo.
+
+Exit codes (for CI):
+  0 = clean (no broken hrefs, no unexpected orphans)
+  1 = problems found
+
+Pass `--strict` to fail on any orphan that's not in ALLOWED_ORPHANS.
+Pass `--report` (default) for human-readable output without exiting non-zero.
+"""
+import os, re, sys
 from collections import deque
+
+# tools/tests.html is an internal Playwright-style test runner — never user-facing.
+ALLOWED_ORPHANS = {'tools/tests.html'}
+STRICT = '--strict' in sys.argv
 
 ROOT = '.'
 SKIP = {'.git', 'node_modules', '.claude', 'etsy-package'}
@@ -82,3 +94,19 @@ for f in sorted_by_inc:
     inc = len(back.get(f, []))
     out = len(graph.get(f, []))
     print(f'  in={inc:>2}  out={out:>2}  {f}')
+
+# CI exit code
+unexpected_orphans = [o for o in orphans if o not in ALLOWED_ORPHANS]
+problems = []
+if broken:
+    problems.append(f'{len(broken)} broken href(s)')
+if unexpected_orphans:
+    problems.append(f'{len(unexpected_orphans)} unexpected orphan(s): {unexpected_orphans}')
+
+print('\n' + '=' * 60)
+if problems:
+    print('FAIL: ' + '; '.join(problems))
+    sys.exit(1 if STRICT or broken else 0)  # Always fail on broken; orphans only fail in strict
+else:
+    print('PASS: 0 broken hrefs, 0 unexpected orphans')
+    sys.exit(0)

@@ -1,0 +1,57 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  audit:
+    name: Repo audit (links + sync)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Link audit (orphans + broken hrefs)
+        run: python tools/_audit-links.py --strict
+
+      - name: Verify inlined markdown is in sync
+        # If any docs/*.md or README*.md was changed without re-running the inliner,
+        # the matching HTML will drift. Re-run; if it touches anything, fail.
+        run: |
+          node docs/_inline-md.mjs
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "::error::Inlined markdown is stale. Run 'node docs/_inline-md.mjs' locally and commit the result."
+            git diff --stat
+            exit 1
+          fi
+
+      - name: Verify product.json + build-info.json present and valid JSON
+        run: |
+          python -c "import json; json.load(open('product.json'))"
+          python -c "import json; json.load(open('build-info.json'))"
+
+      - name: Sanity: no SECRETS / TODOs in shipped HTML
+        run: |
+          if grep -rn "TODO:.*SECRET\|API_KEY=\|PRIVATE_KEY" --include="*.html" --include="*.js" --exclude-dir=.git --exclude-dir=node_modules .; then
+            echo "::error::Possible secret leak detected"
+            exit 1
+          fi
+          echo "✓ no secrets in shipped files"
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "::notice::Audit complete — see job log for details"

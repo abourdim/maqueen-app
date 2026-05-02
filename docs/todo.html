@@ -146,7 +146,7 @@ The app is great; almost nobody knows it exists yet.
 ### Checklist
 - [ ] 6. Smoke tests for all 8 labs + main connect/disconnect path
 - [ ] 7. `js/maqueen-tab.js` → `js/maqueen/{drive,servos,leds,...}.js`
-- [ ] 8. CI workflow (lint, tests, deploy on green)
+- [x] 8. CI workflow — `.github/workflows/ci.yml`: link audit (`tools/_audit-links.py --strict`) + inlined-md staleness check + JSON validity + secret-leak grep. Fails the push if any HTML href is broken or if a `.md` was edited without re-running `docs/_inline-md.mjs`.
 - [ ] 9. A11y audit — keyboard nav, ARIA, contrast
 - [ ] 10. Perf budget + Lighthouse CI
 
