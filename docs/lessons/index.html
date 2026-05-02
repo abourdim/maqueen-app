@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="carbon">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>📚 Lesson Plans · Maqueen Lab</title>
+<link rel="stylesheet" href="../../workshops/theme.css">
+<link rel="stylesheet" href="../doc-shell.css">
+<style>
+  .lessons-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 14px;
+    margin-top: 22px;
+  }
+  .lesson-card {
+    background: var(--bg-soft);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 20px;
+    text-decoration: none;
+    color: var(--text);
+    display: flex; flex-direction: column;
+    transition: transform 0.12s, border-color 0.12s, box-shadow 0.12s;
+    position: relative;
+  }
+  .lesson-card:hover { transform: translateY(-2px); border-color: var(--cyan); box-shadow: 0 6px 18px rgba(56,189,248,0.15); }
+  .lesson-card .ic { font-size: 2rem; margin-bottom: 8px; }
+  .lesson-card h3 { font-family: var(--font-display); font-size: 1.15rem; color: var(--neon); margin-bottom: 4px; }
+  .lesson-card .meta { font-size: 0.78rem; color: var(--steel); font-family: var(--font-tech); margin-bottom: 10px; }
+  .lesson-card p { font-size: 0.92rem; opacity: 0.85; line-height: 1.45; flex-grow: 1; }
+  .lesson-card .chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border); }
+  .lesson-card .chip { padding: 3px 9px; border-radius: 999px; background: var(--bg-card); border: 1px solid var(--border); color: var(--text); font-weight: 600; font-size: 0.74rem; }
+  .lesson-card .chip.age { color: var(--cyan); border-color: rgba(56,189,248,0.35); }
+  .lesson-card .chip.time { color: var(--amber); border-color: rgba(251,191,36,0.35); }
+  .intro { background: var(--bg-card); border: 1.5px solid var(--border); border-radius: 12px; padding: 18px 22px; margin: 22px 0; }
+  .intro h2 { color: var(--neon); margin-bottom: 8px; }
+  .intro p { line-height: 1.55; opacity: 0.9; margin-bottom: 8px; }
+</style>
+</head>
+<body>
+
+<div class="wd-band wd-band-top"></div>
+<header class="wd-header">
+  <div class="title-block">
+    <div class="logo-mark">▣</div>
+    <div>
+      <h1>Maqueen Lab // Lesson Plans</h1>
+      <div class="subtitle">8 print-ready A4 lessons — one per Lab</div>
+    </div>
+  </div>
+  <div class="wd-header-right">
+    <a class="wd-select" href="../index.html" style="text-decoration:none;border-bottom:none;">📚 Docs</a>
+    <a class="wd-select" href="../../labs/index.html" style="text-decoration:none;border-bottom:none;">🧪 All Labs</a>
+    <a class="wd-select" href="../../index.html" style="text-decoration:none;border-bottom:none;">🤖 Robot App</a>
+  </div>
+</header>
+
+<main class="wd-main">
+
+<section class="intro">
+  <h2>🎓 Teacher kit</h2>
+  <p>Each lesson plan below is a self-contained <b>A4 print-friendly</b> brief for one Lab. Hit the <b>💾 PDF</b> button on any lesson page to save a clean A4 single-page copy. Standards are pre-mapped (FR Cycle 3/4 + NGSS + CCSS-M + CSTA) — copy-paste directly into your lesson record.</p>
+  <p>For the cross-cutting standards index, year-long unit progression, and 4-hour workshop schedule, see the <a href="../curriculum.html"><b>Curriculum mapping</b></a>.</p>
+</section>
+
+<div class="lessons-grid">
+
+  <a class="lesson-card" href="joystick-lab.html">
+    <span class="ic">🕹️</span>
+    <h3>Joystick Lab</h3>
+    <div class="meta">joystick-lab.md · A4 · 45 min</div>
+    <p>Drive a real robot with a virtual stick. Cause→effect, vector inputs, parking challenge.</p>
+    <div class="chips"><span class="chip age">8-12</span><span class="chip time">45 min</span><span class="chip">FR Cycle 3</span></div>
+  </a>
+
+  <a class="lesson-card" href="distance-lab.html">
+    <span class="ic">📏</span>
+    <h3>Distance Lab</h3>
+    <div class="meta">distance-lab.md · A4 · 45 min</div>
+    <p>Live ultrasonic sensing. Sensor → number, time-of-flight, ±1 cm parking precision.</p>
+    <div class="chips"><span class="chip age">9-13</span><span class="chip time">45 min</span><span class="chip">NGSS waves</span></div>
+  </a>
+
+  <a class="lesson-card" href="music-lab.html">
+    <span class="ic">🎵</span>
+    <h3>Music Lab</h3>
+    <div class="meta">music-lab.md · A4 · 40 min</div>
+    <p>Frequency = pitch, duration = rhythm. Sequence Twinkle Twinkle, layer a beat.</p>
+    <div class="chips"><span class="chip age">7-12</span><span class="chip time">40 min</span><span class="chip">FR Musique</span></div>
+  </a>
+
+  <a class="lesson-card" href="servo-lab.html">
+    <span class="ic">🦾</span>
+    <h3>Servo Lab</h3>
+    <div class="meta">servo-lab.md · A4 · 45 min</div>
+    <p>PWM = analog control. Calibrate ±5°, record a 5-step choreography, play it back.</p>
+    <div class="chips"><span class="chip age">8-13</span><span class="chip time">45 min</span><span class="chip">CCSS-M angles</span></div>
+  </a>
+
+  <a class="lesson-card" href="ir-lab.html">
+    <span class="ic">📡</span>
+    <h3>IR Lab</h3>
+    <div class="meta">ir-lab.md · A4 · 40 min</div>
+    <p>Invisible light + coded keys. Map your own remote bindings; predict line sensors.</p>
+    <div class="chips"><span class="chip age">10-13</span><span class="chip time">40 min</span><span class="chip">FR Phys-Chim</span></div>
+  </a>
+
+  <a class="lesson-card" href="lights-lab.html">
+    <span class="ic">💡</span>
+    <h3>Lights Lab</h3>
+    <div class="meta">lights-lab.md · A4 · 40 min</div>
+    <p>Additive RGB. Paint 4 NeoPixels, build a 6-step animation loop, discuss accessibility.</p>
+    <div class="chips"><span class="chip age">7-12</span><span class="chip time">40 min</span><span class="chip">CSTA loops</span></div>
+  </a>
+
+  <a class="lesson-card" href="vision-lab.html">
+    <span class="ic">📷</span>
+    <h3>Vision Lab</h3>
+    <div class="meta">vision-lab.md · A4 · 50 min</div>
+    <p>Drive with your face/pose. Discuss AI limits, privacy, and bias — all processed in-browser.</p>
+    <div class="chips"><span class="chip age">11-14</span><span class="chip time">50 min</span><span class="chip">EMI / AI</span></div>
+  </a>
+
+  <a class="lesson-card" href="copilot-lab.html">
+    <span class="ic">🎤</span>
+    <h3>Co-Pilot Lab</h3>
+    <div class="meta">copilot-lab.md · A4 · 45 min</div>
+    <p>Voice commands. Design your own grammar; explore where speech recognition breaks.</p>
+    <div class="chips"><span class="chip age">11-14</span><span class="chip time">45 min</span><span class="chip">CSTA decompose</span></div>
+  </a>
+
+</div>
+
+</main>
+
+<footer class="wd-footer">
+  <span>▣ Maqueen Lab · 8 Lesson Plans · MIT</span>
+  <span><a href="../curriculum.html">📊 Curriculum mapping</a> · <a href="../../workshops/manual.html">📘 12-mission manual</a></span>
+</footer>
+
+<script>
+  // theme + lang restore
+  (function () {
+    var t = (function(){ try { return localStorage.getItem('robi.theme'); } catch(e){return null;} })() || 'carbon';
+    var valid = ['carbon','forest','steel','paper','pearl'];
+    if (valid.indexOf(t) === -1) t = 'carbon';
+    document.documentElement.setAttribute('data-theme', t);
+    var l = (function(){ try { return localStorage.getItem('robi.lang'); } catch(e){return null;} })() || 'en';
+    if (!/^(en|fr|ar)$/.test(l)) l = 'en';
+    document.documentElement.lang = l;
+    document.documentElement.dir = (l === 'ar') ? 'rtl' : 'ltr';
+  })();
+</script>
+</body>
+</html>
