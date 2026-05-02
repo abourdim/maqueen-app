@@ -179,6 +179,7 @@
       <button type="button" class="lang-pill"        data-lang="fr"><span class="flag flag-fr"></span>FR</button>
       <button type="button" class="lang-pill"        data-lang="ar"><span class="flag flag-ar"></span>AR</button>
     </div>
+    <a href="#demo=1" onclick="localStorage.setItem('maqueen.demo','1');setTimeout(()=>location.reload(),50)" class="wd-select" style="text-decoration:none;background:linear-gradient(90deg,#fb923c,#f97316);color:#0a1018;font-weight:700;border-color:#fb923c;" title="Try without a real robot">🎭 Demo (no robot)</a>
     <a href="../index.html"      class="wd-select" style="text-decoration:none;">🤖 Robot App</a>
     <a href="../docs/index.html" class="wd-select" style="text-decoration:none;">🗂️ Catalog</a>
   </div>
@@ -539,5 +540,8 @@ try {
 } catch (e) {}
 </script>
 
+<script src="../js/telemetry.js" defer></script>
+<script src="../js/share-link.js" defer></script>
+<script src="../js/demo-mode.js" defer></script>
 </body>
 </html>

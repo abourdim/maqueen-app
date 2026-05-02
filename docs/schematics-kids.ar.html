@@ -266,5 +266,8 @@
   tourBtn.addEventListener('click', async () => { const comps = Array.from(document.querySelectorAll('.comp')); for (const c of comps) { showTooltip(c); speak(c.dataset.title + '. ' + c.dataset.desc); await new Promise(r => setTimeout(r, voiceOn ? 4500 : 2200)); } hideTooltip(); });
 </script>
 
+<script src="../js/telemetry.js" defer></script>
+<script src="../js/share-link.js" defer></script>
+<script src="../js/demo-mode.js" defer></script>
 </body>
 </html>

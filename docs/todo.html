@@ -173,12 +173,20 @@ The app is great; almost nobody knows it exists yet.
 
 ## ⚡ Multipliers — small effort, large leverage
 
-- [ ] **One-click "Demo without robot"** — a fake BLE shim in every Lab so
-  kids/teachers can try the app *before* buying hardware. Conversion lever.
-- [ ] **`/share` deep links** — encode robot config + theme + lang into URL
-  hash so a teacher can share "this exact Lab setup" with one link.
-- [ ] **Local-only telemetry** — `localStorage` heatmap of "which Lab did I
-  open most" to inform what to invest in next. Zero privacy cost.
+- [x] **One-click "Demo without robot"** — `js/demo-mode.js` injects a fake BLE
+  shim when `?#demo=1` or `localStorage.maqueen.demo='1'`. Replaces
+  `connect/disconnect/sendLine/isConnected`, returns synthetic
+  `ECHO:N <verb>` and DIST/LINE/IR sensor values, shows a 🎭 floating badge
+  (click to exit). One-click "🎭 Demo (no robot)" CTA on the Labs hub.
+- [x] **`/share` deep links** — `js/share-link.js` encodes `theme · lang ·
+  demo` into the URL hash. Auto-applies on load (RTL flips for AR). Public
+  API `MqShare.url() / .copy() / .addButton()` for any page that wants a
+  "🔗 Share view" button.
+- [x] **Local-only telemetry** — `js/telemetry.js` auto-tracks visits per
+  surface (`visit.lab.joystick`, `visit.lesson.distance`, `theme.paper`,
+  `lang.fr`, etc.) into localStorage. **Zero network** — no fetch, no
+  beacon, no cookies. Viewer at [`docs/telemetry.html`](telemetry.html)
+  shows heatmap, JSON export, opt-out, and reset.
 
 ---
 
@@ -475,5 +483,8 @@ L'app est super ; presque personne ne sait qu'elle existe.
   — رفع milestone (مثال v0.2.0 = المرحلة 2A مكتملة).
 </script>
 <!-- inlined-md:end -->
+<script src="../js/telemetry.js" defer></script>
+<script src="../js/share-link.js" defer></script>
+<script src="../js/demo-mode.js" defer></script>
 </body>
 </html>

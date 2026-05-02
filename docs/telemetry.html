@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="carbon">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>📊 Local telemetry · Maqueen Lab</title>
+<link rel="stylesheet" href="../workshops/theme.css">
+<link rel="stylesheet" href="doc-shell.css">
+<style>
+  .lead { background: var(--bg-card); border: 1.5px solid var(--border); border-radius: 12px; padding: 16px 22px; margin: 18px 0 28px; }
+  .lead h2 { color: var(--neon); margin-bottom: 6px; }
+  .lead p { line-height: 1.55; opacity: 0.9; margin-bottom: 6px; font-size: 0.95rem; }
+  .toolbar { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 14px; }
+  .toolbar button { background: var(--bg-soft); color: var(--text); border: 1px solid var(--border); border-radius: 8px; padding: 7px 14px; font-size: 13px; cursor: pointer; font-weight: 600; }
+  .toolbar button:hover { border-color: var(--neon); color: var(--neon); }
+  .toolbar button.danger:hover { border-color: var(--danger); color: var(--danger); }
+  .toolbar button.optout-on { background: var(--neon); color: var(--ink); border-color: var(--neon); }
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom: 22px; }
+  .stat { background: var(--bg-card); border: 1.5px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+  .stat .lbl { font-size: 0.7rem; color: var(--steel); text-transform: uppercase; letter-spacing: 0.08em; }
+  .stat .val { font-size: 1.6rem; color: var(--neon); font-family: var(--font-display); margin-top: 2px; }
+  .heatmap { background: var(--bg-card); border: 1.5px solid var(--border); border-radius: 12px; padding: 18px; margin-bottom: 24px; }
+  .heatmap h3 { color: var(--neon); margin-bottom: 10px; }
+  .row { display: grid; grid-template-columns: 1fr 60px; gap: 8px; align-items: center; padding: 5px 0; font-size: 0.92rem; border-bottom: 1px dashed var(--border); }
+  .row:last-child { border-bottom: none; }
+  .row .key { font-family: var(--font-tech, monospace); color: var(--text); }
+  .row .bar { height: 8px; background: var(--bg-soft); border-radius: 4px; overflow: hidden; position: relative; grid-column: 1 / 3; margin-top: 3px; }
+  .row .bar-fill { height: 100%; background: linear-gradient(90deg, var(--cyan), var(--neon)); }
+  .row .count { text-align: right; color: var(--amber); font-family: var(--font-tech); font-weight: 700; }
+  .empty { color: var(--steel); font-style: italic; padding: 20px; text-align: center; }
+  details summary { cursor: pointer; color: var(--cyan); font-weight: 600; }
+  details pre { background: var(--bg-soft); border: 1px solid var(--border); border-radius: 8px; padding: 12px; overflow-x: auto; font-size: 0.78rem; color: var(--text); margin-top: 10px; max-height: 320px; }
+</style>
+</head>
+<body>
+
+<div class="wd-band wd-band-top"></div>
+<header class="wd-header">
+  <div class="title-block">
+    <div class="logo-mark">▣</div>
+    <div>
+      <h1>Maqueen Lab // Local Telemetry</h1>
+      <div class="subtitle">Browser-only — never leaves this device</div>
+    </div>
+  </div>
+  <div class="wd-header-right">
+    <a class="wd-select" href="index.html" style="text-decoration:none;border-bottom:none;">📚 Docs</a>
+    <a class="wd-select" href="../index.html" style="text-decoration:none;border-bottom:none;">🤖 Robot App</a>
+  </div>
+</header>
+
+<main class="wd-main">
+
+<section class="lead">
+  <h2>📊 What this is</h2>
+  <p>A privacy-preserving usage map of <b>your own</b> Maqueen Lab activity. Counters live in <code>localStorage</code> on this device and <b>never leave it</b> — no fetch, no beacon, no cookies, no analytics SDK.</p>
+  <p>The point: see which Labs / lessons / docs you actually use, so the roadmap reflects reality. Click <b>Opt out</b> below if you don't want telemetry tracked locally either.</p>
+</section>
+
+<div class="toolbar">
+  <button onclick="refresh()">🔄 Refresh</button>
+  <button onclick="exportJson()">📥 Export JSON</button>
+  <button id="optoutBtn" onclick="toggleOptout()">⏸ Opt out</button>
+  <button class="danger" onclick="resetAll()">🗑 Reset all</button>
+</div>
+
+<div class="stats" id="statBlock"></div>
+
+<div class="heatmap">
+  <h3>🧪 Lab visits</h3>
+  <div id="labRows"></div>
+</div>
+<div class="heatmap">
+  <h3>📚 Lesson visits</h3>
+  <div id="lessonRows"></div>
+</div>
+<div class="heatmap">
+  <h3>🎨 Theme usage</h3>
+  <div id="themeRows"></div>
+</div>
+<div class="heatmap">
+  <h3>🌍 Language usage</h3>
+  <div id="langRows"></div>
+</div>
+<div class="heatmap">
+  <h3>🗂 Other surfaces</h3>
+  <div id="otherRows"></div>
+</div>
+
+<details>
+  <summary>🔍 Raw localStorage dump</summary>
+  <pre id="rawDump"></pre>
+</details>
+
+</main>
+
+<footer class="wd-footer">
+  <span>▣ Maqueen Lab · Privacy-first telemetry — MIT</span>
+  <span>Source: <code>js/telemetry.js</code></span>
+</footer>
+
+<script src="../js/telemetry.js"></script>
+<script>
+  function fmt(n) { return new Intl.NumberFormat().format(n); }
+  function fmtDate(ms) { if (!ms) return '—'; return new Date(parseInt(ms,10)).toLocaleString(); }
+
+  function rowsFor(prefix, hostId) {
+    const all = MqTelemetry.all();
+    const entries = Object.entries(all)
+      .filter(([k]) => k.startsWith(prefix + '.'))
+      .map(([k, v]) => [k.slice(prefix.length + 1), parseInt(v, 10)])
+      .filter(([_, v]) => isFinite(v))
+      .sort((a, b) => b[1] - a[1]);
+    const max = entries.reduce((m, [, v]) => Math.max(m, v), 0) || 1;
+    const host = document.getElementById(hostId);
+    if (!entries.length) {
+      host.innerHTML = '<div class="empty">No data yet — open a few pages first.</div>';
+      return;
+    }
+    host.innerHTML = entries.map(([k, v]) => `
+      <div class="row">
+        <div class="key">${k}</div>
+        <div class="count">${fmt(v)}</div>
+        <div class="bar"><div class="bar-fill" style="width:${(v/max*100).toFixed(1)}%"></div></div>
+      </div>`).join('');
+  }
+
+  function refresh() {
+    const all = MqTelemetry.all();
+    const total  = parseInt(all['visit.total'], 10) || 0;
+    const first  = all['firstVisit'];
+    const last   = all['lastVisit'];
+
+    document.getElementById('statBlock').innerHTML = `
+      <div class="stat"><div class="lbl">Total visits</div><div class="val">${fmt(total)}</div></div>
+      <div class="stat"><div class="lbl">First visit</div><div class="val" style="font-size:0.85rem;font-family:var(--font-tech)">${fmtDate(first)}</div></div>
+      <div class="stat"><div class="lbl">Last visit</div><div class="val" style="font-size:0.85rem;font-family:var(--font-tech)">${fmtDate(last)}</div></div>
+      <div class="stat"><div class="lbl">Tracked keys</div><div class="val">${fmt(Object.keys(all).length)}</div></div>
+    `;
+
+    rowsFor('visit.lab', 'labRows');
+    rowsFor('visit.lesson', 'lessonRows');
+    rowsFor('theme', 'themeRows');
+    rowsFor('lang', 'langRows');
+
+    // "Other" = visit.* that isn't a lab or lesson
+    const otherEntries = Object.entries(all)
+      .filter(([k]) => k.startsWith('visit.') && !k.startsWith('visit.lab') && !k.startsWith('visit.lesson') && k !== 'visit.total')
+      .map(([k, v]) => [k.slice('visit.'.length), parseInt(v, 10)])
+      .filter(([_, v]) => isFinite(v))
+      .sort((a, b) => b[1] - a[1]);
+    const max = otherEntries.reduce((m, [, v]) => Math.max(m, v), 0) || 1;
+    const oh = document.getElementById('otherRows');
+    oh.innerHTML = otherEntries.length ? otherEntries.map(([k, v]) => `
+      <div class="row">
+        <div class="key">${k}</div>
+        <div class="count">${fmt(v)}</div>
+        <div class="bar"><div class="bar-fill" style="width:${(v/max*100).toFixed(1)}%"></div></div>
+      </div>`).join('') : '<div class="empty">No other surfaces yet.</div>';
+
+    document.getElementById('rawDump').textContent = JSON.stringify(all, null, 2);
+
+    const ob = document.getElementById('optoutBtn');
+    if (MqTelemetry.optedOut()) { ob.textContent = '▶ Opt back in'; ob.classList.add('optout-on'); }
+    else                        { ob.textContent = '⏸ Opt out';      ob.classList.remove('optout-on'); }
+  }
+
+  function exportJson() {
+    const data = MqTelemetry.all();
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'maqueen-telemetry-' + new Date().toISOString().slice(0, 10) + '.json';
+    a.click();
+  }
+
+  function toggleOptout() {
+    MqTelemetry.optout(!MqTelemetry.optedOut());
+    refresh();
+  }
+
+  function resetAll() {
+    if (!confirm('Wipe ALL local telemetry counters? This cannot be undone.')) return;
+    MqTelemetry.reset();
+    refresh();
+  }
+
+  // theme restore (matches the docs surface)
+  (function () {
+    var t = (function(){ try { return localStorage.getItem('robi.theme'); } catch(e){return null;} })() || 'carbon';
+    var valid = ['carbon','forest','steel','paper','pearl'];
+    if (valid.indexOf(t) === -1) t = 'carbon';
+    document.documentElement.setAttribute('data-theme', t);
+  })();
+
+  refresh();
+</script>
+<script src="../js/share-link.js" defer></script>
+<script src="../js/demo-mode.js" defer></script>
+</body>
+</html>
