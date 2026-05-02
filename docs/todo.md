@@ -1,65 +1,135 @@
 # Maqueen Lab — Roadmap
 
-Twenty things to ship next: ten app improvements + ten educational games.
-Tick (`[x]`) as items land. Each entry is a self-contained chunk; no
-hard ordering — pick whichever fits the next session.
-
-> **As of v0.1.60** — all 20 items below are checked. The original 10+10 roadmap is **complete**. New ideas now go to [labs/wishlist.html](../labs/wishlist.html) for community vote, and the workshop print artifacts live in `workshops/` (manual, booklet, cheat-cards, energizers, **flyer**, **poster**).
+> **Phase 1 (10 + 10 = 20 items) is complete as of v0.1.60.** Phase 2 below
+> shifts focus from *features* → *reach, hardening, depth*. Pick whichever
+> chunk fits the next session — each item is self-contained.
 
 ---
 
-## 🚀 10 Genius Improvements for the App
+## ✅ Phase 1 — Shipped (v0.1.0 → v0.1.60)
 
-| # | Idea | Why it's genius |
-|---|------|-----------------|
-| 1 | 🎙️ **Voice commands** *(Web Speech API)* | "Say _forward!_ / _spin!_ / _stop!_" → robot obeys. Hands-free hilarious for kids. Zero new dependencies. ~80 lines. |
-| 2 | 📱 **Tilt-to-drive** *(DeviceMotion API on phones)* | Tilt the phone like a steering wheel. Driving from a tablet feels physical. Pure web platform, no app install. |
-| 3 | 🍩 **AI session summary** *(browser-side LLM or Claude API)* | After a 5-minute drive, generate a paragraph in natural language: _"You drove 12 m, made 8 obstacle avoidances, your top speed was 24 cm/s. Try the Front Cone radar mode next time!"_ Spotify-Wrapped vibe for robotics. |
-| 4 | 🎬 **Time-lapse export** *(canvas → WebM)* | Record an entire session, export as 10× speed GIF/MP4 of the SLAM map evolving. Etsy listing material that sells itself. |
-| 5 | 🖍️ **Drag-to-trace autopilot** | Finger-paint a route on the SLAM map; robot navigates it autonomously using odometry as feedback. Real PID control as a kids' feature. |
-| 6 | 📷 **AR webcam overlay** | Phone camera shows the room; sonar pings + line-sensor hits overlay on the live video feed. The robot's "perception" made visible. |
-| 7 | 🎭 **Robot personalities** | "Speedy" / "Cautious" / "Curious" / "Lazy" presets that bundle wander threshold + speed + sweep range + audio voice. One-click character swap. |
-| 8 | 🔋 **Battery indicator** *(firmware-side voltage read)* | Real-time battery % bar in the rail. Kids learn about power. Requires small firmware addition + a `BAT?` verb. |
-| 9 | 📊 **Telemetry export** *(CSV/JSON download)* | Every drive/sensor sample → exportable file. Open in Excel/Python for school assignments. Turns the robot into a real data-collection tool. |
-| 10 | 🤝 **2-robot pairing** *(WebRTC peer-to-peer)* | Two Maqueens, two browser tabs, one mirrors the other. No server needed. _"Look mom, they're dancing together!"_ |
+The original "20 things to ship next: 10 app improvements + 10 educational
+games" — **all checked**. Open the [Changelog](CHANGELOG.html) for the full
+release-by-release breakdown. Open the [labs wishlist](../labs/wishlist.html)
+to vote on new ideas; the next batch is curated from there.
 
-### Checklist
-- [x] 1. Voice commands
-- [x] 2. Tilt-to-drive
-- [x] 3. AI session summary (local recap + optional Claude polish)
-- [x] 4. Time-lapse export
-- [x] 5. Drag-to-trace autopilot
-- [x] 6. AR webcam overlay
-- [x] 7. Robot personalities
-- [x] 8. Battery indicator (UI + polling; needs firmware `BAT?` verb)
-- [x] 9. Telemetry export
-- [x] 10. 2-robot pairing
+### App improvements (10/10) — done
+
+- [x] 1. Voice commands · [x] 2. Tilt-to-drive · [x] 3. AI session summary ·
+  [x] 4. Time-lapse export · [x] 5. Drag-to-trace autopilot ·
+  [x] 6. AR webcam overlay · [x] 7. Robot personalities ·
+  [x] 8. Battery indicator · [x] 9. Telemetry export · [x] 10. 2-robot pairing
+
+### Educational games (10/10) — done
+
+- [x] 1. SLAM the Room · [x] 2. Echo Hunt · [x] 3. Maze Runner ·
+  [x] 4. Buzz the Tune · [x] 5. Simon Says NeoPixel ·
+  [x] 6. Math the Distance · [x] 7. Robot Soccer ·
+  [x] 8. Line Follower Race · [x] 9. PWM Lab · [x] 10. Morse Decoder
+
+### Bonus shipped during Phase 1
+
+- [x] **8 single-purpose Labs** (`labs/`): Joystick · Distance · Music ·
+  Servos · IR · Lights · Vision · Co-Pilot
+- [x] **Right-rail Message Log** in every Lab, faithful to the main app's
+  `> #N VERB` / `< ECHO` format
+- [x] **Draggable cockpit FABs** (Connect / Labs / Stop) with localStorage
+  position persistence
+- [x] **Workshops surface**: bilingual manual, booklet, cheat-cards,
+  energizers, hub
+- [x] **Kid-attracting flyer + poster** (FR, 8 ans+) with comic bursts,
+  real QR codes, mobile scale-to-fit
+- [x] **Brand sweep** `ROBI-9 LAB → MAQUEEN LAB` across HTML/CSS/JS
+- [x] **Auto-rendered HTML for every `.md`** (`docs/_md-render.js`)
+- [x] **Defensive theme sanitizer** in every lab + hub
 
 ---
 
-## 🎮 10 Genius Educational Games
+## 🎯 Phase 2A — Reach (turn product into adoption)
 
-| # | Game | Concept it teaches |
-|---|------|--------------------|
-| 1 | 🛰️ **SLAM the Room** | Drive around, sonar projects obstacles into the world map (already in app!). Score = % of room mapped. Teaches localization + sensor fusion. |
-| 2 | 🎯 **Echo Hunt** | Hidden virtual "treasure" at random (x, y) on the SLAM map. Robot drives blind; only feedback is sonar ping rate getting faster as it gets closer. Teaches triangulation + search algorithms. |
-| 3 | 🧱 **Maze Runner** | Set up cardboard walls; robot solves the maze autonomously. Win = reach the green tape. Teaches reactive control (Brooks subsumption). |
-| 4 | 🎵 **Buzz the Tune** | Kid taps notes on a piano-strip, robot plays them via buzzer. Teaches frequency = pitch, duration = rhythm. Bonus: AI hint suggests _"you played Twinkle Twinkle!"_ |
-| 5 | 🌈 **Simon Says — NeoPixel** | App flashes a color sequence on the 4 LEDs, kid recreates with the picker. Length grows. Teaches sequence + memory + RGB color theory. |
-| 6 | 📏 **Math the Distance** | _"I'll drive forward at speed 150 for 2 seconds. How many cm will I move?"_ Kid enters answer, robot drives, odometry shows actual. Score = accuracy. Teaches v = d/t. |
-| 7 | ⚽ **Robot Soccer** | Foam ball + Push (bulldozer) kit + tape goal lines on the floor. Race to push the ball into the opposite goal. Teaches kinematics + tactical planning. |
-| 8 | 🏁 **Line Follower Race** | Print/draw a black line track on paper. Robot uses line sensors to follow. Time the lap. Teaches feedback loops (closed-loop control). |
-| 9 | 🎚️ **PWM Lab** | _"Hit 67° EXACTLY on the servo."_ Kid drags slider, sees PWM oscilloscope live. Score = how close. Teaches pulse width = analog control. |
-| 10 | 📡 **Morse Decoder** | Buzzer plays a Morse-code message ( . . .  -  -  -  . . . = SOS). Kid decodes letter by letter. Teaches digital encoding + binary thinking. |
+The app is great; almost nobody knows it exists yet.
+
+| # | Item | Why now |
+|---|------|---------|
+| 1 | **i18n parity for the main cockpit** (FR + AR) | Docs & workshops are tri-lingual; the cockpit isn't. Blocks French/Arabic-speaking schools. ~1 day with the existing `T={en,fr,ar}` pattern. |
+| 2 | **Etsy package v1 ready-to-list** | `etsy-package/` is half-baked. Finish: hero photos, listing copy locked, quickstart card. This is your distribution. |
+| 3 | **Teacher kit** — 1-pager lesson plan + rubric per Lab | 8 labs × 1 lesson plan = 8 pages. Sells to schools instantly. |
+| 4 | **Print-quality flyer/poster export** (PDF) | Add a "Save as PDF" CTA + verified A4 print preview. Right now teachers have to know to Ctrl+P. |
+| 5 | **Curriculum-aligned challenge set** (Cycle 3/4 FR · K-8 EN) | Map existing Labs/games to formal learning objectives. Teachers need this verbatim. |
 
 ### Checklist
-- [x] 1. SLAM the Room
-- [x] 2. Echo Hunt
-- [x] 3. Maze Runner
-- [x] 4. Buzz the Tune
-- [x] 5. Simon Says — NeoPixel
-- [x] 6. Math the Distance
-- [x] 7. Robot Soccer
-- [x] 8. Line Follower Race
-- [x] 9. PWM Lab
-- [x] 10. Morse Decoder
+- [ ] 1. i18n parity — main cockpit (FR + AR)
+- [ ] 2. Etsy package v1 — listing-ready
+- [ ] 3. Teacher kit — 8 lesson plans + rubrics
+- [ ] 4. PDF export from flyer/poster
+- [ ] 5. Curriculum mapping (FR cycles + EN grades)
+
+---
+
+## 🛠 Phase 2B — Hardening (so things don't rot)
+
+| # | Item | Why now |
+|---|------|---------|
+| 6 | **Smoke tests** (Playwright headless) | 8 labs + main app = a lot of surface. One PR can break a Lab silently. ~200 LoC covers 80% of regressions. |
+| 7 | **Split `maqueen-tab.js` (4580 LoC)** | One file, one accident. Modularize by card (Drive, Servos, LEDs, etc.). Pre-condition for any further main-app work. |
+| 8 | **GitHub Actions CI** — lint + tests + Pages deploy | Currently every push is hope. 30-line workflow file. |
+| 9 | **A11y pass** — keyboard, focus rings, ARIA on FABs/labs | Disabled-kid accessibility is a real selling point and a real bug (FABs aren't keyboard-reachable). |
+| 10 | **Performance budget** — measure first-paint + JS bundle on Labs | Labs feel snappy on desktop, sluggish on cheap Android tablets (school hardware). Budget: ≤ 1.5 s LCP on a £100 tablet. |
+
+### Checklist
+- [ ] 6. Smoke tests for all 8 labs + main connect/disconnect path
+- [ ] 7. `js/maqueen-tab.js` → `js/maqueen/{drive,servos,leds,...}.js`
+- [ ] 8. CI workflow (lint, tests, deploy on green)
+- [ ] 9. A11y audit — keyboard nav, ARIA, contrast
+- [ ] 10. Perf budget + Lighthouse CI
+
+---
+
+## 🚀 Phase 2C — Depth (deepen what already works)
+
+| # | Item | Why now |
+|---|------|---------|
+| 11 | **3 new labs from `wishlist.html`** (top-voted) | Channel new ideas through the wishlist you just built. Pick 3, ship a "Labs v2" milestone. |
+| 12 | **Multi-robot Lab** (WebRTC peer-to-peer) | Phase 1 #10 was checked but the demo isn't first-class. Two Maqueens dancing = viral. |
+| 13 | **Progress badges / kid passport** | Tracks which Labs they've completed. localStorage only — no backend. Big motivator. |
+| 14 | **Add-on framework** (Gravity sensors + I2C accessories) | Verb namespace stubbed in firmware. Unblock "what else can I plug in?". |
+| 15 | **Phase 2 firmware** (`firmware/v2-raw-pins.ts`) | Same wire protocol, raw `pins.*` calls instead of `maqueen.*` lib — for advanced learners. |
+
+### Checklist
+- [ ] 11. Top 3 wishlist labs shipped
+- [ ] 12. Multi-robot dance demo (1st-class lab)
+- [ ] 13. Kid passport / badges
+- [ ] 14. Add-on framework + first I2C accessory
+- [ ] 15. v2-raw-pins firmware
+
+---
+
+## ⚡ Multipliers — small effort, large leverage
+
+- [ ] **One-click "Demo without robot"** — a fake BLE shim in every Lab so
+  kids/teachers can try the app *before* buying hardware. Conversion lever.
+- [ ] **`/share` deep links** — encode robot config + theme + lang into URL
+  hash so a teacher can share "this exact Lab setup" with one link.
+- [ ] **Local-only telemetry** — `localStorage` heatmap of "which Lab did I
+  open most" to inform what to invest in next. Zero privacy cost.
+
+---
+
+## ⚠️ Anti-patterns to avoid
+
+- **No new feature before the `maqueen-tab.js` split** (Phase 2B #7).
+  Every new card makes the 4580-line file worse.
+- **No new Lab without smoke tests** for it. Recurring bugs (joystick logger
+  mount, co-pilot double-mount) prove this.
+- **Don't translate the main cockpit by hand** — wire it to the same
+  `T={en,fr,ar}` pattern as `workshops/manual` and let it scale.
+
+---
+
+## How to use this file
+
+- New ideas → go to [labs/wishlist.html](../labs/wishlist.html), not here.
+- Picking up an item → tick it (`- [x]`), commit with the item number in
+  the message (e.g. `feat(2B-7): split maqueen-tab.js`).
+- A Phase 2 sub-section is "done" when its checklist is fully ticked —
+  bump the milestone (e.g. v0.2.0 = Phase 2A complete).
