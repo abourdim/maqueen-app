@@ -84,4 +84,21 @@ if [ "$FW_CHANGED" = "1" ]; then
   git add firmware/v1-maqueen-lib.ts index.html
 fi
 git add build-info.json product.json
+
+# If any markdown source feeding the auto-rendered docs was staged, refresh
+# the inlined <script type="text/markdown"> blocks in matching HTML so the
+# pages keep working over file:// (no CORS) and on GitHub Pages.
+MD_CHANGED=0
+if ! git diff --cached --quiet -- 'docs/*.md' 'docs/lessons/*.md' 'README.md' 'README.fr.md' 'README.ar.md'; then
+  MD_CHANGED=1
+fi
+if [ "$MD_CHANGED" = "1" ] && [ -f docs/_inline-md.mjs ]; then
+  if command -v node >/dev/null 2>&1; then
+    echo "[pre-commit] markdown changed → inlining into HTML shells…" >&2
+    node docs/_inline-md.mjs >&2 || echo "[pre-commit] WARN: inline-md.mjs failed (non-fatal)" >&2
+    git add 'docs/*.html' 'docs/lessons/*.html' 'README.html' 2>/dev/null || true
+  else
+    echo "[pre-commit] node not on PATH — skipping markdown inline (run 'node docs/_inline-md.mjs' manually)" >&2
+  fi
+fi
 exit 0
