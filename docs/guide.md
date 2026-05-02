@@ -1,8 +1,10 @@
 # Maqueen Lab — User Guide
 
-**Version:** v0.1.55 — Maqueen tab feature-complete (Drive, Servos with Mechanic-Kit picker, Simple LEDs, NeoPixels, Buzzer, Ultrasonic, IR remote, Line sensors + Follow-line). Live sensor strip across the top, auto-pollers with persisted rate sliders, and a `streams: ON/OFF` chip that auto-arms when you enter Sensors / Graph / 3D.
+**Version:** v0.1.60 — Maqueen tab feature-complete + **Labs surface** (8 single-purpose, kid-friendly experiments) + workshops (manual, booklet, cheat-cards, **flyer**, **poster**). Live sensor strip across the top, auto-pollers with persisted rate sliders, draggable cockpit FABs (Connect / Labs / Stop).
 
-> The HTML twin of this guide ([USER_GUIDE.html](../USER_GUIDE.html)) is the canonical, kid-friendly version and is kept up to date in lockstep.
+**Live:** https://abourdim.github.io/maqueen-lab/
+
+> The HTML twin of this guide ([guide.html](guide.html)) is the canonical, kid-friendly version and is kept up to date in lockstep.
 
 ---
 
@@ -113,6 +115,46 @@ Open [pinout.html](../pinout.html) for the full pin map, I2C register layout, co
 
 ---
 
+## Labs surface (`labs/`)
+
+Eight single-purpose experiences, each focused on one capability. Open [labs/index.html](../labs/index.html) for the hub. Every lab:
+
+- Connects via the same `js/ble.js` (single source of truth for the BLE link).
+- Pins a **right-rail Message Log** faithful to the main app's MESSAGE LOG: `> #N VERB` for TX, `< ECHO` for RX, errors highlighted, drag-resize handle.
+- Themes from a 5-palette set (`carbon / forest / steel / paper / pearl`) — independent from the main app's theme set, sanitized defensively on load.
+
+| Lab | What it teaches |
+|---|---|
+| **Joystick** | Drive the robot with a virtual stick. Speed + tank-steer modes. |
+| **Distance** | Live ultrasonic radar — parking helper, alarm, theremin. |
+| **Music** | Buzzer notes, piano keyboard, 8-step sequencer, dance. |
+| **Servos** | S1/S2 sliders, choreography record/replay. |
+| **IR** | IR remote keys, line-follower IR pair preview. |
+| **Lights** | 4× NeoPixel ambiences, painter, IR line-follower with LEDs. |
+| **Vision** | Use your webcam to drive the robot (face / pose). |
+| **Co-Pilot** | Voice commands → robot moves. |
+
+A **wishlist** ([labs/wishlist.html](../labs/wishlist.html)) collects ideas for the next lab — vote with 👍.
+
+---
+
+## Workshops (`workshops/`)
+
+Printable A4 / classroom artifacts:
+
+- **`hub.html`** — index with theme + lang selectors.
+- **`manual.{html,fr,ar}`** — full step-by-step lesson plan.
+- **`booklet.html`**, **`cheatcards.html`**, **`energizers.html`** — short-form classroom support.
+- **`flyer.html`** + **`poster.html`** — kid-attracting v2 (FR, 8 ans+) with comic-book bursts (POW / BAM / ZAP / BOOM), wave emanations, animated SVG illustrations (radar / servo / music / LED), and a real **QR code** that points to the live app. Both pages preserve the A4 print layout but **scale-to-fit on phones** (≤ 820px) so a kid can scan the QR and the page shrinks cleanly to portrait mobile.
+
+---
+
+## Cockpit FABs (main app)
+
+Three floating action buttons live in the corner of the main app: **CONNECT**, **LABS**, **STOP**. All three are **draggable** — long-press and drop wherever you want. Positions persist in localStorage. An 8-pixel movement threshold distinguishes drag from click.
+
+---
+
 ## Removed / deprecated
 
 To kill duplication after the Maqueen tab landed:
@@ -123,11 +165,12 @@ To kill duplication after the Maqueen tab landed:
 - **GamePad sub-tab** — duplicate of Maqueen Drive.
 - **Motors sub-tab** — duplicate of Maqueen Servos with the kit picker.
 
-## What's coming next (per [plan.md](../plan.md))
+## What's coming next (per [plan.md](plan.md))
 
 - **Add-on framework** for Gravity sensors and I2C accessories (verb namespace stubbed in firmware).
-- Trilingual UI (EN / AR / FR).
+- Trilingual UI (EN / AR / FR) — already shipped for docs + workshops; main-app cockpit next.
 - Phase 2 firmware (`firmware/v2-raw-pins.ts`): same wire protocol, raw `pins.*` calls instead of `maqueen.*` lib — for advanced learners.
+- More Labs (vote in [labs/wishlist.html](../labs/wishlist.html)).
 
 ---
 

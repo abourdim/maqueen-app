@@ -4,6 +4,8 @@ Twenty things to ship next: ten app improvements + ten educational games.
 Tick (`[x]`) as items land. Each entry is a self-contained chunk; no
 hard ordering — pick whichever fits the next session.
 
+> **As of v0.1.60** — all 20 items below are checked. The original 10+10 roadmap is **complete**. New ideas now go to [labs/wishlist.html](../labs/wishlist.html) for community vote, and the workshop print artifacts live in `workshops/` (manual, booklet, cheat-cards, energizers, **flyer**, **poster**).
+
 ---
 
 ## 🚀 10 Genius Improvements for the App

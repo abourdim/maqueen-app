@@ -1,5 +1,51 @@
 # Changelog
 
+## v0.1.60 — 2026-05-02
+
+Big surface expansion: a `labs/` folder with 8 single-purpose kid labs, draggable cockpit FABs in the main app, brand sweep, and printable workshop artifacts (flyer + poster) with real QR codes.
+
+### Added — Labs surface (`labs/`)
+
+- **8 single-purpose Labs**: Joystick, Distance, Music, Servos, IR, Lights, Vision, Co-Pilot. Each lab connects via the same `js/ble.js`, mounts the live robot, and pins a right-rail **Message Log** faithful to the main app's MESSAGE LOG (TX `> #N VERB` / RX `< ECHO` format).
+- `labs/index.html` hub + `labs/wishlist.html` (next-lab vote board).
+- `labs/lab-logger.js` + `.css` — pinned right-rail logger with drag-resize, `lockShimHook` via `Object.defineProperty` (un-overridable handler chain), classifyLine() auto-detect of TX/RX/ERR.
+- Defensive theme sanitizer in every lab + hub: `if (_validThemes.indexOf(t) === -1) t = 'carbon'` — protects the lab palette (`carbon / forest / steel / paper / pearl`) from cross-surface localStorage propagation accidents.
+
+### Added — Cockpit (main app)
+
+- **Draggable FABs**: CONNECT, LABS, STOP. Pointer-events drag with 8px click-vs-drag threshold; positions persist in localStorage. LABS anchor sets `draggable=false` + `dragstart preventDefault` to defeat HTML5 drag-to-bookmark interception.
+
+### Added — Workshops
+
+- `workshops/flyer.html` + `workshops/poster.html` — kid-attracting v2 (FR, 8 ans+).
+  - Comic-book bursts (POW / BAM / ZAP / BOOM via 12-pt clip-path stars).
+  - Wave emanations behind mascot, "VROUM VROUM!" speech bubble.
+  - Animated SVG illustrations: radar sweep, servo wave, music notes, LED pulse.
+  - Real QR code via `js/qrcode.min.js` (qrcode-generator API: `createSvgTag()`).
+  - Official `assets/logo.svg` + "MAQUEEN LAB" wordmark in the hero.
+  - **Mobile-friendly scale-to-fit**: A4 internal layout preserved; JS sets `transform: scale()` on viewports ≤ 820px and collapses the layout-box height so there's no white tail. Print path untouched (still true A4).
+
+### Fixed — Reliability
+
+- **`sw.js`** — atomic `cache.addAll` was failing on missing assets. Now per-asset `cache.add().catch()`. Removed 5 dead asset entries. Cache renamed `maqueen-lab-v11`.
+- **`js/ble-scheduler.js`** — wrapper was swallowing the awaited promise (`return throttledSend(line)`).
+- **Joystick lab logger** — DOMContentLoaded handler was inside an IIFE that ran *after* DCL. Fixed with readyState-aware mount.
+- **Co-Pilot lab** — both DCL + readyState fallback fired, double-mounting the logger. Added `_copilotMounted` guard.
+
+### Fixed — Theming
+
+- Reverted the `mb_theme → robi.theme` cross-surface unification — main app and labs have **different palettes** (only `forest` overlaps). Each surface owns its own localStorage key.
+- Added theme sanitizer to all labs + `labs/index.html` + `labs/wishlist.html`.
+- Servo-lab regression: sanitizer ran *before* the localStorage fallback → reset to `carbon` on every visit. Reordered.
+
+### Changed — Brand
+
+- Sweep `ROBI-9 LAB` → `MAQUEEN LAB` across HTML strings *and* CSS / JS comments (`docs/doc-shell.css`, `workshops/theme.css`, `js/voice-picker.js`).
+
+### Docs
+
+- `docs/index.html` + every guide / pinout / plan / schematics page: theme + lang selectors, Robi-9 mascot pill, faithful to `workshops/hub.html`.
+
 ## v0.1.55 — 2026-04-27
 
 The Maqueen tab is now the front door. Heavy clean-up of duplicated

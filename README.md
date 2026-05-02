@@ -4,7 +4,15 @@
 
 Every actuator and sensor on the Maqueen Lite is reachable from a card in the **🤖 Maqueen** tab — drive the wheels, pose the servos, light the LEDs and NeoPixels, beep the buzzer, ping the ultrasonic, read the IR remote, follow a line. A second **🧪 Playground** tab keeps the legacy bit-playground sub-tabs (Controls, Sensors, Graph, 3D, Bench, More) for free-form micro:bit experiments. All control flows over BLE UART; every command is sequence-numbered and echo-confirmed.
 
-> **Status:** v0.1.55 — Maqueen tab feature-complete; live sensor strip, auto-pollers, mechanic-kit picker, follow-line, NeoPixel rainbow, LED matrix draw. See [CHANGELOG.md](docs/CHANGELOG.md) for recent work, [plan.md](docs/plan.md) for the original build plan.
+The repo also ships:
+
+- **`labs/`** — 8 single-purpose, kid-friendly **Labs** that each focus on one capability (Joystick, Distance, Music, Servos, IR, Lights, Vision, Co-Pilot). Each Lab pins a faithful right-rail **Message Log** that mirrors the main app's TX/RX format, and themes/langs match the docs surface (`carbon / forest / steel / paper / pearl`).
+- **`docs/`** — User Guide, Pinout, Plan, Schematics (FR / EN / AR variants of each).
+- **`workshops/`** — printable A4 PDF-grade artifacts: bilingual **manual**, **booklet**, **cheat-cards**, **energizers**, **hub**, plus a kid-attracting **flyer** and **poster** (FR, 8 ans+, comic-book bursts, real QR code → live app, mobile scale-to-fit).
+
+> **Status:** v0.1.60 — Maqueen tab feature-complete; Labs surface (8 labs) shipped; draggable cockpit FABs; brand sweep `ROBI-9 LAB → MAQUEEN LAB`; flyer + poster v2 with QR codes. See [CHANGELOG.md](docs/CHANGELOG.md) for recent work, [plan.md](docs/plan.md) for the original build plan.
+
+**Live:** https://abourdim.github.io/maqueen-lab/
 
 ---
 
@@ -69,6 +77,30 @@ Pick whichever launcher you have handy — they all serve `http://localhost:8000
 
 The Python launcher accepts a custom port (`python tools/serve.py 8765`)
 and auto-opens your default browser unless `MAQUEEN_NO_BROWSER=1` is set.
+
+---
+
+## Surfaces
+
+| Surface | Path | Purpose |
+|---|---|---|
+| **Main app** | `index.html` | Full Maqueen + Playground cockpit (real BLE) |
+| **Labs** | `labs/index.html` | 8 single-purpose, kid-friendly experiments |
+| **Docs** | `docs/index.html` | User Guide, Pinout, Plan, Schematics (EN/FR/AR) |
+| **Workshops** | `workshops/hub.html` | Printable A4 manual, booklet, cheat-cards, flyer, poster |
+
+The **8 Labs** (each connects via the same `js/ble.js`, mounts a pinned right-rail logger faithful to the main app):
+
+| Lab | What it teaches |
+|---|---|
+| **Joystick** | Drive the robot with a virtual stick; speed + tank-steer modes |
+| **Distance** | Live ultrasonic radar; parking helper, alarm, theremin |
+| **Music** | Buzzer notes, piano, 8-step sequencer, dance |
+| **Servos** | S1/S2 sliders, choreography record/replay |
+| **IR** | IR remote keys, line-follower IR pair preview |
+| **Lights** | 4× NeoPixel ambiences, painter, IR line-follower with LEDs |
+| **Vision** | Use your webcam to drive the robot (face / pose) |
+| **Co-Pilot** | Voice commands → robot moves |
 
 ---
 
