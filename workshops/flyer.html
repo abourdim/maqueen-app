@@ -61,6 +61,21 @@
     .flyer { border: none; border-radius: 0; max-width: none; padding: 12mm 10mm; height: 297mm; }
   }
 
+  /* ============ MOBILE: scale-to-fit while preserving layout ============
+     Width/origin set here; the actual scale + height-collapse is done by JS at the
+     bottom of the page (calc() with vw inside transform isn't reliable cross-browser). */
+  @media (max-width: 820px) {
+    body { padding: 8px; overflow-x: hidden; }
+    .topbar { font-size: 11px; padding: 6px 8px; flex-wrap: wrap; gap: 6px; }
+    .topbar .title { font-size: 12px; }
+    .topbar a, .topbar button { padding: 4px 8px; font-size: 11px; }
+    .flyer {
+      width: 794px;            /* ~210mm at 96dpi — locked so inner mm layout is preserved */
+      max-width: none;
+      transform-origin: top left;
+    }
+  }
+
   /* Background blueprint grid */
   .flyer::before {
     content: '';
@@ -707,6 +722,35 @@
         }
       } catch (e) { console.error('QR error', e); }
     }
+  })();
+</script>
+<!-- Mobile fit: collapse the layout-box whitespace left by transform:scale -->
+<script>
+  (function () {
+    function fit() {
+      const f = document.querySelector('.flyer');
+      if (!f) return;
+      const w = Math.min(document.documentElement.clientWidth || 9999, window.innerWidth || 9999);
+      if (w <= 820) {
+        const avail = (w <= 480) ? (w - 16) : w;
+        const scale = avail / 794;
+        // measure natural height first (transform doesn't affect scrollHeight here because
+        // we read it before re-applying transform on the same frame)
+        f.style.height = '';
+        f.style.transform = '';
+        const h = f.scrollHeight;
+        f.style.transform = 'scale(' + scale + ')';
+        f.style.height = (h * scale) + 'px';
+      } else {
+        f.style.transform = '';
+        f.style.height = '';
+      }
+    }
+    window.addEventListener('resize', fit);
+    window.addEventListener('orientationchange', fit);
+    fit();
+    // Re-measure after web fonts settle
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
   })();
 </script>
 </body>
