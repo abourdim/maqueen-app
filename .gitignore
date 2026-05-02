@@ -16,3 +16,9 @@ etsy-package/output/visual-diffs/
 
 # Track the shipped ZIP for reference
 !etsy-package/MaqueenLab-v*.zip
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
