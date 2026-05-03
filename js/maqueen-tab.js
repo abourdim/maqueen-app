@@ -1025,6 +1025,7 @@
         sweepPeriodMs = +e.target.value;
         try { localStorage.setItem('maqueen.sweepPeriod', String(sweepPeriodMs)); } catch {}
         paintSweepReadout();
+        if (typeof pushSweepParams === 'function') pushSweepParams();
       });
     }
     // Shared sweep-RANGE control — start/end angles for the sweep.
@@ -1071,6 +1072,7 @@
         clampSweepRange();
         try { localStorage.setItem('maqueen.sweepFrom', String(sweepFromDeg)); } catch {}
         paintSweepRangeReadouts();
+        if (typeof pushSweepParams === 'function') pushSweepParams();
       });
     }
     if (sweepToInput) {
@@ -1080,6 +1082,7 @@
         clampSweepRange();
         try { localStorage.setItem('maqueen.sweepTo', String(sweepToDeg)); } catch {}
         paintSweepRangeReadouts();
+        if (typeof pushSweepParams === 'function') pushSweepParams();
       });
     }
     // Preset chips — one tap sets BOTH sliders + persists + repaints.
@@ -1096,6 +1099,7 @@
           localStorage.setItem('maqueen.sweepTo',   String(sweepToDeg));
         } catch {}
         paintSweepRangeReadouts();
+        if (typeof pushSweepParams === 'function') pushSweepParams();
       });
     });
     // Initial paint (matches whatever was loaded from localStorage).
@@ -1163,6 +1167,23 @@
       try { if (port === 1) mqMascot.sonarServo(a); } catch {}
     }
 
+    // When period / from / to change DURING an active sweep, resync:
+    //   • Browser-mode: nothing to do — the animation tick reads sweepPeriodMs
+    //     and sweepFromDeg/sweepToDeg LIVE on every frame (incremental cycleT).
+    //   • Firmware-mode: the micro:bit is running its own SWEEP loop with the
+    //     params it was given at start time. Resend SWEEP: with new values so
+    //     the firmware updates without the user having to stop+start.
+    function pushSweepParams() {
+      [1, 2].forEach(port => {
+        if (sweeping[port] !== 'firmware') return;
+        if (!window.bleScheduler) return;
+        try {
+          window.bleScheduler.send(
+            `SWEEP:${port},${sweepFromDeg},${sweepToDeg},${sweepPeriodMs},1`
+          ).catch(() => {});
+        } catch {}
+      });
+    }
     function startSweep(port) {
       if (!window.bleScheduler) return;
       if (sweeping[port]) return;
@@ -1193,8 +1214,20 @@
       const SEND_INTERVAL_MS = 85;
       let lastSent = null;
       let lastSendT = 0;
+      // Track cycle progress INCREMENTALLY (Δ = dt / sweepPeriodMs_now).
+      // Computing `(t % sweepPeriodMs) / sweepPeriodMs` instead would jump
+      // wildly when the user drags the speed slider mid-sweep, because `t`
+      // is large and a sudden P change re-maps it to a totally different
+      // cycle position. Stop+start used to be the only way to "fix it" —
+      // not anymore. Same pattern as labs/servo-lab.html sweep.
+      let cycleT = 0;
+      let lastTickT = 0;
       window.bleScheduler.animate(`servo-sweep-${port}`, t => {
-        const cycleT = (t % sweepPeriodMs) / sweepPeriodMs;
+        // First frame: seed lastTickT, no advance.
+        if (lastTickT === 0) lastTickT = t;
+        const dt = Math.min(100, t - lastTickT); // clamp tab-resume hiccups
+        lastTickT = t;
+        cycleT = (cycleT + dt / sweepPeriodMs) % 1;
         const a = Math.round(sweepAngle(cycleT));
         applyVisualAngle(port, a);
         // Always visual-only when in firmware mode, OR when BLE is not
