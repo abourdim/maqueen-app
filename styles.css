@@ -7098,6 +7098,10 @@ body.mq-density-demo .mq-mode-dial {
 #mqConnectPanel #fwVersionLine {
   display: inline-flex !important; align-items: center !important;
   gap: 4px !important;
+  /* Kill the inline margin/padding/border the element inherited from its
+     original stacked-text-block placement inside #appBuildInfo. Without
+     these resets the version text rides ~6 px below true vertical center. */
+  margin: 0 !important; padding: 0 !important; border: 0 !important;
   font-size: 11px !important; white-space: nowrap !important; opacity: 0.8 !important;
 }
 /* version value — spaced out and accented so it doesn't merge with the label */
