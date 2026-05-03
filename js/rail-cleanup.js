@@ -142,6 +142,24 @@
       }
     }
 
+    // 4) Shorten the device name so the compact connect bar stays tight.
+    //    `BBC micro:bit [gutap]` → `[gutap]` — keep only the unique 5-char
+    //    suffix that distinguishes this physical robot. Watch the element
+    //    so subsequent connects re-shorten too. Idempotent.
+    const dn = document.getElementById('deviceName');
+    if (dn && !dn.dataset.shortened) {
+      dn.dataset.shortened = '1';
+      const shorten = () => {
+        const t = (dn.textContent || '').trim();
+        // match a trailing [xxxxx] code; otherwise leave alone (e.g., "None")
+        const m = t.match(/\[[a-zA-Z0-9]{3,8}\]/);
+        if (m && t !== m[0]) dn.textContent = m[0];
+      };
+      shorten();
+      // Run again whenever ble.js writes the full name on connect.
+      new MutationObserver(shorten).observe(dn, { childList: true, characterData: true, subtree: true });
+    }
+
     // Done when all three relocations have happened.
     const done =
       (!panel       || panel.classList.contains('in-cockpit')) &&
