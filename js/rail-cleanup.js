@@ -142,7 +142,23 @@
       }
     }
 
-    // 4) Shorten the device name so the compact connect bar stays tight.
+    // 4) Streams toggle → Settings drawer (under "📡 Sensor streams").
+    //    Was clogging the compact connect bar with a redundant "streams: OFF"
+    //    pill; the toggle is a power-user thing, belongs in Settings. The
+    //    button keeps its same id + listeners — only the parent moves.
+    const streamsBtn = document.getElementById('mq-streams-toggle');
+    if (drawerBody && streamsBtn && !streamsBtn.dataset.relocated) {
+      const sec = ensureSection(drawerBody, 'mqDrawerStreams', '📡 Sensor streams');
+      sec.innerHTML += '<p style="font-size:0.85rem;opacity:0.78;margin:6px 0 8px;line-height:1.5;">Continuous ACC / TEMP / LIGHT / COMPASS / BTN updates from the micro:bit. Needed for the Sensors / Graph / 3D tabs. Off by default to keep the BLE channel quiet.</p>';
+      sec.appendChild(streamsBtn);
+      streamsBtn.dataset.relocated = '1';
+      // Wider in the drawer (no longer constrained by the tight connect bar)
+      streamsBtn.style.padding = '6px 14px';
+      streamsBtn.style.fontSize = '13px';
+      moved++;
+    }
+
+    // 5) Shorten the device name so the compact connect bar stays tight.
     //    `BBC micro:bit [gutap]` → `[gutap]` — keep only the unique 5-char
     //    suffix that distinguishes this physical robot. Watch the element
     //    so subsequent connects re-shorten too. Idempotent.
