@@ -4393,6 +4393,9 @@ serial.writeLine("GRAPH:Force:" + force)</code></pre>
         <div style="display:flex; gap:8px; margin-bottom:12px; flex-wrap:wrap;">
             <button id="firmwareCopyBtn" class="primary" data-i18n="copy_code">Copy Code</button>
             <a href="https://makecode.microbit.org/" target="_blank" rel="noopener" class="secondary" style="display:inline-flex; align-items:center; text-decoration:none; padding:8px 16px; border-radius:8px;" data-i18n="open_makecode">Open MakeCode</a>
+            <!-- Pre-loaded with DFRobot/pxt-maqueen + microsoft/pxt-bluetooth so the user
+                 doesn't have to add extensions by hand before pasting. Saves ~3 clicks. -->
+            <a href="https://makecode.microbit.org/#editor?dependencies=DFRobot%2Fpxt-maqueen,microsoft%2Fpxt-bluetooth" target="_blank" rel="noopener" class="secondary" style="display:inline-flex; align-items:center; gap:4px; text-decoration:none; padding:8px 16px; border-radius:8px; background:linear-gradient(135deg,#fde68a,#f59e0b); color:#78350f; font-weight:700; border:none;" title="Opens MakeCode with the Maqueen + Bluetooth extensions already added — paste the code and download" data-i18n="open_makecode_ble">📡 Open MakeCode + BLE template</a>
             <button id="firmwareCloseBtn" class="secondary" data-i18n="close">Close</button>
         </div>
         <div id="firmwareCodeWrap" style="max-height:60vh; overflow:auto; border-radius:8px; border:1px solid var(--card-border, #333); -webkit-overflow-scrolling:touch;">
