@@ -7059,7 +7059,7 @@ body.mq-density-demo .mq-mode-dial {
 #mqConnectPanel {
   background: rgba(15,23,42,0.55);
   border-bottom: 1px solid rgba(56,189,248,0.12);
-  padding: 4px 18px;
+  padding: 0 18px;
 }
 /* Card is NOT a grid child — make it the outer flex row
    so .connection-grid (fw + buttons) and #mqStackFlow sit side-by-side */
@@ -7210,7 +7210,7 @@ body.mq-density-demo .mq-mode-dial {
 #mqConnectPanel #mqStackFlowSvg {
   width: 100% !important;
   height: auto !important;
-  min-height: 80px !important;
+  min-height: 60px !important;
   display: block !important;
 }
 /* BLE particle animations are visible in the connect panel */
