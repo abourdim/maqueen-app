@@ -611,8 +611,13 @@ window.addEventListener("keydown", e=>{
 
 // ============== SWEEP ==============
 const sweepCards = document.querySelectorAll(".sweep-card");
-let sweepRun = false, sweepT0 = 0, sweepRaf = 0;
+let sweepRun = false, sweepRaf = 0, sweepLastT = 0;
 const sweepHist = {1:[], 2:[]};
+// Per-servo accumulated phase (radians). Tracking phase incrementally —
+// not phase = 2π·t/P — means changing P (period / sweep speed) or amplitude
+// mid-sweep is reflected on the very next tick without a discontinuity.
+// Same for adjusting Phase or Offset.
+const sweepPhase = {1: 0, 2: 0};
 sweepCards.forEach(card=>{
   card.querySelectorAll("input[type=range]").forEach(r=>{
     r.addEventListener("input", ()=>{
@@ -622,13 +627,15 @@ sweepCards.forEach(card=>{
     });
   });
 });
-function sweepValue(card, t){
+// Compute the servo angle for one card given its accumulated phase (radians).
+// Pulls the wave shape, amplitude, base offset, and user phase-shift live
+// from the DOM so slider edits take effect on the next tick.
+function sweepValueAt(card, accPhase){
   const wave = card.querySelector(".sw-wave").value;
   const A = +card.querySelector(".sw-amp").value;
-  const P = +card.querySelector(".sw-per").value;
   const ph = +card.querySelector(".sw-pha").value * Math.PI/180;
   const off = +card.querySelector(".sw-off").value;
-  const x = (2*Math.PI*t)/P + ph;
+  const x = accPhase + ph;
   let y = 0;
   if(wave==="sine") y = Math.sin(x);
   else if(wave==="tri"){ const m = ((x/(Math.PI))%2+2)%2; y = m<1 ? 2*m-1 : 3-2*m; }
@@ -637,11 +644,16 @@ function sweepValue(card, t){
 }
 function sweepTick(){
   if(!sweepRun) return;
-  const t = performance.now() - sweepT0;
+  const now = performance.now();
+  const dt  = Math.min(100, now - sweepLastT);   // clamp huge dt (tab was hidden)
+  sweepLastT = now;
   sweepCards.forEach(card=>{
     const idx = +card.dataset.sw;
     if(card.querySelector(".sw-en").checked){
-      const deg = sweepValue(card, t);
+      // Advance phase by 2π·dt/P_now — uses the CURRENT period slider value
+      const P = +card.querySelector(".sw-per").value || 2000;
+      sweepPhase[idx] = (sweepPhase[idx] + (2*Math.PI*dt)/P) % (2*Math.PI);
+      const deg = sweepValueAt(card, sweepPhase[idx]);
       sendServo(idx, deg);
       sweepHist[idx].push(deg);
       if(sweepHist[idx].length>200) sweepHist[idx].shift();
@@ -672,7 +684,9 @@ function drawSweep(){
 }
 document.getElementById("sweepStart").addEventListener("click", ()=>{
   if(sweepRun) return;
-  sweepRun = true; sweepT0 = performance.now();
+  sweepRun = true;
+  sweepLastT = performance.now();
+  sweepPhase[1] = 0; sweepPhase[2] = 0;
   sweepHist[1] = []; sweepHist[2] = [];
   sweepTick();
 });
