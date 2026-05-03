@@ -7185,19 +7185,53 @@ body.mq-density-demo .mq-mode-dial {
   padding: 3px 10px !important;
   font-size: 11px !important;
 }
-/* Firmware button — OUTSTANDING. Wider, bigger, brighter glow.
-   This is THE primary action in the connect bar. */
+/* Firmware button — OUTSTANDING. Yellow gradient (matches the LABS FAB
+   palette) with two discrete animations:
+     • Soft 3.2 s glow pulse (calls a tiny bit of attention without bling)
+     • 8 s 🤖 emoji "look-around" wiggle (playful, every-so-often)
+   Both respect prefers-reduced-motion. */
 #mqConnectPanel #firmwareBtn {
   padding: 8px 22px !important;
   font-size: 18px !important;
   font-weight: 800 !important;
   letter-spacing: 0.04em !important;
-  background: linear-gradient(135deg, #38bdf8 0%, #6366f1 100%) !important;
-  color: #fff !important;
+  background: linear-gradient(135deg, #fde68a 0%, #f59e0b 60%, #b45309 100%) !important;
+  color: #78350f !important;                            /* dark amber text on yellow */
+  text-shadow: 0 1px 0 rgba(255,255,255,0.45) !important;
   border: none !important;
   border-radius: 22px !important;
-  box-shadow: 0 0 18px rgba(56,189,248,0.55), 0 2px 6px rgba(0,0,0,0.35) !important;
-  letter-spacing: 0.04em !important;
+  box-shadow: 0 0 18px rgba(245,158,11,0.55), 0 2px 6px rgba(0,0,0,0.35) !important;
+  position: relative;
+  cursor: pointer;
+  animation: mqFwPulse 3.2s ease-in-out infinite;
+  transition: transform 0.15s ease-out, box-shadow 0.15s ease-out, filter 0.15s;
+}
+#mqConnectPanel #firmwareBtn:hover {
+  transform: translateY(-1px) scale(1.04);
+  filter: brightness(1.08);
+  box-shadow: 0 0 26px rgba(245,158,11,0.85), 0 4px 12px rgba(0,0,0,0.4) !important;
+}
+#mqConnectPanel #firmwareBtn:active { transform: translateY(0) scale(0.97); }
+/* The first child <span> is the 🤖 emoji wrapper. Wiggle every 8 s. */
+#mqConnectPanel #firmwareBtn > span:first-child {
+  display: inline-block;
+  animation: mqFwWiggle 8s ease-in-out infinite;
+  transform-origin: 50% 70%;
+}
+@keyframes mqFwPulse {
+  0%, 100% { box-shadow: 0 0 18px rgba(245,158,11,0.55), 0 2px 6px rgba(0,0,0,0.35); }
+  50%      { box-shadow: 0 0 30px rgba(251,191,36,0.85), 0 2px 6px rgba(0,0,0,0.35); }
+}
+@keyframes mqFwWiggle {
+  0%, 88%, 100% { transform: rotate(0deg); }
+  90% { transform: rotate(-12deg); }
+  93% { transform: rotate( 14deg); }
+  96% { transform: rotate( -8deg); }
+  98% { transform: rotate(  4deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  #mqConnectPanel #firmwareBtn,
+  #mqConnectPanel #firmwareBtn > span:first-child { animation: none !important; }
 }
 /* Stack flow: compact + calm — scale down the SVG, suppress particles */
 /* BLE stack flow — inline on the same row.
