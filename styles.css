@@ -7085,13 +7085,18 @@ body.mq-density-demo .mq-mode-dial {
    single rows that read across. */
 #mqConnectPanel .connection-grid {
   display: flex !important; flex-direction: column !important;
-  align-items: stretch !important; gap: 4px !important;
-  /* Center the 3-row stack (name / version / Firmware) within whatever
-     vertical space the stack-flow SVG forces the bar to. Otherwise the
-     pills hug the top edge while empty space sits below the button. */
+  /* align-items: center — horizontally center the pills within the column.
+     Was 'stretch' which made them all left-edge-aligned at column width. */
+  align-items: center !important; gap: 4px !important;
+  /* Vertically center the 3-row stack within the bar height. */
   justify-content: center !important;
   align-self: center !important;
 }
+/* Each pill stays content-sized (no full-width); but Firmware button
+   visually wants to be a bit wider than the small chips above it. */
+#mqConnectPanel .connection-status-block,
+#mqConnectPanel .connection-details      { align-self: center !important; }
+#mqConnectPanel .connection-footer       { align-self: center !important; }
 #mqConnectPanel .connection-main        { display: contents !important; }
 /* Visual order in the column stack: name first, version second, Firmware
    button last. The source-order opposite (version, then name) is dictated
