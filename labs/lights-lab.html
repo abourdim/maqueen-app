@@ -81,6 +81,14 @@
   @media (max-width: 880px) {
     .app-layout { grid-template-columns: 1fr; }
   }
+  /* Mobile (≤520 px): tighten paddings + force grid items to shrink past
+     their intrinsic min-content (default min-width:auto on grid items
+     was forcing ~396 px, overflowing 375 px viewports). */
+  @media (max-width: 520px) {
+    .app-layout { padding: 8px; gap: 8px; }
+    .sidebar, .stage { padding: 10px; min-width: 0; }
+    .painter-grid { grid-template-columns: 56px repeat(8, minmax(0, 1fr)); gap: 2px; }
+  }
   .sidebar, .stage {
     background: var(--card);
     border: 1px solid var(--border);

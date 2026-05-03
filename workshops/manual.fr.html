@@ -87,6 +87,20 @@ td b { color: var(--amber); }
 .schematic .cap { margin-top: 8px; font-size: 0.78rem; color: var(--steel); font-style: italic; text-align: center; }
 @media print { aside.nav, .lang-bar { display: none; } .wrap { grid-template-columns: 1fr; } .workshop { display: block !important; page-break-after: always; } body { background: #fff; color: #000; } }
 @media (max-width: 800px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } .wrap { grid-template-columns: 1fr; } aside.nav { position: relative; height: auto; } main { padding: 18px; } }
+/* Mobile (≤520 px): stop the header chrome forcing horizontal scroll. */
+@media (max-width: 520px) {
+  html, body              { overflow-x: hidden; }
+  .wd-header              { padding: 12px 14px !important; gap: 8px !important; }
+  .wd-header-right        { gap: 6px !important; flex-wrap: wrap !important; justify-content: flex-end; }
+  .wd-header-right .wd-select,
+  .wd-header-right select,
+  .wd-header-right a      { font-size: 0.72rem !important; padding: 4px 8px !important; }
+  .lang-pills .lang-pill  { padding: 3px 6px !important; font-size: 0.7rem !important; }
+  aside.nav               { padding: 12px 8px !important; max-width: 100% !important; min-width: 0; }
+  aside.nav .logo         { font-size: 0.78rem !important; padding: 6px 8px !important; }
+  aside.nav a             { font-size: 0.72rem !important; padding: 4px 6px !important; }
+  main                    { padding: 12px !important; }
+}
 @keyframes spin { to { transform: rotate(360deg); } }
 .spin { animation: spin 2s linear infinite; transform-origin: center; transform-box: fill-box; }
 </style>

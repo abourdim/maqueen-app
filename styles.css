@@ -8130,3 +8130,24 @@ aside.log-rail.has-connect > .log-rail-collapse-btn { display: flex; }
     0 12px 20px rgba(0,0,0,0.7),
     0 0 14px color-mix(in srgb, var(--accent, #fb923c) 70%, transparent);
 }
+
+/* ──────────────────────────────────────────────────────────────────
+   PHONE-FRIENDLY POLISH (mobile audit P3 + P4)
+   ─────────────────────────────────────────────────────────────────
+   Two rules on small viewports:
+     1. Touch-target floor — bump tiny chrome buttons to ≥32 px tap
+        area (gauge theme picker, dashboard reset, log clear, etc.)
+        so they're hittable with a finger. WCAG 2.5.5 AAA wants 44 px;
+        we hit 32 here without breaking layout.
+     2. Body overflow safety net — `overflow-x: hidden` on the root
+        catches stray 5-15 px overflows from badges with shadows.
+*/
+@media (max-width: 520px) {
+  /* 1. Touch-target floor */
+  .mq-gauge-theme-btn { min-width: 32px !important; min-height: 32px !important; padding: 4px 6px !important; font-size: 16px !important; }
+  .mq-dash-reset      { min-width: 32px !important; min-height: 32px !important; }
+  button.secondary.small,
+  button.small        { min-height: 32px !important; padding: 4px 10px !important; }
+  /* 2. Body overflow safety net (catches 5-15 px shadow/border excess) */
+  html, body          { overflow-x: hidden; }
+}

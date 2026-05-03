@@ -378,6 +378,20 @@ input[type=range].lab-slider::-webkit-slider-thumb {
   aside.nav { position: relative; height: auto; }
   main { padding: 18px; }
 }
+/* Mobile (≤520 px): stop the header chrome forcing horizontal scroll. */
+@media (max-width: 520px) {
+  html, body              { overflow-x: hidden; }
+  .wd-header              { padding: 12px 14px !important; gap: 8px !important; }
+  .wd-header-right        { gap: 6px !important; flex-wrap: wrap !important; justify-content: flex-end; }
+  .wd-header-right .wd-select,
+  .wd-header-right select,
+  .wd-header-right a      { font-size: 0.72rem !important; padding: 4px 8px !important; }
+  .lang-pills .lang-pill  { padding: 3px 6px !important; font-size: 0.7rem !important; }
+  aside.nav               { padding: 12px 8px !important; max-width: 100% !important; min-width: 0; }
+  aside.nav .logo         { font-size: 0.78rem !important; padding: 6px 8px !important; }
+  aside.nav a             { font-size: 0.72rem !important; padding: 4px 6px !important; }
+  main                    { padding: 12px !important; }
+}
 @media print {
   aside.nav, .lang-bar { display: none; }
   .wrap { grid-template-columns: 1fr; }
