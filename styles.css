@@ -7198,13 +7198,17 @@ body.mq-density-demo .mq-mode-dial {
   padding-left: 12px !important;
   margin-left: 6px !important;
 }
-/* Hide the "BLE stack flow" label + stats — SVG scales itself via viewBox */
-#mqConnectPanel #mqStackFlowStats { display: none !important; }
-/* width:100% fills the flex container; height:auto lets viewBox="0 0 600 80"
-   drive a proportional height → nodes evenly span the full bar width */
+/* Hide the "📡 BLE stack flow" label + stats. The label lives in an
+   unnamed wrapper div — the *first* child of #mqStackFlow — so we target
+   it positionally rather than by id. */
+#mqConnectPanel #mqStackFlow > div:first-child { display: none !important; }
+#mqConnectPanel #mqStackFlowStats              { display: none !important; }
+/* width:100% fills the flex container; bump min-height so the icon row
+   reads bigger (was visually anaemic at the default 40-50 px). */
 #mqConnectPanel #mqStackFlowSvg {
   width: 100% !important;
   height: auto !important;
+  min-height: 72px !important;
   display: block !important;
 }
 /* BLE particle animations are visible in the connect panel */
