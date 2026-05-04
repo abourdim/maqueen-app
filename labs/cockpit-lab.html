@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en" data-theme="carbon">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>🛸 Cockpit Lab — pick a look</title>
+<link rel="stylesheet" href="../workshops/theme.css">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font-body, system-ui); background: var(--bg, #0a1018); color: var(--text, #e0e6ee); padding: 24px 18px 40px; }
+  h1 { font-family: var(--font-display, system-ui); color: var(--neon, #4ade80); font-size: 1.8rem; margin-bottom: 6px; text-align: center; }
+  .sub { text-align: center; color: var(--steel, #93a8c4); margin-bottom: 28px; font-size: 0.95rem; max-width: 700px; margin-left: auto; margin-right: auto; line-height: 1.5; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; max-width: 1200px; margin: 0 auto; }
+  .card {
+    display: block; text-decoration: none;
+    padding: 16px 18px;
+    border-radius: 14px;
+    border: 1.5px solid var(--border, #1d3556);
+    background: var(--bg-card, #142036);
+    color: var(--text);
+    transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
+  }
+  .card:hover { transform: translateY(-3px); border-color: var(--neon); box-shadow: 0 8px 22px rgba(74,222,128,0.18); }
+  .card .emoji { font-size: 2rem; line-height: 1; margin-bottom: 6px; }
+  .card .num { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--steel); }
+  .card h3 { font-size: 1.1rem; color: var(--neon); margin: 4px 0 6px; }
+  .card .vibe { font-size: 0.84rem; color: var(--text); opacity: 0.85; line-height: 1.45; }
+  .card .swatch { display: flex; gap: 4px; margin-top: 10px; }
+  .card .sw { width: 18px; height: 18px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.1); }
+  .nav { text-align: center; margin: 24px 0; }
+  .nav a { color: var(--steel); text-decoration: none; padding: 6px 12px; border: 1px solid var(--border); border-radius: 999px; font-size: 0.85rem; margin: 0 4px; }
+  .nav a:hover { color: var(--neon); border-color: var(--neon); }
+</style>
+</head>
+<body>
+
+<h1>🛸 Cockpit Lab — pick a look</h1>
+<p class="sub">10 visual directions for the future <code>labs/cockpit-lab.html</code>. Click any card to preview the static mockup. Same 11 instruments in each (speed · radar · compass · temp · accel · mic · battery · throttle · yoke · annunciators · MFD).</p>
+
+<div class="nav">
+  <a href="index.html">🧪 All Labs</a>
+  <a href="../index.html">🤖 Robot App</a>
+</div>
+
+<div class="grid">
+  <a class="card" href="cockpit-lab_1.html">
+    <div class="emoji">🛩</div>
+    <div class="num">cockpit-lab_1.html</div>
+    <h3>Aircraft Cockpit</h3>
+    <div class="vibe">cream panel · brass screws · analog dials</div>
+    <div class="swatch">
+      <div class="sw" style="background:#3d352a"></div>
+      <div class="sw" style="background:#5a4d3d"></div>
+      <div class="sw" style="background:#fbbf24"></div>
+      <div class="sw" style="background:#a98864"></div>
+      <div class="sw" style="background:#fde68a"></div>
+    </div>
+  </a>
+  <a class="card" href="cockpit-lab_2.html">
+    <div class="emoji">🛫</div>
+    <div class="num">cockpit-lab_2.html</div>
+    <h3>Fighter Jet</h3>
+    <div class="vibe">military green CRT · amber MFDs · vector lines</div>
+    <div class="swatch">
+      <div class="sw" style="background:#1a1f1a"></div>
+      <div class="sw" style="background:#2c322a"></div>
+      <div class="sw" style="background:#86efac"></div>
+      <div class="sw" style="background:#4a5a4a"></div>
+      <div class="sw" style="background:#86efac"></div>
+    </div>
+  </a>
+  <a class="card" href="cockpit-lab_3.html">
+    <div class="emoji">✈️</div>
+    <div class="num">cockpit-lab_3.html</div>
+    <h3>Airliner Glass</h3>
+    <div class="vibe">Boeing dark blue · big PFD · sleek</div>
+    <div class="swatch">
+      <div class="sw" style="background:#0a1828"></div>
+      <div class="sw" style="background:#13243d"></div>
+      <div class="sw" style="background:#38bdf8"></div>
+      <div class="sw" style="background:#1e3a5c"></div>
+      <div class="sw" style="background:#7dd3fc"></div>
+    </div>
+  </a>
+  <a class="card" href="cockpit-lab_4.html">
+    <div class="emoji">🚀</div>
+    <div class="num">cockpit-lab_4.html</div>
+    <h3>Apollo Lunar</h3>
+    <div class="vibe">1960s NASA olive · push buttons · mechanical</div>
+    <div class="swatch">
+      <div class="sw" style="background:#5d553a"></div>
+      <div class="sw" style="background:#7a6f4d"></div>
+      <div class="sw" style="background:#fde047"></div>
+      <div class="sw" style="background:#a8997a"></div>
+      <div class="sw" style="background:#fde047"></div>
+    </div>
+  </a>
+  <a class="card" href="cockpit-lab_5.html">
+    <div class="emoji">🛸</div>
+    <div class="num">cockpit-lab_5.html</div>
+    <h3>Star Trek LCARS</h3>
+    <div class="vibe">asymmetric flat pills · no bezels · 24th century</div>
+    <div class="swatch">
+      <div class="sw" style="background:#000000"></div>
+      <div class="sw" style="background:#0a0a0a"></div>
+      <div class="sw" style="background:#fb923c"></div>
+      <div class="sw" style="background:#c084fc"></div>
+      <div class="sw" style="background:#fb923c"></div>
+    </div>
+  </a>
+  <a class="card" href="cockpit-lab_6.html">
+    <div class="emoji">🦾</div>
+    <div class="num">cockpit-lab_6.html</div>
+    <h3>Iron Man HUD</h3>
+    <div class="vibe">translucent cyan · holographic rings · floating</div>
+    <div class="swatch">
+      <div class="sw" style="background:#020617"></div>
+      <div class="sw" style="background:rgba(56,189,248,0.05)"></div>
+      <div class="sw" style="background:#67e8f9"></div>
+      <div class="sw" style="background:#0891b2"></div>
+      <div class="sw" style="background:#67e8f9"></div>
+    </div>
+  </a>
+  <a class="card" href="cockpit-lab_7.html">
+    <div class="emoji">🚢</div>
+    <div class="num">cockpit-lab_7.html</div>
+    <h3>Submarine</h3>
+    <div class="vibe">red dim · brass · sonar tubes</div>
+    <div class="swatch">
+      <div class="sw" style="background:#1a0808"></div>
+      <div class="sw" style="background:#3d1a1a"></div>
+      <div class="sw" style="background:#dc2626"></div>
+      <div class="sw" style="background:#7f1d1d"></div>
+      <div class="sw" style="background:#fca5a5"></div>
+    </div>
+  </a>
+  <a class="card" href="cockpit-lab_8.html">
+    <div class="emoji">👽</div>
+    <div class="num">cockpit-lab_8.html</div>
+    <h3>Alien Vessel</h3>
+    <div class="vibe">bio-organic · pulsing glyphs · liquid</div>
+    <div class="swatch">
+      <div class="sw" style="background:#0a1a0a"></div>
+      <div class="sw" style="background:#0f2818"></div>
+      <div class="sw" style="background:#a3e635"></div>
+      <div class="sw" style="background:#65a30d"></div>
+      <div class="sw" style="background:#a3e635"></div>
+    </div>
+  </a>
+  <a class="card" href="cockpit-lab_9.html">
+    <div class="emoji">🤖</div>
+    <div class="num">cockpit-lab_9.html</div>
+    <h3>Mech / Pacific Rim</h3>
+    <div class="vibe">riveted plates · hazard chevrons · oversized</div>
+    <div class="swatch">
+      <div class="sw" style="background:#1c1c1c"></div>
+      <div class="sw" style="background:#2d2d2d"></div>
+      <div class="sw" style="background:#f97316"></div>
+      <div class="sw" style="background:#7c2d12"></div>
+      <div class="sw" style="background:#f97316"></div>
+    </div>
+  </a>
+  <a class="card" href="cockpit-lab_10.html">
+    <div class="emoji">👾</div>
+    <div class="num">cockpit-lab_10.html</div>
+    <h3>Retro Arcade</h3>
+    <div class="vibe">pixel · neon · chunky · CRT scanlines</div>
+    <div class="swatch">
+      <div class="sw" style="background:#0d0221"></div>
+      <div class="sw" style="background:#1a0942"></div>
+      <div class="sw" style="background:#f0f"></div>
+      <div class="sw" style="background:#7c3aed"></div>
+      <div class="sw" style="background:#ff00ff"></div>
+    </div>
+  </a>
+
+</div>
+
+</body>
+</html>
