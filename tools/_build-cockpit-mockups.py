@@ -10,7 +10,8 @@ Static design only. Re-runnable.
 """
 import os, math
 
-OUT = os.path.join(os.path.dirname(__file__), '..', 'labs')
+OUT = os.path.join(os.path.dirname(__file__), '..', 'labs', 'cockpit-lab')
+os.makedirs(OUT, exist_ok=True)
 
 
 # ╔═════════════════════════════════════════════════════════════════════╗
@@ -475,9 +476,9 @@ def title_bar(idx, name, emoji, vibe, accent='#fbbf24', dim='#5c3f1e'):
   <div class="badge" style="color:{accent};">{emoji} v5 #{idx} · {name}</div>
   <div class="vibe">{vibe}</div>
   <div class="nav">
-    <a href="cockpit-lab.html" style="color:{accent};border-color:{dim};">⚙ Gallery</a>
-    <a href="cockpit-lab_{prev_idx}.html" style="color:{accent};border-color:{dim};">‹ Prev</a>
-    <a href="cockpit-lab_{next_idx}.html" style="color:{accent};border-color:{dim};">Next ›</a>
+    <a href="index.html" style="color:{accent};border-color:{dim};">⚙ Gallery</a>
+    <a href="{prev_idx}.html" style="color:{accent};border-color:{dim};">‹ Prev</a>
+    <a href="{next_idx}.html" style="color:{accent};border-color:{dim};">Next ›</a>
   </div>
 </div>'''
 
@@ -1398,11 +1399,11 @@ labels = [
 
 DONE = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
 for i, maker in enumerate(makers, 1):
-    out = os.path.join(OUT, f'cockpit-lab_{i}.html')
+    out = os.path.join(OUT, f'{i}.html')
     with open(out, 'w', encoding='utf-8') as f:
         f.write(maker())
     emoji, name, _ = labels[i-1]
-    print(f'  + cockpit-lab_{i}.html  ({emoji} {name})')
+    print(f'  + cockpit-lab/{i}.html  ({emoji} {name})')
 
 # Tiny gallery (just 1 entry for now)
 gallery = '''<!doctype html>
@@ -1437,9 +1438,9 @@ h1{color:#fbbf24;font-size:1.8rem;margin-bottom:6px;text-align:center;text-shado
 <h1>🛩 Cockpit Lab v5 — flight simulator panel</h1>
 <p class="sub">Photo-realistic skeuomorphic cockpit. Brushed metal panel, chrome-bezel gauges, real throttle levers, knurled knobs, switches with shadow depth, wooden biplane perched on top — like the workshop poster.</p>
 <div class="nav">
-  <a href="index.html">🧪 All Labs</a>
-  <a href="../index.html">🤖 Robot App</a>
-  <a href="_archive/cockpit-lab/v1/gallery.html" style="opacity:0.5;">archive: v1 v2 v3 v4</a>
+  <a href="../index.html">🧪 All Labs</a>
+  <a href="../../index.html">🤖 Robot App</a>
+  <a href="../_archive/cockpit-lab/v1/gallery.html" style="opacity:0.5;">archive: v1 v2 v3 v4</a>
 </div>
 <div class="grid">
 '''
@@ -1447,9 +1448,9 @@ for i, (emoji, name, vibe) in enumerate(labels, 1):
     klass = 'card' if i in DONE else 'card'
     tag = '▸ panel ready' if i in DONE else '◇ stub · pending design'
     op = '' if i in DONE else 'opacity:0.6;'
-    gallery += f'''  <a class="{klass}" href="cockpit-lab_{i}.html" style="{op}">
+    gallery += f'''  <a class="{klass}" href="{i}.html" style="{op}">
     <div class="emoji">{emoji}</div>
-    <div class="num">cockpit-lab_{i}.html</div>
+    <div class="num">cockpit-lab/{i}.html</div>
     <h3>{name}</h3>
     <div class="vibe">{vibe}</div>
     <div class="dna">{tag}</div>
@@ -1459,7 +1460,7 @@ gallery += '''</div>
 </body>
 </html>
 '''
-with open(os.path.join(OUT, 'cockpit-lab.html'), 'w', encoding='utf-8') as f:
+with open(os.path.join(OUT, 'index.html'), 'w', encoding='utf-8') as f:
     f.write(gallery)
-print('  + cockpit-lab.html  (gallery)')
+print('  + cockpit-lab/index.html  (gallery)')
 print('Done.')

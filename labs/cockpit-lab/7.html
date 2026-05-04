@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>🛩 v5 #1 Flight Simulator Panel</title>
+<title>⛵ v5 #7 Sailboat Helm</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 html,body{
@@ -239,66 +239,41 @@ body::before{content:'';position:fixed;inset:0;background-image:
   border:1px solid #fbbf24;color:#fbbf24;padding:3px 10px;font-size:10px;font-weight:800;
   letter-spacing:0.15em;border-radius:3px;text-shadow:0 0 4px rgba(251,191,36,0.6);
   box-shadow:inset 0 1px 2px rgba(0,0,0,0.7);}
-</style>
+
+    body{background:radial-gradient(ellipse at 50% 100%,#1a0808 0%,#000 80%),linear-gradient(180deg,#0a0404 0%,#000 100%);}
+    .panel{background:repeating-linear-gradient(0deg,rgba(255,255,255,0.05) 0px,rgba(255,255,255,0.05) 1px,transparent 1px,transparent 5px),linear-gradient(180deg,#7c2818 0%,#3a0e08 60%,#1a0404 100%);border-color:#fbbf24;}
+    .title-bar{background:linear-gradient(180deg,#5c1a0e,#1a0404);border-color:#fbbf24;}
+    </style>
 </head>
 <body>
 <div class="title-bar">
-  <div class="badge" style="color:#fbbf24;">🛩 v5 #1 · Flight Simulator Panel</div>
-  <div class="vibe">brushed metal · chrome bezels · wooden biplane</div>
+  <div class="badge" style="color:#fbbf24;">⛵ v5 #7 · Sailboat Helm</div>
+  <div class="vibe">mahogany + brass · ship wheel · compass</div>
   <div class="nav">
-    <a href="cockpit-lab.html" style="color:#fbbf24;border-color:#5c3f1e;">⚙ Gallery</a>
-    <a href="cockpit-lab_10.html" style="color:#fbbf24;border-color:#5c3f1e;">‹ Prev</a>
-    <a href="cockpit-lab_2.html" style="color:#fbbf24;border-color:#5c3f1e;">Next ›</a>
+    <a href="index.html" style="color:#fbbf24;border-color:#5c3f1e;">⚙ Gallery</a>
+    <a href="6.html" style="color:#fbbf24;border-color:#5c3f1e;">‹ Prev</a>
+    <a href="8.html" style="color:#fbbf24;border-color:#5c3f1e;">Next ›</a>
   </div>
 </div>
 <div class="panel">
-  <!-- screws in corners + middle -->
   <div class="screw s-tl"></div><div class="screw s-tr"></div>
   <div class="screw s-bl"></div><div class="screw s-br"></div>
   <div class="screw s-mtl"></div><div class="screw s-mbl"></div>
-
-  <!-- Wooden biplane perched on top -->
-  <div class="biplane">
-  <svg viewBox="0 0 280 160" style="width:100%;height:100%;filter:drop-shadow(0 8px 14px rgba(0,0,0,0.7));">
-    <defs>
-      <linearGradient id="wood" x1="0" x2="0" y1="0" y2="1">
-        <stop offset="0%" stop-color="#d4a574"/>
-        <stop offset="40%" stop-color="#b8864e"/>
-        <stop offset="100%" stop-color="#7c5a32"/>
-      </linearGradient>
-      <linearGradient id="wood2" x1="0" x2="1" y1="0" y2="0">
-        <stop offset="0%" stop-color="#a87a4a"/>
-        <stop offset="50%" stop-color="#d4a574"/>
-        <stop offset="100%" stop-color="#a87a4a"/>
-      </linearGradient>
-    </defs>
-    <!-- lower wing -->
-    <rect x="20" y="92" width="240" height="14" rx="2" fill="url(#wood2)" stroke="#5c3f1e" stroke-width="1"/>
-    <!-- upper wing -->
-    <rect x="20" y="42" width="240" height="14" rx="2" fill="url(#wood2)" stroke="#5c3f1e" stroke-width="1"/>
-    <!-- struts between wings -->
-    <line x1="60" y1="56" x2="60" y2="92" stroke="#5c3f1e" stroke-width="2.5"/>
-    <line x1="220" y1="56" x2="220" y2="92" stroke="#5c3f1e" stroke-width="2.5"/>
-    <line x1="100" y1="56" x2="100" y2="92" stroke="#5c3f1e" stroke-width="1.5"/>
-    <line x1="180" y1="56" x2="180" y2="92" stroke="#5c3f1e" stroke-width="1.5"/>
-    <!-- fuselage -->
-    <path d="M 90 70 L 230 70 L 250 78 L 250 82 L 230 90 L 90 90 L 80 86 L 80 74 Z" fill="url(#wood)" stroke="#5c3f1e" stroke-width="1"/>
-    <!-- propeller -->
-    <ellipse cx="76" cy="80" rx="3" ry="22" fill="#5c3f1e" opacity="0.7"/>
-    <!-- tail -->
-    <path d="M 250 78 L 270 70 L 270 90 L 250 82 Z" fill="url(#wood)" stroke="#5c3f1e" stroke-width="1"/>
-    <path d="M 248 70 L 256 50 L 264 70 Z" fill="url(#wood)" stroke="#5c3f1e" stroke-width="1"/>
-    <!-- wing ribs (decorative cross-cuts) -->
-    <line x1="40" y1="42" x2="40" y2="56" stroke="#5c3f1e" stroke-width="0.5" opacity="0.5"/><line x1="40" y1="92" x2="40" y2="106" stroke="#5c3f1e" stroke-width="0.5" opacity="0.5"/><line x1="80" y1="42" x2="80" y2="56" stroke="#5c3f1e" stroke-width="0.5" opacity="0.5"/><line x1="80" y1="92" x2="80" y2="106" stroke="#5c3f1e" stroke-width="0.5" opacity="0.5"/><line x1="120" y1="42" x2="120" y2="56" stroke="#5c3f1e" stroke-width="0.5" opacity="0.5"/><line x1="120" y1="92" x2="120" y2="106" stroke="#5c3f1e" stroke-width="0.5" opacity="0.5"/><line x1="160" y1="42" x2="160" y2="56" stroke="#5c3f1e" stroke-width="0.5" opacity="0.5"/><line x1="160" y1="92" x2="160" y2="106" stroke="#5c3f1e" stroke-width="0.5" opacity="0.5"/><line x1="200" y1="42" x2="200" y2="56" stroke="#5c3f1e" stroke-width="0.5" opacity="0.5"/><line x1="200" y1="92" x2="200" y2="106" stroke="#5c3f1e" stroke-width="0.5" opacity="0.5"/><line x1="240" y1="42" x2="240" y2="56" stroke="#5c3f1e" stroke-width="0.5" opacity="0.5"/><line x1="240" y1="92" x2="240" y2="106" stroke="#5c3f1e" stroke-width="0.5" opacity="0.5"/>
-    <!-- wheels -->
-    <circle cx="120" cy="120" r="10" fill="#1a1a1a" stroke="#5c3f1e" stroke-width="1.5"/>
-    <circle cx="170" cy="120" r="10" fill="#1a1a1a" stroke="#5c3f1e" stroke-width="1.5"/>
-    <line x1="120" y1="110" x2="120" y2="92" stroke="#5c3f1e" stroke-width="2"/>
-    <line x1="170" y1="110" x2="170" y2="92" stroke="#5c3f1e" stroke-width="2"/>
-  </svg>
-</div>
-
-  <!-- TOP: gauge cluster (3 + mega + 3) -->
+  <div class="biplane"><svg viewBox="0 0 240 200" style="width:100%;height:100%;filter:drop-shadow(0 8px 14px rgba(0,0,0,0.7));">
+<defs><linearGradient id="hu" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#5c3f1e"/><stop offset="100%" stop-color="#2a1a08"/></linearGradient></defs>
+<!-- mast -->
+<line x1="120" y1="20" x2="120" y2="160" stroke="#5c3f1e" stroke-width="4"/>
+<!-- main sail -->
+<path d="M 120 25 L 120 145 L 200 130 Z" fill="#fafafa" stroke="#9ca3af" stroke-width="1.5"/>
+<!-- jib -->
+<path d="M 120 35 L 120 130 L 60 145 Z" fill="#fafafa" stroke="#9ca3af" stroke-width="1.5"/>
+<!-- hull -->
+<path d="M 30 160 Q 120 195 210 160 L 200 175 Q 120 200 40 175 Z" fill="url(#hu)" stroke="#000" stroke-width="1.5"/>
+<!-- waterline -->
+<line x1="20" y1="180" x2="220" y2="180" stroke="#22d3ee" stroke-width="1" stroke-dasharray="6 4" opacity="0.6"/>
+<!-- pennant -->
+<path d="M 120 18 L 145 14 L 120 22 Z" fill="#dc2626"><animate attributeName="d" values="M 120 18 L 145 14 L 120 22 Z;M 120 18 L 145 22 L 120 14 Z;M 120 18 L 145 14 L 120 22 Z" dur="2s" repeatCount="indefinite"/></path>
+</svg></div>
   <div class="row row-gauges">
     <div class="gauge" style="width:140px;height:140px;">
   <!-- outer chrome bezel ring -->
@@ -306,12 +281,12 @@ body::before{content:'';position:fixed;inset:0;background-image:
     <!-- glass face -->
     <div class="face" style="background:radial-gradient(circle at 50% 30%,#1f2937 0%,#0a1018 60%,#000 100%);">
       <svg viewBox="0 0 100 100" style="width:100%;height:100%;">
-        <path d="M 85.89 52.82 A 36 36 0 0 1 75.46 75.46" fill="none" stroke="#ef4444" stroke-width="3" opacity="0.85"/>
+        
         <line x1="50" y1="6" x2="50" y2="12" stroke="#e5e7eb" stroke-width="1.4" transform="rotate(-135.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-126.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-117.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-108.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-99.0 50 50)"/><line x1="50" y1="6" x2="50" y2="12" stroke="#e5e7eb" stroke-width="1.4" transform="rotate(-90.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-81.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-72.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-63.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-54.0 50 50)"/><line x1="50" y1="6" x2="50" y2="12" stroke="#e5e7eb" stroke-width="1.4" transform="rotate(-45.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-36.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-27.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-18.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-9.0 50 50)"/><line x1="50" y1="6" x2="50" y2="12" stroke="#e5e7eb" stroke-width="1.4" transform="rotate(0.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(9.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(18.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(27.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(36.0 50 50)"/><line x1="50" y1="6" x2="50" y2="12" stroke="#e5e7eb" stroke-width="1.4" transform="rotate(45.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(54.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(63.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(72.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(81.0 50 50)"/><line x1="50" y1="6" x2="50" y2="12" stroke="#e5e7eb" stroke-width="1.4" transform="rotate(90.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(99.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(108.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(117.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(126.0 50 50)"/><line x1="50" y1="6" x2="50" y2="12" stroke="#e5e7eb" stroke-width="1.4" transform="rotate(135.0 50 50)"/>
         <text x="50" y="22" text-anchor="middle" fill="#e5e7eb" font-size="6.5" font-family="Helvetica,Arial,sans-serif" font-weight="700" transform="rotate(-135.0 50 50) rotate(135.0 50 22)">0</text><text x="50" y="22" text-anchor="middle" fill="#e5e7eb" font-size="6.5" font-family="Helvetica,Arial,sans-serif" font-weight="700" transform="rotate(-90.0 50 50) rotate(90.0 50 22)">2</text><text x="50" y="22" text-anchor="middle" fill="#e5e7eb" font-size="6.5" font-family="Helvetica,Arial,sans-serif" font-weight="700" transform="rotate(-45.0 50 50) rotate(45.0 50 22)">4</text><text x="50" y="22" text-anchor="middle" fill="#e5e7eb" font-size="6.5" font-family="Helvetica,Arial,sans-serif" font-weight="700" transform="rotate(0.0 50 50) rotate(-0.0 50 22)">6</text><text x="50" y="22" text-anchor="middle" fill="#e5e7eb" font-size="6.5" font-family="Helvetica,Arial,sans-serif" font-weight="700" transform="rotate(45.0 50 50) rotate(-45.0 50 22)">8</text><text x="50" y="22" text-anchor="middle" fill="#e5e7eb" font-size="6.5" font-family="Helvetica,Arial,sans-serif" font-weight="700" transform="rotate(90.0 50 50) rotate(-90.0 50 22)">10</text><text x="50" y="22" text-anchor="middle" fill="#e5e7eb" font-size="6.5" font-family="Helvetica,Arial,sans-serif" font-weight="700" transform="rotate(135.0 50 50) rotate(-135.0 50 22)">12</text>
         <!-- needle -->
         <g>
-          <line x1="50" y1="55" x2="50" y2="14" stroke="#fff" stroke-width="2.4" stroke-linecap="round" transform="rotate(-30 50 50)" style="filter:drop-shadow(0 1px 2px rgba(0,0,0,0.8));">
+          <line x1="50" y1="55" x2="50" y2="14" stroke="#fff" stroke-width="2.4" stroke-linecap="round" transform="rotate(40 50 50)" style="filter:drop-shadow(0 1px 2px rgba(0,0,0,0.8));">
             
           </line>
           <circle cx="50" cy="55" r="4" fill="#9ca3af" stroke="#000" stroke-width="0.5"/>
@@ -320,8 +295,8 @@ body::before{content:'';position:fixed;inset:0;background-image:
         <circle cx="50" cy="50" r="2.5" fill="#fff" opacity="0.9"/>
         <!-- name plate at bottom -->
       </svg>
-      <div class="name">AIRSPEED</div>
-      <div class="readout"><span class="val">42</span><span class="unit">KM/H</span></div>
+      <div class="name">WIND SPD</div>
+      <div class="readout"><span class="val">14</span><span class="unit">KT</span></div>
       <!-- glass reflection -->
       <div class="reflection"></div>
     </div>
@@ -330,62 +305,9 @@ body::before{content:'';position:fixed;inset:0;background-image:
   <!-- outer chrome bezel ring -->
   <div class="bezel">
     <!-- glass face -->
-    <div class="face" style="background:radial-gradient(circle at 50% 30%,#1f2937 0%,#0a1018 60%,#000 100%);">
+    <div class="face" style="background:radial-gradient(circle at 50% 30%,#1f2937 0%,#0a0404 60%,#000 100%);">
       <svg viewBox="0 0 100 100" style="width:100%;height:100%;">
         
-        <line x1="50" y1="6" x2="50" y2="12" stroke="#e5e7eb" stroke-width="1.4" transform="rotate(-135.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-126.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-117.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-108.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-99.0 50 50)"/><line x1="50" y1="6" x2="50" y2="12" stroke="#e5e7eb" stroke-width="1.4" transform="rotate(-90.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-81.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-72.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-63.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-54.0 50 50)"/><line x1="50" y1="6" x2="50" y2="12" stroke="#e5e7eb" stroke-width="1.4" transform="rotate(-45.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-36.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-27.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-18.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-9.0 50 50)"/><line x1="50" y1="6" x2="50" y2="12" stroke="#e5e7eb" stroke-width="1.4" transform="rotate(0.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(9.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(18.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(27.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(36.0 50 50)"/><line x1="50" y1="6" x2="50" y2="12" stroke="#e5e7eb" stroke-width="1.4" transform="rotate(45.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(54.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(63.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(72.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(81.0 50 50)"/><line x1="50" y1="6" x2="50" y2="12" stroke="#e5e7eb" stroke-width="1.4" transform="rotate(90.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(99.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(108.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(117.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(126.0 50 50)"/><line x1="50" y1="6" x2="50" y2="12" stroke="#e5e7eb" stroke-width="1.4" transform="rotate(135.0 50 50)"/>
-        <text x="50" y="22" text-anchor="middle" fill="#e5e7eb" font-size="6.5" font-family="Helvetica,Arial,sans-serif" font-weight="700" transform="rotate(-135.0 50 50) rotate(135.0 50 22)">0</text><text x="50" y="22" text-anchor="middle" fill="#e5e7eb" font-size="6.5" font-family="Helvetica,Arial,sans-serif" font-weight="700" transform="rotate(-90.0 50 50) rotate(90.0 50 22)">2</text><text x="50" y="22" text-anchor="middle" fill="#e5e7eb" font-size="6.5" font-family="Helvetica,Arial,sans-serif" font-weight="700" transform="rotate(-45.0 50 50) rotate(45.0 50 22)">4</text><text x="50" y="22" text-anchor="middle" fill="#e5e7eb" font-size="6.5" font-family="Helvetica,Arial,sans-serif" font-weight="700" transform="rotate(0.0 50 50) rotate(-0.0 50 22)">6</text><text x="50" y="22" text-anchor="middle" fill="#e5e7eb" font-size="6.5" font-family="Helvetica,Arial,sans-serif" font-weight="700" transform="rotate(45.0 50 50) rotate(-45.0 50 22)">8</text><text x="50" y="22" text-anchor="middle" fill="#e5e7eb" font-size="6.5" font-family="Helvetica,Arial,sans-serif" font-weight="700" transform="rotate(90.0 50 50) rotate(-90.0 50 22)">10</text><text x="50" y="22" text-anchor="middle" fill="#e5e7eb" font-size="6.5" font-family="Helvetica,Arial,sans-serif" font-weight="700" transform="rotate(135.0 50 50) rotate(-135.0 50 22)">12</text>
-        <!-- needle -->
-        <g>
-          <line x1="50" y1="55" x2="50" y2="14" stroke="#fff" stroke-width="2.4" stroke-linecap="round" transform="rotate(8 50 50)" style="filter:drop-shadow(0 1px 2px rgba(0,0,0,0.8));">
-            
-          </line>
-          <circle cx="50" cy="55" r="4" fill="#9ca3af" stroke="#000" stroke-width="0.5"/>
-        </g>
-        <!-- center hub -->
-        <circle cx="50" cy="50" r="2.5" fill="#fff" opacity="0.9"/>
-        <!-- name plate at bottom -->
-      </svg>
-      <div class="name">ATTITUDE</div>
-      <div class="readout"><span class="val">−3°</span><span class="unit">PITCH</span></div>
-      <!-- glass reflection -->
-      <div class="reflection"></div>
-    </div>
-  </div>
-</div><div class="gauge" style="width:140px;height:140px;">
-  <!-- outer chrome bezel ring -->
-  <div class="bezel">
-    <!-- glass face -->
-    <div class="face" style="background:radial-gradient(circle at 50% 30%,#1f2937 0%,#0a1018 60%,#000 100%);">
-      <svg viewBox="0 0 100 100" style="width:100%;height:100%;">
-        
-        <line x1="50" y1="6" x2="50" y2="12" stroke="#e5e7eb" stroke-width="1.4" transform="rotate(-135.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-126.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-117.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-108.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-99.0 50 50)"/><line x1="50" y1="6" x2="50" y2="12" stroke="#e5e7eb" stroke-width="1.4" transform="rotate(-90.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-81.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-72.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-63.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-54.0 50 50)"/><line x1="50" y1="6" x2="50" y2="12" stroke="#e5e7eb" stroke-width="1.4" transform="rotate(-45.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-36.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-27.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-18.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-9.0 50 50)"/><line x1="50" y1="6" x2="50" y2="12" stroke="#e5e7eb" stroke-width="1.4" transform="rotate(0.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(9.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(18.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(27.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(36.0 50 50)"/><line x1="50" y1="6" x2="50" y2="12" stroke="#e5e7eb" stroke-width="1.4" transform="rotate(45.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(54.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(63.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(72.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(81.0 50 50)"/><line x1="50" y1="6" x2="50" y2="12" stroke="#e5e7eb" stroke-width="1.4" transform="rotate(90.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(99.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(108.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(117.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(126.0 50 50)"/><line x1="50" y1="6" x2="50" y2="12" stroke="#e5e7eb" stroke-width="1.4" transform="rotate(135.0 50 50)"/>
-        <text x="50" y="22" text-anchor="middle" fill="#e5e7eb" font-size="6.5" font-family="Helvetica,Arial,sans-serif" font-weight="700" transform="rotate(-135.0 50 50) rotate(135.0 50 22)">0</text><text x="50" y="22" text-anchor="middle" fill="#e5e7eb" font-size="6.5" font-family="Helvetica,Arial,sans-serif" font-weight="700" transform="rotate(-90.0 50 50) rotate(90.0 50 22)">2</text><text x="50" y="22" text-anchor="middle" fill="#e5e7eb" font-size="6.5" font-family="Helvetica,Arial,sans-serif" font-weight="700" transform="rotate(-45.0 50 50) rotate(45.0 50 22)">4</text><text x="50" y="22" text-anchor="middle" fill="#e5e7eb" font-size="6.5" font-family="Helvetica,Arial,sans-serif" font-weight="700" transform="rotate(0.0 50 50) rotate(-0.0 50 22)">6</text><text x="50" y="22" text-anchor="middle" fill="#e5e7eb" font-size="6.5" font-family="Helvetica,Arial,sans-serif" font-weight="700" transform="rotate(45.0 50 50) rotate(-45.0 50 22)">8</text><text x="50" y="22" text-anchor="middle" fill="#e5e7eb" font-size="6.5" font-family="Helvetica,Arial,sans-serif" font-weight="700" transform="rotate(90.0 50 50) rotate(-90.0 50 22)">10</text><text x="50" y="22" text-anchor="middle" fill="#e5e7eb" font-size="6.5" font-family="Helvetica,Arial,sans-serif" font-weight="700" transform="rotate(135.0 50 50) rotate(-135.0 50 22)">12</text>
-        <!-- needle -->
-        <g>
-          <line x1="50" y1="55" x2="50" y2="14" stroke="#fff" stroke-width="2.4" stroke-linecap="round" transform="rotate(70 50 50)" style="filter:drop-shadow(0 1px 2px rgba(0,0,0,0.8));">
-            
-          </line>
-          <circle cx="50" cy="55" r="4" fill="#9ca3af" stroke="#000" stroke-width="0.5"/>
-        </g>
-        <!-- center hub -->
-        <circle cx="50" cy="50" r="2.5" fill="#fff" opacity="0.9"/>
-        <!-- name plate at bottom -->
-      </svg>
-      <div class="name">ALTITUDE</div>
-      <div class="readout"><span class="val">12</span><span class="unit">M</span></div>
-      <!-- glass reflection -->
-      <div class="reflection"></div>
-    </div>
-  </div>
-</div>
-    <div style="display:grid;place-items:center;"><div class="gauge" style="width:200px;height:200px;">
-  <!-- outer chrome bezel ring -->
-  <div class="bezel">
-    <!-- glass face -->
-    <div class="face" style="background:radial-gradient(circle at 50% 30%,#1f2937 0%,#1a0a08 60%,#000 100%);">
-      <svg viewBox="0 0 100 100" style="width:100%;height:100%;">
-        <path d="M 85.56 44.37 A 36 36 0 0 1 75.46 75.46" fill="none" stroke="#ef4444" stroke-width="3" opacity="0.85"/>
         <line x1="50" y1="6" x2="50" y2="12" stroke="#e5e7eb" stroke-width="1.4" transform="rotate(-135.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-126.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-117.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-108.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-99.0 50 50)"/><line x1="50" y1="6" x2="50" y2="12" stroke="#e5e7eb" stroke-width="1.4" transform="rotate(-90.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-81.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-72.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-63.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-54.0 50 50)"/><line x1="50" y1="6" x2="50" y2="12" stroke="#e5e7eb" stroke-width="1.4" transform="rotate(-45.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-36.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-27.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-18.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-9.0 50 50)"/><line x1="50" y1="6" x2="50" y2="12" stroke="#e5e7eb" stroke-width="1.4" transform="rotate(0.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(9.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(18.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(27.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(36.0 50 50)"/><line x1="50" y1="6" x2="50" y2="12" stroke="#e5e7eb" stroke-width="1.4" transform="rotate(45.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(54.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(63.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(72.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(81.0 50 50)"/><line x1="50" y1="6" x2="50" y2="12" stroke="#e5e7eb" stroke-width="1.4" transform="rotate(90.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(99.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(108.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(117.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(126.0 50 50)"/><line x1="50" y1="6" x2="50" y2="12" stroke="#e5e7eb" stroke-width="1.4" transform="rotate(135.0 50 50)"/>
         <text x="50" y="22" text-anchor="middle" fill="#e5e7eb" font-size="6.5" font-family="Helvetica,Arial,sans-serif" font-weight="700" transform="rotate(-135.0 50 50) rotate(135.0 50 22)">0</text><text x="50" y="22" text-anchor="middle" fill="#e5e7eb" font-size="6.5" font-family="Helvetica,Arial,sans-serif" font-weight="700" transform="rotate(-90.0 50 50) rotate(90.0 50 22)">2</text><text x="50" y="22" text-anchor="middle" fill="#e5e7eb" font-size="6.5" font-family="Helvetica,Arial,sans-serif" font-weight="700" transform="rotate(-45.0 50 50) rotate(45.0 50 22)">4</text><text x="50" y="22" text-anchor="middle" fill="#e5e7eb" font-size="6.5" font-family="Helvetica,Arial,sans-serif" font-weight="700" transform="rotate(0.0 50 50) rotate(-0.0 50 22)">6</text><text x="50" y="22" text-anchor="middle" fill="#e5e7eb" font-size="6.5" font-family="Helvetica,Arial,sans-serif" font-weight="700" transform="rotate(45.0 50 50) rotate(-45.0 50 22)">8</text><text x="50" y="22" text-anchor="middle" fill="#e5e7eb" font-size="6.5" font-family="Helvetica,Arial,sans-serif" font-weight="700" transform="rotate(90.0 50 50) rotate(-90.0 50 22)">10</text><text x="50" y="22" text-anchor="middle" fill="#e5e7eb" font-size="6.5" font-family="Helvetica,Arial,sans-serif" font-weight="700" transform="rotate(135.0 50 50) rotate(-135.0 50 22)">12</text>
         <!-- needle -->
@@ -399,8 +321,61 @@ body::before{content:'';position:fixed;inset:0;background-image:
         <circle cx="50" cy="50" r="2.5" fill="#fff" opacity="0.9"/>
         <!-- name plate at bottom -->
       </svg>
-      <div class="name">MOTOR · DUAL RPM</div>
-      <div class="readout"><span class="val">156</span><span class="unit">RPM</span></div>
+      <div class="name">WIND DIR</div>
+      <div class="readout"><span class="val">45</span><span class="unit">°</span></div>
+      <!-- glass reflection -->
+      <div class="reflection"></div>
+    </div>
+  </div>
+</div><div class="gauge" style="width:140px;height:140px;">
+  <!-- outer chrome bezel ring -->
+  <div class="bezel">
+    <!-- glass face -->
+    <div class="face" style="background:radial-gradient(circle at 50% 30%,#1f2937 0%,#0a1018 60%,#000 100%);">
+      <svg viewBox="0 0 100 100" style="width:100%;height:100%;">
+        
+        <line x1="50" y1="6" x2="50" y2="12" stroke="#e5e7eb" stroke-width="1.4" transform="rotate(-135.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-126.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-117.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-108.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-99.0 50 50)"/><line x1="50" y1="6" x2="50" y2="12" stroke="#e5e7eb" stroke-width="1.4" transform="rotate(-90.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-81.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-72.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-63.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-54.0 50 50)"/><line x1="50" y1="6" x2="50" y2="12" stroke="#e5e7eb" stroke-width="1.4" transform="rotate(-45.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-36.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-27.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-18.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-9.0 50 50)"/><line x1="50" y1="6" x2="50" y2="12" stroke="#e5e7eb" stroke-width="1.4" transform="rotate(0.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(9.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(18.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(27.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(36.0 50 50)"/><line x1="50" y1="6" x2="50" y2="12" stroke="#e5e7eb" stroke-width="1.4" transform="rotate(45.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(54.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(63.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(72.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(81.0 50 50)"/><line x1="50" y1="6" x2="50" y2="12" stroke="#e5e7eb" stroke-width="1.4" transform="rotate(90.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(99.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(108.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(117.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(126.0 50 50)"/><line x1="50" y1="6" x2="50" y2="12" stroke="#e5e7eb" stroke-width="1.4" transform="rotate(135.0 50 50)"/>
+        <text x="50" y="22" text-anchor="middle" fill="#e5e7eb" font-size="6.5" font-family="Helvetica,Arial,sans-serif" font-weight="700" transform="rotate(-135.0 50 50) rotate(135.0 50 22)">0</text><text x="50" y="22" text-anchor="middle" fill="#e5e7eb" font-size="6.5" font-family="Helvetica,Arial,sans-serif" font-weight="700" transform="rotate(-90.0 50 50) rotate(90.0 50 22)">2</text><text x="50" y="22" text-anchor="middle" fill="#e5e7eb" font-size="6.5" font-family="Helvetica,Arial,sans-serif" font-weight="700" transform="rotate(-45.0 50 50) rotate(45.0 50 22)">4</text><text x="50" y="22" text-anchor="middle" fill="#e5e7eb" font-size="6.5" font-family="Helvetica,Arial,sans-serif" font-weight="700" transform="rotate(0.0 50 50) rotate(-0.0 50 22)">6</text><text x="50" y="22" text-anchor="middle" fill="#e5e7eb" font-size="6.5" font-family="Helvetica,Arial,sans-serif" font-weight="700" transform="rotate(45.0 50 50) rotate(-45.0 50 22)">8</text><text x="50" y="22" text-anchor="middle" fill="#e5e7eb" font-size="6.5" font-family="Helvetica,Arial,sans-serif" font-weight="700" transform="rotate(90.0 50 50) rotate(-90.0 50 22)">10</text><text x="50" y="22" text-anchor="middle" fill="#e5e7eb" font-size="6.5" font-family="Helvetica,Arial,sans-serif" font-weight="700" transform="rotate(135.0 50 50) rotate(-135.0 50 22)">12</text>
+        <!-- needle -->
+        <g>
+          <line x1="50" y1="55" x2="50" y2="14" stroke="#fff" stroke-width="2.4" stroke-linecap="round" transform="rotate(30 50 50)" style="filter:drop-shadow(0 1px 2px rgba(0,0,0,0.8));">
+            
+          </line>
+          <circle cx="50" cy="55" r="4" fill="#9ca3af" stroke="#000" stroke-width="0.5"/>
+        </g>
+        <!-- center hub -->
+        <circle cx="50" cy="50" r="2.5" fill="#fff" opacity="0.9"/>
+        <!-- name plate at bottom -->
+      </svg>
+      <div class="name">BOAT SPD</div>
+      <div class="readout"><span class="val">6.2</span><span class="unit">KT</span></div>
+      <!-- glass reflection -->
+      <div class="reflection"></div>
+    </div>
+  </div>
+</div>
+    <div style="display:grid;place-items:center;"><div class="gauge" style="width:200px;height:200px;">
+  <!-- outer chrome bezel ring -->
+  <div class="bezel">
+    <!-- glass face -->
+    <div class="face" style="background:radial-gradient(circle at 50% 30%,#1f2937 0%,#1a0808 60%,#000 100%);">
+      <svg viewBox="0 0 100 100" style="width:100%;height:100%;">
+        <path d="M 85.56 44.37 A 36 36 0 0 1 75.46 75.46" fill="none" stroke="#ef4444" stroke-width="3" opacity="0.85"/>
+        <line x1="50" y1="6" x2="50" y2="12" stroke="#e5e7eb" stroke-width="1.4" transform="rotate(-135.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-126.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-117.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-108.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-99.0 50 50)"/><line x1="50" y1="6" x2="50" y2="12" stroke="#e5e7eb" stroke-width="1.4" transform="rotate(-90.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-81.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-72.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-63.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-54.0 50 50)"/><line x1="50" y1="6" x2="50" y2="12" stroke="#e5e7eb" stroke-width="1.4" transform="rotate(-45.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-36.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-27.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-18.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-9.0 50 50)"/><line x1="50" y1="6" x2="50" y2="12" stroke="#e5e7eb" stroke-width="1.4" transform="rotate(0.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(9.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(18.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(27.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(36.0 50 50)"/><line x1="50" y1="6" x2="50" y2="12" stroke="#e5e7eb" stroke-width="1.4" transform="rotate(45.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(54.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(63.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(72.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(81.0 50 50)"/><line x1="50" y1="6" x2="50" y2="12" stroke="#e5e7eb" stroke-width="1.4" transform="rotate(90.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(99.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(108.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(117.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(126.0 50 50)"/><line x1="50" y1="6" x2="50" y2="12" stroke="#e5e7eb" stroke-width="1.4" transform="rotate(135.0 50 50)"/>
+        <text x="50" y="22" text-anchor="middle" fill="#e5e7eb" font-size="6.5" font-family="Helvetica,Arial,sans-serif" font-weight="700" transform="rotate(-135.0 50 50) rotate(135.0 50 22)">0</text><text x="50" y="22" text-anchor="middle" fill="#e5e7eb" font-size="6.5" font-family="Helvetica,Arial,sans-serif" font-weight="700" transform="rotate(-90.0 50 50) rotate(90.0 50 22)">2</text><text x="50" y="22" text-anchor="middle" fill="#e5e7eb" font-size="6.5" font-family="Helvetica,Arial,sans-serif" font-weight="700" transform="rotate(-45.0 50 50) rotate(45.0 50 22)">4</text><text x="50" y="22" text-anchor="middle" fill="#e5e7eb" font-size="6.5" font-family="Helvetica,Arial,sans-serif" font-weight="700" transform="rotate(0.0 50 50) rotate(-0.0 50 22)">6</text><text x="50" y="22" text-anchor="middle" fill="#e5e7eb" font-size="6.5" font-family="Helvetica,Arial,sans-serif" font-weight="700" transform="rotate(45.0 50 50) rotate(-45.0 50 22)">8</text><text x="50" y="22" text-anchor="middle" fill="#e5e7eb" font-size="6.5" font-family="Helvetica,Arial,sans-serif" font-weight="700" transform="rotate(90.0 50 50) rotate(-90.0 50 22)">10</text><text x="50" y="22" text-anchor="middle" fill="#e5e7eb" font-size="6.5" font-family="Helvetica,Arial,sans-serif" font-weight="700" transform="rotate(135.0 50 50) rotate(-135.0 50 22)">12</text>
+        <!-- needle -->
+        <g>
+          <line x1="50" y1="55" x2="50" y2="14" stroke="#fff" stroke-width="2.4" stroke-linecap="round" transform="rotate(30 50 50)" style="filter:drop-shadow(0 1px 2px rgba(0,0,0,0.8));">
+            
+          </line>
+          <circle cx="50" cy="55" r="4" fill="#9ca3af" stroke="#000" stroke-width="0.5"/>
+        </g>
+        <!-- center hub -->
+        <circle cx="50" cy="50" r="2.5" fill="#fff" opacity="0.9"/>
+        <!-- name plate at bottom -->
+      </svg>
+      <div class="name">AUX MOTOR · DUAL</div>
+      <div class="readout"><span class="val">1100</span><span class="unit">RPM</span></div>
       <!-- glass reflection -->
       <div class="reflection"></div>
     </div>
@@ -410,7 +385,7 @@ body::before{content:'';position:fixed;inset:0;background-image:
   <!-- outer chrome bezel ring -->
   <div class="bezel">
     <!-- glass face -->
-    <div class="face" style="background:radial-gradient(circle at 50% 30%,#1f2937 0%,#001020 60%,#000 100%);">
+    <div class="face" style="background:radial-gradient(circle at 50% 30%,#1f2937 0%,#0a0404 60%,#000 100%);">
       <svg viewBox="0 0 100 100" style="width:100%;height:100%;">
         
         <line x1="50" y1="6" x2="50" y2="12" stroke="#e5e7eb" stroke-width="1.4" transform="rotate(-135.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-126.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-117.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-108.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-99.0 50 50)"/><line x1="50" y1="6" x2="50" y2="12" stroke="#e5e7eb" stroke-width="1.4" transform="rotate(-90.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-81.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-72.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-63.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-54.0 50 50)"/><line x1="50" y1="6" x2="50" y2="12" stroke="#e5e7eb" stroke-width="1.4" transform="rotate(-45.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-36.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-27.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-18.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(-9.0 50 50)"/><line x1="50" y1="6" x2="50" y2="12" stroke="#e5e7eb" stroke-width="1.4" transform="rotate(0.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(9.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(18.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(27.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(36.0 50 50)"/><line x1="50" y1="6" x2="50" y2="12" stroke="#e5e7eb" stroke-width="1.4" transform="rotate(45.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(54.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(63.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(72.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(81.0 50 50)"/><line x1="50" y1="6" x2="50" y2="12" stroke="#e5e7eb" stroke-width="1.4" transform="rotate(90.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(99.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(108.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(117.0 50 50)"/><line x1="50" y1="6" x2="50" y2="9" stroke="#9ca3af" stroke-width="0.6" transform="rotate(126.0 50 50)"/><line x1="50" y1="6" x2="50" y2="12" stroke="#e5e7eb" stroke-width="1.4" transform="rotate(135.0 50 50)"/>
@@ -426,7 +401,7 @@ body::before{content:'';position:fixed;inset:0;background-image:
         <circle cx="50" cy="50" r="2.5" fill="#fff" opacity="0.9"/>
         <!-- name plate at bottom -->
       </svg>
-      <div class="name">HEADING</div>
+      <div class="name">COMPASS</div>
       <div class="readout"><span class="val">072</span><span class="unit">MAG</span></div>
       <!-- glass reflection -->
       <div class="reflection"></div>
@@ -443,8 +418,8 @@ body::before{content:'';position:fixed;inset:0;background-image:
         <text x="50" y="22" text-anchor="middle" fill="#e5e7eb" font-size="6.5" font-family="Helvetica,Arial,sans-serif" font-weight="700" transform="rotate(-135.0 50 50) rotate(135.0 50 22)">0</text><text x="50" y="22" text-anchor="middle" fill="#e5e7eb" font-size="6.5" font-family="Helvetica,Arial,sans-serif" font-weight="700" transform="rotate(-90.0 50 50) rotate(90.0 50 22)">2</text><text x="50" y="22" text-anchor="middle" fill="#e5e7eb" font-size="6.5" font-family="Helvetica,Arial,sans-serif" font-weight="700" transform="rotate(-45.0 50 50) rotate(45.0 50 22)">4</text><text x="50" y="22" text-anchor="middle" fill="#e5e7eb" font-size="6.5" font-family="Helvetica,Arial,sans-serif" font-weight="700" transform="rotate(0.0 50 50) rotate(-0.0 50 22)">6</text><text x="50" y="22" text-anchor="middle" fill="#e5e7eb" font-size="6.5" font-family="Helvetica,Arial,sans-serif" font-weight="700" transform="rotate(45.0 50 50) rotate(-45.0 50 22)">8</text><text x="50" y="22" text-anchor="middle" fill="#e5e7eb" font-size="6.5" font-family="Helvetica,Arial,sans-serif" font-weight="700" transform="rotate(90.0 50 50) rotate(-90.0 50 22)">10</text><text x="50" y="22" text-anchor="middle" fill="#e5e7eb" font-size="6.5" font-family="Helvetica,Arial,sans-serif" font-weight="700" transform="rotate(135.0 50 50) rotate(-135.0 50 22)">12</text>
         <!-- needle -->
         <g>
-          <line x1="50" y1="55" x2="50" y2="14" stroke="#fff" stroke-width="2.4" stroke-linecap="round" transform="rotate(20 50 50)" style="filter:drop-shadow(0 1px 2px rgba(0,0,0,0.8));">
-            <animateTransform attributeName="transform" type="rotate" values="-30 50 50;45 50 50;-30 50 50" dur="4s" repeatCount="indefinite"/>
+          <line x1="50" y1="55" x2="50" y2="14" stroke="#fff" stroke-width="2.4" stroke-linecap="round" transform="rotate(-60 50 50)" style="filter:drop-shadow(0 1px 2px rgba(0,0,0,0.8));">
+            
           </line>
           <circle cx="50" cy="55" r="4" fill="#9ca3af" stroke="#000" stroke-width="0.5"/>
         </g>
@@ -452,8 +427,8 @@ body::before{content:'';position:fixed;inset:0;background-image:
         <circle cx="50" cy="50" r="2.5" fill="#fff" opacity="0.9"/>
         <!-- name plate at bottom -->
       </svg>
-      <div class="name">VS</div>
-      <div class="readout"><span class="val">+0.2</span><span class="unit">M/S</span></div>
+      <div class="name">DEPTH</div>
+      <div class="readout"><span class="val">18</span><span class="unit">M</span></div>
       <!-- glass reflection -->
       <div class="reflection"></div>
     </div>
@@ -469,8 +444,8 @@ body::before{content:'';position:fixed;inset:0;background-image:
         <text x="50" y="22" text-anchor="middle" fill="#e5e7eb" font-size="6.5" font-family="Helvetica,Arial,sans-serif" font-weight="700" transform="rotate(-135.0 50 50) rotate(135.0 50 22)">0</text><text x="50" y="22" text-anchor="middle" fill="#e5e7eb" font-size="6.5" font-family="Helvetica,Arial,sans-serif" font-weight="700" transform="rotate(-90.0 50 50) rotate(90.0 50 22)">2</text><text x="50" y="22" text-anchor="middle" fill="#e5e7eb" font-size="6.5" font-family="Helvetica,Arial,sans-serif" font-weight="700" transform="rotate(-45.0 50 50) rotate(45.0 50 22)">4</text><text x="50" y="22" text-anchor="middle" fill="#e5e7eb" font-size="6.5" font-family="Helvetica,Arial,sans-serif" font-weight="700" transform="rotate(0.0 50 50) rotate(-0.0 50 22)">6</text><text x="50" y="22" text-anchor="middle" fill="#e5e7eb" font-size="6.5" font-family="Helvetica,Arial,sans-serif" font-weight="700" transform="rotate(45.0 50 50) rotate(-45.0 50 22)">8</text><text x="50" y="22" text-anchor="middle" fill="#e5e7eb" font-size="6.5" font-family="Helvetica,Arial,sans-serif" font-weight="700" transform="rotate(90.0 50 50) rotate(-90.0 50 22)">10</text><text x="50" y="22" text-anchor="middle" fill="#e5e7eb" font-size="6.5" font-family="Helvetica,Arial,sans-serif" font-weight="700" transform="rotate(135.0 50 50) rotate(-135.0 50 22)">12</text>
         <!-- needle -->
         <g>
-          <line x1="50" y1="55" x2="50" y2="14" stroke="#fff" stroke-width="2.4" stroke-linecap="round" transform="rotate(-15 50 50)" style="filter:drop-shadow(0 1px 2px rgba(0,0,0,0.8));">
-            
+          <line x1="50" y1="55" x2="50" y2="14" stroke="#fff" stroke-width="2.4" stroke-linecap="round" transform="rotate(8 50 50)" style="filter:drop-shadow(0 1px 2px rgba(0,0,0,0.8));">
+            <animateTransform attributeName="transform" type="rotate" values="-30 50 50;45 50 50;-30 50 50" dur="4s" repeatCount="indefinite"/>
           </line>
           <circle cx="50" cy="55" r="4" fill="#9ca3af" stroke="#000" stroke-width="0.5"/>
         </g>
@@ -478,18 +453,15 @@ body::before{content:'';position:fixed;inset:0;background-image:
         <circle cx="50" cy="50" r="2.5" fill="#fff" opacity="0.9"/>
         <!-- name plate at bottom -->
       </svg>
-      <div class="name">TURN</div>
-      <div class="readout"><span class="val">L</span><span class="unit">COORD</span></div>
+      <div class="name">HEEL</div>
+      <div class="readout"><span class="val">+8</span><span class="unit">°</span></div>
       <!-- glass reflection -->
       <div class="reflection"></div>
     </div>
   </div>
 </div>
   </div>
-
   <div class="divider"></div>
-
-  <!-- MIDDLE: throttles + joystick + sidebar extras -->
   <div style="display:grid;grid-template-columns:auto 1fr auto;gap:30px;align-items:start;">
     <div class="throttle-bank"><div class="throttle-wrap">
   <div class="throttle-slot" style="height:180px;">
@@ -505,7 +477,7 @@ body::before{content:'';position:fixed;inset:0;background-image:
     <div class="slot-mark" style="top:60%;">CRZ</div>
     <div class="slot-mark" style="top:90%;">IDLE</div>
   </div>
-  <div class="lever-label">MOTOR L</div>
+  <div class="lever-label">AUX MOTOR</div>
   <div class="lever-pct">72%</div>
 </div><div class="throttle-wrap">
   <div class="throttle-slot" style="height:180px;">
@@ -521,7 +493,7 @@ body::before{content:'';position:fixed;inset:0;background-image:
     <div class="slot-mark" style="top:60%;">CRZ</div>
     <div class="slot-mark" style="top:90%;">IDLE</div>
   </div>
-  <div class="lever-label">MOTOR R</div>
+  <div class="lever-label">WINCH</div>
   <div class="lever-pct">68%</div>
 </div></div>
     <div style="display:flex;flex-direction:column;align-items:center;gap:18px;">
@@ -533,7 +505,7 @@ body::before{content:'';position:fixed;inset:0;background-image:
       <div class="stick-trigger"></div>
     </div>
   </div>
-  <div class="tag-plate">CONTROL STICK</div>
+  <div class="tag-plate">SHIP WHEEL</div>
 </div>
       <div style="display:flex;gap:14px;align-items:center;">
         <div class="screen-bank"><div class="screen"><div class="scr-label">IR · 38 kHz</div>
@@ -576,168 +548,10 @@ body::before{content:'';position:fixed;inset:0;background-image:
   </div>
 </div>
   </div>
-
   <div class="divider"></div>
-
-  <!-- BOTTOM: knobs row -->
   <div style="display:flex;justify-content:center;align-items:flex-start;gap:14px;flex-wrap:wrap;background:linear-gradient(180deg,#1a1f28,#0a0e14);border:2px solid #000;border-radius:8px;padding:14px;box-shadow:inset 0 0 12px rgba(0,0,0,0.6);">
     <div class="knob-wrap" style="width:90px;">
   <div class="knob" style="width:80px;height:80px;">
-    <svg viewBox="0 0 100 100" style="width:100%;height:100%;position:absolute;inset:0;">
-      <!-- shadow on panel -->
-      <ellipse cx="50" cy="92" rx="36" ry="6" fill="rgba(0,0,0,0.55)"/>
-      <!-- base ring -->
-      <circle cx="50" cy="50" r="44" fill="#0a0a0a"/>
-      <!-- knob body w/ chrome gradient -->
-      <defs>
-        <radialGradient id="kg0" cx="35%" cy="30%" r="70%">
-          <stop offset="0%" stop-color="#fafafa"/>
-          <stop offset="35%" stop-color="#9ca3af"/>
-          <stop offset="75%" stop-color="#374151"/>
-          <stop offset="100%" stop-color="#0a0a0a"/>
-        </radialGradient>
-      </defs>
-      <circle cx="50" cy="50" r="40" fill="url(#kg0)"/>
-      <line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(0 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(15 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(30 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(45 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(60 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(75 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(90 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(105 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(120 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(135 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(150 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(165 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(180 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(195 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(210 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(225 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(240 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(255 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(270 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(285 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(300 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(315 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(330 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(345 50 50)"/>
-      <!-- top dish -->
-      <circle cx="50" cy="50" r="22" fill="radial-gradient(circle,#1f2937,#000)" stroke="#000" stroke-width="0.6"/>
-      <circle cx="50" cy="50" r="22" fill="url(#kg0)" opacity="0.65"/>
-      <!-- pointer line -->
-      <line x1="50" y1="50" x2="50" y2="14" stroke="#22d3ee" stroke-width="3" stroke-linecap="round" transform="rotate(0 50 50)" style="filter:drop-shadow(0 0 2px #22d3ee);"/>
-      <circle cx="50" cy="50" r="3" fill="#000"/>
-      <!-- highlight -->
-      <ellipse cx="38" cy="32" rx="14" ry="6" fill="rgba(255,255,255,0.35)"/>
-    </svg>
-  </div>
-  <div class="lbl-tag">SERVO
-RUDDER</div>
-  <div class="val-tag" style="color:#22d3ee;">90°</div>
-</div><div class="knob-wrap" style="width:70px;">
-  <div class="knob" style="width:60px;height:60px;">
-    <svg viewBox="0 0 100 100" style="width:100%;height:100%;position:absolute;inset:0;">
-      <!-- shadow on panel -->
-      <ellipse cx="50" cy="92" rx="36" ry="6" fill="rgba(0,0,0,0.55)"/>
-      <!-- base ring -->
-      <circle cx="50" cy="50" r="44" fill="#0a0a0a"/>
-      <!-- knob body w/ chrome gradient -->
-      <defs>
-        <radialGradient id="kg120" cx="35%" cy="30%" r="70%">
-          <stop offset="0%" stop-color="#fafafa"/>
-          <stop offset="35%" stop-color="#9ca3af"/>
-          <stop offset="75%" stop-color="#374151"/>
-          <stop offset="100%" stop-color="#0a0a0a"/>
-        </radialGradient>
-      </defs>
-      <circle cx="50" cy="50" r="40" fill="url(#kg120)"/>
-      <line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(0 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(15 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(30 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(45 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(60 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(75 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(90 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(105 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(120 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(135 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(150 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(165 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(180 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(195 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(210 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(225 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(240 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(255 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(270 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(285 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(300 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(315 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(330 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(345 50 50)"/>
-      <!-- top dish -->
-      <circle cx="50" cy="50" r="22" fill="radial-gradient(circle,#1f2937,#000)" stroke="#000" stroke-width="0.6"/>
-      <circle cx="50" cy="50" r="22" fill="url(#kg120)" opacity="0.65"/>
-      <!-- pointer line -->
-      <line x1="50" y1="50" x2="50" y2="14" stroke="#ef4444" stroke-width="3" stroke-linecap="round" transform="rotate(120 50 50)" style="filter:drop-shadow(0 0 2px #ef4444);"/>
-      <circle cx="50" cy="50" r="3" fill="#000"/>
-      <!-- highlight -->
-      <ellipse cx="38" cy="32" rx="14" ry="6" fill="rgba(255,255,255,0.35)"/>
-    </svg>
-  </div>
-  <div class="lbl-tag">LED·1
-RED</div>
-  <div class="val-tag" style="color:#ef4444;">FF</div>
-</div><div class="knob-wrap" style="width:70px;">
-  <div class="knob" style="width:60px;height:60px;">
-    <svg viewBox="0 0 100 100" style="width:100%;height:100%;position:absolute;inset:0;">
-      <!-- shadow on panel -->
-      <ellipse cx="50" cy="92" rx="36" ry="6" fill="rgba(0,0,0,0.55)"/>
-      <!-- base ring -->
-      <circle cx="50" cy="50" r="44" fill="#0a0a0a"/>
-      <!-- knob body w/ chrome gradient -->
-      <defs>
-        <radialGradient id="kg-30" cx="35%" cy="30%" r="70%">
-          <stop offset="0%" stop-color="#fafafa"/>
-          <stop offset="35%" stop-color="#9ca3af"/>
-          <stop offset="75%" stop-color="#374151"/>
-          <stop offset="100%" stop-color="#0a0a0a"/>
-        </radialGradient>
-      </defs>
-      <circle cx="50" cy="50" r="40" fill="url(#kg-30)"/>
-      <line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(0 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(15 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(30 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(45 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(60 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(75 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(90 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(105 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(120 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(135 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(150 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(165 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(180 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(195 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(210 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(225 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(240 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(255 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(270 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(285 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(300 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(315 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(330 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(345 50 50)"/>
-      <!-- top dish -->
-      <circle cx="50" cy="50" r="22" fill="radial-gradient(circle,#1f2937,#000)" stroke="#000" stroke-width="0.6"/>
-      <circle cx="50" cy="50" r="22" fill="url(#kg-30)" opacity="0.65"/>
-      <!-- pointer line -->
-      <line x1="50" y1="50" x2="50" y2="14" stroke="#22c55e" stroke-width="3" stroke-linecap="round" transform="rotate(-30 50 50)" style="filter:drop-shadow(0 0 2px #22c55e);"/>
-      <circle cx="50" cy="50" r="3" fill="#000"/>
-      <!-- highlight -->
-      <ellipse cx="38" cy="32" rx="14" ry="6" fill="rgba(255,255,255,0.35)"/>
-    </svg>
-  </div>
-  <div class="lbl-tag">LED·2
-GRN</div>
-  <div class="val-tag" style="color:#22c55e;">88</div>
-</div><div class="knob-wrap" style="width:70px;">
-  <div class="knob" style="width:60px;height:60px;">
-    <svg viewBox="0 0 100 100" style="width:100%;height:100%;position:absolute;inset:0;">
-      <!-- shadow on panel -->
-      <ellipse cx="50" cy="92" rx="36" ry="6" fill="rgba(0,0,0,0.55)"/>
-      <!-- base ring -->
-      <circle cx="50" cy="50" r="44" fill="#0a0a0a"/>
-      <!-- knob body w/ chrome gradient -->
-      <defs>
-        <radialGradient id="kg60" cx="35%" cy="30%" r="70%">
-          <stop offset="0%" stop-color="#fafafa"/>
-          <stop offset="35%" stop-color="#9ca3af"/>
-          <stop offset="75%" stop-color="#374151"/>
-          <stop offset="100%" stop-color="#0a0a0a"/>
-        </radialGradient>
-      </defs>
-      <circle cx="50" cy="50" r="40" fill="url(#kg60)"/>
-      <line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(0 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(15 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(30 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(45 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(60 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(75 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(90 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(105 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(120 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(135 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(150 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(165 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(180 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(195 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(210 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(225 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(240 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(255 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(270 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(285 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(300 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(315 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(330 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(345 50 50)"/>
-      <!-- top dish -->
-      <circle cx="50" cy="50" r="22" fill="radial-gradient(circle,#1f2937,#000)" stroke="#000" stroke-width="0.6"/>
-      <circle cx="50" cy="50" r="22" fill="url(#kg60)" opacity="0.65"/>
-      <!-- pointer line -->
-      <line x1="50" y1="50" x2="50" y2="14" stroke="#3b82f6" stroke-width="3" stroke-linecap="round" transform="rotate(60 50 50)" style="filter:drop-shadow(0 0 2px #3b82f6);"/>
-      <circle cx="50" cy="50" r="3" fill="#000"/>
-      <!-- highlight -->
-      <ellipse cx="38" cy="32" rx="14" ry="6" fill="rgba(255,255,255,0.35)"/>
-    </svg>
-  </div>
-  <div class="lbl-tag">LED·3
-BLU</div>
-  <div class="val-tag" style="color:#3b82f6;">CC</div>
-</div><div class="knob-wrap" style="width:70px;">
-  <div class="knob" style="width:60px;height:60px;">
-    <svg viewBox="0 0 100 100" style="width:100%;height:100%;position:absolute;inset:0;">
-      <!-- shadow on panel -->
-      <ellipse cx="50" cy="92" rx="36" ry="6" fill="rgba(0,0,0,0.55)"/>
-      <!-- base ring -->
-      <circle cx="50" cy="50" r="44" fill="#0a0a0a"/>
-      <!-- knob body w/ chrome gradient -->
-      <defs>
-        <radialGradient id="kg-90" cx="35%" cy="30%" r="70%">
-          <stop offset="0%" stop-color="#fafafa"/>
-          <stop offset="35%" stop-color="#9ca3af"/>
-          <stop offset="75%" stop-color="#374151"/>
-          <stop offset="100%" stop-color="#0a0a0a"/>
-        </radialGradient>
-      </defs>
-      <circle cx="50" cy="50" r="40" fill="url(#kg-90)"/>
-      <line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(0 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(15 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(30 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(45 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(60 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(75 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(90 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(105 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(120 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(135 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(150 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(165 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(180 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(195 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(210 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(225 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(240 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(255 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(270 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(285 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(300 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(315 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(330 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(345 50 50)"/>
-      <!-- top dish -->
-      <circle cx="50" cy="50" r="22" fill="radial-gradient(circle,#1f2937,#000)" stroke="#000" stroke-width="0.6"/>
-      <circle cx="50" cy="50" r="22" fill="url(#kg-90)" opacity="0.65"/>
-      <!-- pointer line -->
-      <line x1="50" y1="50" x2="50" y2="14" stroke="#fbbf24" stroke-width="3" stroke-linecap="round" transform="rotate(-90 50 50)" style="filter:drop-shadow(0 0 2px #fbbf24);"/>
-      <circle cx="50" cy="50" r="3" fill="#000"/>
-      <!-- highlight -->
-      <ellipse cx="38" cy="32" rx="14" ry="6" fill="rgba(255,255,255,0.35)"/>
-    </svg>
-  </div>
-  <div class="lbl-tag">LED·4
-AMB</div>
-  <div class="val-tag" style="color:#fbbf24;">40</div>
-</div><div class="knob-wrap" style="width:70px;">
-  <div class="knob" style="width:60px;height:60px;">
     <svg viewBox="0 0 100 100" style="width:100%;height:100%;position:absolute;inset:0;">
       <!-- shadow on panel -->
       <ellipse cx="50" cy="92" rx="36" ry="6" fill="rgba(0,0,0,0.55)"/>
@@ -764,9 +578,9 @@ AMB</div>
       <ellipse cx="38" cy="32" rx="14" ry="6" fill="rgba(255,255,255,0.35)"/>
     </svg>
   </div>
-  <div class="lbl-tag">TRIM
-ELEV</div>
-  <div class="val-tag" style="color:#fbbf24;">0°</div>
+  <div class="lbl-tag">SERVO
+RUDDER</div>
+  <div class="val-tag" style="color:#fbbf24;">90°</div>
 </div><div class="knob-wrap" style="width:70px;">
   <div class="knob" style="width:60px;height:60px;">
     <svg viewBox="0 0 100 100" style="width:100%;height:100%;position:absolute;inset:0;">
@@ -776,27 +590,150 @@ ELEV</div>
       <circle cx="50" cy="50" r="44" fill="#0a0a0a"/>
       <!-- knob body w/ chrome gradient -->
       <defs>
-        <radialGradient id="kg20" cx="35%" cy="30%" r="70%">
+        <radialGradient id="kg0" cx="35%" cy="30%" r="70%">
           <stop offset="0%" stop-color="#fafafa"/>
           <stop offset="35%" stop-color="#9ca3af"/>
           <stop offset="75%" stop-color="#374151"/>
           <stop offset="100%" stop-color="#0a0a0a"/>
         </radialGradient>
       </defs>
-      <circle cx="50" cy="50" r="40" fill="url(#kg20)"/>
+      <circle cx="50" cy="50" r="40" fill="url(#kg0)"/>
       <line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(0 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(15 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(30 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(45 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(60 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(75 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(90 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(105 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(120 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(135 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(150 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(165 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(180 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(195 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(210 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(225 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(240 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(255 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(270 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(285 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(300 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(315 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(330 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(345 50 50)"/>
       <!-- top dish -->
       <circle cx="50" cy="50" r="22" fill="radial-gradient(circle,#1f2937,#000)" stroke="#000" stroke-width="0.6"/>
-      <circle cx="50" cy="50" r="22" fill="url(#kg20)" opacity="0.65"/>
+      <circle cx="50" cy="50" r="22" fill="url(#kg0)" opacity="0.65"/>
       <!-- pointer line -->
-      <line x1="50" y1="50" x2="50" y2="14" stroke="#fbbf24" stroke-width="3" stroke-linecap="round" transform="rotate(20 50 50)" style="filter:drop-shadow(0 0 2px #fbbf24);"/>
+      <line x1="50" y1="50" x2="50" y2="14" stroke="#fff" stroke-width="3" stroke-linecap="round" transform="rotate(0 50 50)" style="filter:drop-shadow(0 0 2px #fff);"/>
       <circle cx="50" cy="50" r="3" fill="#000"/>
       <!-- highlight -->
       <ellipse cx="38" cy="32" rx="14" ry="6" fill="rgba(255,255,255,0.35)"/>
     </svg>
   </div>
-  <div class="lbl-tag">TRIM
-AILE</div>
+  <div class="lbl-tag">LED·1
+MAST</div>
+  <div class="val-tag" style="color:#fff;">WT</div>
+</div><div class="knob-wrap" style="width:70px;">
+  <div class="knob" style="width:60px;height:60px;">
+    <svg viewBox="0 0 100 100" style="width:100%;height:100%;position:absolute;inset:0;">
+      <!-- shadow on panel -->
+      <ellipse cx="50" cy="92" rx="36" ry="6" fill="rgba(0,0,0,0.55)"/>
+      <!-- base ring -->
+      <circle cx="50" cy="50" r="44" fill="#0a0a0a"/>
+      <!-- knob body w/ chrome gradient -->
+      <defs>
+        <radialGradient id="kg0" cx="35%" cy="30%" r="70%">
+          <stop offset="0%" stop-color="#fafafa"/>
+          <stop offset="35%" stop-color="#9ca3af"/>
+          <stop offset="75%" stop-color="#374151"/>
+          <stop offset="100%" stop-color="#0a0a0a"/>
+        </radialGradient>
+      </defs>
+      <circle cx="50" cy="50" r="40" fill="url(#kg0)"/>
+      <line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(0 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(15 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(30 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(45 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(60 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(75 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(90 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(105 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(120 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(135 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(150 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(165 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(180 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(195 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(210 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(225 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(240 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(255 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(270 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(285 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(300 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(315 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(330 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(345 50 50)"/>
+      <!-- top dish -->
+      <circle cx="50" cy="50" r="22" fill="radial-gradient(circle,#1f2937,#000)" stroke="#000" stroke-width="0.6"/>
+      <circle cx="50" cy="50" r="22" fill="url(#kg0)" opacity="0.65"/>
+      <!-- pointer line -->
+      <line x1="50" y1="50" x2="50" y2="14" stroke="#ef4444" stroke-width="3" stroke-linecap="round" transform="rotate(0 50 50)" style="filter:drop-shadow(0 0 2px #ef4444);"/>
+      <circle cx="50" cy="50" r="3" fill="#000"/>
+      <!-- highlight -->
+      <ellipse cx="38" cy="32" rx="14" ry="6" fill="rgba(255,255,255,0.35)"/>
+    </svg>
+  </div>
+  <div class="lbl-tag">LED·2
+PORT</div>
+  <div class="val-tag" style="color:#ef4444;">RD</div>
+</div><div class="knob-wrap" style="width:70px;">
+  <div class="knob" style="width:60px;height:60px;">
+    <svg viewBox="0 0 100 100" style="width:100%;height:100%;position:absolute;inset:0;">
+      <!-- shadow on panel -->
+      <ellipse cx="50" cy="92" rx="36" ry="6" fill="rgba(0,0,0,0.55)"/>
+      <!-- base ring -->
+      <circle cx="50" cy="50" r="44" fill="#0a0a0a"/>
+      <!-- knob body w/ chrome gradient -->
+      <defs>
+        <radialGradient id="kg0" cx="35%" cy="30%" r="70%">
+          <stop offset="0%" stop-color="#fafafa"/>
+          <stop offset="35%" stop-color="#9ca3af"/>
+          <stop offset="75%" stop-color="#374151"/>
+          <stop offset="100%" stop-color="#0a0a0a"/>
+        </radialGradient>
+      </defs>
+      <circle cx="50" cy="50" r="40" fill="url(#kg0)"/>
+      <line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(0 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(15 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(30 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(45 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(60 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(75 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(90 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(105 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(120 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(135 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(150 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(165 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(180 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(195 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(210 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(225 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(240 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(255 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(270 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(285 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(300 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(315 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(330 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(345 50 50)"/>
+      <!-- top dish -->
+      <circle cx="50" cy="50" r="22" fill="radial-gradient(circle,#1f2937,#000)" stroke="#000" stroke-width="0.6"/>
+      <circle cx="50" cy="50" r="22" fill="url(#kg0)" opacity="0.65"/>
+      <!-- pointer line -->
+      <line x1="50" y1="50" x2="50" y2="14" stroke="#22c55e" stroke-width="3" stroke-linecap="round" transform="rotate(0 50 50)" style="filter:drop-shadow(0 0 2px #22c55e);"/>
+      <circle cx="50" cy="50" r="3" fill="#000"/>
+      <!-- highlight -->
+      <ellipse cx="38" cy="32" rx="14" ry="6" fill="rgba(255,255,255,0.35)"/>
+    </svg>
+  </div>
+  <div class="lbl-tag">LED·3
+STB</div>
+  <div class="val-tag" style="color:#22c55e;">GR</div>
+</div><div class="knob-wrap" style="width:70px;">
+  <div class="knob" style="width:60px;height:60px;">
+    <svg viewBox="0 0 100 100" style="width:100%;height:100%;position:absolute;inset:0;">
+      <!-- shadow on panel -->
+      <ellipse cx="50" cy="92" rx="36" ry="6" fill="rgba(0,0,0,0.55)"/>
+      <!-- base ring -->
+      <circle cx="50" cy="50" r="44" fill="#0a0a0a"/>
+      <!-- knob body w/ chrome gradient -->
+      <defs>
+        <radialGradient id="kg0" cx="35%" cy="30%" r="70%">
+          <stop offset="0%" stop-color="#fafafa"/>
+          <stop offset="35%" stop-color="#9ca3af"/>
+          <stop offset="75%" stop-color="#374151"/>
+          <stop offset="100%" stop-color="#0a0a0a"/>
+        </radialGradient>
+      </defs>
+      <circle cx="50" cy="50" r="40" fill="url(#kg0)"/>
+      <line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(0 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(15 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(30 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(45 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(60 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(75 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(90 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(105 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(120 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(135 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(150 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(165 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(180 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(195 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(210 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(225 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(240 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(255 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(270 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(285 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(300 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(315 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(330 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(345 50 50)"/>
+      <!-- top dish -->
+      <circle cx="50" cy="50" r="22" fill="radial-gradient(circle,#1f2937,#000)" stroke="#000" stroke-width="0.6"/>
+      <circle cx="50" cy="50" r="22" fill="url(#kg0)" opacity="0.65"/>
+      <!-- pointer line -->
+      <line x1="50" y1="50" x2="50" y2="14" stroke="#fff" stroke-width="3" stroke-linecap="round" transform="rotate(0 50 50)" style="filter:drop-shadow(0 0 2px #fff);"/>
+      <circle cx="50" cy="50" r="3" fill="#000"/>
+      <!-- highlight -->
+      <ellipse cx="38" cy="32" rx="14" ry="6" fill="rgba(255,255,255,0.35)"/>
+    </svg>
+  </div>
+  <div class="lbl-tag">LED·4
+STRN</div>
+  <div class="val-tag" style="color:#fff;">WT</div>
+</div><div class="knob-wrap" style="width:70px;">
+  <div class="knob" style="width:60px;height:60px;">
+    <svg viewBox="0 0 100 100" style="width:100%;height:100%;position:absolute;inset:0;">
+      <!-- shadow on panel -->
+      <ellipse cx="50" cy="92" rx="36" ry="6" fill="rgba(0,0,0,0.55)"/>
+      <!-- base ring -->
+      <circle cx="50" cy="50" r="44" fill="#0a0a0a"/>
+      <!-- knob body w/ chrome gradient -->
+      <defs>
+        <radialGradient id="kg30" cx="35%" cy="30%" r="70%">
+          <stop offset="0%" stop-color="#fafafa"/>
+          <stop offset="35%" stop-color="#9ca3af"/>
+          <stop offset="75%" stop-color="#374151"/>
+          <stop offset="100%" stop-color="#0a0a0a"/>
+        </radialGradient>
+      </defs>
+      <circle cx="50" cy="50" r="40" fill="url(#kg30)"/>
+      <line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(0 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(15 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(30 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(45 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(60 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(75 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(90 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(105 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(120 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(135 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(150 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(165 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(180 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(195 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(210 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(225 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(240 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(255 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(270 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(285 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(300 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(315 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(330 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(345 50 50)"/>
+      <!-- top dish -->
+      <circle cx="50" cy="50" r="22" fill="radial-gradient(circle,#1f2937,#000)" stroke="#000" stroke-width="0.6"/>
+      <circle cx="50" cy="50" r="22" fill="url(#kg30)" opacity="0.65"/>
+      <!-- pointer line -->
+      <line x1="50" y1="50" x2="50" y2="14" stroke="#fbbf24" stroke-width="3" stroke-linecap="round" transform="rotate(30 50 50)" style="filter:drop-shadow(0 0 2px #fbbf24);"/>
+      <circle cx="50" cy="50" r="3" fill="#000"/>
+      <!-- highlight -->
+      <ellipse cx="38" cy="32" rx="14" ry="6" fill="rgba(255,255,255,0.35)"/>
+    </svg>
+  </div>
+  <div class="lbl-tag">TRIM</div>
   <div class="val-tag" style="color:#fbbf24;">+5</div>
 </div><div class="knob-wrap" style="width:70px;">
   <div class="knob" style="width:60px;height:60px;">
@@ -807,59 +744,63 @@ AILE</div>
       <circle cx="50" cy="50" r="44" fill="#0a0a0a"/>
       <!-- knob body w/ chrome gradient -->
       <defs>
-        <radialGradient id="kg80" cx="35%" cy="30%" r="70%">
+        <radialGradient id="kg-90" cx="35%" cy="30%" r="70%">
           <stop offset="0%" stop-color="#fafafa"/>
           <stop offset="35%" stop-color="#9ca3af"/>
           <stop offset="75%" stop-color="#374151"/>
           <stop offset="100%" stop-color="#0a0a0a"/>
         </radialGradient>
       </defs>
-      <circle cx="50" cy="50" r="40" fill="url(#kg80)"/>
+      <circle cx="50" cy="50" r="40" fill="url(#kg-90)"/>
       <line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(0 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(15 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(30 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(45 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(60 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(75 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(90 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(105 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(120 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(135 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(150 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(165 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(180 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(195 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(210 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(225 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(240 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(255 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(270 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(285 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(300 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(315 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(330 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(345 50 50)"/>
       <!-- top dish -->
       <circle cx="50" cy="50" r="22" fill="radial-gradient(circle,#1f2937,#000)" stroke="#000" stroke-width="0.6"/>
-      <circle cx="50" cy="50" r="22" fill="url(#kg80)" opacity="0.65"/>
+      <circle cx="50" cy="50" r="22" fill="url(#kg-90)" opacity="0.65"/>
       <!-- pointer line -->
-      <line x1="50" y1="50" x2="50" y2="14" stroke="#fbbf24" stroke-width="3" stroke-linecap="round" transform="rotate(80 50 50)" style="filter:drop-shadow(0 0 2px #fbbf24);"/>
+      <line x1="50" y1="50" x2="50" y2="14" stroke="#22d3ee" stroke-width="3" stroke-linecap="round" transform="rotate(-90 50 50)" style="filter:drop-shadow(0 0 2px #22d3ee);"/>
       <circle cx="50" cy="50" r="3" fill="#000"/>
       <!-- highlight -->
       <ellipse cx="38" cy="32" rx="14" ry="6" fill="rgba(255,255,255,0.35)"/>
     </svg>
   </div>
-  <div class="lbl-tag">MIXTURE</div>
-  <div class="val-tag" style="color:#fbbf24;">85%</div>
+  <div class="lbl-tag">AUTOPI</div>
+  <div class="val-tag" style="color:#22d3ee;">OFF</div>
+</div><div class="knob-wrap" style="width:70px;">
+  <div class="knob" style="width:60px;height:60px;">
+    <svg viewBox="0 0 100 100" style="width:100%;height:100%;position:absolute;inset:0;">
+      <!-- shadow on panel -->
+      <ellipse cx="50" cy="92" rx="36" ry="6" fill="rgba(0,0,0,0.55)"/>
+      <!-- base ring -->
+      <circle cx="50" cy="50" r="44" fill="#0a0a0a"/>
+      <!-- knob body w/ chrome gradient -->
+      <defs>
+        <radialGradient id="kg30" cx="35%" cy="30%" r="70%">
+          <stop offset="0%" stop-color="#fafafa"/>
+          <stop offset="35%" stop-color="#9ca3af"/>
+          <stop offset="75%" stop-color="#374151"/>
+          <stop offset="100%" stop-color="#0a0a0a"/>
+        </radialGradient>
+      </defs>
+      <circle cx="50" cy="50" r="40" fill="url(#kg30)"/>
+      <line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(0 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(15 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(30 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(45 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(60 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(75 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(90 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(105 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(120 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(135 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(150 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(165 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(180 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(195 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(210 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(225 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(240 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(255 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(270 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(285 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(300 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(315 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(330 50 50)"/><line x1="50" y1="14" x2="50" y2="20" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" transform="rotate(345 50 50)"/>
+      <!-- top dish -->
+      <circle cx="50" cy="50" r="22" fill="radial-gradient(circle,#1f2937,#000)" stroke="#000" stroke-width="0.6"/>
+      <circle cx="50" cy="50" r="22" fill="url(#kg30)" opacity="0.65"/>
+      <!-- pointer line -->
+      <line x1="50" y1="50" x2="50" y2="14" stroke="#22c55e" stroke-width="3" stroke-linecap="round" transform="rotate(30 50 50)" style="filter:drop-shadow(0 0 2px #22c55e);"/>
+      <circle cx="50" cy="50" r="3" fill="#000"/>
+      <!-- highlight -->
+      <ellipse cx="38" cy="32" rx="14" ry="6" fill="rgba(255,255,255,0.35)"/>
+    </svg>
+  </div>
+  <div class="lbl-tag">BILGE</div>
+  <div class="val-tag" style="color:#22c55e;">AUTO</div>
 </div>
   </div>
-
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px;">
-    <!-- Toggle bank -->
     <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
       <div class="tag-plate">SWITCH PANEL</div>
       <div class="toggle-bank"><div class="toggle-wrap">
-  
-  <div class="toggle-base">
-    <div class="toggle-stick" style="transform:translateX(-50%) rotate(-25deg);">
-      <div class="toggle-ball"></div>
-    </div>
-  </div>
-  <div class="toggle-label">BAT</div>
-</div><div class="toggle-wrap">
-  
-  <div class="toggle-base">
-    <div class="toggle-stick" style="transform:translateX(-50%) rotate(-25deg);">
-      <div class="toggle-ball"></div>
-    </div>
-  </div>
-  <div class="toggle-label">AVN</div>
-</div><div class="toggle-wrap">
-  
-  <div class="toggle-base">
-    <div class="toggle-stick" style="transform:translateX(-50%) rotate(-25deg);">
-      <div class="toggle-ball"></div>
-    </div>
-  </div>
-  <div class="toggle-label">BCN</div>
-</div><div class="toggle-wrap">
   
   <div class="toggle-base">
     <div class="toggle-stick" style="transform:translateX(-50%) rotate(-25deg);">
@@ -870,19 +811,19 @@ AILE</div>
 </div><div class="toggle-wrap">
   
   <div class="toggle-base">
-    <div class="toggle-stick" style="transform:translateX(-50%) rotate(25deg);">
+    <div class="toggle-stick" style="transform:translateX(-50%) rotate(-25deg);">
       <div class="toggle-ball"></div>
     </div>
   </div>
-  <div class="toggle-label">PITOT</div>
+  <div class="toggle-label">MAST</div>
 </div><div class="toggle-wrap">
-  <div class="guard"></div>
+  
   <div class="toggle-base">
     <div class="toggle-stick" style="transform:translateX(-50%) rotate(25deg);">
       <div class="toggle-ball"></div>
     </div>
   </div>
-  <div class="toggle-label">STRT</div>
+  <div class="toggle-label">CABIN</div>
 </div><div class="toggle-wrap">
   
   <div class="toggle-base">
@@ -890,7 +831,23 @@ AILE</div>
       <div class="toggle-ball"></div>
     </div>
   </div>
-  <div class="toggle-label">FUEL</div>
+  <div class="toggle-label">VHF</div>
+</div><div class="toggle-wrap">
+  
+  <div class="toggle-base">
+    <div class="toggle-stick" style="transform:translateX(-50%) rotate(-25deg);">
+      <div class="toggle-ball"></div>
+    </div>
+  </div>
+  <div class="toggle-label">AIS</div>
+</div><div class="toggle-wrap">
+  
+  <div class="toggle-base">
+    <div class="toggle-stick" style="transform:translateX(-50%) rotate(-25deg);">
+      <div class="toggle-ball"></div>
+    </div>
+  </div>
+  <div class="toggle-label">GPS</div>
 </div><div class="toggle-wrap">
   
   <div class="toggle-base">
@@ -898,52 +855,59 @@ AILE</div>
       <div class="toggle-ball"></div>
     </div>
   </div>
-  <div class="toggle-label">AP</div>
+  <div class="toggle-label">FOG</div>
+</div><div class="toggle-wrap">
+  
+  <div class="toggle-base">
+    <div class="toggle-stick" style="transform:translateX(-50%) rotate(25deg);">
+      <div class="toggle-ball"></div>
+    </div>
+  </div>
+  <div class="toggle-label">ANCHOR</div>
 </div></div>
     </div>
-    <!-- Indicator bank -->
     <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
       <div class="tag-plate">INDICATOR LIGHTS</div>
       <div class="ind-bank"><div class="ind-wrap">
   <div class="ind-bezel" style="width:36px;height:36px;">
+    <div class="ind-bulb" style="width:28px;height:28px;background:radial-gradient(circle at 30% 25%,#fff 0%,#fff 35%,#fff 70%,#000 100%);box-shadow:0 0 16px #fff,inset 0 -2px 6px rgba(0,0,0,0.4);"></div>
+  </div>
+  <div class="ind-label">MAST</div>
+</div><div class="ind-wrap">
+  <div class="ind-bezel" style="width:36px;height:36px;">
     <div class="ind-bulb" style="width:28px;height:28px;background:radial-gradient(circle at 30% 25%,#fff 0%,#ef4444 35%,#ef4444 70%,#000 100%);box-shadow:0 0 16px #ef4444,inset 0 -2px 6px rgba(0,0,0,0.4);"></div>
   </div>
-  <div class="ind-label">LED 1</div>
+  <div class="ind-label">PORT</div>
 </div><div class="ind-wrap">
   <div class="ind-bezel" style="width:36px;height:36px;">
     <div class="ind-bulb" style="width:28px;height:28px;background:radial-gradient(circle at 30% 25%,#fff 0%,#22c55e 35%,#22c55e 70%,#000 100%);box-shadow:0 0 16px #22c55e,inset 0 -2px 6px rgba(0,0,0,0.4);"></div>
   </div>
-  <div class="ind-label">LED 2</div>
+  <div class="ind-label">STB</div>
 </div><div class="ind-wrap">
   <div class="ind-bezel" style="width:36px;height:36px;">
-    <div class="ind-bulb" style="width:28px;height:28px;background:radial-gradient(circle at 30% 25%,#fff 0%,#3b82f6 35%,#3b82f6 70%,#000 100%);box-shadow:0 0 16px #3b82f6,inset 0 -2px 6px rgba(0,0,0,0.4);"></div>
+    <div class="ind-bulb" style="width:28px;height:28px;background:radial-gradient(circle at 30% 25%,#fff 0%,#fff 35%,#fff 70%,#000 100%);box-shadow:0 0 16px #fff,inset 0 -2px 6px rgba(0,0,0,0.4);"></div>
   </div>
-  <div class="ind-label">LED 3</div>
-</div><div class="ind-wrap">
-  <div class="ind-bezel" style="width:36px;height:36px;">
-    <div class="ind-bulb" style="width:28px;height:28px;background:radial-gradient(circle at 30% 25%,#fff 0%,#fbbf24 35%,#fbbf24 70%,#000 100%);box-shadow:0 0 16px #fbbf24,inset 0 -2px 6px rgba(0,0,0,0.4);"></div>
-  </div>
-  <div class="ind-label">LED 4</div>
+  <div class="ind-label">STRN</div>
 </div><div class="ind-wrap">
   <div class="ind-bezel" style="width:36px;height:36px;">
     <div class="ind-bulb" style="width:28px;height:28px;background:radial-gradient(circle at 30% 25%,#fff 0%,#f472b6 35%,#f472b6 70%,#000 100%);box-shadow:0 0 16px #f472b6,inset 0 -2px 6px rgba(0,0,0,0.4);"></div>
   </div>
-  <div class="ind-label">IR RX</div>
+  <div class="ind-label">IR·RX</div>
 </div><div class="ind-wrap">
   <div class="ind-bezel" style="width:36px;height:36px;">
     <div class="ind-bulb" style="width:28px;height:28px;background:radial-gradient(circle at 30% 25%,#fff 0%,#22c55e 35%,#22c55e 70%,#000 100%);box-shadow:0 0 16px #22c55e,inset 0 -2px 6px rgba(0,0,0,0.4);"></div>
   </div>
-  <div class="ind-label">GEAR</div>
+  <div class="ind-label">BILGE</div>
 </div><div class="ind-wrap">
   <div class="ind-bezel" style="width:36px;height:36px;">
-    <div class="ind-bulb" style="width:28px;height:28px;background:radial-gradient(circle at 30% 25%,#374151 0%,#1f2937 60%,#000 100%);box-shadow:inset 0 -2px 4px rgba(0,0,0,0.6);"></div>
+    <div class="ind-bulb" style="width:28px;height:28px;background:radial-gradient(circle at 30% 25%,#fff 0%,#22d3ee 35%,#22d3ee 70%,#000 100%);box-shadow:0 0 16px #22d3ee,inset 0 -2px 6px rgba(0,0,0,0.4);"></div>
   </div>
-  <div class="ind-label">STALL</div>
+  <div class="ind-label">AIS</div>
 </div><div class="ind-wrap">
   <div class="ind-bezel" style="width:36px;height:36px;">
-    <div class="ind-bulb" style="width:28px;height:28px;background:radial-gradient(circle at 30% 25%,#374151 0%,#1f2937 60%,#000 100%);box-shadow:inset 0 -2px 4px rgba(0,0,0,0.6);"></div>
+    <div class="ind-bulb" style="width:28px;height:28px;background:radial-gradient(circle at 30% 25%,#fff 0%,#22c55e 35%,#22c55e 70%,#000 100%);box-shadow:0 0 16px #22c55e,inset 0 -2px 6px rgba(0,0,0,0.4);"></div>
   </div>
-  <div class="ind-label">OIL</div>
+  <div class="ind-label">GPS</div>
 </div></div>
     </div>
   </div>
