@@ -1,0 +1,582 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>🪞 Living Twin — your Maqueen, mirrored</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{font-family:'Comic Sans MS','Marker Felt',Arial,sans-serif;
+    background:radial-gradient(ellipse at 50% 30%,#1e3a5a 0%,#0a0e14 80%);
+    color:#e0e6ee;min-height:100vh;overflow-x:hidden;padding:14px;}
+  body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+    background-image:
+      radial-gradient(2px 2px at 12% 18%,#fff 50%,transparent 50%),
+      radial-gradient(2px 2px at 38% 72%,#fff 50%,transparent 50%),
+      radial-gradient(2px 2px at 64% 22%,#fbbf24 50%,transparent 50%),
+      radial-gradient(2px 2px at 84% 51%,#fff 50%,transparent 50%),
+      radial-gradient(2px 2px at 22% 88%,#22d3ee 50%,transparent 50%);
+    opacity:0.5;animation:tw 5s ease-in-out infinite;}
+  @keyframes tw{0%,100%{opacity:0.3;}50%{opacity:0.8;}}
+
+  /* ── Header ─────────────────────────────── */
+  .topbar{position:relative;z-index:5;display:flex;align-items:center;gap:12px;
+    padding:10px 16px;border:3px solid #fff;border-radius:18px;
+    margin:0 auto 14px;max-width:1400px;background:rgba(255,255,255,0.97);color:#000;
+    box-shadow:0 6px 0 rgba(0,0,0,0.3),0 8px 20px rgba(0,0,0,0.4);}
+  .topbar h1{font-size:18px;font-weight:900;color:#7c3aed;text-shadow:2px 2px 0 rgba(0,0,0,0.12);}
+  .topbar .sub{font-size:11px;color:#666;}
+  .topbar .right{margin-left:auto;display:flex;align-items:center;gap:10px;}
+  #ble-connect-btn{background:linear-gradient(180deg,#22c55e,#15803d);color:#fff;border:3px solid #000;
+    border-radius:999px;padding:10px 22px;font-size:15px;font-weight:900;cursor:pointer;
+    box-shadow:0 4px 0 rgba(0,0,0,0.4);font-family:inherit;transition:transform 0.1s;}
+  #ble-connect-btn:hover{transform:translateY(-2px);}
+  #ble-connect-btn:active{transform:translateY(0);box-shadow:0 2px 0 rgba(0,0,0,0.4);}
+  .pill{background:#000;color:#fff;border-radius:999px;padding:6px 14px;font-weight:800;
+    font-size:12px;display:inline-flex;align-items:center;gap:6px;border:2px solid #fbbf24;}
+  .status-dot{width:10px;height:10px;border-radius:50%;background:#666;
+    box-shadow:0 0 8px currentColor;}
+  .status-dot.status-connected{background:#22c55e;color:#22c55e;animation:dotpulse 2s infinite;}
+  .status-dot.status-connecting{background:#fbbf24;color:#fbbf24;animation:dotpulse 0.6s infinite;}
+  .status-dot.status-disconnected{background:#666;}
+  @keyframes dotpulse{0%,100%{opacity:1;}50%{opacity:0.5;}}
+  .nav-tiny a{color:#7c5a32;text-decoration:none;border:1.5px solid #d4a574;
+    border-radius:999px;padding:3px 9px;font-size:11px;font-weight:800;margin:0 3px;}
+
+  /* ── Layout ──────────────────────────────── */
+  .stage{position:relative;z-index:3;max-width:1400px;margin:0 auto;
+    display:grid;grid-template-columns:2fr 1fr;gap:14px;}
+  @media(max-width:980px){.stage{grid-template-columns:1fr;}}
+  .canvas{position:relative;background:radial-gradient(ellipse at 50% 70%,#3b82f6 0%,#1e3a5a 100%);
+    border:5px solid #fbbf24;border-radius:24px;padding:18px;
+    box-shadow:0 10px 0 rgba(0,0,0,0.3),inset 0 0 60px rgba(0,0,0,0.5);
+    aspect-ratio:5/4;min-height:520px;}
+  .side{display:flex;flex-direction:column;gap:14px;}
+  .panel{background:rgba(255,255,255,0.95);color:#000;border:3px solid #000;
+    border-radius:18px;padding:12px 14px;box-shadow:0 5px 0 rgba(0,0,0,0.25);}
+  .panel h3{font-size:13px;font-weight:900;color:#7c3aed;margin-bottom:8px;letter-spacing:0.05em;}
+  .readouts{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+  .rd{background:#0a0e14;color:#22d3ee;padding:6px 10px;border-radius:10px;border:2px solid #1e3a5a;
+    font-family:'Courier New',monospace;font-size:12px;font-weight:800;text-align:center;}
+  .rd .h{font-size:9px;color:#7fa;letter-spacing:0.05em;font-weight:700;}
+  .rd.live{border-color:#22c55e;}
+  .rd.demo{border-color:#666;opacity:0.55;}
+
+  /* ── Speech bubble + boom ─────────────── */
+  .bubble{position:absolute;background:#fff;border:4px solid #000;border-radius:22px;
+    padding:8px 14px;font-weight:900;font-size:16px;color:#000;
+    box-shadow:5px 5px 0 rgba(0,0,0,0.4);z-index:10;animation:bubbleBob 2s ease-in-out infinite;}
+  @keyframes bubbleBob{0%,100%{transform:translateY(0) rotate(-2deg);}50%{transform:translateY(-4px) rotate(2deg);}}
+  .bubble::after{content:'';position:absolute;left:30px;bottom:-18px;
+    border:10px solid transparent;border-top-color:#000;border-bottom:0;}
+  .bubble::before{content:'';position:absolute;left:34px;bottom:-12px;
+    border:8px solid transparent;border-top-color:#fff;border-bottom:0;z-index:1;}
+  .bubble.bottom{top:auto;bottom:14%;left:14%;}
+  .boom{position:absolute;font-size:32px;font-weight:900;color:#fff;
+    pointer-events:none;z-index:9;
+    animation:boomPulse 1.5s ease-in-out infinite;
+    text-shadow:3px 3px 0 #000,-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000;}
+  @keyframes boomPulse{0%,100%{transform:scale(1) rotate(-8deg);}50%{transform:scale(1.15) rotate(8deg);}}
+
+  /* ── Robot SVG anims ───────────────────── */
+  @keyframes spin{to{transform:rotate(360deg);}}
+  @keyframes blink{0%,55%{opacity:1;}56%,100%{opacity:0.2;}}
+  @keyframes sweep{0%,100%{transform:rotate(-12deg);}50%{transform:rotate(12deg);}}
+  @keyframes bob{0%,100%{transform:translateY(0);}50%{transform:translateY(-4px);}}
+  @keyframes pupilWiggle{0%,100%{transform:translate(0,0);}25%{transform:translate(-2px,-1px);}50%{transform:translate(2px,1px);}75%{transform:translate(-1px,2px);}}
+  @keyframes blinkEye{0%,92%,100%{transform:scaleY(1);}95%{transform:scaleY(0.05);}}
+
+  /* ── Click zones ──────────────────────── */
+  .click-zone{cursor:pointer;transition:filter 0.15s;}
+  .click-zone:hover{filter:brightness(1.3) drop-shadow(0 0 12px #fbbf24);}
+  .click-zone:active{filter:brightness(1.6);}
+  .demo-tag{position:absolute;background:#666;color:#fff;font-size:9px;font-weight:900;
+    padding:2px 6px;border-radius:6px;pointer-events:none;z-index:8;
+    border:1.5px solid #000;letter-spacing:0.05em;}
+  .live-tag{background:#22c55e;}
+
+  /* ── Sticky note ──────────────────────── */
+  .sticky{background:#fef3c7;color:#000;border:3px solid #000;border-radius:8px;
+    padding:14px 16px;font-family:'Comic Sans MS',cursive;font-size:14px;
+    box-shadow:5px 5px 0 rgba(0,0,0,0.3);transform:rotate(-1.5deg);min-height:80px;
+    line-height:1.5;font-weight:600;}
+  .sticky .label{font-size:10px;color:#7c3aed;font-weight:900;letter-spacing:0.1em;margin-bottom:5px;}
+
+  /* ── Controls strip ───────────────────── */
+  .ctrl-row{display:flex;gap:6px;flex-wrap:wrap;}
+  .ctrl-btn{background:linear-gradient(180deg,#fbbf24,#a16207);color:#000;border:2px solid #000;
+    border-radius:10px;padding:6px 12px;font-weight:900;font-size:13px;cursor:pointer;
+    font-family:inherit;box-shadow:0 3px 0 rgba(0,0,0,0.35);transition:transform 0.1s;}
+  .ctrl-btn:hover{transform:translateY(-2px);}
+  .ctrl-btn:active{transform:translateY(1px);box-shadow:0 1px 0 rgba(0,0,0,0.35);}
+  .ctrl-btn.green{background:linear-gradient(180deg,#22c55e,#15803d);color:#fff;}
+  .ctrl-btn.violet{background:linear-gradient(180deg,#a78bfa,#5b21b6);color:#fff;}
+  .ctrl-btn.gray{background:linear-gradient(180deg,#9ca3af,#374151);color:#fff;}
+  input.text-in{flex:1;font-family:inherit;font-size:13px;padding:6px 10px;
+    border:2px solid #000;border-radius:10px;background:#fff;font-weight:600;}
+
+  /* ── Activity log (compact) ───────────── */
+  #ble-log{background:#000;color:#22c55e;font-family:'Courier New',monospace;font-size:10px;
+    padding:6px 8px;border-radius:6px;max-height:140px;overflow-y:auto;border:2px solid #1e3a5a;}
+  #ble-log .log-line{margin:0;padding:0;line-height:1.3;}
+  #ble-log .log-tx{color:#fbbf24;}
+  #ble-log .log-rx{color:#22d3ee;}
+  #ble-log .log-err{color:#ef4444;}
+  #ble-log .log-warn{color:#f59e0b;}
+  #ble-log .log-ok{color:#22c55e;}
+</style>
+</head>
+<body>
+
+<!-- ── Header ───────────────────────────── -->
+<div class="topbar">
+  <div>
+    <h1>🪞 Living Twin</h1>
+    <div class="sub">Your real Maqueen, mirrored on screen — touch the cartoon to control the real robot.</div>
+  </div>
+  <div class="right">
+    <span class="pill"><span class="status-dot status-disconnected" id="ble-status"></span><span id="ble-status-text">Disconnected</span></span>
+    <button id="ble-connect-btn">🔗 CONNECT MY ROBOT</button>
+    <span class="nav-tiny">
+      <a href="maqueen-kid.html">🤖 Kids</a>
+      <a href="maqueen-emu.html">📐 Emu</a>
+      <a href="index.html">🧪 Labs</a>
+    </span>
+  </div>
+</div>
+
+<!-- ── Main stage ───────────────────────── -->
+<div class="stage">
+
+  <!-- Canvas with the robot -->
+  <div class="canvas" id="canvas">
+    <div class="bubble" id="bubble" style="left:6%;top:4%;">Hi! I'm Maqueen!</div>
+    <div class="boom" id="boom" style="display:none;left:72%;top:14%;">✨</div>
+
+    <!-- demo-mode badges absolute over the canvas -->
+    <div class="demo-tag" style="left:4%;top:60%;">🎨 demo</div>     <!-- left wheel -->
+    <div class="demo-tag" style="right:4%;top:60%;">🎨 demo</div>    <!-- right wheel -->
+    <div class="demo-tag" style="left:32%;top:8%;">🎨 demo</div>     <!-- ultrasonic ping -->
+    <div class="demo-tag" style="left:38%;top:67%;">🎨 demo</div>    <!-- RGB LEDs -->
+    <div class="demo-tag live-tag" style="left:38%;top:46%;">✨ LIVE</div>  <!-- matrix -->
+    <div class="demo-tag live-tag" style="right:18%;top:50%;">✨ LIVE</div> <!-- buzzer -->
+
+    <svg viewBox="0 0 800 640" style="position:absolute;inset:0;width:100%;height:100%;z-index:2;" preserveAspectRatio="xMidYMid meet">
+      <defs>
+        <linearGradient id="chassis" x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0%" stop-color="#1a1f28"/>
+          <stop offset="100%" stop-color="#04060a"/>
+        </linearGradient>
+        <radialGradient id="rim" cx="40%" cy="35%" r="65%">
+          <stop offset="0%" stop-color="#fde68a"/>
+          <stop offset="50%" stop-color="#fbbf24"/>
+          <stop offset="100%" stop-color="#a16207"/>
+        </radialGradient>
+        <radialGradient id="motorG" cx="50%" cy="40%" r="60%">
+          <stop offset="0%" stop-color="#fff"/>
+          <stop offset="50%" stop-color="#fbbf24"/>
+          <stop offset="100%" stop-color="#7c5a32"/>
+        </radialGradient>
+      </defs>
+
+      <!-- floor shadow -->
+      <ellipse cx="400" cy="600" rx="280" ry="22" fill="#000" opacity="0.5"/>
+
+      <!-- LEFT wheel (decorative spin) -->
+      <g transform="translate(150, 460)" id="wheel-l">
+        <circle r="80" fill="#0a0a0a" stroke="#000" stroke-width="3"/>
+        <g style="transform-origin:150px 460px;animation:spin 1.6s linear infinite;">
+          <circle r="58" fill="url(#rim)" stroke="#000" stroke-width="3" transform="translate(-150,-460)"/>
+        </g>
+      </g>
+
+      <!-- RIGHT wheel (decorative spin) -->
+      <g transform="translate(650, 460)" id="wheel-r">
+        <circle r="80" fill="#0a0a0a" stroke="#000" stroke-width="3"/>
+        <g style="transform-origin:650px 460px;animation:spin 1.6s linear infinite;">
+          <circle r="58" fill="url(#rim)" stroke="#000" stroke-width="3" transform="translate(-650,-460)"/>
+        </g>
+      </g>
+
+      <!-- Body (tilts via JS on accel) -->
+      <g id="body" style="transform-origin:400px 460px;animation:bob 1.6s ease-in-out infinite;">
+        <path d="M 230 400 Q 230 340 290 320 L 510 320 Q 570 340 570 400 L 570 480 Q 570 510 540 510 L 260 510 Q 230 510 230 480 Z"
+              fill="url(#chassis)" stroke="#000" stroke-width="4"/>
+
+        <!-- Motors -->
+        <g transform="translate(220, 450)">
+          <rect x="-20" y="-22" width="44" height="44" rx="6" fill="url(#motorG)" stroke="#000" stroke-width="3"/>
+          <circle cx="2" cy="0" r="14" fill="#1f2937" stroke="#000" stroke-width="2"/>
+          <g style="transform-origin:222px 450px;animation:spin 0.6s linear infinite;">
+            <circle r="5" fill="#9ca3af"/>
+          </g>
+          <text y="36" text-anchor="middle" font-size="11" font-weight="900" fill="#fff">MOTOR L</text>
+        </g>
+        <g transform="translate(580, 450)">
+          <rect x="-24" y="-22" width="44" height="44" rx="6" fill="url(#motorG)" stroke="#000" stroke-width="3"/>
+          <circle cx="-2" cy="0" r="14" fill="#1f2937" stroke="#000" stroke-width="2"/>
+          <text y="36" text-anchor="middle" font-size="11" font-weight="900" fill="#fff">MOTOR R</text>
+        </g>
+
+        <!-- 4 RGB LEDs row (decorative — clickable to flash demo color) -->
+        <g class="click-zone" id="led-1" data-led="1">
+          <circle cx="320" cy="500" r="20" fill="#ef4444" opacity="0.3"/>
+          <circle cx="320" cy="500" r="11" fill="#ef4444" stroke="#000" stroke-width="2.5"/>
+        </g>
+        <g class="click-zone" id="led-2" data-led="2">
+          <circle cx="374" cy="500" r="20" fill="#22c55e" opacity="0.3"/>
+          <circle cx="374" cy="500" r="11" fill="#22c55e" stroke="#000" stroke-width="2.5"/>
+        </g>
+        <g class="click-zone" id="led-3" data-led="3">
+          <circle cx="428" cy="500" r="20" fill="#3b82f6" opacity="0.3"/>
+          <circle cx="428" cy="500" r="11" fill="#3b82f6" stroke="#000" stroke-width="2.5"/>
+        </g>
+        <g class="click-zone" id="led-4" data-led="4">
+          <circle cx="482" cy="500" r="20" fill="#fbbf24" opacity="0.3"/>
+          <circle cx="482" cy="500" r="11" fill="#fbbf24" stroke="#000" stroke-width="2.5"/>
+        </g>
+
+        <!-- Top deck + battery -->
+        <path d="M 280 320 L 520 320 L 540 360 L 260 360 Z" fill="rgba(229,231,235,0.55)" stroke="#000" stroke-width="3"/>
+        <g transform="translate(450, 326)">
+          <rect width="80" height="32" rx="4" fill="#dc2626" stroke="#000" stroke-width="3"/>
+          <text x="40" y="14" text-anchor="middle" fill="#fff" font-size="9" font-weight="900">3.7V Li-Po</text>
+          <text x="40" y="26" text-anchor="middle" fill="#fff" font-size="7">⚡ <tspan id="bat-pct">--</tspan></text>
+        </g>
+
+        <!-- micro:bit + matrix (LIVE — click to cycle, also mirrors RX) -->
+        <g class="click-zone" id="matrix-zone">
+          <rect x="330" y="380" width="120" height="100" rx="6" fill="#1a3a5a" stroke="#000" stroke-width="3"/>
+          <rect x="330" y="478" width="120" height="8" fill="#fbbf24" stroke="#000" stroke-width="1"/>
+          <text x="390" y="394" text-anchor="middle" fill="#fff" font-size="8" font-weight="900">micro:bit V2</text>
+          <g id="matrix-grid" transform="translate(370, 408)"><!-- 5x5 cells injected by JS --></g>
+          <g class="click-zone" id="btn-A">
+            <circle cx="344" cy="438" r="8" fill="#000" stroke="#fff" stroke-width="2"/>
+            <text x="344" y="442" text-anchor="middle" fill="#fff" font-size="9" font-weight="900">A</text>
+          </g>
+          <g class="click-zone" id="btn-B">
+            <circle cx="436" cy="438" r="8" fill="#000" stroke="#fff" stroke-width="2"/>
+            <text x="436" y="442" text-anchor="middle" fill="#fff" font-size="9" font-weight="900">B</text>
+          </g>
+        </g>
+
+        <!-- caster + IR + blush -->
+        <circle cx="400" cy="495" r="11" fill="#fff" stroke="#000" stroke-width="2.5"/>
+        <ellipse cx="400" cy="488" rx="11" ry="6" fill="#0a0a0a" stroke="#000" stroke-width="2"/>
+        <circle cx="400" cy="488" r="3" fill="#f472b6"><animate attributeName="opacity" values="1;0.3;1" dur="1.4s" repeatCount="indefinite"/></circle>
+        <ellipse cx="270" cy="455" rx="14" ry="9" fill="#f472b6" opacity="0.65"/>
+        <ellipse cx="530" cy="455" rx="14" ry="9" fill="#f472b6" opacity="0.65"/>
+
+        <!-- Buzzer (LIVE click) -->
+        <g class="click-zone" id="buzzer-zone" transform="translate(530, 460)">
+          <circle r="12" fill="#0a0a0a" stroke="#fbbf24" stroke-width="2.5"/>
+          <text y="3" text-anchor="middle" fill="#fbbf24" font-size="13" font-weight="900">♪</text>
+          <path d="M 16 -6 Q 24 0 16 6" fill="none" stroke="#fbbf24" stroke-width="2"><animate attributeName="opacity" values="1;0;1" dur="1.2s" repeatCount="indefinite"/></path>
+        </g>
+
+        <!-- line sensors -->
+        <rect x="385" y="510" width="10" height="6" fill="#22d3ee" stroke="#000" stroke-width="1"><animate attributeName="opacity" values="0.5;1;0.5" dur="1.2s" repeatCount="indefinite"/></rect>
+        <rect x="405" y="510" width="10" height="6" fill="#22d3ee" stroke="#000" stroke-width="1"><animate attributeName="opacity" values="1;0.5;1" dur="1.2s" repeatCount="indefinite"/></rect>
+      </g>
+
+      <!-- Servo arm + ULTRASONIC HEAD with googly eyes -->
+      <g style="transform-origin:400px 320px;animation:sweep 4s ease-in-out infinite;">
+        <line x1="400" y1="320" x2="400" y2="200" stroke="#000" stroke-width="9"/>
+        <line x1="400" y1="320" x2="400" y2="200" stroke="#9ca3af" stroke-width="5"/>
+        <rect x="380" y="240" width="40" height="50" rx="6" fill="#fbbf24" stroke="#000" stroke-width="3"/>
+        <text x="400" y="270" text-anchor="middle" fill="#000" font-size="10" font-weight="900">SERVO</text>
+
+        <g transform="translate(290, 100)">
+          <rect width="220" height="100" rx="14" fill="#1f2937" stroke="#000" stroke-width="4"/>
+          <circle cx="60" cy="50" r="32" fill="#374151" stroke="#000" stroke-width="3"/>
+          <circle cx="160" cy="50" r="32" fill="#374151" stroke="#000" stroke-width="3"/>
+          <!-- ping rings (decorative — could pulse based on incoming distance later) -->
+          <circle id="ping1" cx="110" cy="50" r="14" fill="none" stroke="#22d3ee" stroke-width="3" opacity="0.85"><animate attributeName="r" values="14;46;14" dur="1.4s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.85;0;0.85" dur="1.4s" repeatCount="indefinite"/></circle>
+          <text x="110" y="92" text-anchor="middle" fill="#fbbf24" font-size="9" font-weight="900">DFROBOT</text>
+
+          <!-- Googly eyes -->
+          <g transform="translate(0, -38)" style="animation:bob 2.2s ease-in-out infinite;">
+            <circle cx="60" cy="20" r="26" fill="#fff" stroke="#000" stroke-width="4"/>
+            <g style="transform-origin:60px 20px;animation:blinkEye 4s infinite;">
+              <ellipse cx="60" cy="20" rx="22" ry="22" fill="#fff"/>
+              <g id="pupil-l" style="animation:pupilWiggle 2.5s ease-in-out infinite;">
+                <circle cx="60" cy="20" r="11" fill="#1e40af"/>
+                <circle cx="63" cy="17" r="3" fill="#fff"/>
+              </g>
+            </g>
+            <circle cx="160" cy="20" r="26" fill="#fff" stroke="#000" stroke-width="4"/>
+            <g style="transform-origin:160px 20px;animation:blinkEye 4s infinite;">
+              <ellipse cx="160" cy="20" rx="22" ry="22" fill="#fff"/>
+              <g id="pupil-r" style="animation:pupilWiggle 2.5s ease-in-out infinite 0.3s;">
+                <circle cx="160" cy="20" r="11" fill="#1e40af"/>
+                <circle cx="163" cy="17" r="3" fill="#fff"/>
+              </g>
+            </g>
+            <ellipse cx="40" cy="44" rx="10" ry="6" fill="#f472b6" opacity="0.7"/>
+            <ellipse cx="180" cy="44" rx="10" ry="6" fill="#f472b6" opacity="0.7"/>
+          </g>
+        </g>
+      </g>
+    </svg>
+  </div>
+
+  <!-- ── Side panel ─────────────────────────── -->
+  <div class="side">
+
+    <!-- "What did I just do?" sticky note -->
+    <div class="sticky" id="sticky">
+      <div class="label">✏️ WHAT DID I JUST DO?</div>
+      <div id="sticky-text">Tap the connect button, then click on parts of the cartoon — your real robot will react!</div>
+    </div>
+
+    <!-- Live readouts -->
+    <div class="panel">
+      <h3>📡 LIVE FROM ROBOT</h3>
+      <div class="readouts">
+        <div class="rd live"><div class="h">TILT X</div><span id="rd-accx">--</span></div>
+        <div class="rd live"><div class="h">TILT Y</div><span id="rd-accy">--</span></div>
+        <div class="rd live"><div class="h">TEMP °C</div><span id="rd-temp">--</span></div>
+        <div class="rd live"><div class="h">LIGHT</div><span id="rd-light">--</span></div>
+        <div class="rd live"><div class="h">SOUND</div><span id="rd-sound">--</span></div>
+        <div class="rd live"><div class="h">HEADING</div><span id="rd-cmp">--</span></div>
+        <div class="rd live"><div class="h">BTN A</div><span id="rd-btna">—</span></div>
+        <div class="rd live"><div class="h">BTN B</div><span id="rd-btnb">—</span></div>
+        <div class="rd demo"><div class="h">RPM L 🎨</div>156</div>
+        <div class="rd demo"><div class="h">RPM R 🎨</div>158</div>
+        <div class="rd demo"><div class="h">ULTRA 🎨</div>42 cm</div>
+        <div class="rd demo"><div class="h">LINE 🎨</div>L:0 R:0</div>
+      </div>
+    </div>
+
+    <!-- Speech bubble input -->
+    <div class="panel">
+      <h3>💬 SAY SOMETHING</h3>
+      <div class="ctrl-row">
+        <input class="text-in" id="text-input" placeholder="Type a message..." maxlength="40">
+        <button class="ctrl-btn green" id="text-send">SAY!</button>
+      </div>
+    </div>
+
+    <!-- Quick controls -->
+    <div class="panel">
+      <h3>🎮 QUICK ACTIONS</h3>
+      <div class="ctrl-row" style="margin-bottom:6px;">
+        <button class="ctrl-btn" data-buzz="262,250">DO</button>
+        <button class="ctrl-btn" data-buzz="330,250">MI</button>
+        <button class="ctrl-btn" data-buzz="392,250">SOL</button>
+        <button class="ctrl-btn" data-buzz="523,400">DO!</button>
+      </div>
+      <div class="ctrl-row">
+        <button class="ctrl-btn violet" data-cmd="HEART">❤️</button>
+        <button class="ctrl-btn violet" data-cmd="SMILE">😊</button>
+        <button class="ctrl-btn violet" data-cmd="SAD">😢</button>
+        <button class="ctrl-btn gray" data-cmd="CLEAR">CLR</button>
+      </div>
+    </div>
+
+    <!-- Activity log -->
+    <div class="panel">
+      <h3>📜 ACTIVITY LOG</h3>
+      <div id="ble-log"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── BLE plumbing ─────────────────────── -->
+<script src="../js/ble-minimal.js"></script>
+<script>
+// ──────────────────────────────────────────────
+// Living Twin — twin-side wiring
+// ──────────────────────────────────────────────
+const sticky = document.getElementById('sticky-text');
+const bubble = document.getElementById('bubble');
+const boom   = document.getElementById('boom');
+
+function tellKid(msg) { sticky.textContent = msg; }
+function bubbleSay(msg, ms=2400) {
+  bubble.textContent = msg;
+  bubble.style.display = 'block';
+  clearTimeout(bubble._t);
+  bubble._t = setTimeout(() => { bubble.textContent = "Hi! I'm Maqueen!"; }, ms);
+}
+function showBoom(emoji='✨', ms=900) {
+  boom.textContent = emoji;
+  boom.style.display = 'block';
+  clearTimeout(boom._t);
+  boom._t = setTimeout(() => { boom.style.display = 'none'; }, ms);
+}
+
+// ── Build matrix grid (5x5) on the cartoon micro:bit ──
+const matrixGrid = document.getElementById('matrix-grid');
+const matrixCells = [];
+for (let r = 0; r < 5; r++) {
+  matrixCells[r] = [];
+  for (let c = 0; c < 5; c++) {
+    const ns = 'http://www.w3.org/2000/svg';
+    const cell = document.createElementNS(ns, 'circle');
+    cell.setAttribute('cx', c*8); cell.setAttribute('cy', r*8); cell.setAttribute('r', 3);
+    cell.setAttribute('fill', '#1a0500');
+    matrixGrid.appendChild(cell);
+    matrixCells[r][c] = cell;
+  }
+}
+function setMatrixCell(r, c, on) {
+  matrixCells[r][c].setAttribute('fill', on ? '#ef4444' : '#1a0500');
+  matrixCells[r][c].style.filter = on ? 'drop-shadow(0 0 4px #ef4444)' : 'none';
+}
+function setMatrixPattern(p) {
+  for (let r = 0; r < 5; r++) for (let c = 0; c < 5; c++) setMatrixCell(r, c, !!p[r][c]);
+}
+const PATTERNS = {
+  HEART: [[0,1,0,1,0],[1,1,1,1,1],[1,1,1,1,1],[0,1,1,1,0],[0,0,1,0,0]],
+  SMILE: [[0,0,0,0,0],[0,1,0,1,0],[0,0,0,0,0],[1,0,0,0,1],[0,1,1,1,0]],
+  SAD:   [[0,0,0,0,0],[0,1,0,1,0],[0,0,0,0,0],[0,1,1,1,0],[1,0,0,0,1]],
+  CLEAR: [[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0]],
+};
+setMatrixPattern(PATTERNS.HEART);
+
+// ── Click zones (Twin → Robot) ──
+let matrixIdx = 0;
+const matrixCycle = ['SMILE', 'HEART', 'SAD', 'CLEAR'];
+document.getElementById('matrix-zone').addEventListener('click', () => {
+  const cmd = matrixCycle[matrixIdx % matrixCycle.length];
+  matrixIdx++;
+  sendLine('CMD:' + cmd);
+  setMatrixPattern(PATTERNS[cmd]);
+  tellKid(`✨ You clicked the matrix → real robot shows ${cmd}!  ${cmd==='HEART'?'❤️':cmd==='SMILE'?'😊':cmd==='SAD'?'😢':'⬜'}`);
+  bubbleSay(cmd === 'CLEAR' ? '...' : (cmd === 'HEART' ? '❤️!' : cmd === 'SMILE' ? '😊!' : '😢'));
+});
+
+document.getElementById('buzzer-zone').addEventListener('click', () => {
+  sendLine('BUZZ:440,200');
+  tellKid('🔊 You clicked the buzzer → real robot beeped at 440 Hz!');
+  showBoom('🔊');
+  bubbleSay('Beep!');
+});
+
+// LED row: decorative-only flash (no firmware support)
+['led-1','led-2','led-3','led-4'].forEach((id, i) => {
+  document.getElementById(id).addEventListener('click', () => {
+    const colors = ['#ef4444','#22c55e','#3b82f6','#fbbf24'];
+    const node = document.getElementById(id);
+    const orig = node.querySelector('circle:last-of-type').getAttribute('fill');
+    node.querySelector('circle:last-of-type').setAttribute('fill', '#fff');
+    setTimeout(() => node.querySelector('circle:last-of-type').setAttribute('fill', orig), 200);
+    tellKid(`🎨 You clicked LED ${i+1} (demo only — RGB-LED command isn't in the firmware yet).`);
+    bubbleSay('Pop!');
+  });
+});
+
+// A/B button click (cartoon → real text or matrix)
+document.getElementById('btn-A').addEventListener('click', (e) => {
+  e.stopPropagation();
+  sendLine('CMD:HEART');
+  tellKid('💖 You pressed A → real robot shows HEART!');
+  bubbleSay('A!');
+});
+document.getElementById('btn-B').addEventListener('click', (e) => {
+  e.stopPropagation();
+  sendLine('CMD:SMILE');
+  tellKid('😊 You pressed B → real robot shows SMILE!');
+  bubbleSay('B!');
+});
+
+// Speech bubble text → TEXT:
+document.getElementById('text-send').addEventListener('click', () => {
+  const v = document.getElementById('text-input').value.trim();
+  if (!v) return;
+  sendLine('TEXT:' + v);
+  tellKid(`📝 You sent "${v}" → it's scrolling on the real micro:bit!`);
+  bubbleSay(v.slice(0,20));
+});
+document.getElementById('text-input').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') document.getElementById('text-send').click();
+});
+
+// Quick action buttons
+document.querySelectorAll('[data-buzz]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    sendLine('BUZZ:' + btn.dataset.buzz);
+    tellKid(`🎵 You played a tone (${btn.dataset.buzz} Hz,ms)!`);
+    bubbleSay('♪');
+  });
+});
+document.querySelectorAll('[data-cmd]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const cmd = btn.dataset.cmd;
+    sendLine('CMD:' + cmd);
+    setMatrixPattern(PATTERNS[cmd] || PATTERNS.CLEAR);
+    tellKid(`🎨 You sent ${cmd} → real robot matrix updated!`);
+    bubbleSay(cmd);
+  });
+});
+
+// ──────────────────────────────────────────────
+// Robot → Twin: parse incoming UART
+// ──────────────────────────────────────────────
+const $ = id => document.getElementById(id);
+window.handleUartLine = function (line) {
+  addLogLine('RX  ' + line, 'rx');
+  const ln = line.trim();
+
+  if (ln.startsWith('ACC:')) {
+    const [x, y, z] = ln.slice(4).split(',').map(n => parseInt(n,10));
+    if (!isNaN(x)) {
+      $('rd-accx').textContent = x;
+      $('rd-accy').textContent = y;
+      // Tilt the cartoon body (clamped to ±15°)
+      const tiltX = Math.max(-15, Math.min(15, x / 60));
+      const body = document.getElementById('body');
+      body.style.transform = `rotate(${tiltX}deg)`;
+      body.style.transformOrigin = '400px 460px';
+    }
+    return;
+  }
+  if (ln.startsWith('TEMP:')) { $('rd-temp').textContent = parseInt(ln.slice(5),10); return; }
+  if (ln.startsWith('LIGHT:')) { $('rd-light').textContent = parseInt(ln.slice(6),10); return; }
+  if (ln.startsWith('SOUND:')) { $('rd-sound').textContent = parseInt(ln.slice(6),10); return; }
+  if (ln.startsWith('COMPASS:')) { $('rd-cmp').textContent = parseInt(ln.slice(8),10) + '°'; return; }
+
+  if (ln.startsWith('BTN:A:')) {
+    const evt = ln.slice(6);
+    $('rd-btna').textContent = evt;
+    if (evt === 'PRESS') {
+      tellKid('🔘 You pressed Button A on the real robot!');
+      bubbleSay('A pressed!');
+      // flash cartoon A button
+      const btn = document.querySelector('#btn-A circle');
+      btn.setAttribute('fill', '#22c55e');
+      setTimeout(() => btn.setAttribute('fill', '#000'), 300);
+    }
+    return;
+  }
+  if (ln.startsWith('BTN:B:')) {
+    const evt = ln.slice(6);
+    $('rd-btnb').textContent = evt;
+    if (evt === 'PRESS') {
+      tellKid('🔘 You pressed Button B on the real robot!');
+      bubbleSay('B pressed!');
+      const btn = document.querySelector('#btn-B circle');
+      btn.setAttribute('fill', '#22c55e');
+      setTimeout(() => btn.setAttribute('fill', '#000'), 300);
+    }
+    return;
+  }
+
+  if (ln.startsWith('LEDS:')) {
+    // 25-bit hex matrix mirror
+    const hex = ln.slice(5).trim();
+    if (hex.length >= 7) {
+      const bits = parseInt(hex, 16).toString(2).padStart(25, '0');
+      for (let r = 0; r < 5; r++) for (let c = 0; c < 5; c++) {
+        setMatrixCell(r, c, bits[r*5+c] === '1');
+      }
+      tellKid('🪞 The real robot just changed its matrix — twin updated!');
+    }
+    return;
+  }
+};
+</script>
+
+</body>
+</html>

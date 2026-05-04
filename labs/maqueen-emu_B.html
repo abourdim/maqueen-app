@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>🤖 Maqueen Emulator · B — Track Action</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{background:#0a1018;color:#e0e6ee;font-family:'JetBrains Mono',monospace;
+  min-height:100vh;overflow-x:hidden;padding:14px;}
+.title-bar{display:flex;align-items:center;gap:14px;padding:8px 14px;
+  background:linear-gradient(180deg,#1a2030,#0a1018);border:1px solid #1e3a5a;
+  border-radius:8px;margin:0 auto 14px;max-width:1400px;}
+.title-bar .badge{font-size:14px;font-weight:800;color:#22d3ee;letter-spacing:0.05em;}
+.title-bar .vibe{font-size:11px;color:#7fa;}
+.title-bar .nav{margin-left:auto;display:flex;gap:6px;}
+.title-bar .nav a{color:#aff;text-decoration:none;border:1px solid #1e3a5a;border-radius:5px;padding:3px 9px;font-size:11px;}
+.title-bar .nav a:hover{border-color:#22d3ee;color:#22d3ee;}
+@keyframes spin{to{transform:rotate(360deg);}}
+@keyframes pulse{0%,100%{opacity:0.5;transform:scale(1);}50%{opacity:1;transform:scale(1.18);}}
+@keyframes blink{0%,55%{opacity:1;}56%,100%{opacity:0.2;}}
+@keyframes ledcycle{0%{background:#ef4444;box-shadow:0 0 16px #ef4444;}
+                    25%{background:#22c55e;box-shadow:0 0 16px #22c55e;}
+                    50%{background:#3b82f6;box-shadow:0 0 16px #3b82f6;}
+                    75%{background:#fbbf24;box-shadow:0 0 16px #fbbf24;}
+                    100%{background:#ef4444;box-shadow:0 0 16px #ef4444;}}
+@keyframes ping{0%{transform:scale(0.4);opacity:0.9;}100%{transform:scale(2.6);opacity:0;}}
+@keyframes wave{0%{transform:translateX(0);opacity:0.6;}100%{transform:translateX(40px);opacity:0;}}
+@keyframes sweep{0%,100%{transform:rotate(-22deg);}50%{transform:rotate(22deg);}}
+@keyframes breathe{0%,100%{opacity:0.5;}50%{opacity:1;}}
+@keyframes scrollroad{from{background-position:0 0;}to{background-position:0 200px;}}
+@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-1px);}75%{transform:translateX(1px);}}
+@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-4px);}}
+
+.arena{position:relative;max-width:1400px;margin:0 auto;height:78vh;min-height:560px;
+  border:2px solid #1e3a5a;border-radius:12px;overflow:hidden;
+  background:
+    repeating-linear-gradient(0deg,#0e1a2a 0px,#0e1a2a 200px,#143050 200px,#143050 220px),
+    radial-gradient(ellipse at 50% 50%,#1a2030 0%,#04060a 80%);
+  background-size:100% 220px, 100% 100%;
+  animation:scrollroad 4s linear infinite;
+  box-shadow:inset 0 0 60px rgba(0,0,0,0.7);}
+/* line track (curving black band) */
+.track{position:absolute;left:50%;transform:translateX(-50%);top:0;bottom:0;width:120px;
+  background:repeating-linear-gradient(180deg,
+    #000 0,#000 60px,
+    transparent 60px,transparent 90px,
+    #000 90px,#000 200px,
+    transparent 200px,transparent 250px);
+  background-size:100% 250px;
+  animation:scrollroad 2s linear infinite;
+  border-left:2px dashed rgba(34,211,238,0.3);
+  border-right:2px dashed rgba(34,211,238,0.3);}
+/* white road edges */
+.edge-l,.edge-r{position:absolute;top:0;bottom:0;width:6px;background:#fff;opacity:0.85;}
+.edge-l{left:30%;}.edge-r{right:30%;}
+/* checkered finish flag (slides down periodically) */
+.finish{position:absolute;left:50%;transform:translateX(-50%);width:300px;height:30px;
+  background:repeating-conic-gradient(#000 0% 25%,#fff 0% 50%);background-size:30px 30px;
+  top:-30px;animation:finishline 8s linear infinite;border:2px solid #fbbf24;}
+@keyframes finishline{0%,80%{top:-30px;}90%{top:50%;}100%{top:120%;}}
+/* obstacle ahead */
+.obstacle{position:absolute;left:50%;transform:translateX(-50%);top:18%;
+  width:50px;height:50px;background:linear-gradient(135deg,#ef4444,#7f1d1d);
+  border:2px solid #000;border-radius:6px;box-shadow:0 0 14px rgba(239,68,68,0.6);
+  display:grid;place-items:center;color:#fff;font-weight:900;font-size:24px;
+  animation:obspulse 2s ease-in-out infinite;}
+@keyframes obspulse{0%,100%{transform:translateX(-50%) scale(1);box-shadow:0 0 14px rgba(239,68,68,0.6);}50%{transform:translateX(-50%) scale(1.08);box-shadow:0 0 24px rgba(239,68,68,0.95);}}
+/* robot (centered, bobbing) */
+.robot-stage{position:absolute;left:50%;bottom:14%;transform:translateX(-50%);
+  animation:float 1s ease-in-out infinite;z-index:5;}
+/* ultrasonic cone */
+.cone{position:absolute;left:50%;bottom:46%;transform:translateX(-50%);
+  width:0;height:0;border-left:60px solid transparent;border-right:60px solid transparent;
+  border-bottom:160px solid rgba(34,197,94,0.18);
+  animation:conepulse 2s ease-in-out infinite;}
+@keyframes conepulse{0%,100%{opacity:0.4;}50%{opacity:0.8;}}
+/* HUD */
+.hud{position:absolute;top:14px;left:14px;right:14px;display:flex;justify-content:space-between;
+  font-family:'JetBrains Mono',monospace;color:#22d3ee;text-shadow:0 0 4px #22d3ee;
+  z-index:10;pointer-events:none;}
+.hud-tile{background:rgba(2,8,16,0.85);border:1px solid #22d3ee;padding:6px 12px;border-radius:5px;
+  font-size:13px;font-weight:800;}
+.hud-bar{display:flex;gap:8px;}
+.controls{position:absolute;bottom:14px;left:14px;right:14px;display:flex;justify-content:space-between;align-items:end;z-index:10;}
+.dpad{display:grid;grid-template-columns:repeat(3,40px);gap:3px;}
+.dpad div{background:linear-gradient(180deg,#1f2937,#0a0a0a);border:1px solid #fbbf24;color:#fbbf24;
+  font-weight:900;font-size:18px;display:grid;place-items:center;border-radius:5px;height:40px;
+  box-shadow:0 2px 4px rgba(0,0,0,0.6);}
+.dpad .empty{visibility:hidden;}
+.dpad .center{background:#7f1d1d;color:#fff;border-color:#fff;}
+.scoreboard{background:rgba(2,8,16,0.85);border:1px solid #fbbf24;padding:8px 14px;border-radius:5px;
+  color:#fbbf24;font-family:'JetBrains Mono',monospace;font-weight:800;font-size:14px;text-shadow:0 0 4px #fbbf24;}
+</style>
+</head>
+<body>
+<div class="title-bar">
+  <div class="badge">🤖 Maqueen Emulator · View B — Track Action</div>
+  <div class="vibe">top-down arcade · driving on track</div>
+  <div class="nav">
+    <a href="maqueen-emu.html">⚙ Picker</a>
+    <a href="maqueen-emu_A.html">‹ Prev</a>
+    <a href="maqueen-emu_C.html">Next ›</a>
+    <a href="index.html">🧪 Labs</a>
+  </div>
+</div>
+<div class="arena">
+  <div class="track"></div>
+  <div class="edge-l"></div>
+  <div class="edge-r"></div>
+  <div class="finish"></div>
+  <div class="obstacle">!</div>
+  <div class="cone"></div>
+  <div class="robot-stage">
+<svg viewBox="0 0 200 220" style="width:200px;height:220px;display:block;" preserveAspectRatio="xMidYMid meet">
+  <defs>
+    <radialGradient id="rim2" cx="40%" cy="40%" r="60%"><stop offset="0%" stop-color="#fde68a"/><stop offset="60%" stop-color="#fbbf24"/><stop offset="100%" stop-color="#a16207"/></radialGradient>
+  </defs>
+  <!-- chassis (top-down rounded triangle) -->
+  <path d="M 100 30 Q 175 50 175 130 Q 175 180 100 195 Q 25 180 25 130 Q 25 50 100 30 Z"
+        fill="#1a1f28" stroke="#000" stroke-width="1.5"/>
+  <!-- left wheel -->
+  <rect x="5" y="100" width="22" height="50" rx="4" fill="#0a0a0a" stroke="#000" stroke-width="1.2"/>
+  <ellipse cx="16" cy="125" rx="6" ry="14" fill="url(#rim2)" stroke="#000" stroke-width="0.8"/>
+  <!-- right wheel -->
+  <rect x="173" y="100" width="22" height="50" rx="4" fill="#0a0a0a" stroke="#000" stroke-width="1.2"/>
+  <ellipse cx="184" cy="125" rx="6" ry="14" fill="url(#rim2)" stroke="#000" stroke-width="0.8"/>
+  <!-- caster -->
+  <circle cx="100" cy="190" r="8" fill="#e5e7eb" stroke="#666" stroke-width="0.8"/>
+  <!-- micro:bit on top (small) -->
+  <rect x="65" y="80" width="70" height="55" rx="2" fill="#1a3a5a" stroke="#000" stroke-width="1"/>
+  <circle cx="75" cy="92" r="2" fill="#ef4444" opacity="1.0"><animate attributeName="opacity" values="0.4;1;0.4" dur="1s" repeatCount="indefinite" begin="0.0s"/></circle><circle cx="83" cy="92" r="2" fill="#ef4444" opacity="0.4"><animate attributeName="opacity" values="0.4;1;0.4" dur="1s" repeatCount="indefinite" begin="0.04s"/></circle><circle cx="91" cy="92" r="2" fill="#ef4444" opacity="1.0"><animate attributeName="opacity" values="0.4;1;0.4" dur="1s" repeatCount="indefinite" begin="0.08s"/></circle><circle cx="99" cy="92" r="2" fill="#ef4444" opacity="0.4"><animate attributeName="opacity" values="0.4;1;0.4" dur="1s" repeatCount="indefinite" begin="0.12s"/></circle><circle cx="107" cy="92" r="2" fill="#ef4444" opacity="1.0"><animate attributeName="opacity" values="0.4;1;0.4" dur="1s" repeatCount="indefinite" begin="0.16s"/></circle><circle cx="75" cy="100" r="2" fill="#ef4444" opacity="0.4"><animate attributeName="opacity" values="0.4;1;0.4" dur="1s" repeatCount="indefinite" begin="0.2s"/></circle><circle cx="83" cy="100" r="2" fill="#ef4444" opacity="1.0"><animate attributeName="opacity" values="0.4;1;0.4" dur="1s" repeatCount="indefinite" begin="0.24s"/></circle><circle cx="91" cy="100" r="2" fill="#ef4444" opacity="0.4"><animate attributeName="opacity" values="0.4;1;0.4" dur="1s" repeatCount="indefinite" begin="0.28s"/></circle><circle cx="99" cy="100" r="2" fill="#ef4444" opacity="1.0"><animate attributeName="opacity" values="0.4;1;0.4" dur="1s" repeatCount="indefinite" begin="0.32s"/></circle><circle cx="107" cy="100" r="2" fill="#ef4444" opacity="0.4"><animate attributeName="opacity" values="0.4;1;0.4" dur="1s" repeatCount="indefinite" begin="0.36s"/></circle><circle cx="75" cy="108" r="2" fill="#ef4444" opacity="1.0"><animate attributeName="opacity" values="0.4;1;0.4" dur="1s" repeatCount="indefinite" begin="0.4s"/></circle><circle cx="83" cy="108" r="2" fill="#ef4444" opacity="0.4"><animate attributeName="opacity" values="0.4;1;0.4" dur="1s" repeatCount="indefinite" begin="0.44s"/></circle><circle cx="91" cy="108" r="2" fill="#ef4444" opacity="1.0"><animate attributeName="opacity" values="0.4;1;0.4" dur="1s" repeatCount="indefinite" begin="0.48s"/></circle><circle cx="99" cy="108" r="2" fill="#ef4444" opacity="0.4"><animate attributeName="opacity" values="0.4;1;0.4" dur="1s" repeatCount="indefinite" begin="0.52s"/></circle><circle cx="107" cy="108" r="2" fill="#ef4444" opacity="1.0"><animate attributeName="opacity" values="0.4;1;0.4" dur="1s" repeatCount="indefinite" begin="0.56s"/></circle><circle cx="75" cy="116" r="2" fill="#ef4444" opacity="0.4"><animate attributeName="opacity" values="0.4;1;0.4" dur="1s" repeatCount="indefinite" begin="0.6s"/></circle><circle cx="83" cy="116" r="2" fill="#ef4444" opacity="1.0"><animate attributeName="opacity" values="0.4;1;0.4" dur="1s" repeatCount="indefinite" begin="0.64s"/></circle><circle cx="91" cy="116" r="2" fill="#ef4444" opacity="0.4"><animate attributeName="opacity" values="0.4;1;0.4" dur="1s" repeatCount="indefinite" begin="0.68s"/></circle><circle cx="99" cy="116" r="2" fill="#ef4444" opacity="1.0"><animate attributeName="opacity" values="0.4;1;0.4" dur="1s" repeatCount="indefinite" begin="0.72s"/></circle><circle cx="107" cy="116" r="2" fill="#ef4444" opacity="0.4"><animate attributeName="opacity" values="0.4;1;0.4" dur="1s" repeatCount="indefinite" begin="0.76s"/></circle><circle cx="75" cy="124" r="2" fill="#ef4444" opacity="1.0"><animate attributeName="opacity" values="0.4;1;0.4" dur="1s" repeatCount="indefinite" begin="0.8s"/></circle><circle cx="83" cy="124" r="2" fill="#ef4444" opacity="0.4"><animate attributeName="opacity" values="0.4;1;0.4" dur="1s" repeatCount="indefinite" begin="0.84s"/></circle><circle cx="91" cy="124" r="2" fill="#ef4444" opacity="1.0"><animate attributeName="opacity" values="0.4;1;0.4" dur="1s" repeatCount="indefinite" begin="0.88s"/></circle><circle cx="99" cy="124" r="2" fill="#ef4444" opacity="0.4"><animate attributeName="opacity" values="0.4;1;0.4" dur="1s" repeatCount="indefinite" begin="0.92s"/></circle><circle cx="107" cy="124" r="2" fill="#ef4444" opacity="1.0"><animate attributeName="opacity" values="0.4;1;0.4" dur="1s" repeatCount="indefinite" begin="0.96s"/></circle>
+  <!-- ultrasonic on front (small) -->
+  <rect x="60" y="35" width="80" height="30" rx="4" fill="#1f2937" stroke="#000" stroke-width="1"/>
+  <circle cx="80" cy="50" r="11" fill="#374151" stroke="#000" stroke-width="0.8"/>
+  <circle cx="120" cy="50" r="11" fill="#374151" stroke="#000" stroke-width="0.8"/>
+  <!-- 4 RGB LEDs on front -->
+  <circle cx="55" cy="195" r="6" fill="#ef4444" style="animation:blink 1.2s infinite 0.0s;filter:drop-shadow(0 0 6px #ef4444);"/><circle cx="85" cy="195" r="6" fill="#22c55e" style="animation:blink 1.2s infinite 0.3s;filter:drop-shadow(0 0 6px #22c55e);"/><circle cx="115" cy="195" r="6" fill="#3b82f6" style="animation:blink 1.2s infinite 0.6s;filter:drop-shadow(0 0 6px #3b82f6);"/><circle cx="145" cy="195" r="6" fill="#fbbf24" style="animation:blink 1.2s infinite 0.8999999999999999s;filter:drop-shadow(0 0 6px #fbbf24);"/>
+  <!-- direction arrow -->
+  <polygon points="100,15 90,30 110,30" fill="#22d3ee" opacity="0.8"/>
+</svg></div>
+
+  <div class="hud">
+    <div class="hud-bar">
+      <div class="hud-tile">⚡ 87%</div>
+      <div class="hud-tile">⏱ 02:14</div>
+      <div class="hud-tile">📡 42 cm</div>
+    </div>
+    <div class="hud-bar">
+      <div class="hud-tile" style="border-color:#22c55e;color:#22c55e;text-shadow:0 0 4px #22c55e;">L:0 R:0 ✓</div>
+      <div class="hud-tile" style="border-color:#fbbf24;color:#fbbf24;text-shadow:0 0 4px #fbbf24;">156 / 158 RPM</div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <div class="dpad">
+      <div class="empty"></div><div>▲</div><div class="empty"></div>
+      <div>◀</div><div class="center">●</div><div>▶</div>
+      <div class="empty"></div><div>▼</div><div class="empty"></div>
+    </div>
+    <div style="display:flex;gap:8px;align-items:end;">
+      <div class="scoreboard">SCORE: 1240</div>
+      <div class="scoreboard" style="border-color:#22c55e;color:#22c55e;text-shadow:0 0 4px #22c55e;">LAP 2/5</div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
