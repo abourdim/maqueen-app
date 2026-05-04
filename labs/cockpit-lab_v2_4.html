@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>🏎 #4 F1 Wheel</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{background:#0a0a0a;color:#fff;font-family:'JetBrains Mono', monospace;min-height:100vh;overflow-x:hidden;}
+  body{padding:14px 18px 32px;}
+  @media(max-width:520px){html,body{overflow-x:hidden;}}
+</style>
+</head>
+<body>
+<div style="display:flex;align-items:center;gap:10px;padding:8px 14px;margin:0 0 14px;background:rgba(0,0,0,0.55);border:1px solid #3a0a0a;border-radius:10px;flex-wrap:wrap;font-family:'JetBrains Mono',monospace;">
+  <div style="font-size:14px;font-weight:700;color:#dc2626;letter-spacing:0.06em;margin-right:auto;">🏎 #4 · F1 Steering Wheel <span style="color:#3a0a0a;font-weight:400;font-size:11px;margin-left:8px;">rev lights · gear · sectors · paddles</span></div>
+  <a href="cockpit-lab_v2.html" style="color:#fee2e2;text-decoration:none;border:1px solid #3a0a0a;border-radius:6px;padding:4px 10px;font-size:12px;">⚙ Gallery</a>
+  <a href="cockpit-lab_v2_3.html" style="color:#fee2e2;text-decoration:none;border:1px solid #3a0a0a;border-radius:6px;padding:4px 10px;font-size:12px;">‹ Prev</a>
+  <a href="cockpit-lab_v2_5.html" style="color:#fee2e2;text-decoration:none;border:1px solid #3a0a0a;border-radius:6px;padding:4px 10px;font-size:12px;">Next ›</a>
+</div>
+<style>
+  .f1-rev-bar{display:flex;gap:4px;justify-content:center;margin-bottom:14px;padding:8px;background:#000;border:2px solid #3a0a0a;border-radius:10px;}
+  .f1-rev{width:16px;height:18px;border-radius:3px;background:#1a1a1a;}
+  .f1-rev.on-1{background:#22c55e;box-shadow:0 0 6px #22c55e;}
+  .f1-rev.on-2{background:#86efac;box-shadow:0 0 6px #86efac;}
+  .f1-rev.on-3{background:#fbbf24;box-shadow:0 0 6px #fbbf24;}
+  .f1-rev.on-4{background:#f97316;box-shadow:0 0 6px #f97316;}
+  .f1-rev.on-5{background:#dc2626;box-shadow:0 0 8px #dc2626;animation:flash 0.4s ease-in-out infinite alternate;}
+  @keyframes flash{from{opacity:1}to{opacity:0.4}}
+
+  .f1-grid{display:grid;grid-template-columns:1fr 2.2fr 1fr;gap:14px;}
+  @media(max-width:920px){.f1-grid{grid-template-columns:1fr;}}
+
+  .f1-side{display:flex;flex-direction:column;gap:10px;}
+  .f1-card{background:#1a1a1a;border:2px solid #3a0a0a;border-radius:10px;padding:12px;}
+  .f1-card .l{font-size:9px;color:#fca5a5;letter-spacing:0.2em;font-family:'JetBrains Mono',monospace;margin-bottom:6px;}
+  .f1-card .v{font-size:32px;font-weight:900;color:#dc2626;text-shadow:0 0 10px #dc2626;font-family:'JetBrains Mono',monospace;}
+  .f1-card .v.green{color:#22c55e;text-shadow:0 0 10px #22c55e;}
+  .f1-card .v.amber{color:#fbbf24;text-shadow:0 0 10px #fbbf24;}
+
+  .f1-wheel-wrap{background:#000;border:3px solid #1a1a1a;border-radius:14px;padding:20px;display:flex;flex-direction:column;align-items:center;gap:14px;position:relative;}
+  .f1-wheel{width:340px;height:340px;max-width:100%;position:relative;background:radial-gradient(circle at 50% 50%,#1a1a1a 30%,#0a0a0a 60%,#000 100%);border:6px solid #2a2a2a;border-radius:50% 50% 30% 30% / 50% 50% 50% 50%;clip-path:path('M 170 0 A 170 170 0 0 1 340 170 L 340 280 Q 340 340 280 340 L 60 340 Q 0 340 0 280 L 0 170 A 170 170 0 0 1 170 0 Z');box-shadow:inset 0 0 40px rgba(0,0,0,0.9),0 0 30px rgba(220,38,38,0.2);}
+  .f1-wheel .center-display{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:140px;height:80px;background:#000;border:2px solid #444;border-radius:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;}
+  .f1-wheel .center-display .gear{font-size:42px;font-weight:900;color:#fbbf24;text-shadow:0 0 14px #fbbf24;line-height:1;}
+  .f1-wheel .center-display .speed{font-size:14px;color:#22c55e;text-shadow:0 0 6px #22c55e;}
+  .f1-wheel .knob{position:absolute;width:34px;height:34px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#444,#0a0a0a);border:2px solid #555;box-shadow:0 0 6px rgba(220,38,38,0.3);}
+  .f1-wheel .knob.tl{top:50px;left:42px;}
+  .f1-wheel .knob.tr{top:50px;right:42px;}
+  .f1-wheel .knob.bl{bottom:50px;left:60px;}
+  .f1-wheel .knob.br{bottom:50px;right:60px;}
+  .f1-wheel .btn{position:absolute;width:24px;height:24px;border-radius:6px;background:#dc2626;box-shadow:0 0 8px #dc2626;}
+  .f1-wheel .btn.t{top:120px;left:50%;transform:translateX(-50%);}
+  .f1-wheel .btn.bl{bottom:120px;left:50%;transform:translateX(-80px);background:#22c55e;box-shadow:0 0 8px #22c55e;}
+  .f1-wheel .btn.br{bottom:120px;left:50%;transform:translateX(56px);background:#fbbf24;box-shadow:0 0 8px #fbbf24;}
+
+  .f1-paddle{background:linear-gradient(135deg,#444,#1a1a1a);border:2px solid #555;border-radius:6px;padding:14px 20px;font-family:'JetBrains Mono',monospace;font-weight:900;color:#fee2e2;letter-spacing:0.2em;font-size:11px;}
+  .f1-paddles{display:flex;justify-content:space-between;width:100%;}
+
+  .f1-sectors{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px;}
+  .f1-sector{background:#1a1a1a;border:1px solid #3a0a0a;border-radius:6px;padding:10px;text-align:center;font-family:'JetBrains Mono',monospace;}
+  .f1-sector .name{font-size:10px;color:#fca5a5;}
+  .f1-sector.s1{border-color:#22c55e;}
+  .f1-sector.s2{border-color:#fbbf24;}
+  .f1-sector.s3{border-color:#dc2626;}
+  .f1-sector .time{font-size:18px;font-weight:800;color:#fee2e2;margin-top:4px;}
+</style>
+<div class="f1-rev-bar">
+  <span class="f1-rev on-1"></span><span class="f1-rev on-1"></span><span class="f1-rev on-1"></span>
+  <span class="f1-rev on-2"></span><span class="f1-rev on-2"></span><span class="f1-rev on-2"></span>
+  <span class="f1-rev on-3"></span><span class="f1-rev on-3"></span><span class="f1-rev on-3"></span>
+  <span class="f1-rev on-4"></span><span class="f1-rev on-4"></span><span class="f1-rev on-4"></span>
+  <span class="f1-rev on-5"></span><span class="f1-rev"></span><span class="f1-rev"></span>
+  <span class="f1-rev"></span><span class="f1-rev"></span>
+</div>
+<div class="f1-grid">
+  <div class="f1-side">
+    <div class="f1-card"><div class="l">⏱ SPEED</div><div class="v">42</div></div>
+    <div class="f1-card"><div class="l">📡 DIST · cm</div><div class="v green">12.4</div></div>
+    <div class="f1-card"><div class="l">🌡 ENGINE TEMP</div><div class="v amber">23.4°</div></div>
+    <div class="f1-card"><div class="l">🔋 BATTERY</div><div class="v green">78%</div></div>
+  </div>
+  <div class="f1-wheel-wrap">
+    <div class="f1-wheel">
+      <div class="knob tl"></div><div class="knob tr"></div>
+      <div class="knob bl"></div><div class="knob br"></div>
+      <div class="btn t"></div>
+      <div class="btn bl"></div><div class="btn br"></div>
+      <div class="center-display">
+        <div class="gear">3</div>
+        <div class="speed">42 KPH</div>
+      </div>
+    </div>
+    <div class="f1-paddles">
+      <div class="f1-paddle">‹ DOWN</div>
+      <div class="f1-paddle">UP ›</div>
+    </div>
+    <div class="f1-sectors" style="width:100%;">
+      <div class="f1-sector s1"><div class="name">S1</div><div class="time">12.34</div></div>
+      <div class="f1-sector s2"><div class="name">S2</div><div class="time">14.67</div></div>
+      <div class="f1-sector s3"><div class="name">S3</div><div class="time">−.−−</div></div>
+    </div>
+  </div>
+  <div class="f1-side">
+    <div class="f1-card"><div class="l">🧭 HEADING</div><div class="v">120°</div></div>
+    <div class="f1-card"><div class="l">📐 G-FORCE · X·Y·Z</div><div class="v" style="font-size:14px">0.12 / −0.04 / 0.99</div></div>
+    <div class="f1-card"><div class="l">🔊 MIC LEVEL</div><div class="v" style="font-size:18px">▮▮▮▮▯▯▯▯</div></div>
+    <div class="f1-card" style="background:#000;"><div class="l">📺 RADIO · TEAM</div><pre style="font-size:9px;color:#fca5a5;line-height:1.4;margin:0;">&gt; BOX BOX
+&lt; COPY
+&gt; TYRES OK
+&lt; CONFIRM</pre></div>
+  </div>
+</div>
+
+</body>
+</html>

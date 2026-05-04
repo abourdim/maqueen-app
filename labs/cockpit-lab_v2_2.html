@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>✈️ #2 Glass Cockpit</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{background:#0a1828;color:#fff;font-family:'Inter', sans-serif;min-height:100vh;overflow-x:hidden;}
+  body{padding:14px 18px 32px;}
+  @media(max-width:520px){html,body{overflow-x:hidden;}}
+</style>
+</head>
+<body>
+<div style="display:flex;align-items:center;gap:10px;padding:8px 14px;margin:0 0 14px;background:rgba(0,0,0,0.55);border:1px solid #1e3a5c;border-radius:10px;flex-wrap:wrap;font-family:'JetBrains Mono',monospace;">
+  <div style="font-size:14px;font-weight:700;color:#38bdf8;letter-spacing:0.06em;margin-right:auto;">✈️ #2 · Glass Cockpit (Airliner) <span style="color:#1e3a5c;font-weight:400;font-size:11px;margin-left:8px;">4 MFDs · side-stick · FCU</span></div>
+  <a href="cockpit-lab_v2.html" style="color:#e0f2fe;text-decoration:none;border:1px solid #1e3a5c;border-radius:6px;padding:4px 10px;font-size:12px;">⚙ Gallery</a>
+  <a href="cockpit-lab_v2_1.html" style="color:#e0f2fe;text-decoration:none;border:1px solid #1e3a5c;border-radius:6px;padding:4px 10px;font-size:12px;">‹ Prev</a>
+  <a href="cockpit-lab_v2_3.html" style="color:#e0f2fe;text-decoration:none;border:1px solid #1e3a5c;border-radius:6px;padding:4px 10px;font-size:12px;">Next ›</a>
+</div>
+<style>
+  .gc-mfd-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px;}
+  @media(max-width:920px){.gc-mfd-row{grid-template-columns:repeat(2,1fr);}}
+  .gc-mfd{background:#000814;border:2px solid #1e3a5c;border-radius:10px;padding:10px;aspect-ratio:1.2;position:relative;overflow:hidden;}
+  .gc-mfd .header{display:flex;justify-content:space-between;font-size:10px;color:#7dd3fc;letter-spacing:0.1em;border-bottom:1px solid #1e3a5c;padding-bottom:5px;margin-bottom:8px;}
+  .gc-mfd .big{font-size:36px;font-weight:800;color:#38bdf8;text-shadow:0 0 12px #38bdf8;text-align:center;letter-spacing:0.05em;}
+  .gc-mfd .sub{font-size:10px;color:#7dd3fc;text-align:center;margin-top:4px;}
+  .gc-mfd .h-tape{position:absolute;left:0;right:0;top:50%;height:30px;background:repeating-linear-gradient(90deg,transparent 0,transparent 20px,rgba(56,189,248,0.4) 20px,rgba(56,189,248,0.4) 22px);}
+  .gc-mfd .att{position:absolute;left:10px;right:10px;top:32px;bottom:30px;background:linear-gradient(180deg,#0c4a6e 50%,#7c2d12 50%);border-radius:6px;display:grid;place-items:center;}
+  .gc-mfd .att::before{content:'';position:absolute;left:30%;right:30%;top:48%;height:4%;background:#fbbf24;}
+  .gc-mfd .compass-rose{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);width:80px;height:80px;border-radius:50%;border:1.5px solid #38bdf8;}
+  .gc-mfd .compass-rose::before{content:'N';position:absolute;top:-2px;left:50%;transform:translateX(-50%);font-size:10px;color:#38bdf8;}
+  .gc-bottom{display:grid;grid-template-columns:1fr 2fr 1fr;gap:14px;}
+  @media(max-width:920px){.gc-bottom{grid-template-columns:1fr;}}
+  .gc-stick{background:linear-gradient(135deg,#13243d,#020617);border:2px solid #1e3a5c;border-radius:14px;padding:18px;display:flex;flex-direction:column;align-items:center;gap:10px;}
+  .gc-stick .grip{width:60px;height:140px;background:linear-gradient(180deg,#475569,#1e293b 70%);border-radius:30px 30px 8px 8px;box-shadow:0 0 14px rgba(56,189,248,0.3);position:relative;}
+  .gc-stick .grip::before{content:'';position:absolute;top:18px;left:18px;width:24px;height:24px;border-radius:50%;background:radial-gradient(circle,#dc2626,#7f1d1d);box-shadow:0 0 8px #dc2626;}
+  .gc-stick .lbl{font-size:10px;color:#7dd3fc;letter-spacing:0.2em;}
+  .gc-fcu{background:#0c1827;border:2px solid #1e3a5c;border-radius:10px;padding:14px;}
+  .gc-fcu-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;}
+  .gc-fcu-item{background:#000;border:1px solid #1e3a5c;border-radius:6px;padding:8px 4px;text-align:center;}
+  .gc-fcu-item .l{font-size:9px;color:#7dd3fc;letter-spacing:0.1em;}
+  .gc-fcu-item .v{font-size:18px;color:#38bdf8;font-weight:700;text-shadow:0 0 8px #38bdf8;font-family:'JetBrains Mono',monospace;}
+  .gc-thrust{background:linear-gradient(135deg,#13243d,#020617);border:2px solid #1e3a5c;border-radius:14px;padding:18px;display:flex;flex-direction:column;align-items:center;gap:8px;}
+  .gc-thrust .levers{display:flex;gap:8px;height:140px;align-items:flex-end;}
+  .gc-thrust .lever{width:30px;background:linear-gradient(180deg,#38bdf8,#0c4a6e);border-radius:6px 6px 12px 12px;height:65%;box-shadow:0 0 8px rgba(56,189,248,0.4);}
+  .gc-thrust .lever:nth-child(2){height:80%;}
+</style>
+<div class="gc-mfd-row">
+  <div class="gc-mfd">
+    <div class="header"><span>PFD</span><span>SPD 42</span></div>
+    <div class="att"></div>
+    <div style="position:absolute;left:14px;top:80px;font-size:14px;color:#fbbf24;font-weight:700;">42</div>
+    <div style="position:absolute;right:14px;top:80px;font-size:14px;color:#fbbf24;font-weight:700;">12.4</div>
+  </div>
+  <div class="gc-mfd">
+    <div class="header"><span>ND</span><span>HDG 120°</span></div>
+    <div class="compass-rose">
+      <svg viewBox="0 0 80 80" style="width:100%;height:100%"><line x1="40" y1="6" x2="40" y2="14" stroke="#fbbf24" stroke-width="2"/><polygon points="40,20 35,40 45,40" fill="#fbbf24"/></svg>
+    </div>
+    <div class="big" style="margin-top:8px;font-size:24px;">120°</div>
+    <div class="sub">MAGNETIC</div>
+  </div>
+  <div class="gc-mfd">
+    <div class="header"><span>EICAS</span><span>ENG</span></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px;">
+      <div><div class="sub" style="text-align:left;font-size:9px;">N1 L</div><div class="big" style="font-size:24px;text-align:left;">62%</div></div>
+      <div><div class="sub" style="text-align:left;font-size:9px;">N1 R</div><div class="big" style="font-size:24px;text-align:left;">68%</div></div>
+      <div><div class="sub" style="text-align:left;font-size:9px;">TEMP</div><div class="big" style="font-size:18px;text-align:left;color:#fbbf24;">23.4°</div></div>
+      <div><div class="sub" style="text-align:left;font-size:9px;">FUEL</div><div class="big" style="font-size:18px;text-align:left;">78%</div></div>
+    </div>
+  </div>
+  <div class="gc-mfd">
+    <div class="header"><span>MFD · SONAR</span><span>SCAN</span></div>
+    <svg viewBox="0 0 200 200" style="width:100%;height:auto;margin-top:6px;">
+      <circle cx="100" cy="100" r="86" fill="none" stroke="#1e3a5c" stroke-width="1"/>
+      <circle cx="100" cy="100" r="56" fill="none" stroke="#1e3a5c" stroke-width="0.8"/>
+      <circle cx="100" cy="100" r="26" fill="none" stroke="#1e3a5c" stroke-width="0.6"/>
+      <line x1="100" y1="14" x2="100" y2="186" stroke="#1e3a5c" stroke-width="0.5"/>
+      <line x1="14" y1="100" x2="186" y2="100" stroke="#1e3a5c" stroke-width="0.5"/>
+      <g style="transform-origin:100px 100px;animation:spin 4s linear infinite;">
+        <path d="M 100 100 L 100 14 A 86 86 0 0 1 175 70 Z" fill="#38bdf8" opacity="0.3"/>
+      </g>
+      <circle cx="135" cy="65" r="3" fill="#fbbf24"/>
+    </svg>
+  </div>
+</div>
+<div class="gc-bottom">
+  <div class="gc-stick"><div class="grip"></div><div class="lbl">SIDE STICK</div></div>
+  <div class="gc-fcu">
+    <div style="font-size:11px;color:#7dd3fc;letter-spacing:0.2em;margin-bottom:10px;">⚙ FCU · FLIGHT CONTROL UNIT</div>
+    <div class="gc-fcu-grid">
+      <div class="gc-fcu-item"><div class="l">SPD</div><div class="v">42</div></div>
+      <div class="gc-fcu-item"><div class="l">HDG</div><div class="v">120</div></div>
+      <div class="gc-fcu-item"><div class="l">ALT</div><div class="v">12</div></div>
+      <div class="gc-fcu-item"><div class="l">VS</div><div class="v">+50</div></div>
+      <div class="gc-fcu-item"><div class="l">ECHO</div><div class="v" style="color:#22c55e">●</div></div>
+      <div class="gc-fcu-item"><div class="l">A/THR</div><div class="v" style="color:#22c55e;font-size:14px">ARMED</div></div>
+      <div class="gc-fcu-item"><div class="l">A/P</div><div class="v" style="color:#fbbf24;font-size:14px">CMD</div></div>
+      <div class="gc-fcu-item"><div class="l">FD</div><div class="v" style="color:#22c55e;font-size:14px">ON</div></div>
+      <div class="gc-fcu-item"><div class="l">MIC</div><div class="v" style="font-size:14px">▮▮▮▮▯</div></div>
+      <div class="gc-fcu-item"><div class="l">BAT</div><div class="v" style="font-size:14px">78%</div></div>
+    </div>
+  </div>
+  <div class="gc-thrust"><div class="levers"><div class="lever"></div><div class="lever"></div></div><div class="lbl" style="font-size:10px;color:#7dd3fc;letter-spacing:0.2em;">THRUST · L · R</div></div>
+</div>
+<style>@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}</style>
+
+</body>
+</html>

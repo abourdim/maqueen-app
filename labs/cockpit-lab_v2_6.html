@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>🛸 #6 Starship Bridge</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{background:#000;color:#fff;font-family:'Antonio', 'Helvetica Neue', sans-serif;min-height:100vh;overflow-x:hidden;}
+  body{padding:14px 18px 32px;}
+  @media(max-width:520px){html,body{overflow-x:hidden;}}
+</style>
+</head>
+<body>
+<div style="display:flex;align-items:center;gap:10px;padding:8px 14px;margin:0 0 14px;background:rgba(0,0,0,0.55);border:1px solid #7c3aed;border-radius:10px;flex-wrap:wrap;font-family:'JetBrains Mono',monospace;">
+  <div style="font-size:14px;font-weight:700;color:#fb923c;letter-spacing:0.06em;margin-right:auto;">🛸 #6 · Starship Bridge <span style="color:#7c3aed;font-weight:400;font-size:11px;margin-left:8px;">viewscreen · LCARS · stations</span></div>
+  <a href="cockpit-lab_v2.html" style="color:#fbbf24;text-decoration:none;border:1px solid #7c3aed;border-radius:6px;padding:4px 10px;font-size:12px;">⚙ Gallery</a>
+  <a href="cockpit-lab_v2_5.html" style="color:#fbbf24;text-decoration:none;border:1px solid #7c3aed;border-radius:6px;padding:4px 10px;font-size:12px;">‹ Prev</a>
+  <a href="cockpit-lab_v2_7.html" style="color:#fbbf24;text-decoration:none;border:1px solid #7c3aed;border-radius:6px;padding:4px 10px;font-size:12px;">Next ›</a>
+</div>
+<style>
+  .ss-grid{display:grid;grid-template-columns:80px 1fr 80px;grid-template-rows:auto auto;gap:8px;max-width:1300px;margin:0 auto;}
+  .ss-elbow-l{grid-column:1;grid-row:1 / -1;background:linear-gradient(180deg,#fb923c 0%,#fb923c 50%,#7c3aed 50%,#7c3aed 100%);border-radius:40px 0 0 40px;padding:14px 0;display:flex;flex-direction:column;gap:4px;align-items:flex-end;}
+  .ss-elbow-r{grid-column:3;grid-row:1 / -1;background:linear-gradient(180deg,#7c3aed 0%,#7c3aed 50%,#fb923c 50%,#fb923c 100%);border-radius:0 40px 40px 0;padding:14px 0;display:flex;flex-direction:column;gap:4px;align-items:flex-start;}
+  .ss-pill{height:24px;width:60px;border-radius:0;background:#000;display:flex;align-items:center;justify-content:center;color:#fbbf24;font-size:9px;font-weight:900;font-family:'Antonio',sans-serif;letter-spacing:0.1em;}
+  .ss-pill.amber{color:#fb923c}
+  .ss-pill.violet{color:#a78bfa}
+  .ss-pill.cyan{color:#67e8f9}
+
+  .ss-viewscreen{grid-column:2;grid-row:1;background:radial-gradient(ellipse at 50% 50%,#0a1828 30%,#000 70%);border-radius:0 0 40px 40px;padding:24px 14px 30px;min-height:340px;position:relative;overflow:hidden;}
+  .ss-viewscreen::before{content:'⎯ VIEWSCREEN — DEEP SPACE ⎯';position:absolute;left:0;right:0;top:8px;text-align:center;color:#fb923c;font-family:'Antonio',sans-serif;font-size:11px;letter-spacing:0.3em;font-weight:900;}
+  .ss-stars{position:absolute;inset:0;background-image:radial-gradient(2px 2px at 20% 30%,#fff,transparent),radial-gradient(1px 1px at 60% 20%,#fff,transparent),radial-gradient(2px 2px at 80% 60%,#67e8f9,transparent),radial-gradient(1px 1px at 30% 80%,#fff,transparent),radial-gradient(2px 2px at 70% 75%,#a78bfa,transparent),radial-gradient(1px 1px at 50% 50%,#fff,transparent);animation:starsDrift 12s linear infinite;}
+  @keyframes starsDrift{from{transform:translateX(0)}to{transform:translateX(-100px)}}
+  .ss-planet{position:absolute;left:50%;bottom:50px;transform:translateX(-50%);width:140px;height:140px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#fb923c 10%,#7c2d12 60%,#000 100%);box-shadow:0 0 40px rgba(251,146,60,0.4);}
+  .ss-radar{position:absolute;right:14px;top:34px;width:100px;height:100px;border-radius:50%;border:2px solid #67e8f9;background:rgba(0,0,0,0.6);}
+  .ss-radar svg{width:100%;height:100%;}
+  .ss-bottom{grid-column:2;grid-row:2;display:grid;grid-template-columns:1fr 1.4fr 1fr;gap:8px;background:#000;border-radius:30px 30px 0 0;padding:18px;}
+  .ss-station{background:#0a0a0a;border-radius:8px;padding:10px;}
+  .ss-station h3{font-family:'Antonio',sans-serif;font-size:14px;color:#fb923c;letter-spacing:0.2em;margin-bottom:8px;}
+  .ss-station h3.violet{color:#a78bfa;}
+  .ss-station h3.cyan{color:#67e8f9;}
+  .ss-row{display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid #1a1a1a;font-family:'Antonio',sans-serif;font-size:11px;}
+  .ss-row .l{color:#666;letter-spacing:0.1em;}
+  .ss-row .v{color:#fbbf24;font-weight:900;}
+  .ss-bar{display:flex;gap:2px;margin-top:6px;}
+  .ss-bar .b{flex:1;height:14px;background:#0a0a0a;}
+  .ss-bar .b.on{background:#fb923c;box-shadow:0 0 4px #fb923c;}
+</style>
+<div class="ss-grid">
+  <div class="ss-elbow-l">
+    <div class="ss-pill">⎯ HELM</div>
+    <div class="ss-pill">SCI</div>
+    <div class="ss-pill">⎯ ENG</div>
+    <div class="ss-pill">TAC</div>
+    <div class="ss-pill">⎯ COM</div>
+    <div class="ss-pill">MED</div>
+  </div>
+  <div class="ss-viewscreen">
+    <div class="ss-stars"></div>
+    <div class="ss-planet"></div>
+    <div class="ss-radar">
+      <svg viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="46" fill="none" stroke="#67e8f9" stroke-width="0.5"/>
+        <circle cx="50" cy="50" r="30" fill="none" stroke="#67e8f9" stroke-width="0.4"/>
+        <circle cx="50" cy="50" r="14" fill="none" stroke="#67e8f9" stroke-width="0.3"/>
+        <g style="transform-origin:center;animation:spin 3s linear infinite;">
+          <path d="M 50 50 L 50 4 A 46 46 0 0 1 88 30 Z" fill="#67e8f9" opacity="0.3"/>
+        </g>
+        <circle cx="68" cy="32" r="2" fill="#fb923c"/>
+      </svg>
+    </div>
+  </div>
+  <div class="ss-elbow-r">
+    <div class="ss-pill amber">SPD ⎯</div>
+    <div class="ss-pill violet">HDG</div>
+    <div class="ss-pill cyan">DIST ⎯</div>
+    <div class="ss-pill amber">TEMP</div>
+    <div class="ss-pill violet">PWR ⎯</div>
+    <div class="ss-pill cyan">MIC</div>
+  </div>
+  <div class="ss-bottom">
+    <div class="ss-station">
+      <h3 class="violet">▸ TACTICAL</h3>
+      <div class="ss-row"><span class="l">SHIELDS</span><span class="v">100%</span></div>
+      <div class="ss-row"><span class="l">PHASERS</span><span class="v" style="color:#22c55e">READY</span></div>
+      <div class="ss-row"><span class="l">TORPEDOES</span><span class="v">8</span></div>
+      <div class="ss-row"><span class="l">TARGETS</span><span class="v">1</span></div>
+    </div>
+    <div class="ss-station">
+      <h3>▸ HELM · NAVIGATION</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+        <div>
+          <div class="ss-row"><span class="l">SPEED</span><span class="v">42 KTS</span></div>
+          <div class="ss-row"><span class="l">HEADING</span><span class="v">120°</span></div>
+          <div class="ss-row"><span class="l">DIST</span><span class="v">12.4 m</span></div>
+        </div>
+        <div>
+          <div class="ss-row"><span class="l">TEMP</span><span class="v">23.4°C</span></div>
+          <div class="ss-row"><span class="l">ACC</span><span class="v" style="font-size:9px">0.12·−.04·.99</span></div>
+          <div class="ss-row"><span class="l">MIC</span><span class="v">▮▮▮▮▯</span></div>
+        </div>
+      </div>
+      <div class="ss-bar"><div class="b on"></div><div class="b on"></div><div class="b on"></div><div class="b on"></div><div class="b on"></div><div class="b on"></div><div class="b"></div><div class="b"></div></div>
+      <div style="font-size:9px;color:#fb923c;margin-top:4px;letter-spacing:0.2em;">▸ THROTTLE 75%</div>
+    </div>
+    <div class="ss-station">
+      <h3 class="cyan">▸ ENGINEERING</h3>
+      <div class="ss-row"><span class="l">WARP CORE</span><span class="v" style="color:#22c55e">STABLE</span></div>
+      <div class="ss-row"><span class="l">BATTERY</span><span class="v">78%</span></div>
+      <div class="ss-row"><span class="l">BLE LINK</span><span class="v" style="color:#22c55e">●</span></div>
+      <div class="ss-row"><span class="l">UART RX</span><span class="v" style="color:#fbbf24">●</span></div>
+    </div>
+  </div>
+</div>
+<style>@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}</style>
+
+</body>
+</html>

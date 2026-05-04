@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>🛩 #1 Plane Cockpit</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{background:#1a1408;color:#fff;font-family:'Courier New', monospace;min-height:100vh;overflow-x:hidden;}
+  body{padding:14px 18px 32px;}
+  @media(max-width:520px){html,body{overflow-x:hidden;}}
+</style>
+</head>
+<body>
+<div style="display:flex;align-items:center;gap:10px;padding:8px 14px;margin:0 0 14px;background:rgba(0,0,0,0.55);border:1px solid #5c4d2a;border-radius:10px;flex-wrap:wrap;font-family:'JetBrains Mono',monospace;">
+  <div style="font-size:14px;font-weight:700;color:#fbbf24;letter-spacing:0.06em;margin-right:auto;">🛩 #1 · Plane Cockpit <span style="color:#5c4d2a;font-weight:400;font-size:11px;margin-left:8px;">twin yokes · 6-pack · pedestal</span></div>
+  <a href="cockpit-lab_v2.html" style="color:#fef9c3;text-decoration:none;border:1px solid #5c4d2a;border-radius:6px;padding:4px 10px;font-size:12px;">⚙ Gallery</a>
+  <a href="cockpit-lab_v2_10.html" style="color:#fef9c3;text-decoration:none;border:1px solid #5c4d2a;border-radius:6px;padding:4px 10px;font-size:12px;">‹ Prev</a>
+  <a href="cockpit-lab_v2_2.html" style="color:#fef9c3;text-decoration:none;border:1px solid #5c4d2a;border-radius:6px;padding:4px 10px;font-size:12px;">Next ›</a>
+</div>
+<style>
+  .pc-grid{display:grid;grid-template-columns:1fr 2fr 1fr;gap:14px;max-width:1300px;margin:0 auto;}
+  @media(max-width:920px){.pc-grid{grid-template-columns:1fr;}}
+  .pc-yoke{background:linear-gradient(135deg,#3d2c14,#1a1408);border:2px solid #5c4d2a;border-radius:14px;padding:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:340px;}
+  .pc-yoke .wheel{width:160px;height:160px;border-radius:50%;border:8px solid #2a1f10;background:radial-gradient(circle at 35% 30%,#7c5d2a,#3d2c14 70%);box-shadow:inset 0 0 30px rgba(0,0,0,0.7),0 0 18px rgba(251,191,36,0.2);position:relative;}
+  .pc-yoke .wheel::before{content:'';position:absolute;inset:35px;border-radius:50%;border:3px solid #fbbf24;background:radial-gradient(circle at 35% 30%,rgba(251,191,36,0.3),transparent 70%);}
+  .pc-yoke .wheel::after{content:'M';position:absolute;inset:0;display:grid;place-items:center;color:#fbbf24;font-weight:900;font-size:36px;text-shadow:0 0 10px #fbbf24;}
+  .pc-yoke .lbl{margin-top:14px;font-size:11px;color:#a98864;letter-spacing:0.2em;}
+  .pc-center{display:flex;flex-direction:column;gap:14px;}
+  .pc-6pack{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,1fr);gap:6px;background:#0a0804;border:3px solid #2a1f10;border-radius:10px;padding:10px;}
+  .pc-gauge{aspect-ratio:1;background:radial-gradient(circle at 50% 50%,#0a0804 60%,#1a1408 100%);border:3px solid #2a1f10;border-radius:50%;position:relative;display:grid;place-items:center;box-shadow:inset 0 0 14px rgba(0,0,0,0.9),0 0 8px rgba(251,191,36,0.15);}
+  .pc-gauge .name{position:absolute;top:8px;font-size:7px;color:#a98864;letter-spacing:0.1em;text-align:center;width:100%;font-weight:700;}
+  .pc-gauge .val{font-size:14px;color:#fef9c3;font-weight:800;text-shadow:0 0 6px #fbbf24;}
+  .pc-gauge .unit{position:absolute;bottom:14%;font-size:7px;color:#a98864;}
+  .pc-gauge .needle{position:absolute;width:2px;height:42%;background:#fbbf24;top:8%;left:calc(50% - 1px);transform-origin:bottom center;transform:rotate(45deg);box-shadow:0 0 4px #fbbf24;}
+  .pc-gauge .needle.swing{animation:swing 4s ease-in-out infinite;}
+  @keyframes swing{0%,100%{transform:rotate(-45deg);}50%{transform:rotate(60deg);}}
+  .pc-pedestal{background:#0a0804;border:3px solid #2a1f10;border-radius:8px;padding:10px;display:grid;grid-template-columns:repeat(3,1fr);gap:6px;}
+  .pc-radio{background:#000;border:1px solid #2a1f10;padding:6px;font-family:'Courier New',monospace;}
+  .pc-radio .freq{color:#22c55e;font-size:14px;font-weight:800;text-shadow:0 0 4px #22c55e;}
+  .pc-radio .label{font-size:7px;color:#a98864;letter-spacing:0.1em;}
+  .pc-throttle{background:linear-gradient(180deg,#3d2c14 0%,#0a0804 100%);border:2px solid #2a1f10;border-radius:6px;padding:6px;height:120px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;}
+  .pc-throttle .lever{width:24px;height:48px;background:linear-gradient(135deg,#fbbf24,#a16207);border-radius:4px 4px 8px 8px;box-shadow:0 0 8px rgba(251,191,36,0.4);}
+  .pc-pedals{background:#0a0804;border:2px solid #2a1f10;border-radius:6px;padding:8px;display:flex;justify-content:space-around;}
+  .pc-pedal{width:34px;height:30px;background:linear-gradient(135deg,#3d2c14,#1a1408);border:1px solid #5c4d2a;border-radius:3px 3px 0 0;}
+</style>
+<div class="pc-grid">
+  <div class="pc-yoke"><div class="wheel"></div><div class="lbl">YOKE · LEFT</div></div>
+  <div class="pc-center">
+    <div class="pc-6pack">
+      <div class="pc-gauge"><div class="name">AIRSPEED</div><div class="val">42</div><div class="unit">KTS</div><div class="needle swing"></div></div>
+      <div class="pc-gauge"><div class="name">ATTITUDE</div><div class="val" style="color:#67e8f9">⏤</div><div class="needle"></div></div>
+      <div class="pc-gauge"><div class="name">ALTITUDE</div><div class="val">12.4</div><div class="unit">cm</div><div class="needle" style="transform:rotate(80deg)"></div></div>
+      <div class="pc-gauge"><div class="name">TURN COORD</div><div class="val" style="font-size:11px">L • R</div><div class="needle" style="transform:rotate(-15deg)"></div></div>
+      <div class="pc-gauge"><div class="name">HEADING</div><div class="val">120°</div><div class="needle" style="transform:rotate(120deg)"></div></div>
+      <div class="pc-gauge"><div class="name">VERT SPEED</div><div class="val">+50</div><div class="unit">fpm</div><div class="needle" style="transform:rotate(20deg)"></div></div>
+    </div>
+    <div class="pc-pedestal">
+      <div class="pc-radio"><div class="label">COM 1</div><div class="freq">121.500</div></div>
+      <div class="pc-radio"><div class="label">NAV 1</div><div class="freq">110.30</div></div>
+      <div class="pc-radio"><div class="label">XPDR</div><div class="freq">7700</div></div>
+      <div class="pc-throttle"><div class="lever"></div></div>
+      <div class="pc-radio" style="display:flex;flex-direction:column;justify-content:space-around"><div class="label">TEMP</div><div class="freq">23.4°</div><div class="label">MIC</div><div class="freq">▮▮▮▮▯▯</div></div>
+      <div class="pc-pedals"><div class="pc-pedal"></div><div class="pc-pedal"></div></div>
+    </div>
+  </div>
+  <div class="pc-yoke"><div class="wheel" style="animation:swing 5s ease-in-out infinite"></div><div class="lbl">YOKE · RIGHT</div></div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>🎚 #9 Studio Mixer</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{background:#1a1a1a;color:#fff;font-family:'JetBrains Mono', monospace;min-height:100vh;overflow-x:hidden;}
+  body{padding:14px 18px 32px;}
+  @media(max-width:520px){html,body{overflow-x:hidden;}}
+</style>
+</head>
+<body>
+<div style="display:flex;align-items:center;gap:10px;padding:8px 14px;margin:0 0 14px;background:rgba(0,0,0,0.55);border:1px solid #374151;border-radius:10px;flex-wrap:wrap;font-family:'JetBrains Mono',monospace;">
+  <div style="font-size:14px;font-weight:700;color:#fbbf24;letter-spacing:0.06em;margin-right:auto;">🎚 #9 · Studio Mixer <span style="color:#374151;font-weight:400;font-size:11px;margin-left:8px;">channel strips · faders · VU meters · master</span></div>
+  <a href="cockpit-lab_v2.html" style="color:#fef3c7;text-decoration:none;border:1px solid #374151;border-radius:6px;padding:4px 10px;font-size:12px;">⚙ Gallery</a>
+  <a href="cockpit-lab_v2_8.html" style="color:#fef3c7;text-decoration:none;border:1px solid #374151;border-radius:6px;padding:4px 10px;font-size:12px;">‹ Prev</a>
+  <a href="cockpit-lab_v2_10.html" style="color:#fef3c7;text-decoration:none;border:1px solid #374151;border-radius:6px;padding:4px 10px;font-size:12px;">Next ›</a>
+</div>
+<style>
+  .sm-grid{display:grid;grid-template-columns:repeat(8,1fr) 1.4fr;gap:6px;max-width:1300px;margin:0 auto;}
+  @media(max-width:920px){.sm-grid{grid-template-columns:repeat(4,1fr) 1.4fr;}}
+  @media(max-width:540px){.sm-grid{grid-template-columns:repeat(2,1fr);}}
+
+  .sm-strip{background:linear-gradient(180deg,#2a2a2a,#1a1a1a);border:1px solid #374151;border-radius:6px;padding:8px 6px;display:flex;flex-direction:column;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;}
+  .sm-strip h4{font-size:8px;color:#fbbf24;letter-spacing:0.15em;text-align:center;font-weight:900;}
+  .sm-knob{width:30px;height:30px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#666,#1a1a1a);border:1.5px solid #374151;position:relative;}
+  .sm-knob::before{content:'';position:absolute;left:50%;top:4px;width:1.5px;height:8px;background:#fbbf24;transform:translateX(-50%) rotate(-30deg);transform-origin:top center;box-shadow:0 0 3px #fbbf24;}
+  .sm-pan{font-size:8px;color:#9ca3af;letter-spacing:0.1em;}
+  .sm-fader-track{width:14px;height:140px;background:#0a0a0a;border-radius:7px;position:relative;border:1px solid #374151;}
+  .sm-fader-handle{position:absolute;left:-6px;width:26px;height:14px;background:linear-gradient(180deg,#fbbf24,#a16207);border-radius:3px;box-shadow:0 0 6px rgba(251,191,36,0.5);}
+  .sm-vu{display:flex;flex-direction:column-reverse;gap:1.5px;height:120px;width:8px;border:1px solid #374151;background:#000;padding:1px;}
+  .sm-vu .seg{flex:1;background:#22c55e;}
+  .sm-vu .seg.med{background:#fbbf24;}
+  .sm-vu .seg.hi{background:#dc2626;}
+  .sm-vu .seg.off{background:#1a1a1a;}
+  .sm-fader-row{display:flex;gap:6px;align-items:flex-start;}
+  .sm-mute-solo{display:flex;gap:3px;}
+  .sm-btn{padding:2px 5px;border:1px solid #374151;border-radius:3px;font-size:8px;font-weight:900;color:#9ca3af;}
+  .sm-btn.active{background:#dc2626;color:#fff;}
+  .sm-btn.solo.active{background:#fbbf24;color:#0a0a0a;}
+  .sm-name{font-size:8px;color:#fef3c7;letter-spacing:0.1em;border:1px solid #374151;padding:2px 4px;text-align:center;width:100%;background:#0a0a0a;}
+
+  .sm-master{background:linear-gradient(180deg,#3a3a3a,#1a1a1a);border:2px solid #fbbf24;border-radius:8px;padding:14px;display:flex;flex-direction:column;align-items:center;gap:10px;}
+  .sm-master h3{font-size:11px;color:#fbbf24;letter-spacing:0.3em;font-weight:900;font-family:'JetBrains Mono',monospace;text-shadow:0 0 4px #fbbf24;}
+  .sm-master-vu{display:flex;gap:4px;}
+  .sm-master .sm-vu{height:140px;width:14px;}
+  .sm-master-fader{display:flex;gap:8px;align-items:center;}
+  .sm-master-fader .sm-fader-track{height:160px;width:18px;border-radius:9px;}
+  .sm-master-fader .sm-fader-handle{width:34px;height:18px;}
+  .sm-master-readout{background:#000;border:1px solid #fbbf24;border-radius:6px;padding:8px 12px;text-align:center;width:100%;font-family:'JetBrains Mono',monospace;}
+  .sm-master-readout .v{font-size:18px;color:#fbbf24;font-weight:900;text-shadow:0 0 6px #fbbf24;}
+  .sm-master-readout .l{font-size:9px;color:#9ca3af;letter-spacing:0.2em;}
+</style>
+<div class="sm-grid"><div class="sm-strip">
+  <h4>SPD</h4>
+  <div style="font-size:7px;color:#9ca3af;">EQ</div>
+  <div class="sm-knob"></div>
+  <div class="sm-knob"></div>
+  <div class="sm-knob"></div>
+  <div class="sm-pan">PAN</div>
+  <div class="sm-knob"></div>
+  <div class="sm-fader-row">
+    <div class="sm-fader-track"><div class="sm-fader-handle" style="bottom:62%"></div></div>
+    <div class="sm-vu">
+      <div class="seg"></div><div class="seg"></div>
+      <div class="seg"></div><div class="seg"></div>
+      <div class="seg med"></div><div class="seg med"></div>
+      <div class="seg hi off"></div><div class="seg hi off"></div>
+    </div>
+  </div>
+  <div class="sm-mute-solo"><span class="sm-btn">M</span><span class="sm-btn solo ">S</span></div>
+  <div class="sm-name">42</div>
+</div><div class="sm-strip">
+  <h4>DIST</h4>
+  <div style="font-size:7px;color:#9ca3af;">EQ</div>
+  <div class="sm-knob"></div>
+  <div class="sm-knob"></div>
+  <div class="sm-knob"></div>
+  <div class="sm-pan">PAN</div>
+  <div class="sm-knob"></div>
+  <div class="sm-fader-row">
+    <div class="sm-fader-track"><div class="sm-fader-handle" style="bottom:78%"></div></div>
+    <div class="sm-vu">
+      <div class="seg"></div><div class="seg"></div>
+      <div class="seg"></div><div class="seg"></div>
+      <div class="seg med"></div><div class="seg med"></div>
+      <div class="seg hi off"></div><div class="seg hi off"></div>
+    </div>
+  </div>
+  <div class="sm-mute-solo"><span class="sm-btn">M</span><span class="sm-btn solo active">S</span></div>
+  <div class="sm-name">12.4</div>
+</div><div class="sm-strip">
+  <h4>HDG</h4>
+  <div style="font-size:7px;color:#9ca3af;">EQ</div>
+  <div class="sm-knob"></div>
+  <div class="sm-knob"></div>
+  <div class="sm-knob"></div>
+  <div class="sm-pan">PAN</div>
+  <div class="sm-knob"></div>
+  <div class="sm-fader-row">
+    <div class="sm-fader-track"><div class="sm-fader-handle" style="bottom:45%"></div></div>
+    <div class="sm-vu">
+      <div class="seg"></div><div class="seg"></div>
+      <div class="seg"></div><div class="seg off"></div>
+      <div class="seg med off"></div><div class="seg med off"></div>
+      <div class="seg hi off"></div><div class="seg hi off"></div>
+    </div>
+  </div>
+  <div class="sm-mute-solo"><span class="sm-btn">M</span><span class="sm-btn solo ">S</span></div>
+  <div class="sm-name">120°</div>
+</div><div class="sm-strip">
+  <h4>TEMP</h4>
+  <div style="font-size:7px;color:#9ca3af;">EQ</div>
+  <div class="sm-knob"></div>
+  <div class="sm-knob"></div>
+  <div class="sm-knob"></div>
+  <div class="sm-pan">PAN</div>
+  <div class="sm-knob"></div>
+  <div class="sm-fader-row">
+    <div class="sm-fader-track"><div class="sm-fader-handle" style="bottom:60%"></div></div>
+    <div class="sm-vu">
+      <div class="seg"></div><div class="seg off"></div>
+      <div class="seg off"></div><div class="seg off"></div>
+      <div class="seg med off"></div><div class="seg med off"></div>
+      <div class="seg hi off"></div><div class="seg hi off"></div>
+    </div>
+  </div>
+  <div class="sm-mute-solo"><span class="sm-btn">M</span><span class="sm-btn solo ">S</span></div>
+  <div class="sm-name">23.4°</div>
+</div><div class="sm-strip">
+  <h4>ACC</h4>
+  <div style="font-size:7px;color:#9ca3af;">EQ</div>
+  <div class="sm-knob"></div>
+  <div class="sm-knob"></div>
+  <div class="sm-knob"></div>
+  <div class="sm-pan">PAN</div>
+  <div class="sm-knob"></div>
+  <div class="sm-fader-row">
+    <div class="sm-fader-track"><div class="sm-fader-handle" style="bottom:55%"></div></div>
+    <div class="sm-vu">
+      <div class="seg"></div><div class="seg"></div>
+      <div class="seg off"></div><div class="seg off"></div>
+      <div class="seg med off"></div><div class="seg med off"></div>
+      <div class="seg hi off"></div><div class="seg hi off"></div>
+    </div>
+  </div>
+  <div class="sm-mute-solo"><span class="sm-btn">M</span><span class="sm-btn solo ">S</span></div>
+  <div class="sm-name">0.99</div>
+</div><div class="sm-strip">
+  <h4>MIC</h4>
+  <div style="font-size:7px;color:#9ca3af;">EQ</div>
+  <div class="sm-knob"></div>
+  <div class="sm-knob"></div>
+  <div class="sm-knob"></div>
+  <div class="sm-pan">PAN</div>
+  <div class="sm-knob"></div>
+  <div class="sm-fader-row">
+    <div class="sm-fader-track"><div class="sm-fader-handle" style="bottom:72%"></div></div>
+    <div class="sm-vu">
+      <div class="seg"></div><div class="seg"></div>
+      <div class="seg"></div><div class="seg off"></div>
+      <div class="seg med off"></div><div class="seg med off"></div>
+      <div class="seg hi off"></div><div class="seg hi off"></div>
+    </div>
+  </div>
+  <div class="sm-mute-solo"><span class="sm-btn">M</span><span class="sm-btn solo active">S</span></div>
+  <div class="sm-name">−12</div>
+</div><div class="sm-strip">
+  <h4>BAT</h4>
+  <div style="font-size:7px;color:#9ca3af;">EQ</div>
+  <div class="sm-knob"></div>
+  <div class="sm-knob"></div>
+  <div class="sm-knob"></div>
+  <div class="sm-pan">PAN</div>
+  <div class="sm-knob"></div>
+  <div class="sm-fader-row">
+    <div class="sm-fader-track"><div class="sm-fader-handle" style="bottom:78%"></div></div>
+    <div class="sm-vu">
+      <div class="seg"></div><div class="seg off"></div>
+      <div class="seg off"></div><div class="seg off"></div>
+      <div class="seg med off"></div><div class="seg med off"></div>
+      <div class="seg hi off"></div><div class="seg hi off"></div>
+    </div>
+  </div>
+  <div class="sm-mute-solo"><span class="sm-btn">M</span><span class="sm-btn solo ">S</span></div>
+  <div class="sm-name">78%</div>
+</div><div class="sm-strip">
+  <h4>SVO</h4>
+  <div style="font-size:7px;color:#9ca3af;">EQ</div>
+  <div class="sm-knob"></div>
+  <div class="sm-knob"></div>
+  <div class="sm-knob"></div>
+  <div class="sm-pan">PAN</div>
+  <div class="sm-knob"></div>
+  <div class="sm-fader-row">
+    <div class="sm-fader-track"><div class="sm-fader-handle" style="bottom:50%"></div></div>
+    <div class="sm-vu">
+      <div class="seg off"></div><div class="seg off"></div>
+      <div class="seg off"></div><div class="seg off"></div>
+      <div class="seg med off"></div><div class="seg med off"></div>
+      <div class="seg hi off"></div><div class="seg hi off"></div>
+    </div>
+  </div>
+  <div class="sm-mute-solo"><span class="sm-btn">M</span><span class="sm-btn solo ">S</span></div>
+  <div class="sm-name">90°</div>
+</div>
+  <div class="sm-master">
+    <h3>▸ MASTER OUT</h3>
+    <div class="sm-master-vu"><div class="sm-vu"><div class="seg"></div><div class="seg"></div><div class="seg"></div><div class="seg"></div><div class="seg med"></div><div class="seg med"></div><div class="seg hi"></div><div class="seg hi off"></div></div><div class="sm-vu"><div class="seg"></div><div class="seg"></div><div class="seg"></div><div class="seg"></div><div class="seg med"></div><div class="seg med off"></div><div class="seg hi off"></div><div class="seg hi off"></div></div></div>
+    <div class="sm-master-fader"><div class="sm-fader-track"><div class="sm-fader-handle" style="bottom:65%"></div></div></div>
+    <div class="sm-master-readout"><div class="v">−6 dB</div><div class="l">PEAK · −2.3 dB</div></div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;">
+      <span style="padding:3px 6px;border:1px solid #22c55e;color:#22c55e;font-size:9px;border-radius:3px;font-family:'JetBrains Mono',monospace;text-shadow:0 0 4px #22c55e;">●BLE</span>
+      <span style="padding:3px 6px;border:1px solid #22c55e;color:#22c55e;font-size:9px;border-radius:3px;font-family:'JetBrains Mono',monospace;text-shadow:0 0 4px #22c55e;">●PWR</span>
+      <span style="padding:3px 6px;border:1px solid #fbbf24;color:#fbbf24;font-size:9px;border-radius:3px;font-family:'JetBrains Mono',monospace;text-shadow:0 0 4px #fbbf24;">●ECHO</span>
+      <span style="padding:3px 6px;border:1px solid #374151;color:#9ca3af;font-size:9px;border-radius:3px;font-family:'JetBrains Mono',monospace;">○ERR</span>
+    </div>
+    <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#9ca3af;text-align:center;letter-spacing:0.15em;">▸ ACC: 0.12·−.04·.99 · UART OK</div>
+  </div>
+</div>
+
+</body>
+</html>

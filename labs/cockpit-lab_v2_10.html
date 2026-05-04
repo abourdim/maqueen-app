@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>⌚ #10 Smartwatch UI</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{background:#0f172a;color:#fff;font-family:-apple-system, 'Inter', sans-serif;min-height:100vh;overflow-x:hidden;}
+  body{padding:14px 18px 32px;}
+  @media(max-width:520px){html,body{overflow-x:hidden;}}
+</style>
+</head>
+<body>
+<div style="display:flex;align-items:center;gap:10px;padding:8px 14px;margin:0 0 14px;background:rgba(0,0,0,0.55);border:1px solid #475569;border-radius:10px;flex-wrap:wrap;font-family:'JetBrains Mono',monospace;">
+  <div style="font-size:14px;font-weight:700;color:#0ea5e9;letter-spacing:0.06em;margin-right:auto;">⌚ #10 · Smartwatch / Tablet UI <span style="color:#475569;font-weight:400;font-size:11px;margin-left:8px;">flat tiles · cards · minimal · modern</span></div>
+  <a href="cockpit-lab_v2.html" style="color:#f1f5f9;text-decoration:none;border:1px solid #475569;border-radius:6px;padding:4px 10px;font-size:12px;">⚙ Gallery</a>
+  <a href="cockpit-lab_v2_9.html" style="color:#f1f5f9;text-decoration:none;border:1px solid #475569;border-radius:6px;padding:4px 10px;font-size:12px;">‹ Prev</a>
+  <a href="cockpit-lab_v2_1.html" style="color:#f1f5f9;text-decoration:none;border:1px solid #475569;border-radius:6px;padding:4px 10px;font-size:12px;">Next ›</a>
+</div>
+<style>
+  .sw-status{display:flex;justify-content:space-between;align-items:center;padding:6px 14px;background:rgba(255,255,255,0.04);backdrop-filter:blur(20px);border-radius:14px;margin-bottom:12px;font-family:-apple-system,'Inter',sans-serif;font-size:13px;font-weight:600;}
+  .sw-status .left{color:#f1f5f9;}
+  .sw-status .right{display:flex;gap:6px;color:#94a3b8;}
+  .sw-status .dot{width:8px;height:8px;border-radius:50%;background:#22c55e;display:inline-block;margin-right:4px;box-shadow:0 0 6px #22c55e;}
+
+  .sw-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;max-width:900px;margin:0 auto;}
+  @media(max-width:820px){.sw-grid{grid-template-columns:repeat(3,1fr);}}
+  @media(max-width:540px){.sw-grid{grid-template-columns:repeat(2,1fr);}}
+
+  .sw-tile{background:rgba(255,255,255,0.05);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:18px;font-family:-apple-system,'Inter',sans-serif;transition:all 0.2s;cursor:pointer;}
+  .sw-tile:hover{background:rgba(255,255,255,0.08);transform:translateY(-2px);}
+  .sw-tile h3{font-size:11px;color:#94a3b8;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+  .sw-tile .icon{font-size:18px;}
+  .sw-tile .v{font-size:36px;font-weight:700;color:#f1f5f9;line-height:1;}
+  .sw-tile .v small{font-size:14px;color:#94a3b8;font-weight:500;margin-left:2px;}
+  .sw-tile .sub{font-size:12px;color:#94a3b8;margin-top:6px;font-weight:500;}
+  .sw-tile.tall{grid-row:span 2;}
+  .sw-tile.wide{grid-column:span 2;}
+
+  .sw-tile.accent{background:linear-gradient(135deg,#0ea5e9,#0284c7);border:none;color:#fff;}
+  .sw-tile.accent h3,.sw-tile.accent .v,.sw-tile.accent .sub{color:#fff;}
+  .sw-tile.accent .v small{color:rgba(255,255,255,0.7);}
+
+  .sw-tile.warning{background:linear-gradient(135deg,#f97316,#ea580c);border:none;color:#fff;}
+  .sw-tile.warning h3,.sw-tile.warning .v,.sw-tile.warning .sub{color:#fff;}
+
+  .sw-bars{display:flex;gap:3px;align-items:flex-end;height:40px;margin-top:10px;}
+  .sw-bars .b{flex:1;background:#0ea5e9;border-radius:2px;animation:swBar 1.4s ease-in-out infinite;}
+  .sw-bars .b:nth-child(2){animation-delay:0.1s;}
+  .sw-bars .b:nth-child(3){animation-delay:0.2s;}
+  .sw-bars .b:nth-child(4){animation-delay:0.3s;}
+  .sw-bars .b:nth-child(5){animation-delay:0.4s;}
+  .sw-bars .b:nth-child(6){animation-delay:0.5s;}
+  .sw-bars .b:nth-child(7){animation-delay:0.6s;}
+  @keyframes swBar{0%,100%{height:40%}50%{height:90%}}
+
+  .sw-ring{width:80px;height:80px;border-radius:50%;background:conic-gradient(#0ea5e9 0deg,#0ea5e9 280deg,rgba(255,255,255,0.1) 280deg);position:relative;margin:8px auto 0;}
+  .sw-ring::before{content:'';position:absolute;inset:8px;background:rgba(255,255,255,0.05);border-radius:50%;}
+  .sw-ring::after{content:'78%';position:absolute;inset:0;display:grid;place-items:center;color:#fff;font-size:18px;font-weight:700;}
+
+  .sw-globe{width:80px;height:80px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#fbbf24,#f97316 50%,#7c2d12 100%);margin:8px auto 0;box-shadow:0 4px 20px rgba(251,191,36,0.4);animation:swGlobeRot 8s linear infinite;}
+  @keyframes swGlobeRot{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+
+  .sw-mini-radar{width:80px;height:80px;border-radius:50%;border:2px solid rgba(255,255,255,0.2);position:relative;margin:8px auto 0;background:rgba(0,0,0,0.3);}
+  .sw-mini-radar svg{width:100%;height:100%;}
+
+  .sw-app-pills{display:flex;gap:6px;flex-wrap:wrap;margin-top:auto;padding-top:14px;}
+  .sw-app-pill{padding:6px 12px;border-radius:14px;background:rgba(255,255,255,0.1);font-size:11px;font-weight:600;color:#f1f5f9;}
+  .sw-app-pill.on{background:#22c55e;color:#0a0a0a;}
+</style>
+<div class="sw-status">
+  <span class="left">9:41</span>
+  <span class="right"><span class="dot"></span>BLE · 78% · ▮▮▮▮▯</span>
+</div>
+<div class="sw-grid">
+  <div class="sw-tile accent wide">
+    <h3><span class="icon">⏱</span> Speed</h3>
+    <div class="v">42<small> kph</small></div>
+    <div class="sub">Throttle · 65%</div>
+  </div>
+
+  <div class="sw-tile">
+    <h3><span class="icon">🌡</span> Temp</h3>
+    <div class="v">23.4°</div>
+    <div class="sub">+0.2° · normal</div>
+  </div>
+
+  <div class="sw-tile">
+    <h3><span class="icon">🔋</span> Battery</h3>
+    <div class="sw-ring"></div>
+    <div class="sub" style="text-align:center;margin-top:10px;">~92 min left</div>
+  </div>
+
+  <div class="sw-tile tall">
+    <h3><span class="icon">📡</span> Distance</h3>
+    <div class="sw-mini-radar">
+      <svg viewBox="0 0 80 80">
+        <circle cx="40" cy="40" r="32" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/>
+        <circle cx="40" cy="40" r="20" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.4"/>
+        <g style="transform-origin:center;animation:spin 3s linear infinite;">
+          <path d="M 40 40 L 40 8 A 32 32 0 0 1 64 24 Z" fill="#0ea5e9" opacity="0.5"/>
+        </g>
+        <circle cx="56" cy="28" r="3" fill="#fbbf24"/>
+      </svg>
+    </div>
+    <div class="v" style="text-align:center;margin-top:14px;">12.4<small> m</small></div>
+    <div class="sub" style="text-align:center;">1 contact</div>
+  </div>
+
+  <div class="sw-tile">
+    <h3><span class="icon">🧭</span> Heading</h3>
+    <div class="v">120°</div>
+    <div class="sub">east · ESE</div>
+  </div>
+
+  <div class="sw-tile">
+    <h3><span class="icon">🌍</span> Position</h3>
+    <div class="sw-globe"></div>
+    <div class="sub" style="text-align:center;margin-top:8px;">2.4 m × 1.8 m</div>
+  </div>
+
+  <div class="sw-tile">
+    <h3><span class="icon">📐</span> Tilt</h3>
+    <div class="v" style="font-size:18px;line-height:1.3;">
+      X 0.12<br>Y −0.04<br>Z 0.99
+    </div>
+  </div>
+
+  <div class="sw-tile wide">
+    <h3><span class="icon">🔊</span> Sound · Mic</h3>
+    <div class="sw-bars">
+      <div class="b"></div><div class="b"></div><div class="b"></div>
+      <div class="b"></div><div class="b"></div><div class="b"></div>
+      <div class="b"></div><div class="b"></div><div class="b"></div>
+      <div class="b"></div><div class="b"></div><div class="b"></div>
+    </div>
+    <div class="sub">−12 dB · listening</div>
+  </div>
+
+  <div class="sw-tile warning">
+    <h3 style="color:#fff;"><span class="icon">⚠</span> Echo</h3>
+    <div class="v">timeout</div>
+    <div class="sub">retry · check link</div>
+  </div>
+
+  <div class="sw-tile wide">
+    <h3><span class="icon">📺</span> UART trace</h3>
+    <pre style="font-size:11px;color:#0ea5e9;font-family:'SF Mono','JetBrains Mono',monospace;line-height:1.5;margin:0;">&gt; #41 SRV:1,90  ✓
+&gt; #42 DIST?    ✓ 12.4 m
+&gt; #43 LINE?    ✓ 1,1
+&gt; #44 ACC?     ✓ X·Y·Z</pre>
+  </div>
+
+  <div class="sw-tile">
+    <h3><span class="icon">⚙</span> Modes</h3>
+    <div class="sw-app-pills">
+      <span class="sw-app-pill on">Drive</span>
+      <span class="sw-app-pill on">Servo</span>
+      <span class="sw-app-pill">LED</span>
+      <span class="sw-app-pill">IR</span>
+    </div>
+  </div>
+</div>
+<style>@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}</style>
+
+</body>
+</html>

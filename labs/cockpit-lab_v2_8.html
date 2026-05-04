@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>🎧 #8 DJ Booth</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{background:#0d0221;color:#fff;font-family:'Inter', sans-serif;min-height:100vh;overflow-x:hidden;}
+  body{padding:14px 18px 32px;}
+  @media(max-width:520px){html,body{overflow-x:hidden;}}
+</style>
+</head>
+<body>
+<div style="display:flex;align-items:center;gap:10px;padding:8px 14px;margin:0 0 14px;background:rgba(0,0,0,0.55);border:1px solid #581c87;border-radius:10px;flex-wrap:wrap;font-family:'JetBrains Mono',monospace;">
+  <div style="font-size:14px;font-weight:700;color:#ec4899;letter-spacing:0.06em;margin-right:auto;">🎧 #8 · DJ Booth <span style="color:#581c87;font-weight:400;font-size:11px;margin-left:8px;">twin decks · crossfader · waveforms · neon</span></div>
+  <a href="cockpit-lab_v2.html" style="color:#fbcfe8;text-decoration:none;border:1px solid #581c87;border-radius:6px;padding:4px 10px;font-size:12px;">⚙ Gallery</a>
+  <a href="cockpit-lab_v2_7.html" style="color:#fbcfe8;text-decoration:none;border:1px solid #581c87;border-radius:6px;padding:4px 10px;font-size:12px;">‹ Prev</a>
+  <a href="cockpit-lab_v2_9.html" style="color:#fbcfe8;text-decoration:none;border:1px solid #581c87;border-radius:6px;padding:4px 10px;font-size:12px;">Next ›</a>
+</div>
+<style>
+  .dj-waveform{height:80px;background:#000;border:1px solid #581c87;border-radius:8px;padding:8px;margin-bottom:14px;display:flex;align-items:center;gap:2px;overflow:hidden;}
+  .dj-bar{flex:1;background:linear-gradient(180deg,#ec4899,#7c3aed);min-width:2px;border-radius:1px;animation:waveform 0.8s ease-in-out infinite;}
+  .dj-bar:nth-child(2n){animation-delay:0.1s;}
+  .dj-bar:nth-child(3n){animation-delay:0.2s;}
+  .dj-bar:nth-child(5n){animation-delay:0.3s;}
+  @keyframes waveform{0%,100%{height:30%}50%{height:90%}}
+
+  .dj-grid{display:grid;grid-template-columns:1fr 320px 1fr;gap:14px;max-width:1300px;margin:0 auto;}
+  @media(max-width:920px){.dj-grid{grid-template-columns:1fr;}}
+
+  .dj-deck{background:linear-gradient(135deg,#1a0942,#0d0221);border:2px solid #581c87;border-radius:14px;padding:18px;display:flex;flex-direction:column;align-items:center;gap:12px;}
+  .dj-platter{width:260px;height:260px;border-radius:50%;background:radial-gradient(circle at 50% 50%,#1a1a1a 5%,#000 10%,#1a1a1a 11%,#000 16%,repeating-radial-gradient(circle at 50% 50%,#000 0,#0d0221 1px,#000 2px) 18%,#000 100%);position:relative;border:8px solid #1a0942;box-shadow:0 0 30px rgba(236,72,153,0.3),inset 0 0 30px rgba(0,0,0,0.9);animation:platterSpin 3s linear infinite;}
+  .dj-deck.right .dj-platter{animation-duration:4s;animation-direction:reverse;}
+  @keyframes platterSpin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+  .dj-platter::before{content:'';position:absolute;inset:50%;width:80px;height:80px;margin:-40px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#ec4899 30%,#7c3aed 70%,#000 100%);box-shadow:0 0 16px #ec4899;}
+  .dj-platter::after{content:'';position:absolute;inset:50%;width:8px;height:8px;margin:-4px;border-radius:50%;background:#000;border:2px solid #ec4899;}
+  .dj-deck-info{display:flex;justify-content:space-between;width:100%;font-family:'JetBrains Mono',monospace;font-size:11px;}
+  .dj-deck-info .l{color:#a78bfa;letter-spacing:0.15em;}
+  .dj-deck-info .v{color:#ec4899;font-weight:800;text-shadow:0 0 6px #ec4899;}
+  .dj-pitch{width:100%;background:#000;border:1px solid #581c87;border-radius:6px;padding:8px;}
+  .dj-pitch-track{width:100%;height:6px;background:#1a0942;border-radius:3px;position:relative;}
+  .dj-pitch-track::before{content:'';position:absolute;left:50%;top:-4px;width:14px;height:14px;border-radius:50%;background:#ec4899;transform:translateX(-50%);box-shadow:0 0 8px #ec4899;}
+
+  .dj-mixer{background:linear-gradient(135deg,#1a0942,#0d0221);border:2px solid #581c87;border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:14px;}
+  .dj-mixer h3{font-size:11px;color:#ec4899;letter-spacing:0.3em;text-align:center;font-family:'JetBrains Mono',monospace;text-shadow:0 0 6px #ec4899;}
+  .dj-eq{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .dj-eq-band{display:flex;flex-direction:column;align-items:center;gap:4px;}
+  .dj-eq-band .lbl{font-size:8px;color:#a78bfa;letter-spacing:0.15em;font-family:'JetBrains Mono',monospace;}
+  .dj-knob{width:48px;height:48px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#444,#0d0221);border:2px solid #ec4899;box-shadow:0 0 8px rgba(236,72,153,0.5);position:relative;}
+  .dj-knob::before{content:'';position:absolute;left:50%;top:6px;width:2px;height:14px;background:#ec4899;transform:translateX(-50%) rotate(-45deg);transform-origin:top center;box-shadow:0 0 4px #ec4899;}
+  .dj-crossfader{padding:14px 0;background:#000;border:1px solid #581c87;border-radius:8px;}
+  .dj-crossfader-track{width:80%;height:6px;margin:0 auto;background:#1a0942;border-radius:3px;position:relative;}
+  .dj-crossfader-handle{position:absolute;left:50%;top:-8px;width:32px;height:24px;background:linear-gradient(180deg,#ec4899,#7c3aed);transform:translateX(-50%);border-radius:4px;box-shadow:0 0 12px #ec4899;}
+  .dj-crossfader-track::before{content:'A';position:absolute;left:0;top:14px;color:#a78bfa;font-size:11px;font-weight:900;}
+  .dj-crossfader-track::after{content:'B';position:absolute;right:0;top:14px;color:#a78bfa;font-size:11px;font-weight:900;}
+  .dj-bpm{background:#000;border:1px solid #ec4899;border-radius:8px;padding:8px;text-align:center;}
+  .dj-bpm .v{font-family:'JetBrains Mono',monospace;font-size:30px;color:#ec4899;font-weight:900;text-shadow:0 0 12px #ec4899;line-height:1;}
+  .dj-bpm .l{font-size:9px;color:#a78bfa;letter-spacing:0.3em;}
+
+  .dj-mfd{margin-top:14px;background:#000;border:1px solid #581c87;border-radius:8px;padding:10px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#ec4899;}
+</style>
+<div class="dj-waveform"><div class="dj-bar"></div><div class="dj-bar"></div><div class="dj-bar"></div><div class="dj-bar"></div><div class="dj-bar"></div><div class="dj-bar"></div><div class="dj-bar"></div><div class="dj-bar"></div><div class="dj-bar"></div><div class="dj-bar"></div><div class="dj-bar"></div><div class="dj-bar"></div><div class="dj-bar"></div><div class="dj-bar"></div><div class="dj-bar"></div><div class="dj-bar"></div><div class="dj-bar"></div><div class="dj-bar"></div><div class="dj-bar"></div><div class="dj-bar"></div><div class="dj-bar"></div><div class="dj-bar"></div><div class="dj-bar"></div><div class="dj-bar"></div><div class="dj-bar"></div><div class="dj-bar"></div><div class="dj-bar"></div><div class="dj-bar"></div><div class="dj-bar"></div><div class="dj-bar"></div><div class="dj-bar"></div><div class="dj-bar"></div><div class="dj-bar"></div><div class="dj-bar"></div><div class="dj-bar"></div><div class="dj-bar"></div><div class="dj-bar"></div><div class="dj-bar"></div><div class="dj-bar"></div><div class="dj-bar"></div><div class="dj-bar"></div><div class="dj-bar"></div><div class="dj-bar"></div><div class="dj-bar"></div><div class="dj-bar"></div><div class="dj-bar"></div><div class="dj-bar"></div><div class="dj-bar"></div><div class="dj-bar"></div><div class="dj-bar"></div><div class="dj-bar"></div><div class="dj-bar"></div><div class="dj-bar"></div><div class="dj-bar"></div><div class="dj-bar"></div><div class="dj-bar"></div><div class="dj-bar"></div><div class="dj-bar"></div><div class="dj-bar"></div><div class="dj-bar"></div></div>
+<div class="dj-grid">
+  <div class="dj-deck left">
+    <div class="dj-platter"></div>
+    <div class="dj-deck-info"><span class="l">DECK A · MOTOR L</span><span class="v">+62%</span></div>
+    <div class="dj-deck-info"><span class="l">SPEED</span><span class="v">42 KPH</span></div>
+    <div class="dj-pitch"><div class="dj-pitch-track"></div></div>
+    <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#a78bfa;letter-spacing:0.2em;">PITCH ±8% · KEY LOCK</div>
+  </div>
+
+  <div class="dj-mixer">
+    <h3>MIXER · MASTER</h3>
+    <div class="dj-bpm"><div class="v">120</div><div class="l">BPM</div></div>
+    <div class="dj-eq">
+      <div class="dj-eq-band"><div class="lbl">HIGH</div><div class="dj-knob"></div></div>
+      <div class="dj-eq-band"><div class="lbl">HIGH</div><div class="dj-knob"></div></div>
+      <div class="dj-eq-band"><div class="lbl">MID</div><div class="dj-knob"></div></div>
+      <div class="dj-eq-band"><div class="lbl">MID</div><div class="dj-knob"></div></div>
+      <div class="dj-eq-band"><div class="lbl">LOW</div><div class="dj-knob"></div></div>
+      <div class="dj-eq-band"><div class="lbl">LOW</div><div class="dj-knob"></div></div>
+    </div>
+    <div class="dj-crossfader"><div class="dj-crossfader-track"><div class="dj-crossfader-handle"></div></div></div>
+    <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#a78bfa;text-align:center;letter-spacing:0.2em;">CROSSFADER · BLEND</div>
+    <!-- VU meters -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <div style="background:#000;border:1px solid #581c87;border-radius:6px;padding:6px;">
+        <div style="font-size:8px;color:#a78bfa;letter-spacing:0.2em;font-family:'JetBrains Mono',monospace;">L · MIC</div>
+        <div style="font-size:14px;color:#ec4899;font-family:'JetBrains Mono',monospace;text-shadow:0 0 6px #ec4899;">▮▮▮▮▮▯▯▯</div>
+      </div>
+      <div style="background:#000;border:1px solid #581c87;border-radius:6px;padding:6px;">
+        <div style="font-size:8px;color:#a78bfa;letter-spacing:0.2em;font-family:'JetBrains Mono',monospace;">R · MIC</div>
+        <div style="font-size:14px;color:#ec4899;font-family:'JetBrains Mono',monospace;text-shadow:0 0 6px #ec4899;">▮▮▮▮▯▯▯▯</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dj-deck right">
+    <div class="dj-platter"></div>
+    <div class="dj-deck-info"><span class="l">DECK B · MOTOR R</span><span class="v">+68%</span></div>
+    <div class="dj-deck-info"><span class="l">HEADING</span><span class="v">120°</span></div>
+    <div class="dj-pitch"><div class="dj-pitch-track"></div></div>
+    <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#a78bfa;letter-spacing:0.2em;">DIST 12.4 m · TEMP 23.4°</div>
+  </div>
+</div>
+<div class="dj-mfd">▸ TRACK 41/100 · UART_RX: ECHO:41 SRV:1,90 · ECHO:42 DIST:42 · ACC:124,-38,992 · BAT 78% · BLE ●</div>
+
+</body>
+</html>

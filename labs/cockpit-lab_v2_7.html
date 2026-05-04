@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>🤖 #7 Mech HUD</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{background:#0a0a0a;color:#fff;font-family:'JetBrains Mono', monospace;min-height:100vh;overflow-x:hidden;}
+  body{padding:14px 18px 32px;}
+  @media(max-width:520px){html,body{overflow-x:hidden;}}
+</style>
+</head>
+<body>
+<div style="display:flex;align-items:center;gap:10px;padding:8px 14px;margin:0 0 14px;background:rgba(0,0,0,0.55);border:1px solid #7c2d12;border-radius:10px;flex-wrap:wrap;font-family:'JetBrains Mono',monospace;">
+  <div style="font-size:14px;font-weight:700;color:#f97316;letter-spacing:0.06em;margin-right:auto;">🤖 #7 · Mech HUD (Pacific Rim) <span style="color:#7c2d12;font-weight:400;font-size:11px;margin-left:8px;">targeting brackets · weapons · threats</span></div>
+  <a href="cockpit-lab_v2.html" style="color:#fed7aa;text-decoration:none;border:1px solid #7c2d12;border-radius:6px;padding:4px 10px;font-size:12px;">⚙ Gallery</a>
+  <a href="cockpit-lab_v2_6.html" style="color:#fed7aa;text-decoration:none;border:1px solid #7c2d12;border-radius:6px;padding:4px 10px;font-size:12px;">‹ Prev</a>
+  <a href="cockpit-lab_v2_8.html" style="color:#fed7aa;text-decoration:none;border:1px solid #7c2d12;border-radius:6px;padding:4px 10px;font-size:12px;">Next ›</a>
+</div>
+<style>
+  .mech-grid{display:grid;grid-template-columns:200px 1fr 200px;gap:10px;max-width:1300px;margin:0 auto;}
+  @media(max-width:920px){.mech-grid{grid-template-columns:1fr;}}
+  .mech-side{display:flex;flex-direction:column;gap:8px;}
+  .mech-tile{background:linear-gradient(135deg,#1a1a1a,#0a0a0a);border:1px solid #f97316;border-radius:0;padding:10px;clip-path:polygon(0 0,100% 0,100% 92%,92% 100%,0 100%);position:relative;}
+  .mech-tile::before{content:'';position:absolute;left:0;top:0;width:14px;height:2px;background:#f97316;}
+  .mech-tile::after{content:'';position:absolute;left:0;top:0;width:2px;height:14px;background:#f97316;}
+  .mech-tile .name{font-family:'JetBrains Mono',monospace;font-size:10px;color:#f97316;letter-spacing:0.2em;font-weight:900;}
+  .mech-tile .v{font-family:'JetBrains Mono',monospace;font-size:24px;color:#fed7aa;font-weight:900;text-shadow:0 0 8px #f97316;margin-top:4px;}
+  .mech-tile .sub{font-size:9px;color:#7c2d12;letter-spacing:0.1em;margin-top:2px;}
+  .mech-tile .bar{height:6px;background:#3a1a0a;margin-top:6px;border:1px solid #7c2d12;}
+  .mech-tile .bar-fill{height:100%;background:linear-gradient(90deg,#f97316,#fbbf24);box-shadow:0 0 6px #f97316;}
+  .mech-tile.live{animation:tilePulse 3s ease-in-out infinite;}
+  @keyframes tilePulse{0%,100%{box-shadow:0 0 0 rgba(249,115,22,0)}50%{box-shadow:0 0 14px rgba(249,115,22,0.5)}}
+
+  .mech-stage{position:relative;height:580px;background:radial-gradient(ellipse at 50% 50%,#1a0a00 0%,#000 80%);border:2px solid #7c2d12;overflow:hidden;}
+  @media(max-width:540px){.mech-stage{height:380px;}}
+  .mech-bracket{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:340px;height:340px;}
+  .mech-bracket .corner{position:absolute;width:60px;height:60px;border:3px solid #f97316;filter:drop-shadow(0 0 6px #f97316);}
+  .mech-bracket .tl{top:0;left:0;border-right:none;border-bottom:none;}
+  .mech-bracket .tr{top:0;right:0;border-left:none;border-bottom:none;}
+  .mech-bracket .bl{bottom:0;left:0;border-right:none;border-top:none;}
+  .mech-bracket .br{bottom:0;right:0;border-left:none;border-top:none;}
+  .mech-bracket .center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:60px;height:60px;}
+  .mech-bracket .center::before,.mech-bracket .center::after{content:'';position:absolute;background:#f97316;box-shadow:0 0 6px #f97316;}
+  .mech-bracket .center::before{left:50%;top:0;bottom:0;width:1.5px;transform:translateX(-50%);}
+  .mech-bracket .center::after{top:50%;left:0;right:0;height:1.5px;transform:translateY(-50%);}
+  .mech-bracket .target-id{position:absolute;left:100%;top:0;margin-left:14px;font-family:'JetBrains Mono',monospace;color:#f97316;font-size:11px;letter-spacing:0.15em;line-height:1.5;}
+  .mech-mech-silhouette{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:120px;height:200px;background:linear-gradient(180deg,rgba(124,45,18,0.5),rgba(0,0,0,0.8));border-radius:30px 30px 8px 8px;animation:targetSway 4s ease-in-out infinite;}
+  @keyframes targetSway{0%,100%{transform:translate(-50%,-50%) rotate(-2deg)}50%{transform:translate(-50%,-50%) rotate(2deg)}}
+
+  .mech-overlay-top{position:absolute;left:14px;top:14px;right:14px;display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;color:#f97316;font-size:11px;letter-spacing:0.2em;text-shadow:0 0 4px #f97316;}
+  .mech-overlay-bot{position:absolute;left:14px;bottom:14px;right:14px;font-family:'JetBrains Mono',monospace;color:#f97316;font-size:10px;line-height:1.6;text-shadow:0 0 3px #f97316;}
+  .mech-chevron{display:inline-block;color:#fbbf24;animation:hazard 1.5s ease-in-out infinite;}
+  @keyframes hazard{0%,100%{opacity:1}50%{opacity:0.3}}
+
+  .mech-ann-strip{display:grid;grid-template-columns:repeat(8,1fr);gap:4px;margin-top:10px;background:#0a0a0a;padding:8px;border:1px solid #7c2d12;}
+  .mech-ann{padding:6px 4px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.1em;font-weight:900;clip-path:polygon(0 0,100% 0,90% 100%,0 100%);}
+  .mech-ann.on{background:#f97316;color:#0a0a0a;box-shadow:0 0 8px #f97316;}
+  .mech-ann.off{background:#3a1a0a;color:#7c2d12;}
+</style>
+<div class="mech-grid">
+  <div class="mech-side">
+    <div class="mech-tile live"><div class="name">▸ MOTOR L</div><div class="v">+62</div><div class="sub">PWM · NOMINAL</div><div class="bar"><div class="bar-fill" style="width:62%"></div></div></div>
+    <div class="mech-tile live"><div class="name">▸ MOTOR R</div><div class="v">+68</div><div class="sub">PWM · NOMINAL</div><div class="bar"><div class="bar-fill" style="width:68%"></div></div></div>
+    <div class="mech-tile"><div class="name">▸ SERVO 1</div><div class="v">90°</div><div class="sub">LOCKED</div></div>
+    <div class="mech-tile"><div class="name">▸ SERVO 2</div><div class="v">45°</div><div class="sub">TRACKING</div></div>
+    <div class="mech-tile"><div class="name">▸ TEMP CORE</div><div class="v">23.4°</div><div class="sub" style="color:#22c55e">SAFE</div></div>
+  </div>
+  <div class="mech-stage">
+    <div class="mech-overlay-top">
+      <span>▸ DRIFT 73% · NEURAL HANDSHAKE LOCKED</span>
+      <span>HDG 120°</span>
+    </div>
+    <div class="mech-mech-silhouette"></div>
+    <div class="mech-bracket">
+      <div class="corner tl"></div><div class="corner tr"></div>
+      <div class="corner bl"></div><div class="corner br"></div>
+      <div class="center"></div>
+      <div class="target-id">▸ KAIJU<br>CAT-3<br>RANGE 12.4 m<br>BEARING 045</div>
+    </div>
+    <div class="mech-overlay-bot">
+      <span class="mech-chevron">⚠⚠⚠</span> THREAT DETECTED · ENGAGE WHEN READY · SPEED 42 KPH<br>
+      &gt; UART_RX: ECHO:41 SRV:1,90 · ECHO:42 DIST:42 · ACC:124,-38,992 · MIC:5
+    </div>
+  </div>
+  <div class="mech-side">
+    <div class="mech-tile"><div class="name">▸ DIST · SONAR</div><div class="v">12.4</div><div class="sub">m · LOCKED</div></div>
+    <div class="mech-tile"><div class="name">▸ MIC · SOUND</div><div class="v">▮▮▮▮▯</div><div class="sub">−12 dB</div></div>
+    <div class="mech-tile"><div class="name">▸ ACC · X·Y·Z</div><div class="v" style="font-size:11px">0.12·−.04·.99</div><div class="sub">G-FORCE</div></div>
+    <div class="mech-tile live"><div class="name">▸ BATTERY</div><div class="v">78%</div><div class="sub">4.02 V · 92 min</div><div class="bar"><div class="bar-fill" style="width:78%"></div></div></div>
+    <div class="mech-tile"><div class="name">▸ COMMS · UART</div><div class="v" style="font-size:14px">42 / 41</div><div class="sub">SENT / ECHO</div></div>
+  </div>
+</div>
+<div class="mech-ann-strip">
+  <div class="mech-ann on">BLE</div>
+  <div class="mech-ann on">PWR</div>
+  <div class="mech-ann on">DRIFT</div>
+  <div class="mech-ann on">SVO</div>
+  <div class="mech-ann off">LIN</div>
+  <div class="mech-ann off">IR</div>
+  <div class="mech-ann on">MIC</div>
+  <div class="mech-ann off">ALERT</div>
+</div>
+
+</body>
+</html>
