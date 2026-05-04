@@ -115,6 +115,49 @@
   input.text-in{flex:1;font-family:inherit;font-size:13px;padding:6px 10px;
     border:2px solid #000;border-radius:10px;background:#fff;font-weight:600;}
 
+  /* ── Tour + Missions ──────────────────── */
+  #tourBtn{background:linear-gradient(180deg,#a78bfa,#5b21b6);color:#fff;border:3px solid #000;
+    border-radius:999px;padding:10px 18px;font-size:14px;font-weight:900;cursor:pointer;
+    box-shadow:0 4px 0 rgba(0,0,0,0.4);font-family:inherit;transition:transform 0.1s;margin-right:6px;}
+  #tourBtn:hover{transform:translateY(-2px);}
+  #tourBtn:active{transform:translateY(0);box-shadow:0 2px 0 rgba(0,0,0,0.4);}
+  .tour-controls{position:absolute;left:14px;right:14px;bottom:14px;z-index:11;
+    display:none;background:rgba(255,255,255,0.97);color:#000;border:3px solid #7c3aed;border-radius:14px;
+    padding:10px 14px;box-shadow:0 5px 0 rgba(0,0,0,0.3);align-items:center;gap:10px;}
+  .tour-controls.open{display:flex;}
+  .tour-controls .step{font-weight:900;color:#7c3aed;font-size:13px;}
+  .tour-controls .text{flex:1;font-size:14px;font-weight:600;}
+  .tour-controls button{background:#7c3aed;color:#fff;border:2px solid #000;border-radius:8px;
+    padding:5px 10px;font-weight:900;cursor:pointer;font-family:inherit;font-size:13px;
+    box-shadow:0 3px 0 rgba(0,0,0,0.3);}
+  .tour-controls button:hover{transform:translateY(-1px);}
+  .tour-controls button.stop{background:#ef4444;}
+  /* Tour glow ring (overlays a robot part) */
+  .tour-ring{position:absolute;border:5px solid #fbbf24;border-radius:999px;
+    pointer-events:none;z-index:8;display:none;
+    animation:tourRing 1.4s ease-in-out infinite;
+    box-shadow:0 0 24px #fbbf24,inset 0 0 24px rgba(251,191,36,0.4);}
+  @keyframes tourRing{0%,100%{transform:scale(1);opacity:0.8;}50%{transform:scale(1.08);opacity:1;}}
+
+  /* Missions panel */
+  .mission-row{display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:8px;
+    background:#f3f4f6;border:2px solid #e5e7eb;margin-bottom:4px;font-size:13px;color:#000;
+    transition:all 0.2s;}
+  .mission-row.done{background:linear-gradient(180deg,#bbf7d0,#86efac);border-color:#22c55e;
+    text-decoration:line-through;text-decoration-color:#15803d;text-decoration-thickness:2px;
+    animation:missionPop 0.5s ease-out;}
+  @keyframes missionPop{0%{transform:scale(1);}50%{transform:scale(1.05);}100%{transform:scale(1);}}
+  .mission-row .icon{font-size:18px;width:24px;text-align:center;}
+  .mission-row .label{flex:1;font-weight:700;}
+  .mission-row .check{font-size:18px;}
+  .star-counter{display:flex;align-items:center;justify-content:space-between;
+    font-weight:900;color:#7c3aed;font-size:14px;margin-bottom:8px;
+    background:#fef3c7;border:2px solid #fbbf24;border-radius:8px;padding:5px 10px;}
+  .confetti{position:absolute;width:8px;height:8px;pointer-events:none;z-index:11;
+    animation:confettiFall 1.4s ease-out forwards;}
+  @keyframes confettiFall{0%{transform:translate(0,0) rotate(0);opacity:1;}
+                          100%{transform:translate(var(--dx),200px) rotate(720deg);opacity:0;}}
+
   /* ── Activity log (compact) ───────────── */
   #ble-log{background:#000;color:#22c55e;font-family:'Courier New',monospace;font-size:10px;
     padding:6px 8px;border-radius:6px;max-height:140px;overflow-y:auto;border:2px solid #1e3a5a;}
@@ -136,6 +179,7 @@
   </div>
   <div class="right">
     <span class="pill"><span class="status-dot status-disconnected" id="ble-status"></span><span id="ble-status-text">Disconnected</span></span>
+    <button id="tourBtn">🎤 TOUR ME</button>
     <button id="connectBtn">🔗 CONNECT MY ROBOT</button>
     <span class="nav-tiny">
       <a href="maqueen-kid.html">🤖 Kids</a>
@@ -152,6 +196,19 @@
   <div class="canvas" id="canvas">
     <div class="bubble" id="bubble" style="left:6%;top:4%;">Hi! I'm Maqueen!</div>
     <div class="boom" id="boom" style="display:none;left:72%;top:14%;">✨</div>
+
+    <!-- Tour glow ring (positioned by JS) -->
+    <div class="tour-ring" id="tourRing"></div>
+
+    <!-- Tour controls (hidden by default) -->
+    <div class="tour-controls" id="tourControls">
+      <span class="step" id="tourStep">1/8</span>
+      <span class="text" id="tourText">…</span>
+      <button id="tourPrev">⏮</button>
+      <button id="tourPlay">⏸</button>
+      <button id="tourNext">⏭</button>
+      <button id="tourStop" class="stop">✖</button>
+    </div>
 
     <!-- demo-mode badges absolute over the canvas -->
     <div class="demo-tag" style="left:4%;top:60%;">🎨 demo</div>     <!-- left wheel -->
@@ -372,6 +429,16 @@
         <button class="ctrl-btn violet" data-cmd="SAD">😢</button>
         <button class="ctrl-btn gray" data-cmd="CLEAR">CLR</button>
       </div>
+    </div>
+
+    <!-- Missions -->
+    <div class="panel">
+      <h3>🎯 MISSIONS</h3>
+      <div class="star-counter">
+        <span>⭐ <span id="starCount">0</span> / 6</span>
+        <span style="font-size:11px;color:#666;font-weight:700;" id="missionStatus">Tap CONNECT, then start playing!</span>
+      </div>
+      <div id="missionList"></div>
     </div>
 
     <!-- Activity log -->
@@ -598,6 +665,13 @@ window.RobiBle.onRxLine = function (line) {
     return;
   }
 
+  // ── Mission triggers (RX-side) ──
+  if (ln.startsWith('BTN:A:PRESS')) markMission(3);
+  if (ln.startsWith('ACC:')) {
+    const x = parseInt(ln.slice(4).split(',')[0], 10);
+    if (!isNaN(x) && Math.abs(x) > 500) markMission(4);
+  }
+
   if (ln.startsWith('LEDS:')) {
     // 25-bit hex matrix mirror
     const hex = ln.slice(5).trim();
@@ -610,6 +684,184 @@ window.RobiBle.onRxLine = function (line) {
     }
     return;
   }
+};
+
+// ──────────────────────────────────────────────────────────────
+// 🎤 VOICE NARRATOR TOUR
+// ──────────────────────────────────────────────────────────────
+const TOUR = [
+  {sel:'#wheel-l', alt:'#wheel-r', text:"Hi! These are my wheels — they spin to make me roll forward and turn!"},
+  {sel:'g[transform="translate(220, 450)"]', text:"Inside live my two motors. They decide how fast each wheel goes!"},
+  {sel:'g[transform="translate(290, 100)"]', text:"These are my eyes — I send out invisible sound and listen for the echo, like a bat!"},
+  {sel:'rect[width="40"][height="50"]', text:"And this is my neck servo — it can turn me left and right!"},
+  {sel:'#matrix-zone', text:"This is my brain — a tiny computer with twenty-five little red lights! Click me to change my face!"},
+  {sel:'#buzzer-zone', text:"And this is my voice. I can sing and beep! Click me to hear!"},
+  {sel:'#led-1', text:"These are my mood lights. I can shine in any color of the rainbow!"},
+  {sel:'g[transform="translate(450, 326)"]', text:"And this is my battery — when I am tired, I need to charge!"},
+];
+const tourBtn = document.getElementById('tourBtn');
+const tourCtrls = document.getElementById('tourControls');
+const tourRing = document.getElementById('tourRing');
+const tourStepEl = document.getElementById('tourStep');
+const tourTextEl = document.getElementById('tourText');
+const canvasEl = document.getElementById('canvas');
+let tourIdx = 0, tourPlaying = false, tourTimer = null, tourUtt = null;
+
+function placeTourRing(sel) {
+  // SVG element rect → translate to canvas-relative px
+  const svgEl = document.querySelector(sel);
+  if (!svgEl) { tourRing.style.display = 'none'; return; }
+  const r = svgEl.getBoundingClientRect();
+  const c = canvasEl.getBoundingClientRect();
+  const pad = 18;
+  tourRing.style.display = 'block';
+  tourRing.style.left = (r.left - c.left - pad) + 'px';
+  tourRing.style.top  = (r.top  - c.top  - pad) + 'px';
+  tourRing.style.width  = (r.width  + pad*2) + 'px';
+  tourRing.style.height = (r.height + pad*2) + 'px';
+}
+function speak(text) {
+  if (!('speechSynthesis' in window)) return null;
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.rate = 0.95; u.pitch = 1.15; u.volume = 1;
+  // Pick a friendly voice if available
+  const voices = speechSynthesis.getVoices();
+  const fav = voices.find(v => /female|samantha|karen|zira|kid/i.test(v.name)) || voices[0];
+  if (fav) u.voice = fav;
+  speechSynthesis.speak(u);
+  return u;
+}
+function showTourStep(i) {
+  if (i < 0) i = 0;
+  if (i >= TOUR.length) { stopTour(); bubbleSay('All done!'); return; }
+  tourIdx = i;
+  const step = TOUR[i];
+  tourStepEl.textContent = (i+1) + '/' + TOUR.length;
+  tourTextEl.textContent = step.text;
+  placeTourRing(step.sel);
+  tellKid('🎤 Tour step ' + (i+1) + ': ' + step.text);
+  tourUtt = speak(step.text);
+  if (tourUtt) {
+    tourUtt.onend = () => {
+      if (tourPlaying) {
+        clearTimeout(tourTimer);
+        tourTimer = setTimeout(() => showTourStep(tourIdx + 1), 1200);
+      }
+    };
+  } else {
+    // No speech support — auto-advance after 4s
+    clearTimeout(tourTimer);
+    if (tourPlaying) tourTimer = setTimeout(() => showTourStep(tourIdx + 1), 4000);
+  }
+}
+function startTour() {
+  tourPlaying = true;
+  tourCtrls.classList.add('open');
+  document.getElementById('tourPlay').textContent = '⏸';
+  showTourStep(0);
+}
+function stopTour() {
+  tourPlaying = false;
+  speechSynthesis.cancel();
+  clearTimeout(tourTimer);
+  tourCtrls.classList.remove('open');
+  tourRing.style.display = 'none';
+  tellKid('🎤 Tour stopped.');
+}
+tourBtn.addEventListener('click', () => tourPlaying ? stopTour() : startTour());
+document.getElementById('tourPrev').addEventListener('click', () => showTourStep(tourIdx - 1));
+document.getElementById('tourNext').addEventListener('click', () => showTourStep(tourIdx + 1));
+document.getElementById('tourStop').addEventListener('click', stopTour);
+document.getElementById('tourPlay').addEventListener('click', () => {
+  tourPlaying = !tourPlaying;
+  document.getElementById('tourPlay').textContent = tourPlaying ? '⏸' : '▶';
+  if (tourPlaying) showTourStep(tourIdx);
+  else { speechSynthesis.cancel(); clearTimeout(tourTimer); }
+});
+// Voices load async on some browsers
+if ('speechSynthesis' in window) speechSynthesis.onvoiceschanged = () => {};
+
+// ──────────────────────────────────────────────────────────────
+// 🎯 MISSION MODE
+// ──────────────────────────────────────────────────────────────
+const MISSIONS = [
+  {id:1, icon:'❤️',  label:'Make me say HEART',          done:false},
+  {id:2, icon:'🔊', label:'Beep my buzzer',              done:false},
+  {id:3, icon:'🅰',  label:'Press the REAL Button A',    done:false},
+  {id:4, icon:'🔄', label:'Tilt me sideways (real bot)', done:false},
+  {id:5, icon:'💬', label:'Send me a message',           done:false},
+  {id:6, icon:'🎭', label:'Show all 4 faces',            done:false},
+];
+const facesShown = new Set();
+const missionListEl = document.getElementById('missionList');
+const starCountEl = document.getElementById('starCount');
+const missionStatusEl = document.getElementById('missionStatus');
+
+function renderMissions() {
+  missionListEl.innerHTML = MISSIONS.map(m =>
+    `<div class="mission-row${m.done?' done':''}" data-id="${m.id}">
+       <span class="icon">${m.icon}</span>
+       <span class="label">${m.label}</span>
+       <span class="check">${m.done?'✅':'⏳'}</span>
+     </div>`).join('');
+  const done = MISSIONS.filter(m => m.done).length;
+  starCountEl.textContent = done;
+  if (done === MISSIONS.length) {
+    missionStatusEl.textContent = '🏆 ALL DONE! You are amazing!';
+    showBoom('🏆', 3000);
+    speak('Mission accomplished! You did it!');
+    confettiBurst();
+  } else {
+    missionStatusEl.textContent = done > 0 ? `Keep going — ${MISSIONS.length-done} to go!` : 'Tap CONNECT, then start playing!';
+  }
+}
+function markMission(id) {
+  const m = MISSIONS.find(x => x.id === id);
+  if (!m || m.done) return;
+  m.done = true;
+  renderMissions();
+  tellKid(`✅ Mission ${id} complete: ${m.label}!`);
+  showBoom('✅');
+  // Tiny celebrate beep on each completion
+  if ('speechSynthesis' in window) {
+    const u = new SpeechSynthesisUtterance('Yes!');
+    u.rate = 1.2; u.pitch = 1.5; speechSynthesis.speak(u);
+  }
+}
+function confettiBurst() {
+  const c = canvasEl;
+  const colors = ['#ef4444','#22c55e','#3b82f6','#fbbf24','#f472b6','#a78bfa'];
+  for (let i = 0; i < 40; i++) {
+    const d = document.createElement('div');
+    d.className = 'confetti';
+    d.style.left = (40 + Math.random()*20) + '%';
+    d.style.top  = '20%';
+    d.style.background = colors[i % colors.length];
+    d.style.setProperty('--dx', (Math.random()*400 - 200) + 'px');
+    d.style.borderRadius = (Math.random()<0.5 ? '50%' : '0');
+    c.appendChild(d);
+    setTimeout(() => d.remove(), 1600);
+  }
+}
+renderMissions();
+
+// Wrap sendLine to detect outgoing missions (1, 2, 5, 6)
+const _origSendLine = window.sendLine;
+window.sendLine = function (line) {
+  if (typeof line === 'string') {
+    if (line === 'CMD:HEART')  { markMission(1); facesShown.add('HEART'); }
+    if (line.startsWith('BUZZ:') && line !== 'BUZZ:OFF') markMission(2);
+    if (line.startsWith('TEXT:')) markMission(5);
+    if (line.startsWith('CMD:')) {
+      const f = line.slice(4);
+      if (['HEART','SMILE','SAD','CLEAR'].includes(f)) {
+        facesShown.add(f);
+        if (facesShown.size === 4) markMission(6);
+      }
+    }
+  }
+  return _origSendLine.apply(this, arguments);
 };
 </script>
 
