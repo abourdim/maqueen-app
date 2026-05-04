@@ -27,7 +27,7 @@
   .topbar h1{font-size:18px;font-weight:900;color:#7c3aed;text-shadow:2px 2px 0 rgba(0,0,0,0.12);}
   .topbar .sub{font-size:11px;color:#666;}
   .topbar .right{margin-left:auto;display:flex;align-items:center;gap:10px;}
-  #ble-connect-btn{background:linear-gradient(180deg,#22c55e,#15803d);color:#fff;border:3px solid #000;
+  #connectBtn{background:linear-gradient(180deg,#22c55e,#15803d);color:#fff;border:3px solid #000;
     border-radius:999px;padding:10px 22px;font-size:15px;font-weight:900;cursor:pointer;
     box-shadow:0 4px 0 rgba(0,0,0,0.4);font-family:inherit;transition:transform 0.1s;}
   #ble-connect-btn:hover{transform:translateY(-2px);}
@@ -136,7 +136,7 @@
   </div>
   <div class="right">
     <span class="pill"><span class="status-dot status-disconnected" id="ble-status"></span><span id="ble-status-text">Disconnected</span></span>
-    <button id="ble-connect-btn">🔗 CONNECT MY ROBOT</button>
+    <button id="connectBtn">🔗 CONNECT MY ROBOT</button>
     <span class="nav-tiny">
       <a href="maqueen-kid.html">🤖 Kids</a>
       <a href="maqueen-emu.html">📐 Emu</a>
@@ -382,9 +382,44 @@
   </div>
 </div>
 
-<!-- ── BLE plumbing ─────────────────────── -->
-<script src="../js/ble-minimal.js"></script>
+<!-- ── BLE plumbing — same pattern as distance-lab / copilot-lab ── -->
+<!-- ble-shim.js MUST load before ble.js. Neither file is modified. -->
+<script src="../js/ble-shim.js"></script>
+<script src="../js/ble.js"></script>
 <script>
+// ──────────────────────────────────────────────
+// Hook ble-shim → our UI (status pill, log, RX dispatch)
+// ──────────────────────────────────────────────
+window.RobiBle = window.RobiBle || {};
+window.RobiBle.onLog = function (line, level) {
+  const el = document.getElementById('ble-log');
+  if (!el) return;
+  const div = document.createElement('div');
+  div.className = 'log-line log-' + (level || 'info');
+  const ts = new Date().toLocaleTimeString();
+  div.textContent = ts + '  ' + line;
+  el.appendChild(div);
+  el.scrollTop = el.scrollHeight;
+  while (el.children.length > 200) el.removeChild(el.firstChild);
+};
+window.RobiBle.onStatus = function (connected, name) {
+  const dot = document.getElementById('ble-status');
+  const txt = document.getElementById('ble-status-text');
+  if (dot) dot.className = 'status-dot status-' + (connected ? 'connected' : 'disconnected');
+  if (txt) txt.textContent = connected ? ('Connected · ' + (name || 'micro:bit')) : 'Disconnected';
+  const btn = document.getElementById('connectBtn');
+  if (btn) btn.textContent = connected ? '🔌 DISCONNECT' : '🔗 CONNECT MY ROBOT';
+};
+
+// Wire connect button (calls bare connect()/disconnect() from ble.js)
+document.getElementById('connectBtn').addEventListener('click', () => {
+  if (typeof isConnected !== 'undefined' && isConnected) {
+    if (typeof disconnect === 'function') disconnect();
+  } else {
+    if (typeof connect === 'function') connect();
+  }
+});
+
 // ──────────────────────────────────────────────
 // Living Twin — twin-side wiring
 // ──────────────────────────────────────────────
@@ -512,11 +547,11 @@ document.querySelectorAll('[data-cmd]').forEach(btn => {
 });
 
 // ──────────────────────────────────────────────
-// Robot → Twin: parse incoming UART
+// Robot → Twin: parse incoming UART (via RobiBle.onRxLine hook)
 // ──────────────────────────────────────────────
 const $ = id => document.getElementById(id);
-window.handleUartLine = function (line) {
-  addLogLine('RX  ' + line, 'rx');
+window.RobiBle.onRxLine = function (line) {
+  if (typeof line !== 'string') return;
   const ln = line.trim();
 
   if (ln.startsWith('ACC:')) {
