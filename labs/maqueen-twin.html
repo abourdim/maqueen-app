@@ -115,6 +115,17 @@
   input.text-in{flex:1;font-family:inherit;font-size:13px;padding:6px 10px;
     border:2px solid #000;border-radius:10px;background:#fff;font-weight:600;}
 
+  /* ── Lang picker ──────────────────────── */
+  .lang-picker{display:inline-flex;gap:3px;background:#fef3c7;border:2px solid #000;
+    border-radius:999px;padding:2px;margin-right:6px;}
+  .lang-picker button{background:transparent;border:none;border-radius:999px;
+    padding:4px 10px;font-size:13px;font-weight:900;cursor:pointer;font-family:inherit;
+    color:#7c3aed;transition:all 0.15s;}
+  .lang-picker button.active{background:#7c3aed;color:#fff;}
+  body[dir="rtl"]{direction:rtl;}
+  body[dir="rtl"] .topbar > div:first-child{order:2;}
+  body[dir="rtl"] .topbar .right{margin-left:0;margin-right:auto;}
+
   /* ── Tour + Missions ──────────────────── */
   #tourBtn{background:linear-gradient(180deg,#a78bfa,#5b21b6);color:#fff;border:3px solid #000;
     border-radius:999px;padding:10px 18px;font-size:14px;font-weight:900;cursor:pointer;
@@ -174,10 +185,15 @@
 <!-- ── Header ───────────────────────────── -->
 <div class="topbar">
   <div>
-    <h1>🪞 Living Twin</h1>
-    <div class="sub">Your real Maqueen, mirrored on screen — touch the cartoon to control the real robot.</div>
+    <h1 data-i18n="title">🪞 Living Twin</h1>
+    <div class="sub" data-i18n="subtitle">Your real Maqueen, mirrored on screen — touch the cartoon to control the real robot.</div>
   </div>
   <div class="right">
+    <span class="lang-picker" id="langPicker">
+      <button data-lang="en" class="active">🇬🇧</button>
+      <button data-lang="fr">🇫🇷</button>
+      <button data-lang="ar">🇸🇦</button>
+    </span>
     <span class="pill"><span class="status-dot status-disconnected" id="ble-status"></span><span id="ble-status-text">Disconnected</span></span>
     <button id="tourBtn">🎤 TOUR ME</button>
     <button id="connectBtn">🔗 CONNECT MY ROBOT</button>
@@ -382,13 +398,13 @@
 
     <!-- "What did I just do?" sticky note -->
     <div class="sticky" id="sticky">
-      <div class="label">✏️ WHAT DID I JUST DO?</div>
-      <div id="sticky-text">Tap the connect button, then click on parts of the cartoon — your real robot will react!</div>
+      <div class="label" data-i18n="sticky_label">✏️ WHAT DID I JUST DO?</div>
+      <div id="sticky-text" data-i18n="sticky_default">Tap the connect button, then click on parts of the cartoon — your real robot will react!</div>
     </div>
 
     <!-- Live readouts -->
     <div class="panel">
-      <h3>📡 LIVE FROM ROBOT</h3>
+      <h3 data-i18n="h_live">📡 LIVE FROM ROBOT</h3>
       <div class="readouts">
         <div class="rd live"><div class="h">TILT X</div><span id="rd-accx">--</span></div>
         <div class="rd live"><div class="h">TILT Y</div><span id="rd-accy">--</span></div>
@@ -407,16 +423,16 @@
 
     <!-- Speech bubble input -->
     <div class="panel">
-      <h3>💬 SAY SOMETHING</h3>
+      <h3 data-i18n="h_say">💬 SAY SOMETHING</h3>
       <div class="ctrl-row">
-        <input class="text-in" id="text-input" placeholder="Type a message..." maxlength="40">
-        <button class="ctrl-btn green" id="text-send">SAY!</button>
+        <input class="text-in" id="text-input" data-i18n-placeholder="text_placeholder" placeholder="Type a message..." maxlength="40">
+        <button class="ctrl-btn green" id="text-send" data-i18n="btn_say">SAY!</button>
       </div>
     </div>
 
     <!-- Quick controls -->
     <div class="panel">
-      <h3>🎮 QUICK ACTIONS</h3>
+      <h3 data-i18n="h_quick">🎮 QUICK ACTIONS</h3>
       <div class="ctrl-row" style="margin-bottom:6px;">
         <button class="ctrl-btn" data-buzz="262,250">DO</button>
         <button class="ctrl-btn" data-buzz="330,250">MI</button>
@@ -433,17 +449,17 @@
 
     <!-- Missions -->
     <div class="panel">
-      <h3>🎯 MISSIONS</h3>
+      <h3 data-i18n="h_missions">🎯 MISSIONS</h3>
       <div class="star-counter">
         <span>⭐ <span id="starCount">0</span> / 6</span>
-        <span style="font-size:11px;color:#666;font-weight:700;" id="missionStatus">Tap CONNECT, then start playing!</span>
+        <span style="font-size:11px;color:#666;font-weight:700;" id="missionStatus" data-i18n="m_start">Tap CONNECT, then start playing!</span>
       </div>
       <div id="missionList"></div>
     </div>
 
     <!-- Activity log -->
     <div class="panel">
-      <h3>📜 ACTIVITY LOG</h3>
+      <h3 data-i18n="h_log">📜 ACTIVITY LOG</h3>
       <div id="ble-log"></div>
     </div>
   </div>
@@ -472,10 +488,11 @@ window.RobiBle.onLog = function (line, level) {
 window.RobiBle.onStatus = function (connected, name) {
   const dot = document.getElementById('ble-status');
   const txt = document.getElementById('ble-status-text');
+  const dict = (window.I18N && I18N[LANG]) ? I18N[LANG] : {status_connected:'Connected', status_disconnected:'Disconnected', btn_connect:'🔗 CONNECT MY ROBOT', btn_disconnect:'🔌 DISCONNECT'};
   if (dot) dot.className = 'status-dot status-' + (connected ? 'connected' : 'disconnected');
-  if (txt) txt.textContent = connected ? ('Connected · ' + (name || 'micro:bit')) : 'Disconnected';
+  if (txt) txt.textContent = connected ? (dict.status_connected + ' · ' + (name || 'micro:bit')) : dict.status_disconnected;
   const btn = document.getElementById('connectBtn');
-  if (btn) btn.textContent = connected ? '🔌 DISCONNECT' : '🔗 CONNECT MY ROBOT';
+  if (btn) btn.textContent = connected ? dict.btn_disconnect : dict.btn_connect;
 };
 
 // Wire connect button (calls bare connect()/disconnect() from ble.js)
@@ -488,18 +505,213 @@ document.getElementById('connectBtn').addEventListener('click', () => {
 });
 
 // ──────────────────────────────────────────────
+// 🌐 i18n — EN / FR / AR
+// ──────────────────────────────────────────────
+const I18N = {
+  en: {
+    title: "🪞 Living Twin",
+    subtitle: "Your real Maqueen, mirrored on screen — touch the cartoon to control the real robot.",
+    sticky_label: "✏️ WHAT DID I JUST DO?",
+    sticky_default: "Tap the connect button, then click on parts of the cartoon — your real robot will react!",
+    h_live: "📡 LIVE FROM ROBOT",
+    h_say: "💬 SAY SOMETHING",
+    h_quick: "🎮 QUICK ACTIONS",
+    h_missions: "🎯 MISSIONS",
+    h_log: "📜 ACTIVITY LOG",
+    text_placeholder: "Type a message...",
+    btn_say: "SAY!",
+    btn_connect: "🔗 CONNECT MY ROBOT",
+    btn_disconnect: "🔌 DISCONNECT",
+    btn_tour: "🎤 TOUR ME",
+    status_connected: "Connected",
+    status_disconnected: "Disconnected",
+    bubble_default: "Hi! I'm Maqueen!",
+    all_done: "All done!",
+    yes: "Yes!",
+    mission_done_prefix: "Mission complete:",
+    mission_accomplished: "Mission accomplished! You did it!",
+    m_start: "Tap CONNECT, then start playing!",
+    m_keep_going: "Keep going — {n} to go!",
+    m_all_done: "🏆 ALL DONE! You are amazing!",
+    missions: [
+      "Make me say HEART",
+      "Beep my buzzer",
+      "Press the REAL Button A",
+      "Tilt me sideways (real bot)",
+      "Send me a message",
+      "Show all 4 faces",
+    ],
+    tour: [
+      "Hi! These are my wheels — they spin to make me roll forward and turn!",
+      "Inside live my two motors. They decide how fast each wheel goes!",
+      "These are my eyes — I send out invisible sound and listen for the echo, like a bat!",
+      "And this is my neck servo — it can turn me left and right!",
+      "This is my brain — a tiny computer with twenty-five little red lights! Click me to change my face!",
+      "And this is my voice. I can sing and beep! Click me to hear!",
+      "These are my mood lights. I can shine in any color of the rainbow!",
+      "And this is my battery — when I am tired, I need to charge!",
+    ],
+  },
+  fr: {
+    title: "🪞 Jumeau Vivant",
+    subtitle: "Ton vrai Maqueen, reflété à l'écran — touche le dessin pour contrôler le vrai robot.",
+    sticky_label: "✏️ QU'EST-CE QUE J'AI FAIT ?",
+    sticky_default: "Clique sur le bouton de connexion, puis touche les parties du dessin — ton vrai robot va réagir !",
+    h_live: "📡 EN DIRECT DU ROBOT",
+    h_say: "💬 DIS QUELQUE CHOSE",
+    h_quick: "🎮 ACTIONS RAPIDES",
+    h_missions: "🎯 MISSIONS",
+    h_log: "📜 JOURNAL D'ACTIVITÉ",
+    text_placeholder: "Écris un message...",
+    btn_say: "DIS-LE !",
+    btn_connect: "🔗 CONNECTER MON ROBOT",
+    btn_disconnect: "🔌 DÉCONNECTER",
+    btn_tour: "🎤 VISITE GUIDÉE",
+    status_connected: "Connecté",
+    status_disconnected: "Déconnecté",
+    bubble_default: "Salut ! Je suis Maqueen !",
+    all_done: "C'est terminé !",
+    yes: "Oui !",
+    mission_done_prefix: "Mission accomplie :",
+    mission_accomplished: "Mission accomplie ! Tu as réussi !",
+    m_start: "Clique sur CONNECTER, puis amuse-toi !",
+    m_keep_going: "Continue — encore {n} !",
+    m_all_done: "🏆 BRAVO ! Tu es formidable !",
+    missions: [
+      "Fais-moi montrer un CŒUR",
+      "Fais sonner mon buzzer",
+      "Appuie sur le VRAI bouton A",
+      "Penche-moi sur le côté (vrai robot)",
+      "Envoie-moi un message",
+      "Montre les 4 visages",
+    ],
+    tour: [
+      "Salut ! Ce sont mes roues — elles tournent pour me faire avancer et tourner !",
+      "À l'intérieur vivent mes deux moteurs. Ils décident à quelle vitesse chaque roue tourne !",
+      "Ce sont mes yeux — j'envoie un son invisible et j'écoute l'écho, comme une chauve-souris !",
+      "Et ça, c'est le servo de mon cou — il peut me tourner à gauche et à droite !",
+      "Voici mon cerveau — un petit ordinateur avec vingt-cinq petites lumières rouges ! Clique pour changer mon visage !",
+      "Et ça, c'est ma voix. Je peux chanter et faire bip ! Clique pour entendre !",
+      "Ce sont mes lumières d'humeur. Je peux briller de toutes les couleurs de l'arc-en-ciel !",
+      "Et ça, c'est ma batterie — quand je suis fatigué, j'ai besoin de me recharger !",
+    ],
+  },
+  ar: {
+    title: "🪞 التوأم الحيّ",
+    subtitle: "روبوت ماكوين الحقيقي، منعكس على الشاشة — المس الرسم للتحكّم في الروبوت الحقيقي.",
+    sticky_label: "✏️ ماذا فعلتُ للتو؟",
+    sticky_default: "اضغط على زر الاتصال، ثم انقر على أجزاء الرسم — سيتفاعل روبوتك الحقيقي!",
+    h_live: "📡 مباشر من الروبوت",
+    h_say: "💬 قل شيئًا",
+    h_quick: "🎮 إجراءات سريعة",
+    h_missions: "🎯 المهمات",
+    h_log: "📜 سجل النشاط",
+    text_placeholder: "اكتب رسالة...",
+    btn_say: "قُل!",
+    btn_connect: "🔗 اتصل بالروبوت",
+    btn_disconnect: "🔌 افصل",
+    btn_tour: "🎤 جولة تعريفية",
+    status_connected: "متصل",
+    status_disconnected: "غير متصل",
+    bubble_default: "مرحبًا! أنا ماكوين!",
+    all_done: "انتهيتُ!",
+    yes: "نعم!",
+    mission_done_prefix: "اكتملت المهمة:",
+    mission_accomplished: "اكتملت المهمة! أحسنت!",
+    m_start: "اضغط على \"اتصل\" ثم ابدأ اللعب!",
+    m_keep_going: "تابع — تبقّى {n}!",
+    m_all_done: "🏆 رائع! أنت مذهل!",
+    missions: [
+      "اجعلني أُظهر قلبًا",
+      "شغّل صفّارتي",
+      "اضغط زر A الحقيقي على الروبوت",
+      "أمِلْني جانبًا (الروبوت الحقيقي)",
+      "أرسل لي رسالة",
+      "أَظهِر الوجوه الأربعة كلها",
+    ],
+    tour: [
+      "مرحبًا! هذه عجلاتي — تدور لتجعلني أتحرك وأنعطف!",
+      "في الداخل يعيش محرّكان — يقرّران سرعة كل عجلة!",
+      "هاتان عيناي — أرسل صوتًا غير مرئيّ وأُنصِت إلى الصدى، مثل الخفاش!",
+      "وهذا محرّك رقبتي — يمكنه تدويري يمينًا ويسارًا!",
+      "هذا دماغي — حاسوب صغير مع خمسة وعشرين ضوءًا أحمر! انقر لتغيير وجهي!",
+      "وهذا صوتي. أستطيع الغناء وإصدار صفير! انقر لتسمع!",
+      "هذه أضواء مزاجي. أستطيع التألّق بكل ألوان قوس قزح!",
+      "وهذه بطاريتي — حين أتعب، أحتاج إلى الشحن!",
+    ],
+  },
+};
+
+// Detect default language from browser
+const browserLang = (navigator.language || 'en').slice(0,2).toLowerCase();
+let LANG = ['en','fr','ar'].includes(browserLang) ? browserLang : 'en';
+
+function applyLang() {
+  // Walk DOM and replace
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const k = el.getAttribute('data-i18n');
+    if (I18N[LANG][k]) el.textContent = I18N[LANG][k];
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const k = el.getAttribute('data-i18n-placeholder');
+    if (I18N[LANG][k]) el.placeholder = I18N[LANG][k];
+  });
+  // Direction (RTL for Arabic)
+  document.body.setAttribute('dir', LANG === 'ar' ? 'rtl' : 'ltr');
+  document.documentElement.setAttribute('lang', LANG);
+  // Sync picker buttons
+  document.querySelectorAll('#langPicker button').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === LANG);
+  });
+  // Tour/missions/connect button
+  const tb = document.getElementById('tourBtn');
+  if (tb) tb.textContent = I18N[LANG].btn_tour;
+  const cb = document.getElementById('connectBtn');
+  if (cb && cb.textContent.includes('CONNECT') || cb && cb.textContent.includes('CONNECTER') || cb && cb.textContent.includes('اتصل')) {
+    cb.textContent = (typeof isConnected !== 'undefined' && isConnected) ? I18N[LANG].btn_disconnect : I18N[LANG].btn_connect;
+  }
+  const st = document.getElementById('ble-status-text');
+  if (st) {
+    const isOn = (typeof isConnected !== 'undefined' && isConnected);
+    st.textContent = isOn ? I18N[LANG].status_connected : I18N[LANG].status_disconnected;
+  }
+  // Re-render dynamic bits
+  if (typeof renderMissions === 'function') renderMissions();
+  // Sticky default if untouched
+  const st2 = document.getElementById('sticky-text');
+  if (st2 && st2.dataset.touched !== '1') st2.textContent = I18N[LANG].sticky_default;
+  // Bubble default
+  const bb = document.getElementById('bubble');
+  if (bb && bb.dataset.touched !== '1') bb.textContent = I18N[LANG].bubble_default;
+}
+
+// Wire picker
+document.getElementById('langPicker').addEventListener('click', (e) => {
+  const b = e.target.closest('button[data-lang]');
+  if (!b) return;
+  LANG = b.dataset.lang;
+  try { localStorage.setItem('twinLang', LANG); } catch(_){}
+  applyLang();
+});
+try { const saved = localStorage.getItem('twinLang'); if (saved && I18N[saved]) LANG = saved; } catch(_){}
+
+// ──────────────────────────────────────────────
 // Living Twin — twin-side wiring
 // ──────────────────────────────────────────────
 const sticky = document.getElementById('sticky-text');
 const bubble = document.getElementById('bubble');
 const boom   = document.getElementById('boom');
 
-function tellKid(msg) { sticky.textContent = msg; }
+function tellKid(msg) { sticky.textContent = msg; sticky.dataset.touched = '1'; }
 function bubbleSay(msg, ms=2400) {
   bubble.textContent = msg;
   bubble.style.display = 'block';
+  bubble.dataset.touched = '1';
   clearTimeout(bubble._t);
-  bubble._t = setTimeout(() => { bubble.textContent = "Hi! I'm Maqueen!"; }, ms);
+  bubble._t = setTimeout(() => {
+    bubble.textContent = (window.I18N && I18N[LANG]) ? I18N[LANG].bubble_default : "Hi! I'm Maqueen!";
+    bubble.dataset.touched = '0';
+  }, ms);
 }
 function showBoom(emoji='✨', ms=900) {
   boom.textContent = emoji;
@@ -689,16 +901,19 @@ window.RobiBle.onRxLine = function (line) {
 // ──────────────────────────────────────────────────────────────
 // 🎤 VOICE NARRATOR TOUR
 // ──────────────────────────────────────────────────────────────
-const TOUR = [
-  {sel:'#wheel-l', alt:'#wheel-r', text:"Hi! These are my wheels — they spin to make me roll forward and turn!"},
-  {sel:'g[transform="translate(220, 450)"]', text:"Inside live my two motors. They decide how fast each wheel goes!"},
-  {sel:'g[transform="translate(290, 100)"]', text:"These are my eyes — I send out invisible sound and listen for the echo, like a bat!"},
-  {sel:'rect[width="40"][height="50"]', text:"And this is my neck servo — it can turn me left and right!"},
-  {sel:'#matrix-zone', text:"This is my brain — a tiny computer with twenty-five little red lights! Click me to change my face!"},
-  {sel:'#buzzer-zone', text:"And this is my voice. I can sing and beep! Click me to hear!"},
-  {sel:'#led-1', text:"These are my mood lights. I can shine in any color of the rainbow!"},
-  {sel:'g[transform="translate(450, 326)"]', text:"And this is my battery — when I am tired, I need to charge!"},
+const TOUR_SELECTORS = [
+  '#wheel-l',
+  'g[transform="translate(220, 450)"]',
+  'g[transform="translate(290, 100)"]',
+  'rect[width="40"][height="50"]',
+  '#matrix-zone',
+  '#buzzer-zone',
+  '#led-1',
+  'g[transform="translate(450, 326)"]',
 ];
+function getTour() {
+  return TOUR_SELECTORS.map((sel, i) => ({ sel, text: I18N[LANG].tour[i] }));
+}
 const tourBtn = document.getElementById('tourBtn');
 const tourCtrls = document.getElementById('tourControls');
 const tourRing = document.getElementById('tourRing');
@@ -725,22 +940,25 @@ function speak(text) {
   speechSynthesis.cancel();
   const u = new SpeechSynthesisUtterance(text);
   u.rate = 0.95; u.pitch = 1.15; u.volume = 1;
-  // Pick a friendly voice if available
+  const langCode = LANG === 'fr' ? 'fr-FR' : LANG === 'ar' ? 'ar-SA' : 'en-US';
+  u.lang = langCode;
   const voices = speechSynthesis.getVoices();
-  const fav = voices.find(v => /female|samantha|karen|zira|kid/i.test(v.name)) || voices[0];
+  const langVoice = voices.find(v => v.lang && v.lang.toLowerCase().startsWith(langCode.slice(0,2)));
+  const fav = langVoice || voices.find(v => /female|samantha|karen|zira|kid/i.test(v.name)) || voices[0];
   if (fav) u.voice = fav;
   speechSynthesis.speak(u);
   return u;
 }
 function showTourStep(i) {
   if (i < 0) i = 0;
-  if (i >= TOUR.length) { stopTour(); bubbleSay('All done!'); return; }
+  const tour = getTour();
+  if (i >= tour.length) { stopTour(); bubbleSay(I18N[LANG].all_done); return; }
   tourIdx = i;
-  const step = TOUR[i];
-  tourStepEl.textContent = (i+1) + '/' + TOUR.length;
+  const step = tour[i];
+  tourStepEl.textContent = (i+1) + '/' + tour.length;
   tourTextEl.textContent = step.text;
   placeTourRing(step.sel);
-  tellKid('🎤 Tour step ' + (i+1) + ': ' + step.text);
+  tellKid('🎤 ' + (i+1) + '/' + tour.length + ' — ' + step.text);
   tourUtt = speak(step.text);
   if (tourUtt) {
     tourUtt.onend = () => {
@@ -786,12 +1004,12 @@ if ('speechSynthesis' in window) speechSynthesis.onvoiceschanged = () => {};
 // 🎯 MISSION MODE
 // ──────────────────────────────────────────────────────────────
 const MISSIONS = [
-  {id:1, icon:'❤️',  label:'Make me say HEART',          done:false},
-  {id:2, icon:'🔊', label:'Beep my buzzer',              done:false},
-  {id:3, icon:'🅰',  label:'Press the REAL Button A',    done:false},
-  {id:4, icon:'🔄', label:'Tilt me sideways (real bot)', done:false},
-  {id:5, icon:'💬', label:'Send me a message',           done:false},
-  {id:6, icon:'🎭', label:'Show all 4 faces',            done:false},
+  {id:1, icon:'❤️', done:false},
+  {id:2, icon:'🔊', done:false},
+  {id:3, icon:'🅰',  done:false},
+  {id:4, icon:'🔄', done:false},
+  {id:5, icon:'💬', done:false},
+  {id:6, icon:'🎭', done:false},
 ];
 const facesShown = new Set();
 const missionListEl = document.getElementById('missionList');
@@ -799,21 +1017,24 @@ const starCountEl = document.getElementById('starCount');
 const missionStatusEl = document.getElementById('missionStatus');
 
 function renderMissions() {
-  missionListEl.innerHTML = MISSIONS.map(m =>
+  const labels = I18N[LANG].missions;
+  missionListEl.innerHTML = MISSIONS.map((m,i) =>
     `<div class="mission-row${m.done?' done':''}" data-id="${m.id}">
        <span class="icon">${m.icon}</span>
-       <span class="label">${m.label}</span>
+       <span class="label">${labels[i]}</span>
        <span class="check">${m.done?'✅':'⏳'}</span>
      </div>`).join('');
   const done = MISSIONS.filter(m => m.done).length;
   starCountEl.textContent = done;
   if (done === MISSIONS.length) {
-    missionStatusEl.textContent = '🏆 ALL DONE! You are amazing!';
+    missionStatusEl.textContent = I18N[LANG].m_all_done;
     showBoom('🏆', 3000);
-    speak('Mission accomplished! You did it!');
+    speak(I18N[LANG].mission_accomplished);
     confettiBurst();
   } else {
-    missionStatusEl.textContent = done > 0 ? `Keep going — ${MISSIONS.length-done} to go!` : 'Tap CONNECT, then start playing!';
+    missionStatusEl.textContent = done > 0
+      ? I18N[LANG].m_keep_going.replace('{n}', MISSIONS.length-done)
+      : I18N[LANG].m_start;
   }
 }
 function markMission(id) {
@@ -821,12 +1042,14 @@ function markMission(id) {
   if (!m || m.done) return;
   m.done = true;
   renderMissions();
-  tellKid(`✅ Mission ${id} complete: ${m.label}!`);
+  const idx = MISSIONS.findIndex(x => x.id === id);
+  tellKid('✅ ' + I18N[LANG].mission_done_prefix + ' ' + I18N[LANG].missions[idx]);
   showBoom('✅');
-  // Tiny celebrate beep on each completion
   if ('speechSynthesis' in window) {
-    const u = new SpeechSynthesisUtterance('Yes!');
-    u.rate = 1.2; u.pitch = 1.5; speechSynthesis.speak(u);
+    const u = new SpeechSynthesisUtterance(I18N[LANG].yes);
+    u.rate = 1.2; u.pitch = 1.5;
+    if (LANG !== 'en') u.lang = LANG === 'fr' ? 'fr-FR' : 'ar-SA';
+    speechSynthesis.speak(u);
   }
 }
 function confettiBurst() {
@@ -845,6 +1068,7 @@ function confettiBurst() {
   }
 }
 renderMissions();
+applyLang(); // initial i18n pass — translates DOM, sets RTL when AR
 
 // Wrap sendLine to detect outgoing missions (1, 2, 5, 6)
 const _origSendLine = window.sendLine;
