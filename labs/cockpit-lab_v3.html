@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en" data-theme="carbon">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>🛸 Cockpit Lab v3 — dense, real cockpits</title>
+<link rel="stylesheet" href="../workshops/theme.css">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:var(--font-body,system-ui);background:var(--bg,#0a1018);color:var(--text,#e0e6ee);padding:24px 18px 40px;}
+  h1{font-family:var(--font-display,system-ui);color:var(--neon,#4ade80);font-size:1.8rem;margin-bottom:6px;text-align:center;}
+  .sub{text-align:center;color:var(--steel,#93a8c4);margin-bottom:24px;font-size:0.95rem;max-width:780px;margin-left:auto;margin-right:auto;line-height:1.5;}
+  .nav{text-align:center;margin:14px 0 24px;}
+  .nav a{color:var(--steel);text-decoration:none;padding:6px 14px;border:1px solid var(--border);border-radius:999px;font-size:0.85rem;margin:0 4px;}
+  .nav a:hover{color:var(--neon);border-color:var(--neon);}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;max-width:1300px;margin:0 auto;}
+  .card{display:block;text-decoration:none;padding:18px 20px;border-radius:14px;border:1.5px solid var(--border,#1d3556);background:var(--bg-card,#142036);color:var(--text);transition:transform 0.15s,border-color 0.15s,box-shadow 0.15s;}
+  .card:hover{transform:translateY(-3px);border-color:var(--neon);box-shadow:0 8px 22px rgba(74,222,128,0.18);}
+  .card .emoji{font-size:2.2rem;line-height:1;margin-bottom:8px;}
+  .card .num{font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--steel);}
+  .card h3{font-size:1.15rem;color:var(--neon);margin:6px 0 8px;}
+  .card .vibe{font-size:0.86rem;color:var(--text);opacity:0.85;line-height:1.45;}
+  .dna{margin-top:10px;font-size:0.78rem;color:var(--cyan,#38bdf8);font-family:'JetBrains Mono',monospace;}
+  .stub{opacity:0.55;}
+  .stub .dna{color:#fbbf24;}
+</style>
+</head>
+<body>
+
+<h1>🛸 Cockpit Lab v3 — dense, real</h1>
+<p class="sub">Packed cockpits with all Maqueen hardware visible: 2 motors, 4 RGB LEDs, servo, buzzer, line sensors, IR, 5×5 matrix, accel, compass, temp, mic, battery. Animations + warning lights + switches. Static design, no BLE.</p>
+
+<div class="nav">
+  <a href="index.html">🧪 All Labs</a>
+  <a href="cockpit-lab.html">v1</a>
+  <a href="cockpit-lab_v2.html">v2</a>
+  <a href="../index.html">🤖 Robot App</a>
+</div>
+
+<div class="grid">
+  <a class="card" href="cockpit-lab_v3_1.html">
+    <div class="emoji">🛩</div>
+    <div class="num">cockpit-lab_v3_1.html</div>
+    <h3>Plane Cockpit</h3>
+    <div class="vibe">dense 6-pack · radio · breakers</div>
+    <div class="dna">▸ DENSE BUILD</div>
+  </a>
+  <a class="card" href="cockpit-lab_v3_2.html">
+    <div class="emoji">✈️</div>
+    <div class="num">cockpit-lab_v3_2.html</div>
+    <h3>Glass Cockpit (Airliner)</h3>
+    <div class="vibe">4 MFDs · FCU · overhead</div>
+    <div class="dna">▸ DENSE BUILD</div>
+  </a>
+  <a class="card stub" href="cockpit-lab_v3_3.html">
+    <div class="emoji">🛫</div>
+    <div class="num">cockpit-lab_v3_3.html</div>
+    <h3>Fighter Jet HUD</h3>
+    <div class="vibe">HUD · MFCDs · HOTAS</div>
+    <div class="dna">◇ stub · pending</div>
+  </a>
+  <a class="card stub" href="cockpit-lab_v3_4.html">
+    <div class="emoji">🏎</div>
+    <div class="num">cockpit-lab_v3_4.html</div>
+    <h3>F1 Steering Wheel</h3>
+    <div class="vibe">24 buttons · ERS · sectors</div>
+    <div class="dna">◇ stub · pending</div>
+  </a>
+  <a class="card stub" href="cockpit-lab_v3_5.html">
+    <div class="emoji">🚢</div>
+    <div class="num">cockpit-lab_v3_5.html</div>
+    <h3>Submarine Helm</h3>
+    <div class="vibe">periscope · sonar · ballast</div>
+    <div class="dna">◇ stub · pending</div>
+  </a>
+  <a class="card stub" href="cockpit-lab_v3_6.html">
+    <div class="emoji">🛸</div>
+    <div class="num">cockpit-lab_v3_6.html</div>
+    <h3>Starship Bridge</h3>
+    <div class="vibe">LCARS · viewscreen · tactical</div>
+    <div class="dna">◇ stub · pending</div>
+  </a>
+  <a class="card stub" href="cockpit-lab_v3_7.html">
+    <div class="emoji">🤖</div>
+    <div class="num">cockpit-lab_v3_7.html</div>
+    <h3>Mech HUD</h3>
+    <div class="vibe">targeting · ammo · heat</div>
+    <div class="dna">◇ stub · pending</div>
+  </a>
+  <a class="card stub" href="cockpit-lab_v3_8.html">
+    <div class="emoji">🎧</div>
+    <div class="num">cockpit-lab_v3_8.html</div>
+    <h3>DJ Booth</h3>
+    <div class="vibe">twin decks · 4ch mixer · pads</div>
+    <div class="dna">◇ stub · pending</div>
+  </a>
+  <a class="card stub" href="cockpit-lab_v3_9.html">
+    <div class="emoji">🎚</div>
+    <div class="num">cockpit-lab_v3_9.html</div>
+    <h3>Studio Mixer</h3>
+    <div class="vibe">16 strips · master · rack</div>
+    <div class="dna">◇ stub · pending</div>
+  </a>
+  <a class="card stub" href="cockpit-lab_v3_10.html">
+    <div class="emoji">⌚</div>
+    <div class="num">cockpit-lab_v3_10.html</div>
+    <h3>Smartwatch / Tablet</h3>
+    <div class="vibe">bento · cards · widgets</div>
+    <div class="dna">◇ stub · pending</div>
+  </a>
+</div>
+</body>
+</html>

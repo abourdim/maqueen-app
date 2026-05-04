@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>🛩 v4 #8 Helicopter · Side</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{background:#02040a;color:#dff;font-family:'JetBrains Mono',monospace;min-height:100vh;overflow-x:hidden;}
+body{padding:8px 10px 24px;position:relative;}
+
+/* ─── starfield ─── */
+.stars,.stars2,.stars3{position:fixed;inset:0;pointer-events:none;z-index:0;}
+.stars{background-image:radial-gradient(1px 1px at 12% 18%,#fff 50%,transparent 50%),
+                       radial-gradient(1px 1px at 38% 72%,#fff 50%,transparent 50%),
+                       radial-gradient(1.4px 1.4px at 64% 22%,#dff 50%,transparent 50%),
+                       radial-gradient(1px 1px at 84% 51%,#fff 50%,transparent 50%),
+                       radial-gradient(1px 1px at 22% 88%,#dff 50%,transparent 50%),
+                       radial-gradient(1.6px 1.6px at 50% 35%,#fff 50%,transparent 50%),
+                       radial-gradient(1px 1px at 75% 80%,#fff 50%,transparent 50%);
+       background-size:100% 100%;opacity:0.85;animation:twinkle 4s ease-in-out infinite;}
+.stars2{background-image:radial-gradient(1px 1px at 8% 55%,#aff 50%,transparent 50%),
+                        radial-gradient(1px 1px at 30% 30%,#fff 50%,transparent 50%),
+                        radial-gradient(2px 2px at 56% 78%,#fff 50%,transparent 50%),
+                        radial-gradient(1px 1px at 90% 12%,#dff 50%,transparent 50%),
+                        radial-gradient(1px 1px at 46% 60%,#fff 50%,transparent 50%);
+        opacity:0.55;animation:twinkle 6s ease-in-out infinite alternate;}
+.stars3{background-image:radial-gradient(1px 1px at 18% 38%,#a5f3fc 50%,transparent 50%),
+                        radial-gradient(1px 1px at 72% 65%,#f0abfc 50%,transparent 50%),
+                        radial-gradient(1.5px 1.5px at 42% 12%,#fde68a 50%,transparent 50%);
+        opacity:0.75;animation:twinkle 8s ease-in-out infinite;}
+@keyframes twinkle{0%,100%{opacity:0.4;}50%{opacity:0.95;}}
+
+/* ─── HUD corner brackets ─── */
+.hud-frame{position:fixed;inset:6px;pointer-events:none;z-index:1;}
+.hud-frame .b{position:absolute;width:32px;height:32px;border:2px solid #22d3ee;filter:drop-shadow(0 0 4px #22d3ee);}
+.hud-frame .tl{top:0;left:0;border-right:none;border-bottom:none;}
+.hud-frame .tr{top:0;right:0;border-left:none;border-bottom:none;}
+.hud-frame .bl{bottom:0;left:0;border-right:none;border-top:none;}
+.hud-frame .br{bottom:0;right:0;border-left:none;border-top:none;}
+.hud-frame .tick-h{position:absolute;top:50%;left:0;right:0;border-top:1px dashed rgba(34,211,238,0.18);}
+.hud-frame .tick-v{position:absolute;left:50%;top:0;bottom:0;border-left:1px dashed rgba(34,211,238,0.18);}
+
+/* ─── scanner sweep ─── */
+.scanner{position:fixed;top:0;bottom:0;left:-30%;width:30%;
+  background:linear-gradient(90deg,transparent 0%,rgba(34,211,238,0.06) 50%,transparent 100%);
+  pointer-events:none;z-index:2;animation:scan 8s linear infinite;}
+@keyframes scan{from{left:-30%;}to{left:100%;}}
+
+/* ─── stage where vehicle lives ─── */
+.stage{position:relative;z-index:3;max-width:1500px;margin:0 auto;padding:14px;}
+.title{display:flex;align-items:center;gap:14px;padding:8px 14px;background:rgba(2,6,16,0.72);border:1px solid #1e3a5a;border-radius:8px;margin-bottom:14px;backdrop-filter:blur(6px);}
+.title .badge{font-size:13px;font-weight:800;color:#22d3ee;letter-spacing:0.08em;text-shadow:0 0 6px #22d3ee;}
+.title .vibe{font-size:10px;color:#7fa;opacity:0.75;}
+.title .nav{margin-left:auto;display:flex;gap:6px;}
+.title .nav a{color:#aff;text-decoration:none;border:1px solid #1e3a5a;border-radius:5px;padding:3px 9px;font-size:11px;}
+.title .nav a:hover{border-color:#22d3ee;color:#22d3ee;}
+
+/* ─── animations ─── */
+@keyframes pulse{0%,100%{opacity:0.4;transform:scale(1);}50%{opacity:1;transform:scale(1.4);}}
+@keyframes pulsefast{0%,100%{opacity:0.5;transform:scale(0.9);}50%{opacity:1;transform:scale(1.3);}}
+@keyframes flicker{0%,100%{opacity:1;}48%{opacity:0.85;}52%{opacity:1;}}
+@keyframes blink{0%,55%{opacity:1;}56%,100%{opacity:0.18;}}
+@keyframes spin{to{transform:rotate(360deg);}}
+@keyframes wiggle{0%,100%{transform:rotate(-12deg);}50%{transform:rotate(12deg);}}
+@keyframes propspin{to{transform:rotate(360deg);}}
+
+/* ─── callout panels ─── */
+.callout{position:absolute;background:linear-gradient(180deg,rgba(2,18,30,0.92),rgba(2,8,16,0.92));
+  border:1px solid #22d3ee;border-radius:6px;padding:6px 9px;
+  box-shadow:0 0 14px rgba(34,211,238,0.35),inset 0 0 8px rgba(34,211,238,0.08);
+  font-family:'JetBrains Mono',monospace;font-size:10px;color:#dff;
+  backdrop-filter:blur(4px);min-width:90px;}
+.callout.amber{border-color:#fbbf24;box-shadow:0 0 14px rgba(251,191,36,0.35),inset 0 0 8px rgba(251,191,36,0.08);}
+.callout.magenta{border-color:#f472b6;box-shadow:0 0 14px rgba(244,114,182,0.35),inset 0 0 8px rgba(244,114,182,0.08);}
+.callout.green{border-color:#22c55e;box-shadow:0 0 14px rgba(34,197,94,0.35),inset 0 0 8px rgba(34,197,94,0.08);}
+.callout.violet{border-color:#a78bfa;box-shadow:0 0 14px rgba(167,139,250,0.35),inset 0 0 8px rgba(167,139,250,0.08);}
+.callout .h{font-size:8px;letter-spacing:0.16em;text-transform:uppercase;color:#22d3ee;font-weight:800;margin-bottom:3px;display:flex;align-items:center;gap:5px;}
+.callout.amber .h{color:#fbbf24;}
+.callout.magenta .h{color:#f472b6;}
+.callout.green .h{color:#22c55e;}
+.callout.violet .h{color:#a78bfa;}
+.callout .v{font-size:14px;font-weight:800;color:#fff;text-shadow:0 0 4px currentColor;}
+.callout .h::before{content:'';width:6px;height:6px;border-radius:50%;background:currentColor;box-shadow:0 0 6px currentColor;animation:flicker 2s infinite;}
+
+/* ─── pulse dot anchored on a body part ─── */
+.dot{position:absolute;width:14px;height:14px;border-radius:50%;background:#22d3ee;
+  box-shadow:0 0 12px #22d3ee,0 0 24px #22d3ee;transform:translate(-50%,-50%);
+  animation:pulse 1.6s ease-in-out infinite;}
+.dot.amber{background:#fbbf24;box-shadow:0 0 12px #fbbf24,0 0 24px #fbbf24;}
+.dot.magenta{background:#f472b6;box-shadow:0 0 12px #f472b6,0 0 24px #f472b6;}
+.dot.green{background:#22c55e;box-shadow:0 0 12px #22c55e,0 0 24px #22c55e;}
+.dot.violet{background:#a78bfa;box-shadow:0 0 12px #a78bfa,0 0 24px #a78bfa;}
+</style>
+</head>
+<body>
+<div class="stars"></div>
+<div class="stars2"></div>
+<div class="stars3"></div>
+<div class="hud-frame"><div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div><div class="tick-h"></div><div class="tick-v"></div></div>
+<div class="scanner"></div>
+<div class="stage"><div class="title">
+  <div class="badge">🛩 v4 #8 · Helicopter · Side</div>
+  <div class="vibe">rotor · tail · skids</div>
+  <div class="nav">
+    <a href="cockpit-lab_v4.html">⚙ Gallery</a>
+    <a href="cockpit-lab_v4_7.html">‹ Prev</a>
+    <a href="cockpit-lab_v4_9.html">Next ›</a>
+  </div>
+</div>
+        <div style="margin:80px auto;text-align:center;padding:50px;border:2px dashed #1e3a5a;border-radius:14px;max-width:600px;">
+          <div style="font-size:64px;margin-bottom:14px;filter:drop-shadow(0 0 12px #22d3ee);">🛩</div>
+          <div style="font-size:18px;color:#22d3ee;letter-spacing:0.05em;">Helicopter · Side</div>
+          <div style="font-size:11px;color:#7fa;margin-top:8px;">v4 cutaway · awaiting design pass</div>
+        </div></div>
+</body>
+</html>
